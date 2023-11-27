@@ -1,0 +1,36 @@
+.titlebar-buttonbox-container { display: none !important; }
+@supports not -moz-bool-pref("onebar.disable-https-truncate") {
+  .verifiedDomain ~ .urlbar-input-box:not(:focus-within) #urlbar-input {
+    margin-left: -6ch !important;
+  }
+}
+@media (-moz-gtk-csd-available) {
+  @media (-moz-gtk-csd-minimize-button),
+  (-moz-gtk-csd-maximize-button),
+  (-moz-gtk-csd-close-button) {
+    @media not (-moz-gtk-csd-reversed-placement) {
+      #nav-bar {
+        padding-right: 0 !important;
+      }
+    }
+  }
+}
+.tabbrowser-tab .tab-close-button { display: none !important; }
+.tabbrowser-tab[fadein]:not([style^="max-width"]){ max-width: 100vw !important }
+#urlbar .search-one-offs { display: none !important; }
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
+.browserContainer > #statuspanel{
+  display:none !important
+}
+#statuspanel{
+  display:none !important
+}
+/*
+:root[lwthemetextcolor="bright"] #statuspanel-label{
+background-color: #26233a !important;
+color: #9ccfd8 !important;
+border-color: none !important;
+}
+*/
+

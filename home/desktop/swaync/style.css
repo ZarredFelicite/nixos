@@ -1,0 +1,216 @@
+@define-color fg          #c4a7e7;
+@define-color bg          #26233a;
+@define-color bg2         #31748f;
+@define-color accent      #d7827e;
+
+*{
+  font-family: "Iosevka Nerd Font";
+  color: @fg;
+  border-radius: 12px;
+}
+
+.notification-row {
+  transition: all 500ms ease;
+  outline: none;
+}
+
+.notification-row:focus,
+.notification-row:hover {
+  margin: 0px;
+  background: @bg2;
+}
+
+.notification {
+  margin: 2px;
+  box-shadow: 0 0 0 0;
+  padding: 0;
+}
+
+/* Uncomment to enable specific urgency colors
+.low {
+  background: yellow;
+  padding: 0px;
+}
+
+.normal {
+  background: green;
+  padding: 0px;
+}
+
+.critical {
+  background: red;
+  padding: 0px;
+}
+*/
+
+.notification-content {
+  background: @bg;
+  padding: 3px 12px;
+  margin: 0px;
+}
+
+.close-button {
+  background: @bg;
+  text-shadow: none;
+  padding: 0;
+  border-radius: 100%;
+  margin-top: 0px;
+  margin-right: 0px;
+  box-shadow: none;
+  border: none;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.close-button:hover {
+  box-shadow: none;
+  background: @bg2;
+  transition: all 0.15s ease-in-out;
+}
+
+.notification-default-action,
+.notification-action {
+  padding: 4px;
+  margin: 0;
+  box-shadow: none;
+  background: @bg;
+  border: 1px solid @bg2;
+}
+
+.notification-default-action:hover,
+.notification-action:hover {
+  -gtk-icon-effect: none;
+  background: @bg2;
+}
+/* When alternative actions are visible */
+.notification-default-action:not(:only-child) {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.notification-action {
+  border-radius: 0px;
+  border-top: none;
+  border-right: none;
+}
+
+/* add bottom border radius to eliminate clipping */
+.notification-action:first-child {
+  border-bottom-left-radius: 14px;
+}
+
+.notification-action:last-child {
+  border-bottom-right-radius: 14px;
+  border-right: 1px solid @bg2;
+}
+
+.image {
+}
+
+.body-image {
+  margin-top: 6px;
+  background-color: white;
+}
+
+.summary {
+  font-size: 18px;
+  font-weight: bold;
+  background: transparent;
+  text-shadow: none;
+}
+
+.time {
+  font-size: 14px;
+  font-weight: bold;
+  background: transparent;
+  text-shadow: none;
+  margin-right: 4px;
+  margin-top: 0px;
+}
+
+.body {
+  font-size: 16px;
+  font-weight: normal;
+  background: transparent;
+  text-shadow: none;
+}
+
+.control-center {
+  background: @bg;
+  background-clip: border-box;
+}
+
+.floating-notifications {
+  background: transparent;
+}
+
+/* Window behind control center and on all other monitors */
+.blank-window {
+  background: transparent;
+}
+
+/*** Widgets ***/
+
+/* Title widget */
+.widget-title {
+  background: @fg;
+  margin: 4px;
+  padding: 6px 16px;
+  font-size: 20px;
+  border: 1px solid @bg2;
+}
+.widget-title > button {
+  text-shadow: none;
+  background: @bg;
+  margin: 4px;
+  border: 1px solid @bg2;
+  box-shadow: none;
+}
+.widget-title > button:hover {
+  background: @bg;
+}
+
+/* DND widget */
+.widget-dnd {
+  background: @bg;
+  margin: 4px;
+  padding: 6px 16px;
+  font-size: 1.1rem;
+  border: 1px solid @bg2;
+}
+.widget-dnd > switch {
+  font-size: initial;
+  background: @bg;
+  border: 1px solid @bg2;
+  box-shadow: none;
+}
+.widget-dnd > switch:checked {
+  background: @bg2;
+}
+.widget-dnd > switch slider {
+  background: @bg2;
+}
+
+/* Label widget */
+.widget-label {
+  margin: 4px;
+}
+.widget-label > label {
+  font-size: 14px;
+}
+
+/* Mpris widget */
+.widget-mpris {
+  background: @bg;
+}
+.widget-mpris-player {
+  padding: 0px;
+  margin: 0px;
+}
+.widget-mpris-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+.widget-mpris-subtitle {
+  font-size: 14px;
+}

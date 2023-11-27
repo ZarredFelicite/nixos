@@ -1,0 +1,5 @@
+{ ... }: {
+  programs.alot = {
+    enable = true;
+  };
+}

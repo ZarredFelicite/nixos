@@ -1,0 +1,95 @@
+* {
+    lightfg:                     rgba ( 30, 30, 46, 100 % );
+    lightbg:                     rgba ( 250, 179, 135, 100 % );
+    background-color:            transparent;
+    border-color:                #908caa60;
+    normal-background:           var(background);
+    spacing:                     2px;
+    selected-foreground:		     var(lightbg);
+    active-foreground:           rgba ( 38, 139, 210, 100 % );
+    background:                  rgba ( 31, 29, 46, 50 % );
+    selected-active-background:  rgba ( 38, 139, 210, 100 % );
+    active-background:           var(background);
+    selected-normal-background:  var(lightfg);
+    foreground:                  #c4a7e7;
+    foreground-2:                rgba ( 116, 199, 236, 100 % );
+	  border-radius:               4px;
+}
+element {
+    padding: 0px;
+    cursor:  pointer;
+    text-color:       var(foreground);
+    orientation: horizontal;
+}
+element selected.normal {
+    background-color: var(selected-normal-background);
+    text-color:       var(foreground-2);
+}
+element-text {
+    background-color: transparent;
+    cursor:           inherit;
+    highlight:        inherit;
+    text-color:       inherit;
+    padding: 0px 3px 0px 3px;
+}
+window {
+    width:      30%;
+    background-color: var(background);
+    border:         1;
+    children:   [ mainbox ];
+}
+mainbox {
+  orientation: horizontal;
+  children:   [ "inputbar", "message", "listview" ];
+  vertical-align: 0.5;
+  padding: 0;
+  border:  0;
+}
+textbox {
+    text-color: var(foreground-2);
+}
+listview {
+    scrollbar:       false;
+    layout:     horizontal;
+    vertical-align:    0.5;
+}
+entry {
+    text-color: var(foreground);
+    cursor:            text;
+    placeholder-color: Gray;
+	  border-radius:      0px;
+    expand:            true;
+    width:              5em;
+    vertical-align:     0.5;
+}
+prompt {
+    text-color: var(foreground);
+    padding:        0 2 0 5px;
+    vertical-align: 0.5;
+}
+button {
+    cursor:     pointer;
+    text-color: var(foreground);
+}
+button selected {
+    background-color: var(lightbg);
+    text-color:       var(lightfg);
+}
+num-filtered-rows {
+    expand:     false;
+    text-color: Gray;
+}
+num-rows {
+    expand:     false;
+    text-color: Gray;
+}
+inputbar {
+    text-color: var(foreground);
+    children:   [ "prompt","entry","num-filtered-rows","num-rows"];
+}
+textbox-prompt-colon {
+    margin:     0px 0.3000em 0.0000em 0.0000em ;
+    expand:     false;
+    str:        ":";
+    text-color: inherit;
+}

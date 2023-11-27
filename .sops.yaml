@@ -1,0 +1,16 @@
+keys:
+  - &primary AEFF5D4DFF9A6268273A225DDE9C7BD5CD6D499B
+  - &zarred age1tx44q2kt28ahlve23mmzgmnkdp2z2pkqgfuxt4kfr3kpa0xq4scq2gsmup
+  - &web age1mzjplxg5d3u9426q99lgx6rjhlkgeyh4cud0s6cxsa0qpg04u9yqasydwe
+  - &sankara age1u2hus6x503nj54fwg3axc2hpl9n87p49jqtt9d44qawmfxl98s0szrsjvq
+  - &nano age164qa7063mmreurm04psdhur5x38wjef52r508p6pfv0athyfkswqwaeejl
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - pgp:
+      - *primary
+      age:
+      - *zarred
+      - *web
+      - *sankara
+      - *nano

@@ -1,0 +1,71 @@
+* {
+    fg:               #c4a7e7;
+    fg2:              #9ccfd8;
+    bg:               #1f1d2e30;
+    bg2:              #31748f40;
+	  border-radius:    6px;
+    border-color:     @bg2;
+    spacing:          2px;
+    background-color:	@bg;
+	  text-color:			  @fg;
+}
+window {
+	transparency:     "real";
+	width:			    	30%;
+	y-offset:         2px;
+	padding: 			    0px;
+	margin: 			    0px;
+	location: 			  north;
+}
+
+prompt { enabled: false; }
+
+entry {
+    text-color:        @fg;
+    background-color:  transparent;
+    cursor:            text;
+    placeholder-color: Gray;
+    expand:            true;
+    width:              5em;
+    vertical-align:     0.5;
+    border-radius:     0px;
+}
+
+inputbar {
+	children: 			      [ prompt, entry ];
+	background-color:     @bg2;
+	text-color:           @fg;
+	expand:               false;
+	padding:              4px;
+}
+
+listview {
+	columns:              1;
+	lines:	              8;
+	cycle:                false;
+	dynamic:              true;
+	layout:               vertical;
+}
+
+mainbox {
+  children:             [ inputbar, message, listview ];
+  padding:              0;
+  border:               0;
+  spacing:              4px;
+	padding:              0px;
+}
+element {
+    orientation:        vertical;
+	  padding:            2px;
+}
+element selected {
+    background-color:   @bg2;
+    text-color:         @fg;
+}
+element-text {
+    expand:           true;
+    text-color:       inherit;
+    background-color: transparent;
+    vertical-align:   0.5;
+    margin:           2px;
+}

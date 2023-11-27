@@ -170,7 +170,7 @@
   };
   stylix = {
     autoEnable = true;
-    image = ~/pictures/wallpapers/tarantula_nebula.png;
+    image = /home/zarred/pictures/wallpapers/tarantula_nebula.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     override = {
       base00 = "#191724";

@@ -1,20 +1,31 @@
 { ... }: {
   wayland.windowManager.hyprland.extraConfig = ''
-      bind   =  $mod,      C,    submap, workspaces
-      submap = workspaces
-      bind   =      ,      C, workspace,         previous
-      bind   =      ,      N, workspace,       name:music
-      bind   =      ,      E, workspace,         name:mpv
-      bind   =      ,      I, workspace,       name:stats
-      bind   =      ,      S, workspace,      name:stocks
-      bind   = SHIFT,      N, movetoworkspace, name:music
-      bind   = SHIFT,      E, movetoworkspace,   name:mpv
-      bind   = SHIFT,      I, movetoworkspace, name:stats
-      bind   = SHIFT,      S, movetoworkspace,name:stocks
-      bind   =      , escape,          submap,      reset
-      bind   =      ,      R,          submap,      reset
-      bind   =      ,      C,          submap,      reset
+      bind   =  $mod,      I,    submap, dropdowns
+      submap = dropdowns
+      bind   =      ,      N, exec, pypr toggle kitty
+      bind   =      ,      E, exec, pypr toggle volume
+      bind   =      ,      E, submap, reset
+      bind   =      ,      I, exec, pypr toggle kitty
+      bind   =      ,      I, submap, reset
+      bind   =      ,      S, exec, pypr toggle kitty
+      bind   =      , escape, submap, reset
       submap = reset
+
+      #bind   =  $mod,      C,    submap, workspaces
+      #submap = workspaces
+      #bind   =      ,      C, workspace,         previous
+      #bind   =      ,      N, workspace,       name:music
+      #bind   =      ,      E, workspace,         name:mpv
+      #bind   =      ,      I, workspace,       name:stats
+      #bind   =      ,      S, workspace,      name:stocks
+      #bind   = SHIFT,      N, movetoworkspace, name:music
+      #bind   = SHIFT,      E, movetoworkspace,   name:mpv
+      #bind   = SHIFT,      I, movetoworkspace, name:stats
+      #bind   = SHIFT,      S, movetoworkspace,name:stocks
+      #bind   =      , escape,          submap,      reset
+      #bind   =      ,      R,          submap,      reset
+      #bind   =      ,      C,          submap,      reset
+      #submap = reset
   '';
   wayland.windowManager.hyprland.settings = {
     binds = {
@@ -30,14 +41,16 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
+      #"$mod, O, hycov:toggleoverview"
       "$mod, R, exec, ~/scripts/hyprland/resize.sh"
       "$mod, Return, exec, kitty -1"
-      #"$mod SHIFT, Return, exec, kitty -1 ssh rehoboam"   -- submap/menu to select ssh targets, term with tmux, etc
       "$mod, N, exec, swaync-client -t -sw"
       "$mod CTRL, N, changegroupactive, b"
       "$mod SHIFT, N, changegroupactive, f"
-      "$mod, T, togglegroup,"
-      "$mod CTRL, T, lockactivegroup, toggle"
+      #"$mod, T, togglegroup,"
+      "$mod, T, hy3:changegroup, toggletab"
+      #"$mod CTRL, T, lockactivegroup, toggle"
+      "$mod CTRL, T, hy3:changegroup, opposite"
       "$mod, S, exec, ~/scripts/nova/nova_window"
       "$mod, K, killactive,"
       "$mod, Q, exec, hyprctl dispatch dpms off DP-3; hyprctl dispatch dpms off DP-2; swaylock"
@@ -58,14 +71,22 @@
       "$mod CTRL SHIFT, $NAVD, movetoworkspace, r-1"
       "$mod CTRL SHIFT, $NAVR, workspace, r+1"
       "$mod CTRL SHIFT, $NAVL, workspace, r-1"
-      "$mod,            $NAVL, movefocus, l"
-      "$mod,            $NAVD, movefocus, d"
-      "$mod,            $NAVU, movefocus, u"
-      "$mod,            $NAVR, movefocus, r"
-      "$mod SHIFT,      $NAVL, swapwindow, l"
-      "$mod SHIFT,      $NAVD, swapwindow, d"
-      "$mod SHIFT,      $NAVU, swapwindow, u"
-      "$mod SHIFT,      $NAVR, swapwindow, r"
+      #"$mod,            $NAVL, movefocus, l"
+      #"$mod,            $NAVD, movefocus, d"
+      #"$mod,            $NAVU, movefocus, u"
+      #"$mod,            $NAVR, movefocus, r"
+      "$mod,            $NAVL, exec, ~/scripts/hyprland/navigation/hy3-movefocus l"
+      "$mod,            $NAVD, exec, ~/scripts/hyprland/navigation/hy3-movefocus d"
+      "$mod,            $NAVU, exec, ~/scripts/hyprland/navigation/hy3-movefocus u"
+      "$mod,            $NAVR, exec, ~/scripts/hyprland/navigation/hy3-movefocus r"
+      #"$mod SHIFT,      $NAVL, swapwindow, l"
+      #"$mod SHIFT,      $NAVD, swapwindow, d"
+      #"$mod SHIFT,      $NAVU, swapwindow, u"
+      #"$mod SHIFT,      $NAVR, swapwindow, r"
+      "$mod SHIFT,      $NAVL, hy3:movewindow, l"
+      "$mod SHIFT,      $NAVD, hy3:movewindow, d"
+      "$mod SHIFT,      $NAVU, hy3:movewindow, u"
+      "$mod SHIFT,      $NAVR, hy3:movewindow, r"
       "$mod SHIFT ALT,  $NAVL, movewindoworgroup, l"
       "$mod SHIFT ALT,  $NAVD, movewindoworgroup, d"
       "$mod SHIFT ALT,  $NAVU, movewindoworgroup, u"

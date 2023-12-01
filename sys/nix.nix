@@ -1,8 +1,8 @@
 { pkgs, config, lib, inputs, ... }: {
   nix = {
     # Make `nix run nixpkgs#nixpkgs` use the same nixpkgs as the one used by this flake.
-    registry.nixpkgs.to = { type = "path"; path = pkgs.path; };
-    #registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    #registry.nixpkgs.to = { type = "path"; path = pkgs.path; };
+    registry = lib.mapAttrs (_: flake: {inherit flake; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       trusted-users = [ "zarred" "nixremote" ];
@@ -36,32 +36,36 @@
     packageOverrides = pkgs: {
       nur = import (builtins.fetchTarball {
         url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
-        sha256 = "08pfv4dk1hd10zz56hx6f1h0qh32z6jl3jvdkqabm2xgkkfvfyxl";
+        #sha256 = "08i5hv8rilf9v7jvfbjvbb2gl0xxza91wrib4xzvknpb1ayw37dn";
+        #sha256 = "1bm79vqwikhpg99w966ipdci2nr9xwf6z2yj356l5fsl75aaixfn";
+        #sha256 = "173rd13r09bx36gi722p5hfwddpn6pdvzcz9ww8ka1sa1j90jfwl";
+        #sha256 = "1hqxkrn46m6s197d2llkr2jxhm0b4hvv49746vwhc3mrsqpyy9il";
+        sha256 = "0s126fn2sjv9hb7d6d0w2dsm0saghfma917xim256ifhwinn3dbv";
         }) {inherit pkgs; };
     };
   };
 
-  nix.distributedBuilds = true;
+  nix.distributedBuilds = false;
   nix.buildMachines = [
+    {
+      hostName = "web";
+      sshUser = "nixremote";
+      sshKey = "/root/.ssh/nixremote";
+      system = "x86_64-linux";
+      protocol = "ssh-ng";
+      maxJobs = 1;
+      speedFactor = 1;
+      supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+      mandatoryFeatures = [ ];
+    }
     #{
     #  hostName = "sankara";
     #  sshUser = "nixremote";
-    #  sshKey = "/home/zarred/.ssh/nixremote";
+    #  sshKey = "/root/.ssh/nixremote";
     #  system = "x86_64-linux";
     #  protocol = "ssh-ng";
     #  maxJobs = 1;
     #  speedFactor = 2;
-    #  supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-    #  mandatoryFeatures = [ ];
-    #}
-    #{
-    #  hostName = "web";
-    #  sshUser = "nixremote";
-    #  sshKey = "/home/zarred/.ssh/nixremote";
-    #  system = "x86_64-linux";
-    #  protocol = "ssh-ng";
-    #  maxJobs = 1;
-    #  speedFactor = 1;
     #  supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
     #  mandatoryFeatures = [ ];
     #}
@@ -71,4 +75,8 @@
   #  serviceConfig.CacheDirectory = "nix";
   #};
   environment.variables.NIX_REMOTE = "daemon";
+  services.nix-serve = {
+    enable = true;
+    secretKeyFile = config.sops.secrets.binary-cache-key.path;
+  };
 }

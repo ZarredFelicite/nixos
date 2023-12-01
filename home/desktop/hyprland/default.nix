@@ -16,6 +16,7 @@ in {
   home.packages = [
     inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper
     pkgs.hyprland-autoname-workspaces
+    pkgs.pyprland
     #(pkgs.poetry2nix.mkPoetryApplication rec {
     #  pname = "pyprland";
     #  version = "1.4.1";
@@ -54,13 +55,45 @@ in {
     wallpaper = DP-3,~/pictures/wallpapers/nebula2_dark.png
     ipc = off
   '';
+  systemd.user.services.pyprland = mkHyprlandService {
+    Unit.Description = "Pyprland plugins";
+    Service = {
+      ExecStart = "${pkgs.pyprland}/bin/pypr";
+      Restart = "always";
+    };
+  };
+  xdg.configFile."hypr/pyprland.json" = {
+    text = builtins.toJSON {
+      pyprland.plugins = [ "scratchpads" ];
+      scratchpads = {
+        kitty = {
+          command = "${pkgs.kitty}/bin/kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'";
+          lazy = true;
+          size = "80% 80%";
+          position = "40% 10%";
+          class = "kitty-scratchpad";
+          margin = 50;
+        };
+        volume = {
+          command = "${pkgs.pavucontrol}/bin/pavucontrol";
+          lazy = true;
+          size = "100% 100%";
+          position = "0% 0%";
+          class = "pavucontrol";
+          margin = 200;
+        };
+      };
+    };
+  };
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
           "eDP-1,preferred,auto,2"
           "eDP-1,addreserved,0,0,0,0"
         ];
-        plugins = [ inputs.hyprgrass.packages.${pkgs.hostPlatform.system}.default ];
+        plugins = [
+          #inputs.hyprgrass.packages.${pkgs.hostPlatform.system}.default
+        ];
       })
       (lib.mkIf (osConfig.networking.hostName == "nano") {
         settings.monitor = [
@@ -71,10 +104,12 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            "DP-3,3440x1440@144,0x110,1.25"
-            "DP-3,addreserved,2,0,0,0"
-            "DP-2,2560x1440@165,2752x0,1.25,transform,3"
-            "DP-2,addreserved,2,0,0,0"
+            #"DP-3,3440x1440@144,0x110,1.25"
+            "DP-3,3440x1440@144,0x110,1"
+            #"DP-3,addreserved,2,0,0,0"
+            #"DP-2,2560x1440@165,2752x0,1.25,transform,3"
+            "DP-2,2560x1440@165,3440x0,1,transform,3"
+            #"DP-2,addreserved,2,0,0,0"
           ];
           env = [
             "GDK_BACKEND,wayland"
@@ -92,7 +127,9 @@ in {
     enableNvidiaPatches = false;
     extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
-        inputs.hy3.packages.x86_64-linux.default
+        inputs.hy3.packages.x86_64-linux.hy3
+        #inputs.hycov.packages.${pkgs.system}.hycov
+        inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
     ];
     settings = {
       exec-once = [
@@ -110,7 +147,7 @@ in {
         border_size = 2;
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
         "col.inactive_border" = lib.mkForce "rgba(31748f99)";
-        layout = "dwindle";
+        layout = "hy3";
         no_cursor_warps = false;
         no_focus_fallback = true;
         resize_on_border = true;
@@ -182,7 +219,6 @@ in {
       #    render_titles = false;
       #    font_size = 11;
       #    gradients = false;
-      #    #text_color = "0xffebbcba";
       #    "col.active" = lib.mkForce "rgba(9ccfd899)";
       #    "col.inactive" = lib.mkForce "rgba(31748f99)";
       #  };

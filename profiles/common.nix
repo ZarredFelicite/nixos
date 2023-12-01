@@ -53,7 +53,11 @@
   };
 
   users = {
+    defaultUserShell = pkgs.zsh;
     mutableUsers = false;
+    groups = {
+      nixremote = {};
+    };
     users = {
       root = {
         hashedPasswordFile = config.sops.secrets.users-root.path;
@@ -70,14 +74,15 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred"
         ];
       };
-      #nixremote = {
-      #  description = "Unsecured user for distributed nix builds";
-      #  isNormalUser = true;
-      #  createHome = true;
-      #  openssh.authorizedKeys.keys = [
-      #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root"
-      #  ];
-      #};
+      nixremote = {
+        description = "Unsecured user for distributed nix builds";
+        isNormalUser = true;
+        createHome = true;
+        group = "nixremote";
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root"
+        ];
+      };
     };
 	};
   sops = {
@@ -94,7 +99,7 @@
       {
         users-zarred.neededForUsers = true;
         users-root.neededForUsers = true;
-        gmail-personal = {};
+        gmail-personal = { owner = "zarred"; };
         twitch-oauth = {};
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
@@ -102,6 +107,7 @@
           owner = "zarred";
           #path = "/home/zarred/.config/wtwitch/api.json";
         };
+        binary-cache-key = {};
       }
     ];
   };
@@ -150,6 +156,7 @@
       ninja
       tailscale
       sops
+      direnv
       (python311.withPackages(ps: with ps; [
         pip
         pandas
@@ -161,7 +168,7 @@
       ]))
       nodejs
     ];
-    shells = with pkgs; [ zsh ];
+    shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };
   programs = {
@@ -170,7 +177,7 @@
   };
   stylix = {
     autoEnable = true;
-    image = /home/zarred/pictures/wallpapers/tarantula_nebula.png;
+    image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     override = {
       base00 = "#191724";

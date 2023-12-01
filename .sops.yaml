@@ -4,6 +4,7 @@ keys:
   - &web age1mzjplxg5d3u9426q99lgx6rjhlkgeyh4cud0s6cxsa0qpg04u9yqasydwe
   - &sankara age1u2hus6x503nj54fwg3axc2hpl9n87p49jqtt9d44qawmfxl98s0szrsjvq
   - &nano age164qa7063mmreurm04psdhur5x38wjef52r508p6pfv0athyfkswqwaeejl
+  - &surface age12p0ry3yv3jugc99smskv0263ydljet6u9mu3u549jm525w78f9pqgryewv
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -14,3 +15,4 @@ creation_rules:
       - *web
       - *sankara
       - *nano
+      - *surface

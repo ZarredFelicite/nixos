@@ -30,8 +30,10 @@
   services.jellyseerr.enable = true;
   services.radarr.enable = true;
   services.sonarr.enable = true;
+  services.readarr.enable = true;
   services.prowlarr.enable = true;
   services.transmission.enable = true;
+  services.nzbget.enable = true;
   services.nextcloud.enable = true;
   services.authelia.instances.primary.enable = true;
   services.nginx.enable = true;

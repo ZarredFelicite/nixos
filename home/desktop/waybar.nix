@@ -79,9 +79,9 @@ in {
   stylix.targets.waybar.enable = false;
   programs.waybar = {
     systemd.enable = true;
-    package = inputs.waybar.packages.${pkgs.system}.waybar.overrideAttrs (oldAttrs: {
-      mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-    });
+    #package = inputs.waybar.packages.${pkgs.system}.waybar.overrideAttrs (oldAttrs: {
+    #  mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+    #});
     settings = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "web"){
         primary.output = "DP-3";
@@ -283,12 +283,12 @@ in {
           background: rgba(0, 0, 0, 0);
       }
       .modules-left, .modules-right {
-        background: rgba(43, 48, 59, 0.3);
-          border: 1px solid rgba(100, 114, 125, 0.5);
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
       }
       .modules-right {
+          border: 1px solid rgba(100, 114, 125, 0.5);
+          background: rgba(43, 48, 59, 0.3);
           border-radius: 0 0 0 10px ;
           color: #c4a7e7;
       }
@@ -299,8 +299,8 @@ in {
       }
       */
       .modules-left {
-          border-radius: 0 0 10 0px ;
-          color: #c4a7e7;
+          background: rgba(43, 48, 59, 0);
+          color: rgba(43, 48, 59, 0);
       }
       #battery.charging {
           color: #a6e3a1;
@@ -312,41 +312,32 @@ in {
           }
       }
       #workspaces {
-        background: #1f1d2e;
+        background: rgb(38, 35, 58);
         margin: 1px;
         padding: 0px 0px;
-        border-radius: 10px;
-        opacity: 0.8;
+      }
+      #workspaces box {
+        margin: -1px -6px;
+        padding: 0px;
+        background-color: rgba(43, 48, 59, 0);
       }
       #workspaces button{
-        padding: 0px 0px;
-        margin: 0px 2px;
-        border-radius: 8px;
         color: #31748f;
-        background-color: #c4a7e7;
+        border-radius: 8px;
+        margin: 1px 2px;
+        padding: 0px 6px;
+        background-color: #31748f;
         transition: all 0.2s ease-in-out;
-        opacity: 0.4;
+      }
+      #workspaces button.empty{
+        background-color: #31748f;
+        transition: all 0.2s ease-in-out;
       }
       #workspaces button.active {
         color: #c4a7e7;
-        padding: 0px 6px;
-        background-color: #c4a7e7;
-        background-size: 400% 400%;
-        transition: all 0.2s ease-in-out;
-        opacity: 0.8;
-      }
-      #workspaces button.empty{
-        padding: 0px;
-        margin: 0px 1px;
-        color: #31748f;
+        padding: 0px 10px;
         background-color: #c4a7e7;
         transition: all 0.2s ease-in-out;
-        opacity: 0.3;
-      }
-      #workspaces box {
-        margin: 0px;
-        padding: 0px;
-        border-radius: 0px;
       }
       #battery.warning:not(.charging) {
           background: #f53c3c;

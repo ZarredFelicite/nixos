@@ -15,7 +15,29 @@
     enable = true;
     xdgOpenUsePortal = true;
     wlr.enable = true;
-    extraPortals = [
+    #config = {
+    #  common = {
+    #    default = [
+    #      "gtk"
+    #    ];
+    #  };
+    #  pantheon = {
+    #    default = [
+    #      "pantheon"
+    #      "gtk"
+    #    ];
+    #    "org.freedesktop.impl.portal.Secret" = [
+    #      "gnome-keyring"
+    #    ];
+    #  };
+    #  x-cinnamon = {
+    #    default = [
+    #      "xapp"
+    #      "gtk"
+    #    ];
+    #  };
+    #};
+    configPackages = [
       pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
     ];

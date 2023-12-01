@@ -8,9 +8,6 @@
       #"nofullscreenrequest, ^(firefox)$"
       "workspace 1 silent, ^(stats)$"
       "workspace special, (special)$"
-      "float, ^(kitty-dropterm)$"
-      "workspace special silent,^(kitty-dropterm)$"
-      "size 75% 60%,^(kitty-dropterm)$"
     ];
     windowrulev2 = [
       "float, class:^(nova|zoom|imv)$"
@@ -34,12 +31,14 @@
       "float, title:^(mpd_cover)$"
       "size 1000 1000, title:^(mpd_cover)$"
       "pseudo, class:^(imv)$"
+      "float, class:^(kitty-scratchpad)$"
+      "float, class:^(pavucontrol)$"
     ];
     layerrule = [
       "blur, notifications"
       "blur, swaync-control-center"
       "blur, swaync-notification-window"
-      "blur, waybar"
+      #"blur, waybar"
       "blur, rofi"
       "blur, wlroots"
       "blur, gtk-layer-shell"
@@ -47,7 +46,7 @@
       "ignorezero, swaync-control-center"
       "ignorezero, notifications"
       "ignorezero, swaync-notification-window"
-      "ignorezero, waybar"
+      #"ignorezero, waybar"
       "ignorezero, rofi"
       "ignorezero, wlroots"
       "ignorezero, gtk-layer-shell"

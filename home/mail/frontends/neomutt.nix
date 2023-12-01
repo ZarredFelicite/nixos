@@ -19,7 +19,7 @@
     macros = import ./neomutt/mutt_macros.nix;
     settings = {
       rfc2047_parameters = "yes";
-      mailcap_path = "$HOME/.config/neomutt/mailcap";
+      mailcap_path = "/home/zarred/.config/neomutt/mailcap";
       abort_key = "<Esc>";
       #date_format = "%d/%m %H:%M";
       #index_format = "%Z%?X?A& ? %D %-15.15F %s";
@@ -67,7 +67,6 @@
       shortPath = true;
       width = 15;
     };
-    #extraConfig = ''
     extraConfig = ( builtins.readFile ./neomutt/neomutt-dracula.conf ) + ''
         #### Header Options
         ignore *                                # ignore all headers
@@ -75,12 +74,14 @@
         unhdr_order *                           # some distros order things by default
         hdr_order from: to: cc: date: subject:  # header item ordering
 
-        auto_view application/ics
-        auto_view text/calendar
-        auto_view text/plain
-        auto_view text/html
-        auto_view application/pgp-encrypted
-        alternative_order text/calendar application/ics text/plain text/enriched text/html
+        auto_view text/html text/calendar application/ics # view html automatically
+        alternative_order text/html text/plain text/enriched text/*
+        #auto_view application/ics
+        #auto_view text/calendar
+        #auto_view text/html
+        #auto_view text/plain
+        #auto_view application/pgp-encrypted
+        #alternative_order text/calendar application/ics text/html text/plain text/enriched
 
         set index_format=" %zs %zc %zt %{!%d %b} . %-28.28L  %?M?(%1M)&  ? %?X?&·? %s"
         set pager_format=" %n %zc  %T %s%*  %{!%d %b · %H:%M} %?X?  %X ? %P  "

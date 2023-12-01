@@ -9,7 +9,7 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "surface";
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    #kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [
@@ -28,11 +28,11 @@
     wvkbd.enable = true;
     xserver.libinput.enable = true;
   };
-  #microsoft-surface = {
-  #  kernelVersion = "6.5.11";
-  #  ipts.enable = true;
-  #  surface-control.enable = true;
-  #};
+  microsoft-surface = {
+    kernelVersion = "6.5.11";
+    ipts.enable = true;
+    surface-control.enable = true;
+  };
   users.users.zarred.extraGroups = [ "surface-control" ];
 
   fileSystems = {

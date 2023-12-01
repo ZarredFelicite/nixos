@@ -12,6 +12,8 @@
       "nb"
       "mail"
       "games"
+      "dots"
+      "dev"
       ".gnupg"
       ".ssh"
       ".nixops"
@@ -23,7 +25,7 @@
       ".config/PrusaSlicer"
       ".config/Caprine"
       ".config/cava"
-      ".config/syncthing"
+      ".config/OpenRGB"
     ];
     files = [
       ".config/wtwitch/api.json"

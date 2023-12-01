@@ -21,6 +21,11 @@
     group = "users";
     dataDir = "/var/lib/sonarr";
   };
+  services.readarr = {
+    user = "media";
+    group = "users";
+    dataDir = "/var/lib/readarr";
+  };
   virtualisation.oci-containers.containers."lidarr" = {
     image = "youegraillot/lidarr-on-steroids";
     ports = [
@@ -59,6 +64,18 @@
     ];
   };
   services.prowlarr = {
+  };
+  services.nzbget = {
+    user = "media";
+    group = "users";
+    settings = {
+      MainDir = "/mnt/gargantua/downloads/nzb";
+      InterDir = "/mnt/gargantua/downloads/nzb/incomplete";
+      DestDir = "/mnt/gargantua/downloads/nzb/complete";
+      TempDir = "/mnt/gargantua/downloads/nzb/tmp";
+      QueueDir = "/mnt/gargantua/downloads/nzb/queue";
+      NzbDir = "/mnt/gargantua/downloads/nzb/nzb";
+    };
   };
   services.transmission = {
     package = pkgs.transmission_4;

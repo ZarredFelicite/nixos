@@ -6,6 +6,19 @@ home.packages = with pkgs; [
   #zsh-fzf-history-search
   cod
 ];
+programs.direnv = {
+  enableBashIntegration = true;
+  enableZshIntegration = true;
+  nix-direnv.enable = true;
+  config = {
+    whitelist = {
+      prefix = [
+        "/home/zarred/dev"
+        "/home/zarred/scripts"
+      ];
+    };
+  };
+};
 programs.zsh = {
   dotDir = ".config/zsh";
   enableAutosuggestions = true;
@@ -13,7 +26,7 @@ programs.zsh = {
   syntaxHighlighting.enable = true;
   autocd = true;
   cdpath = [
-    "/mnt/gargantua/media"
+    #"/mnt/gargantua/media"
   ];
   completionInit = "autoload -U compinit && compinit";
   defaultKeymap = "viins";
@@ -174,6 +187,14 @@ programs.zsh = {
     nvidia-settings = "nvidia-settings --config=\${XDG_CONFIG_HOME}/nvidia/settings";
     svn = "svn --config-dir \${XDG_CONFIG_HOME}/subversion";
     wget = "wget --hsts-file=\${XDG_DATA_HOME}/wget-hsts";
+    ls = "eza";
+    lsa = "eza -a";
+    lsl = "eza -l";
+    lsla = "eza -al";
+    lst = "eza --tree";
+    lsta = "eza --tree -a";
+    lstl = "eza --tree -l";
+    lstla = "eza --tree -la";
   };
 };
 }

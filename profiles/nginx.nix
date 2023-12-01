@@ -156,8 +156,10 @@
         "sonarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8989";};};
         "radarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7878";};};
         "lidarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8686";};};
+        "readarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8787";};};
         "deemix.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6595";};};
         "transmission.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9091"; proxyWebsockets = true;};};
+        "nzb.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6789"; proxyWebsockets = true;};};
         "jellyfin.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
         "jellyseerr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5055";};};
         "audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378";};};

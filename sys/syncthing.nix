@@ -4,9 +4,9 @@
     enable = true;
     user = "zarred";
     group = "users";
-    guiAddress = "localhost:8384";
-    dataDir = "/home/zarred";
-    configDir = "/persist/home/zarred/.config/syncthing";
+    guiAddress = "127.0.0.1:8384";
+    #dataDir = "/home/zarred";
+    configDir = "/var/lib/syncthing";
     overrideDevices = true;
     overrideFolders = true;
     settings = {
@@ -55,11 +55,16 @@
 	        devices = [ "web" "sankara" "nano" "surface" ];
 	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
-        "mail" = {
-	        path = "/home/zarred/mail";
+        "dev" = {
+	        path = "/home/zarred/dev";
 	        devices = [ "web" "sankara" "nano" "surface" ];
 	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
+        #"mail" = {
+	      #  path = "/home/zarred/mail";
+	      #  devices = [ "web" "sankara" "nano" "surface" ];
+	      #  versioning = { type = "simple"; params = { keep = "5"; }; };
+	      #};
         "newsboat" = {
 	        path = "/home/zarred/.local/share/newsboat";
 	        devices = [ "web" "sankara" "nano" "surface" ];

@@ -17,7 +17,7 @@
         address = "zarred.f@gmail.com";
         userName = "zarred.f@gmail.com";
         flavor = "gmail.com";
-        passwordCommand = "cat ${osConfig.sops.secrets.gmail-personal.path}";
+        passwordCommand = "${pkgs.coreutils}/bin/cat ${osConfig.sops.secrets.gmail-personal.path} 2> gmail-personal-password-cmd.txt";
         realName = "Zarred Felicite";
         maildir.path = "personal";
         folders = {
@@ -117,7 +117,7 @@
       text/html; openfile %s ; nametemplate=%s.html
       # render html emails inline using magic (uncomment the line below to use lynx instead)
       # text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -collapse_br_tags -dump %s; nametemplate=%s.html; copiousoutput
-      text/html; beautiful_html_render %s 2>~/mailcap_err; nametemplate=%s.html; copiousoutput;
+      text/html; beautiful_html_render %s; nametemplate=%s.html; copiousoutput;
 
       # show calendar invites
       text/calendar; render-calendar-attachment.py %s; copiousoutput;

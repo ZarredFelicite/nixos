@@ -23,6 +23,7 @@
     anyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };
     #waybar = { url = "github:Alexays/Waybar"; inputs.nixpkgs.follows = "nixpkgs"; };
     himalaya.url = "github:soywod/himalaya";
+    qrrs.url = "github:Lenivaya/qrrs";
   };
   outputs = { self, nixpkgs, home-manager, nixos-hardware, ...  }@inputs:
     let

@@ -26,8 +26,6 @@
       "noborder, class:^(firefox)$"
       "pin, title:^(ripdrag)$"
       "size 60% 50%, title:^(Enter name of file to save to…)$|class:xdg-desktop-portal-gtk"
-      "float, class:^(mpv)$"
-      "pseudo, class:^(mpv)$"
       "float, title:^(mpd_cover)$"
       "size 1000 1000, title:^(mpd_cover)$"
       "pseudo, class:^(imv)$"

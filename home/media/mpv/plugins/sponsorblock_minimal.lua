@@ -38,13 +38,8 @@ function skip_ads(name,pos)
 	if pos then
 		for _, i in pairs(ranges) do
 			v = i.segment[2]
-			if i.segment[1] <= pos and v > pos then
-				--this message may sometimes be wrong
-				--it only seems to be a visual thing though
+			if i.segment[1] <= pos and v > pos and ON then
 				mp.osd_message(("[sponsorblock] skipping forward %ds"):format(math.floor(v-mp.get_property("time-pos"))))
-				--need to do the +0.01 otherwise mpv will start spamming skip sometimes
-				--example: https://www.youtube.com/watch?v=4ypMJzeNooo
-				-- mp.set_property("time-pos",v+0.01)
         mp.set_property("speed", 4)
 				return
       else
@@ -142,7 +137,6 @@ function file_loaded()
           create_chapter(category_title .. " start", start)
           create_chapter("finish", finish)
         end
-				mp.add_key_binding("b","sponsorblock",toggle)
 				mp.observe_property("time-pos", "native", skip_ads)
 			end
 		end
@@ -170,3 +164,4 @@ end
 
 mp.register_event("file-loaded", file_loaded)
 mp.register_event("end-file", end_file)
+mp.register_script_message("toggle_sponsorblock", toggle)

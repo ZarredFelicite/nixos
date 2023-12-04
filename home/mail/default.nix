@@ -7,6 +7,7 @@
     ./frontends/aerc.nix
     ./frontends/alot.nix
     ./frontends/neomutt.nix
+    #./frontends/neomutt/neomutt.nix
     ./imapnotify.nix
   ];
   accounts.email = {
@@ -101,6 +102,7 @@
     pkgs.notmuch
     pkgs.python311Packages.html2text
     #pkgs.evolution
+    pkgs.lynx
   ];
   xdg.desktopEntries.Evolution = {
     name = "Evolution Mail and Calendar";
@@ -112,29 +114,5 @@
     categories = [ "Office" "Email" "Calendar" "ContactManagement"];
     mimeType = [ "text/calendar" "text/x-vcard" "text/directory" "application/mbox" "message/rfc822" "x-scheme-handler/mailto" "x-scheme-handler/webcal" "x-scheme-handler/calendar" "x-scheme-handler/task" "x-scheme-handler/memo" ];
   };
-  xdg.configFile."neomutt/mailcap".text = ''
-      # open html emails in browser (or whatever GUI program is used to render HTML)
-      text/html; openfile %s ; nametemplate=%s.html
-      # render html emails inline using magic (uncomment the line below to use lynx instead)
-      # text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -collapse_br_tags -dump %s; nametemplate=%s.html; copiousoutput
-      text/html; beautiful_html_render %s; nametemplate=%s.html; copiousoutput;
-
-      # show calendar invites
-      text/calendar; render-calendar-attachment.py %s; copiousoutput;
-      application/ics; mutt-viewical; copiousoutput;
-
-      # open images externally
-      image/*; openfile %s ;
-
-      # open videos in mpv
-      video/*; mpv --autofit-larger=90\%x90\% %s; needsterminal;
-      video/*; setsid mpv --quiet %s &; copiousoutput
-
-      # open spreadsheets in sc-im
-      application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; sc-im %s; needsterminal
-
-      # open anything else externally
-      application/pdf; openfile %s;
-  '';
   programs.msmtp.enable = false;
 }

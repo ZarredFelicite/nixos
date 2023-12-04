@@ -15,10 +15,12 @@
         "https://hyprland.cachix.org"
         "https://anyrun.cachix.org"
       ];
+      trusted-substituters = ["https://ai.cachix.org"];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
+        "ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc="
       ];
     };
   };
@@ -40,7 +42,7 @@
         #sha256 = "1bm79vqwikhpg99w966ipdci2nr9xwf6z2yj356l5fsl75aaixfn";
         #sha256 = "173rd13r09bx36gi722p5hfwddpn6pdvzcz9ww8ka1sa1j90jfwl";
         #sha256 = "1hqxkrn46m6s197d2llkr2jxhm0b4hvv49746vwhc3mrsqpyy9il";
-        sha256 = "0s126fn2sjv9hb7d6d0w2dsm0saghfma917xim256ifhwinn3dbv";
+        sha256 = "0f918b3prd34h3njxi28l7bhz46wnvll2qmw1q8bg2fsqsr9pz60";
         }) {inherit pkgs; };
     };
   };

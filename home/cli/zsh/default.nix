@@ -182,6 +182,8 @@
       lstl = "eza --tree -l";
       lstla = "eza --tree -la";
       gitd = "git -C ~/dots";
+      btc = "bluetoothctl connect";
+      btd = "bluetoothctl disconnect";
     };
   };
   xdg.configFile."zsh/fzf-tab.conf".text = ''

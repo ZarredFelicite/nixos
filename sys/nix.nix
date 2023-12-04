@@ -42,7 +42,7 @@
         #sha256 = "1bm79vqwikhpg99w966ipdci2nr9xwf6z2yj356l5fsl75aaixfn";
         #sha256 = "173rd13r09bx36gi722p5hfwddpn6pdvzcz9ww8ka1sa1j90jfwl";
         #sha256 = "1hqxkrn46m6s197d2llkr2jxhm0b4hvv49746vwhc3mrsqpyy9il";
-        sha256 = "0f918b3prd34h3njxi28l7bhz46wnvll2qmw1q8bg2fsqsr9pz60";
+        sha256 = "0nwpk9vnlmx95kjli8wg9jlsk8xcigbi02ryrim4h1gsh6q55v5j";
         }) {inherit pkgs; };
     };
   };

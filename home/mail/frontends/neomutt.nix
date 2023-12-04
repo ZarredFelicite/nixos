@@ -45,7 +45,7 @@
       wrap = "90";
       quote_regexp = "\"^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+\"";
       reply_regexp = "\"^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*\"";
-      #display_filter = "~/scripts/mail/neomutt_display_filter";
+      display_filter = "~/scripts/mail/neomutt_display_filter";
       count_alternatives = "yes";    # recurse into text/multipart when looking for attachement types
 
       nm_query_type = "threads";           # bring in the whole thread instead of just the matched message, really useful
@@ -74,14 +74,10 @@
         unhdr_order *                           # some distros order things by default
         hdr_order from: to: cc: date: subject:  # header item ordering
 
+        unauto_view  *
+        unalternative_order *
         auto_view text/html text/calendar application/ics # view html automatically
         alternative_order text/html text/plain text/enriched text/*
-        #auto_view application/ics
-        #auto_view text/calendar
-        #auto_view text/html
-        #auto_view text/plain
-        #auto_view application/pgp-encrypted
-        #alternative_order text/calendar application/ics text/html text/plain text/enriched
 
         set index_format=" %zs %zc %zt %{!%d %b} . %-28.28L  %?M?(%1M)&  ? %?X?&·? %s"
         set pager_format=" %n %zc  %T %s%*  %{!%d %b · %H:%M} %?X?  %X ? %P  "
@@ -127,10 +123,10 @@
   };
   xdg.configFile."neomutt/mailcap".text = ''
       # open html emails in browser (or whatever GUI program is used to render HTML)
-      text/html; openfile %s ; nametemplate=%s.html
+      text/html; firefox %s ; nametemplate=%s.html
       # render html emails inline using magic (uncomment the line below to use lynx instead)
-      # text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -collapse_br_tags -dump %s; nametemplate=%s.html; copiousoutput
-      text/html; beautiful_html_render %s 2>~/mailcap_err; nametemplate=%s.html; copiousoutput;
+      text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -collapse_br_tags -dump %s; nametemplate=%s.html; copiousoutput
+      #text/html; beautiful_html_render %s 2>~/mailcap_err; nametemplate=%s.html; copiousoutput;
 
       # show calendar invites
       text/calendar; render-calendar-attachment.py %s; copiousoutput;

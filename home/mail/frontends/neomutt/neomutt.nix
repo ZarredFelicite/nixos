@@ -353,8 +353,6 @@ in {
         set editor = "${cfg.editor}"
         set implicit_autoview = yes
 
-        alternative_order text/enriched text/plain text
-
         set delete = yes
 
         # Binds

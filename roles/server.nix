@@ -7,6 +7,7 @@
     ../profiles/rss.nix
     ../profiles/nginx.nix
     ../profiles/cloud.nix
+    ../profiles/printer.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
@@ -23,9 +24,12 @@
   #networking.firewall.allowedTCPPorts = [ 2049 80 443 6600 22 ];
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   services.postgresql.enable = true;
+
   services.tt-rss.enable = true;
   services.gotify.enable = true;
   services.mpd.enable = true;
+  services.klipper.enable = false;
+
   services.jellyfin.enable = true;
   services.jellyseerr.enable = true;
   services.radarr.enable = true;
@@ -34,7 +38,9 @@
   services.prowlarr.enable = true;
   services.transmission.enable = true;
   services.nzbget.enable = true;
+
   services.nextcloud.enable = true;
+
   services.authelia.instances.primary.enable = true;
   services.nginx.enable = true;
   services.headscale = {

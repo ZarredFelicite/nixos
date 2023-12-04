@@ -31,8 +31,9 @@
       100.74.27.151 sankara
       100.109.126.153 nano
       100.82.91.152 web
-      192.168.86.224 rpi-mainsail
+      192.168.86.224 rprinter
       192.168.86.240 rpizero
+      192.168.86.246 oneplus
       ";
   };
   services.tailscale = {

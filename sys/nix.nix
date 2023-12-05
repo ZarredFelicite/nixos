@@ -32,20 +32,8 @@
   };
    # Make `nix repl '<nixpkgs>'` use the same nixpkgs as the one used by this flake.
   # environment.etc."nix/inputs/nixpkgs".source = "${nixpkgs}";
-
-  nixpkgs.config = {
-    allowUnfree = true;
-    packageOverrides = pkgs: {
-      nur = import (builtins.fetchTarball {
-        url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
-        #sha256 = "08i5hv8rilf9v7jvfbjvbb2gl0xxza91wrib4xzvknpb1ayw37dn";
-        #sha256 = "1bm79vqwikhpg99w966ipdci2nr9xwf6z2yj356l5fsl75aaixfn";
-        #sha256 = "173rd13r09bx36gi722p5hfwddpn6pdvzcz9ww8ka1sa1j90jfwl";
-        #sha256 = "1hqxkrn46m6s197d2llkr2jxhm0b4hvv49746vwhc3mrsqpyy9il";
-        sha256 = "0nwpk9vnlmx95kjli8wg9jlsk8xcigbi02ryrim4h1gsh6q55v5j";
-        }) {inherit pkgs; };
-    };
-  };
+  nixpkgs.overlays = [ inputs.nur.overlay ];
+  nixpkgs.config.allowUnfree = true;
 
   nix.distributedBuilds = false;
   nix.buildMachines = [

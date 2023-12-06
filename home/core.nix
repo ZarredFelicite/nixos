@@ -73,6 +73,7 @@
       mdcat
       moreutils
       gnuplot
+      neofetch
 
       # nix
       nix-index

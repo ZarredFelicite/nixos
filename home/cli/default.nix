@@ -47,7 +47,7 @@
       #settings = builtins.toJSON {};
     };
   };
-  xdg.configFile."neofetch.conf".source = ./config.conf;
+  xdg.configFile."neofetch/config.conf".source = ./neofetch_config.conf;
   xdg.configFile."../.gnuplot".text = ''
     set macros
     png="set terminal png size 1800,1800 crop enhanced font \"/usr/share/fonts/truetype/times.ttf,30\" dashlength 2; set termoption linewidth 3"

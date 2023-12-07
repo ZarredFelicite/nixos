@@ -34,14 +34,12 @@
   programs.foot = {
     server.enable = true;
     settings = {
-      main = {
-        term = "xterm-256color";
-        font = "Iosevka Nerd Font Mono:size=10";
-        #dpi-aware = "yes";
-      };
-      mouse = {
-        hide-when-typing = "yes";
-      };
+      main.term = "xterm-256color";
+      main.pad = "2x3";
+      scrollback.lines = 5000;
+      colors.alpha = lib.mkForce 0.2;
+      mouse.hide-when-typing = "yes";
+      cursor.style = "beam";
     };
   };
 }

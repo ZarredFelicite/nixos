@@ -11,11 +11,11 @@
     capabilities = "cap_sys_admin+p";
     source = "${pkgs.sunshine}/bin/sunshine";
   };
-  systemd.user.services.sunshine = {
-    description = "sunshine";
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "${config.security.wrapperDir}/sunshine";
-    };
-  };
+  #systemd.user.services.sunshine = {
+  #  description = "sunshine";
+  #  wantedBy = [ "graphical-session.target" ];
+  #  serviceConfig = {
+  #    ExecStart = "${config.security.wrapperDir}/sunshine";
+  #  };
+  #};
 }

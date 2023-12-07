@@ -6,8 +6,7 @@ imports = [
     globals.mapleader = " ";
     clipboard.providers.wl-copy.enable = true;
     options = {
-      #undofile = true;
-      #undodir = "~/.cache/nvim/undo";
+      undofile = true;
       spell = true;
       number = true;
       relativenumber = true;
@@ -34,6 +33,7 @@ imports = [
 
       hlsearch = false;
       incsearch = true;
+
     };
     maps = {
       normal."<leader>u".action = "<cmd>UndotreeToggle<CR>";
@@ -66,28 +66,34 @@ imports = [
           { name = "luasnip"; }
           { name = "path"; }
           { name = "buffer"; }
+          { name = "cmdline"; }
+          { name = "cmdline_history"; }
+          { name = "cmp-latex-symbols"; }
+          #{ name = "rg"; }
+          { name = "tmux"; }
+          { name = "treesitter"; }
         ];
-        #mapping = {
-        #  "<CR>" = "cmp.mapping.confirm({ select = true })";
-        #  "<Tab>" = {
-        #    action = ''
-        #      function(fallback)
-        #        if cmp.visible() then
-        #          cmp.select_next_item()
-        #        elseif luasnip.expandable() then
-        #          luasnip.expand()
-        #        elseif luasnip.expand_or_jumpable() then
-        #          luasnip.expand_or_jump()
-        #        elseif check_backspace() then
-        #          fallback()
-        #        else
-        #          fallback()
-        #        end
-        #      end
-        #    '';
-        #    modes = [ "i" "s" ];
-        #  };
-        #};
+        mapping = {
+          "<CR>" = "cmp.mapping.confirm({ select = true })";
+          "<Tab>" = {
+            action = ''
+              function(fallback)
+                if cmp.visible() then
+                  cmp.select_next_item()
+                elseif luasnip.expandable() then
+                  luasnip.expand()
+                elseif luasnip.expand_or_jumpable() then
+                  luasnip.expand_or_jump()
+                elseif check_backspace() then
+                  fallback()
+                else
+                  fallback()
+                end
+              end
+            '';
+            modes = [ "i" "s" ];
+          };
+        };
       };
       lsp = {
         enable = true;

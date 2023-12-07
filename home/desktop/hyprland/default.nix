@@ -97,7 +97,7 @@ in {
       })
       (lib.mkIf (osConfig.networking.hostName == "nano") {
         settings.monitor = [
-          "eDP-1,preferred,auto,1.6"
+          "eDP-1,preferred,auto,1"
           "eDP-1,addreserved,1,0,0,0"
         ];
       })

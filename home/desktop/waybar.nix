@@ -1,6 +1,8 @@
 { pkgs, lib, osConfig, inputs, ... }:
 let
-  height = "13";
+  height = if osConfig.networking.hostName == "web"
+    then "13"
+    else "16";
   cava_config = {
     framerate = 30;
     autosens = 1;

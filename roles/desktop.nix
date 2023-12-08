@@ -15,6 +15,7 @@
     enable = true;
     xdgOpenUsePortal = true;
     wlr.enable = true;
+    config.common.default = "*";
     #config = {
     #  common = {
     #    default = [
@@ -37,7 +38,7 @@
     #    ];
     #  };
     #};
-    configPackages = [
+    extraPortals = [
       pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
     ];

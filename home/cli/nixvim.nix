@@ -99,6 +99,10 @@ imports = [
         enable = true;
         servers = {
           nil_ls.enable = true;
+          pyright.enable = true;
+          texlab.enable = true;
+          bashls.enable = true;
+          ruff-lsp.enable = true;
         };
       };
       luasnip.enable = true;

@@ -35,11 +35,11 @@
 	        devices = [ "web" "sankara" "nano" "poco" "surface" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };
 	      };
-        "nb" = {
-	        path = "/home/zarred/nb";
-	        devices = [ "web" "sankara" "nano" "poco" "surface" ];
-	        versioning = { type = "simple"; params = { keep = "10"; }; };
-	      };
+        #"nb" = {
+	      #  path = "/home/zarred/nb";
+	      #  devices = [ "web" "sankara" "nano" "poco" "surface" ];
+	      #  versioning = { type = "simple"; params = { keep = "10"; }; };
+	      #};
         "documents" = {
 	        path = "/home/zarred/documents";
 	        devices = [ "web" "sankara" "nano" "surface" ];

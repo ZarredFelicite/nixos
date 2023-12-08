@@ -152,6 +152,9 @@ in {
         no_focus_fallback = true;
         resize_on_border = true;
       };
+      binds = {
+        movefocus_cycles_fullscreen = false;
+      };
       decoration = {
         rounding = 20;
         blur = {

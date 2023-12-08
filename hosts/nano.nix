@@ -61,6 +61,7 @@
   powerManagement = {
     enable = true;
     cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
+    resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };

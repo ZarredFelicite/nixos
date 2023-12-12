@@ -26,9 +26,12 @@
       ".config/Caprine"
       ".config/cava"
       ".config/OpenRGB"
+      ".config/keyboard"
+      ".config/gh"
     ];
     files = [
       ".config/wtwitch/api.json"
+      ".sops.yaml"
     ];
     allowOther = true;
   };

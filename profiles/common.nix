@@ -67,7 +67,7 @@
         isNormalUser = true;
         description = "Zarred";
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" ];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" ];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;
@@ -108,6 +108,12 @@
           owner = "zarred";
           #path = "/home/zarred/.config/wtwitch/api.json";
         };
+        #github-api-token = {
+        #  sopsFile = ../secrets/github-hosts.yaml;
+        #  format = "binary";
+        #  owner = "zarred";
+        #  #path = "/home/zarred/.config/gh/hosts.yml";
+        #};
         binary-cache-key = {};
       }
     ];

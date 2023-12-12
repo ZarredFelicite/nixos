@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, osConfig, ... }: {
   imports = [
     ./menu
     ./cli
@@ -14,7 +14,6 @@
     homeDirectory = "/home/zarred";
     stateVersion = "23.05";
     packages = with pkgs; [
-      #nvtop
       # system tools
       gtk3
       helvum # A GTK patchbay for pipewire
@@ -28,6 +27,7 @@
       iperf # Tool to measure IP bandwidth using UDP or TCP
       lychee # A fast, async, resource-friendly link checker written in Rust.
       speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
+      libva-utils
       # media
       mediainfo # Supplies technical and tag information about a video or audio file
       # system call monitoring
@@ -204,9 +204,10 @@
       };
     };
   };
+  #xdg.configFile."gh/hosts.yml".source = osConfig.sops.secrets.github-api-token.path;
   programs.gh = {
     enable = true;
-    gitCredentialHelper.enable = true;
+    #gitCredentialHelper.enable = true;
     settings = {
       git_protocol = "ssh";
       prompt = "enabled";

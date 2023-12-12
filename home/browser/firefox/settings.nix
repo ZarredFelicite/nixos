@@ -7,6 +7,7 @@
   "layout.css.grid-template-masonry-value.enabled" = true;
   "layout.css.has-selector.enabled" = true;
   ## GFX
+  "gfx.webrender.all" = true;
   "gfx.webrender.precache-shaders" = true;
   "gfx.canvas.accelerated.cache-items" = 4096;
   "gfx.canvas.accelerated.cache-size" = 512;
@@ -232,6 +233,8 @@
   #"browser.startup.page" = 3;
   "browser.tabs.closeWindowWithLastTab" = true;
   "media.autoplay.default" = 1;
+  "media.ffmpeg.vaapi.enabled" = true;
+  "media.hardware-video-decoding.force-enabled" = true;
   #"ui.key.menuAccessKeyFocuses" = false;
   "onebar.hide-all-URLbar-icons" = true;
   "onebar.hide-navigation-buttons" = true;
@@ -243,4 +246,5 @@
   "widget.use-xdg-desktop-portal.settings" = 1;
   "widget.use-xdg-desktop-portal.location" = 1;
   "widget.use-xdg-desktop-portal.open-uri" = 1;
+  "widget.dmabuf.force-enabled" = true;
 }

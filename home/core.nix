@@ -28,6 +28,7 @@
       lychee # A fast, async, resource-friendly link checker written in Rust.
       speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
       libva-utils
+      expect # A tool for automating interactive applications (provides unbuffer)
       # media
       mediainfo # Supplies technical and tag information about a video or audio file
       # system call monitoring

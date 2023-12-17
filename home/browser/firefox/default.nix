@@ -14,11 +14,11 @@ in {
       nativeMessagingHosts = [
         pkgs.tridactyl-native
         pkgs.browserpass
-        pkgs.fx-cast-bridge
+        #pkgs.fx-cast-bridge
       ];
       extraPolicies = {
         Extensions = { Install = [
-          "https://github.com/hensm/fx_cast/releases/download/v0.3.1/fx_cast-0.3.1.xpi"
+          #"https://github.com/hensm/fx_cast/releases/download/v0.3.1/fx_cast-0.3.1.xpi"
           "https://addons.mozilla.org/firefox/downloads/latest/imagus/latest.xpi"
           "https://addons.mozilla.org/firefox/downloads/latest/roseppuccin/latest.xpi"
           "https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"

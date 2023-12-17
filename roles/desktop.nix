@@ -46,7 +46,7 @@
   services = {
     printing.enable = true;
     avahi.enable = true;
-    avahi.nssmdns = true;
+    avahi.nssmdns4 = true;
     avahi.openFirewall = true;
     greetd = {
       enable = true;

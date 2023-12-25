@@ -50,7 +50,7 @@ imports = [
       normal."<leader>Y".action = "\"+Y";
     };
     colorschemes.catppuccin = {
-      enable = true;
+      enable = false;
       transparentBackground = true;
     };
     plugins = {

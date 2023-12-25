@@ -212,6 +212,7 @@
     settings = {
       git_protocol = "ssh";
       prompt = "enabled";
+      version = "1";
       aliases = {
         co = "pr checkout";
         pv = "pr view";

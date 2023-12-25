@@ -112,7 +112,7 @@
         #  sopsFile = ../secrets/github-hosts.yaml;
         #  format = "binary";
         #  owner = "zarred";
-        #  #path = "/home/zarred/.config/gh/hosts.yml";
+        #  path = "/home/zarred/.config/gh/hosts.yml";
         #};
         binary-cache-key = {};
       }

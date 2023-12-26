@@ -182,6 +182,12 @@
     dconf.enable = true;
     zsh.enable = true;
   };
+  documentation.man = {
+    # In order to enable to mandoc man-db has to be disabled.
+    man-db.enable = false;
+    mandoc.enable = true;
+    generateCaches = true;
+  };
   stylix = {
     autoEnable = true;
     image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;

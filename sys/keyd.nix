@@ -1,13 +1,12 @@
-{ lib, ... }: {
+{ lib, pkgs, ... }: {
   nixpkgs.overlays = [(
     final: prev:
     {
       keyd = prev.keyd.overrideAttrs (old: {
-        version = "2.4.3";
         src = prev.fetchFromGitHub {
           owner = "rvaiya";
           repo = "keyd";
-          rev = "v" + "2.4.3";
+          rev = "dcbb68b12f71245121035b730b50872802a259b4";
           hash = "sha256-NhZnFIdK0yHgFR+rJm4cW+uEhuQkOpCSLwlXNQy6jas=";
         };
         postPatch = ''
@@ -30,6 +29,10 @@
       "~@privileged"
     ];
   };
+  environment.systemPackages = [
+    pkgs.keyd
+    pkgs.warpd
+  ];
   services.keyd = {
     enable = true;
     keyboards = {

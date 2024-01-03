@@ -189,7 +189,7 @@
   xdg.configFile."zsh/fzf-tab.conf".text = ''
     # use tmux popup in tmux
     zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
-    #zstyle ':fzf-tab:*' popup-min-size 100 100
+    zstyle ':fzf-tab:*' popup-min-size 100 100
     zstyle ':fzf-tab:*' fzf-min-height 10
     zstyle ':fzf-tab:*' continuous-trigger 'ctrl-I'
     zstyle ':fzf-tab:*' print-query alt-enter

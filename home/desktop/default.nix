@@ -35,7 +35,6 @@ in {
   programs.waybar.enable = true;
   services.mako.enable = true;
   home.packages = with pkgs; [
-    inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper
     #swaynotificationcenter # Simple notification daemon with a GUI built for Sway
     catppuccin-cursors.mochaDark
     slurp # Select a region in a Wayland compositor

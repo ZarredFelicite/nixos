@@ -49,9 +49,6 @@
     device = "/swap/swapfile";
     size = 8196;
   }];
-  environment.systemPackages = [
-    pkgs.nvtop-nvidia
-  ];
   environment.variables = {
     # Necessary to correctly enable va-api (video codec hardware
     # acceleration). If this isn't set, the libvdpau backend will be
@@ -71,7 +68,7 @@
     # It appears that the normal rendering mode is broken on recent
     # nvidia drivers:
     # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
-    NVD_BACKEND = "direct";
+    #NVD_BACKEND = "direct";
     # Required for firefox 98+, see:
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
@@ -90,9 +87,9 @@
     };
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     nvidia = {
-      open = false;
+      open = true;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
       modesetting.enable = true;
       powerManagement.enable = false;
       powerManagement.finegrained = false;

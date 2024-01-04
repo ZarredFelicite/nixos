@@ -66,6 +66,15 @@
           '''           close;
       }
     '';
+    appendHttpConfig = ''
+      proxy_cache_path /tmp/pkgcache levels=1:2 keys_zone=cachecache:100m max_size=20g inactive=365d use_temp_path=off;
+      map $status $cache_header {
+        200     "public";
+        302     "public";
+        default "no-cache";
+      }
+      access_log /var/log/nginx/access.log;
+    '';
     virtualHosts =
       let SSLA = {
         enableACME = true;
@@ -133,22 +142,22 @@
         "nextcloud.zar.red" = SSL;
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
         "gotify.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:8081"; locations."/".proxyWebsockets = true;};
-        "headscale.zar.red" = SSL//{
-          locations."/" = {
-            proxyPass = "http://127.0.0.1:8080";
-            proxyWebsockets = true;
-            recommendedProxySettings = false;
-            extraConfig = ''
-              proxy_set_header Host $server_name;
-              proxy_redirect http:// https://;
-              proxy_buffering off;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
-              add_header Strict-Transport-Security "max-age=15552000; includeSubDomains" always;
-            '';
-          };
-        };
+        #"headscale.zar.red" = SSL//{
+        #  locations."/" = {
+        #    proxyPass = "http://127.0.0.1:8080";
+        #    proxyWebsockets = true;
+        #    recommendedProxySettings = false;
+        #    extraConfig = ''
+        #      proxy_set_header Host $server_name;
+        #      proxy_redirect http:// https://;
+        #      proxy_buffering off;
+        #      proxy_set_header X-Real-IP $remote_addr;
+        #      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #      proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+        #      add_header Strict-Transport-Security "max-age=15552000; includeSubDomains" always;
+        #    '';
+        #  };
+        #};
         "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
         "ttrss.zar.red" = SSL;
         "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};
@@ -162,13 +171,49 @@
         "nzb.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6789"; proxyWebsockets = true;};};
         "jellyfin.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
         "jellyseerr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5055";};};
-        #"audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378";};};
+        "audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378";};};
         "pdf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8088";};};
         "mainsail.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://192.168.86.224:80"; proxyWebsockets = true;};};
-        "syncthing.zar.red" = SSLA // {
-          locations."/web" = AUTH // {proxyPass = "http://192.168.86.150:8384";};
-          locations."/sankara" = AUTH // {proxyPass = "http://localhost:8384";};
-          locations."/nano" = AUTH // {proxyPass = "http://192.168.86.125:8384";};
+        #"syncthing.zar.red" = SSLA // {
+        #  locations."/web" = AUTH // {proxyPass = "http://192.168.86.150:8384";};
+        #  locations."/sankara" = AUTH // {proxyPass = "http://localhost:8384";};
+        #  locations."/nano" = AUTH // {proxyPass = "http://192.168.86.125:8384";};
+        #};
+        "binarycache.zar.red" = { locations."/".proxyPass = "http://${config.services.nix-serve.bindAddress}:${toString config.services.nix-serve.port}"; };
+        "nixcache.zar.red" = {
+          locations."/" = {
+            root = "/var/public-nix-cache";
+            extraConfig = ''
+              expires max;
+              add_header Cache-Control $cache_header always;
+              # Ask the upstream server if a file isn't available locally
+              error_page 404 = @fallback;
+            '';
+          };
+          extraConfig = ''
+            resolver 10.42.42.42;
+            set $upstream_endpoint http://cache.nixos.org;
+          '';
+          locations."@fallback" = {
+            proxyPass = "$upstream_endpoint";
+            extraConfig = ''
+              proxy_cache cachecache;
+              proxy_cache_valid  200 302  60d;
+              expires max;
+              add_header Cache-Control $cache_header always;
+            '';
+          };
+          locations."= /nix-cache-info" = {
+            # Note: This is duplicated with the `@fallback` above,
+            # would be nicer if we could redirect to the @fallback instead.
+            proxyPass = "$upstream_endpoint";
+            extraConfig = ''
+              proxy_cache cachecache;
+              proxy_cache_valid  200 302  60d;
+              expires max;
+              add_header Cache-Control $cache_header always;
+            '';
+          };
         };
     };
   };

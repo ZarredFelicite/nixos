@@ -15,6 +15,7 @@ in {
   stylix.targets.hyprland.enable = false;
   home.packages = [
     inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper
+    inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
     pkgs.pyprland
     #(pkgs.poetry2nix.mkPoetryApplication rec {
@@ -108,7 +109,7 @@ in {
             "DP-3,3440x1440@144,0x110,1"
             #"DP-3,addreserved,2,0,0,0"
             #"DP-2,2560x1440@165,2752x0,1.25,transform,3"
-            "DP-2,2560x1440@165,3440x0,1,transform,3"
+            "DP-2,2560x1440@144,3440x0,1,transform,3"
             #"DP-2,addreserved,2,0,0,0"
           ];
           env = [
@@ -138,6 +139,7 @@ in {
         "${inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper}/bin/hyprpaper"
         "${pkgs.kitty}/bin/kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+        "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
       ];
       monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;

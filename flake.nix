@@ -1,9 +1,7 @@
 {
   description = "Zarred's NixOS flake";
   inputs = {
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
 
@@ -13,13 +11,15 @@
     sops-nix.url = "github:Mic92/sops-nix";
 
     hyprland = { url = "github:hyprwm/Hyprland";};
-    hyprpaper = { url = "github:hyprwm/hyprpaper"; };#inputs.nixpkgs.follows = "nixpkgs"; };
+    hyprpaper = { url = "github:hyprwm/hyprpaper?rev=ef0e051255af1b96155b222da94c94ecad1f7708"; };
+    hyprlang = { url = "github:hyprwm/hyprlang"; };
     hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
     hycov = { url = "github:DreamMaoMao/hycov"; inputs.hyprland.follows = "hyprland"; };
     hyprfocus = { url = "github:VortexCoyote/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
 
-    nixvim = { url = "github:nix-community/nixvim?rev=358f5732f2443a922a6ceee54b5740efabe0950c"; inputs.nixpkgs.follows = "nixpkgs"; };
+    #nixvim = { url = "github:nix-community/nixvim?rev=358f5732f2443a922a6ceee54b5740efabe0950c"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
     anyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };
     #waybar = { url = "github:Alexays/Waybar"; inputs.nixpkgs.follows = "nixpkgs"; };
     himalaya.url = "github:soywod/himalaya";

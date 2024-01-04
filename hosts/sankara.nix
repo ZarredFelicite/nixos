@@ -41,20 +41,29 @@
       neededForBoot = true;
     };
     "/mnt/gargantua" = {
+      device = "/dev/disk/by-uuid/30899f26-306a-42d1-b6a8-61d47a2fe5c1";
+      fsType = "btrfs";
+      options = [ "defaults" "compress-force=zstd" "auto" ];
+    };
+    "/mnt/dagobah" = {
       device = "/dev/disk/by-uuid/47b66da6-0d0f-45aa-a43c-63f636496dbe";
       fsType = "btrfs";
+      options = [ "defaults" "compress-force=zstd" "auto" ];
     };
     "/mnt/eros" = {
       device = "/dev/disk/by-uuid/bf0612f6-780c-410b-b723-b9d3f182cf0e";
       fsType = "btrfs";
+      options = [ "defaults" "compress-force=zstd" "auto" "nofail" ];
     };
     "/mnt/ceres" = {
       device = "/dev/disk/by-uuid/d11573fe-e1e8-4693-a8d7-41245c9a12ac";
       fsType = "btrfs";
+      options = [ "defaults" "compress-force=zstd" "auto" "nofail" ];
     };
     "/mnt/turing" = {
       device = "/dev/disk/by-uuid/F454803C54800398";
       fsType = "ntfs";
+      options = [ "defaults" "compress-force=zstd" "auto" "nofail" ];
     };
     #"/mnt/gargantua" = {
     #  device = "/mnt/merge-gargantua/nvme1:/mnt/merge-gargantua/sata1:/mnt/merge-gargantua/hdd1";

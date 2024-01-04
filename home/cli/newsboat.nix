@@ -40,7 +40,7 @@
       macro v set browser "readable '%u' | pandoc -f html -t commonmark-raw_html --wrap none > /tmp/newsboat_markdown.md; kitty @ launch --type=tab --tab-title '%u' zsh -c '~/scripts/pagers/newsboat_markdown.sh'"; open-in-browser ; set browser firefox
 
       feedlist-format "%n %11u %t%d"
-      articlelist-format "%-1n%-1d%-1F %D %?T?%-12T ? %-30a %t"
+      articlelist-format "%-1n%-1d%-1F %D %?T?%-12T ? %t"
       datetime-format "%d/%m %H:%M"
 
       color info                color10   color18
@@ -167,6 +167,7 @@
 
       { url = "https://feeds.megaphone.fm/darknetdiaries"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.buzzsprout.com/1890340.rss"; tags = [ "!" "podcasts" "socialism" ]; }
+      { url = "https://pod.link/1097417804.rss"; tags = [ "!" "podcasts" "socialism" ]; }
       { url = "https://feed.podbean.com/redflag/feed.xml"; tags = [ "!" "podcasts" "socialism" ]; }
       { url = "https://feeds.soundcloud.com/users/soundcloud:users:672423809/sounds.rss"; tags = [ "!" "podcasts" "socialism" ]; }
       { url = "https://rss.art19.com/the-problem-with-jon-stewart"; tags = [ "!" "podcasts" ]; }

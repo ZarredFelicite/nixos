@@ -35,20 +35,20 @@ imports = [
       incsearch = true;
 
     };
-    maps = {
-      normal."<leader>u".action = "<cmd>UndotreeToggle<CR>";
-      normal."<leader>gs".action = "<cmd>Git<CR>";
+    keymaps = [
+      { key = "<leader>u"; action = "<cmd>UndotreeToggle<CR>"; }
+      { key = "<leader>gs"; action = "<cmd>Git<CR>"; }
       # keep search in middle
-      normal."n".action = "nzzzv";
-      normal."N".action = "Nzzzv";
-      visual."<S-Up>".action = ":m '<-2<CR>gv=gv";
-      visual."<S-Down>".action = ":m '>+1<CR>gv=gv";
-      visual."<leader>p".action = "\"_dP"; # paste over selection and keep clipboard
+      { key = "n"; action = "nzzzv"; }
+      { key = "N"; action = "Nzzzv"; }
       # yank to global clipboard
-      normal."<leader>y".action = "\"+y";
-      visual."<leader>y".action = "\"+y";
-      normal."<leader>Y".action = "\"+Y";
-    };
+      { key = "<leader>y"; action = "\"+y"; }
+      { key = "<leader>Y"; action = "\"+Y"; }
+      { mode = "v"; key = "<S-Up>"; action = ":m '<-2<CR>gv=gv"; }
+      { mode = "v"; key = "<S-Down>"; action = ":m '>+1<CR>gv=gv"; }
+      { mode = "v"; key = "<leader>p"; action = "\"_dP"; } # paste over selection and keep clipboard
+      { mode = "v"; key = "<leader>y"; action = "\"+y"; }
+    ];
     colorschemes.catppuccin = {
       enable = false;
       transparentBackground = true;

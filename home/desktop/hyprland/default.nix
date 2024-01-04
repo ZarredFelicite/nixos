@@ -139,6 +139,7 @@ in {
         "${inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper}/bin/hyprpaper"
         "${pkgs.kitty}/bin/kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+        "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
       ];
       monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;

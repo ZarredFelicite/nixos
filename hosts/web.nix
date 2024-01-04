@@ -110,4 +110,7 @@
       devicesOffOnScreensaver = true;
     };
   };
+  environment.systemPackages = [
+    pkgs.polychromatic
+  ];
 }

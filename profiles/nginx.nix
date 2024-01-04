@@ -66,6 +66,15 @@
           '''           close;
       }
     '';
+    appendHttpConfig = ''
+      proxy_cache_path /tmp/pkgcache levels=1:2 keys_zone=cachecache:100m max_size=20g inactive=365d use_temp_path=off;
+      map $status $cache_header {
+        200     "public";
+        302     "public";
+        default "no-cache";
+      }
+      access_log /var/log/nginx/access.log;
+    '';
     virtualHosts =
       let SSLA = {
         enableACME = true;
@@ -170,6 +179,42 @@
         #  locations."/sankara" = AUTH // {proxyPass = "http://localhost:8384";};
         #  locations."/nano" = AUTH // {proxyPass = "http://192.168.86.125:8384";};
         #};
+        "binarycache.zar.red" = { locations."/".proxyPass = "http://${config.services.nix-serve.bindAddress}:${toString config.services.nix-serve.port}"; };
+        "nixcache.zar.red" = {
+          locations."/" = {
+            root = "/var/public-nix-cache";
+            extraConfig = ''
+              expires max;
+              add_header Cache-Control $cache_header always;
+              # Ask the upstream server if a file isn't available locally
+              error_page 404 = @fallback;
+            '';
+          };
+          extraConfig = ''
+            resolver 10.42.42.42;
+            set $upstream_endpoint http://cache.nixos.org;
+          '';
+          locations."@fallback" = {
+            proxyPass = "$upstream_endpoint";
+            extraConfig = ''
+              proxy_cache cachecache;
+              proxy_cache_valid  200 302  60d;
+              expires max;
+              add_header Cache-Control $cache_header always;
+            '';
+          };
+          locations."= /nix-cache-info" = {
+            # Note: This is duplicated with the `@fallback` above,
+            # would be nicer if we could redirect to the @fallback instead.
+            proxyPass = "$upstream_endpoint";
+            extraConfig = ''
+              proxy_cache cachecache;
+              proxy_cache_valid  200 302  60d;
+              expires max;
+              add_header Cache-Control $cache_header always;
+            '';
+          };
+        };
     };
   };
 }

@@ -11,7 +11,8 @@
       builders-use-substitutes = true;
       substituters = [
         #"https://nixcache.zar.red"
-        "http://binarycache.zar.red"
+        "ssh://zarred@web"
+        #"http://binarycache.zar.red"
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
@@ -19,7 +20,7 @@
       ];
       trusted-substituters = ["https://ai.cachix.org"];
       trusted-public-keys = [
-        "binarycache.zar.red:/vYeoLG2d93laC//gtvofCCf8Jv4lZWOtle/cLeCXkByyuC5dPFrrSDvG/XPfbpabYzUaqSxOgUMIi5cK7tNDA=="
+        #"binarycache.zar.red:/vYeoLG2d93laC//gtvofCCf8Jv4lZWOtle/cLeCXkByyuC5dPFrrSDvG/XPfbpabYzUaqSxOgUMIi5cK7tNDA=="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
@@ -68,8 +69,14 @@
   #  serviceConfig.CacheDirectory = "nix";
   #};
   environment.variables.NIX_REMOTE = "daemon";
-  services.nix-serve = {
+  nix.sshServe = {
     enable = true;
+    keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred@web"
+    ];
+  };
+  services.nix-serve = {
+    enable = false;
     secretKeyFile = config.sops.secrets.binary-cache-key.path;
   };
 }

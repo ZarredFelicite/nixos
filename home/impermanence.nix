@@ -26,6 +26,7 @@
       ".config/Caprine"
       ".config/cava"
       ".config/OpenRGB"
+      ".config/polychromatic"
       ".config/keyboard"
       ".config/gh"
     ];

@@ -11,6 +11,15 @@
       bind   =      , escape, submap, reset
       submap = reset
 
+      bind   =  $mod,       O,    submap, mouse
+      submap = mouse
+      binde  =      ,       N, exec, ydotool mousemove -x -5 -y  0
+      binde  =      ,       E, exec, ydotool mousemove -x  0 -y -5
+      binde  =      ,       I, exec, ydotool mousemove -x  0 -y  5
+      binde  =      ,       O, exec, ydotool mousemove -x  5 -y  0
+      bind   =      , escape, submap, reset
+      submap = reset
+
       #bind   =  $mod,      C,    submap, workspaces
       #submap = workspaces
       #bind   =      ,      C, workspace,         previous

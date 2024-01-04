@@ -1,4 +1,4 @@
-{ ... }: {
+{ config, ... }: {
   imports = [
     ./mpd_clients.nix
     ./mpv
@@ -10,5 +10,16 @@
   services.easyeffects = {
     enable = true;
     preset = "autoeq" ;
+  };
+  programs.beets = {
+    enable = true;
+    mpdIntegration = {
+      enableStats = true;
+      enableUpdate = true;
+      host = "localhost";
+      port = config.services.mpd.network.port;
+    };
+    settings = {
+    };
   };
 }

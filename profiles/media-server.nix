@@ -40,6 +40,24 @@
       "/mnt/gargantua/media/music:/music"
     ];
   };
+  virtualisation.oci-containers.containers."lazylibrarian" = {
+    image = "lscr.io/linuxserver/lazylibrarian:latest";
+    environment = {
+      PUID = "1000";
+      PGID = "1000";
+      TZ = "Etc/UTC";
+      DOCKER_MODS = "linuxserver/mods:universal-calibre|linuxserver/mods:lazylibrarian-ffmpeg";
+    };
+    ports = [
+      "5299:5299" # web UI
+    ];
+    extraOptions = ["--network=host"];
+    volumes = [
+      "/var/lib/lazylibrarian:/config"
+      "/mnt/gargantua/downloads:/downloads"
+      "/mnt/gargantua/media/books:/books"
+    ];
+  };
   services.mpd = {
     startWhenNeeded = false;
     network.port = 6600;

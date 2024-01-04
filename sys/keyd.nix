@@ -29,10 +29,9 @@
       "~@privileged"
     ];
   };
-  environment.systemPackages = [
-    pkgs.keyd
-    pkgs.warpd
-  ];
+  #environment.systemPackages = [
+  #  pkgs.keyd
+  #];
   services.keyd = {
     enable = true;
     keyboards = {

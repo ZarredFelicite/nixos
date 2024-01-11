@@ -56,7 +56,7 @@
       clock_format = "%H:%M";
       background_update = false;
       custom_cpu_name = "";
-      disks_filter = "/persist";
+      disks_filter = "/persist /mnt/gargantua /mnt/dagobah /mnt/eros /mnt/ceres";
       mem_graphs = false;
       mem_below_net = false;
       zfs_arc_cached = true;

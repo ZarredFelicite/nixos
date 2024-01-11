@@ -36,7 +36,8 @@
     settings = {
       main.term = "xterm-256color";
       main.pad = "2x3";
-      main.dpi-aware = "yes";
+      #main.font = lib.mkForce "Hack Nerd Font Mono:size=14";
+      main.font = lib.mkForce "Iosevka Mono:size=14";
       scrollback.lines = 5000;
       colors.alpha = lib.mkForce 0.2;
       mouse.hide-when-typing = "yes";

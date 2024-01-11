@@ -163,6 +163,7 @@
     fontDir.enable = true;
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
+      iosevka
       font-awesome
       noto-fonts
       noto-fonts-emoji

@@ -503,11 +503,19 @@
         ]
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1705030268,
         "narHash": "sha256-uNwij5JI9kUIv6KzDLjB6cBwm6WqeptBd/YuUVbT9aM=",
         "owner": "DreamMaoMao",
         "repo": "hycov",
         "rev": "acfd7b54974392d9d3c8a243bf25eeac838a677f",
+=======
+        "lastModified": 1705366746,
+        "narHash": "sha256-KgH7hq+Hjbceh+byhD9BPn3FTNQdjIHlT56vUaiHbr8=",
+        "owner": "DreamMaoMao",
+        "repo": "hycov",
+        "rev": "c2ae4b55d7228fbf706b1557a273292a72ac240f",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
@@ -960,11 +968,19 @@
     },
     "nur": {
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1705358129,
         "narHash": "sha256-SI/ukioTlu65ID8tYB722QluavBZl+WJFYF6n7S3OSM=",
         "owner": "nix-community",
         "repo": "NUR",
         "rev": "c7f551e3bc9d1d5390ef5fb34124141504419454",
+=======
+        "lastModified": 1705374852,
+        "narHash": "sha256-8YQwz9Rwc43HRI8YrBKw1/IV3XGKo5LaW0Dcmtt5KTI=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "2cd3bd2d5367983339ffa40175be1c44f8042e27",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {

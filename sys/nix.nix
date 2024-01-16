@@ -11,7 +11,7 @@
       builders-use-substitutes = true;
       substituters = [
         #"https://nixcache.zar.red"
-        "ssh://zarred@web"
+        #"ssh://zarred@web"
         #"http://binarycache.zar.red"
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
@@ -70,7 +70,7 @@
   #};
   environment.variables.NIX_REMOTE = "daemon";
   nix.sshServe = {
-    enable = true;
+    enable = false;
     keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred@web"
     ];

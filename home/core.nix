@@ -98,10 +98,10 @@
         (
           buildPythonPackage rec {
             pname = "reader";
-            version = "3.9";
+            version = "3.11";
             src = fetchPypi {
               inherit pname version;
-              hash = "sha256-Kynv7QRVos5fVWtbVLlW0Kf6619N8FwUNVFjPF431XQ=";
+              hash = "sha256-2ZwvD/QWca4wPorccUSeUBi/u5a7d5MKorpfFVufnF0=";
             };
             format = "pyproject";
             doCheck = false;
@@ -111,6 +111,8 @@
               pkgs.python3Packages.requests
               pkgs.python3Packages.werkzeug
               pkgs.python3Packages.iso8601
+              pkgs.python3Packages.typing-extensions
+              pkgs.python3Packages.beautifulsoup4
             ];
           }
         )

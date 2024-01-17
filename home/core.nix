@@ -142,9 +142,7 @@
     #controlMaster = "yes";
     #controlPersist = "30m";
     userKnownHostsFile = "~/.ssh/known_hosts";
-    extraOptionOverrides = {
-      AddKeysToAgent = "yes";
-    };
+    addKeysToAgent = "yes";
     matchBlocks = {
       nix-sankara = {
         hostname = "sankara";
@@ -152,7 +150,7 @@
         identityFile = "/root/.ssh/nixremote";
         identitiesOnly = true;
       };
-      sankara = {
+      tmux-sankara = {
         hostname = "sankara";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";
@@ -162,7 +160,7 @@
           RemoteCommand = "tmux new -A -s sankara_remote";
         };
       };
-      sankarah = {
+      home-sankara = {
         hostname = "sankara";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";
@@ -172,7 +170,7 @@
           RemoteCommand = "tmuxinator home";
         };
       };
-      web = {
+      tmux-web = {
         hostname = "web";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";

@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  imports = [ ./wine-ibkr.nix ];
+  #imports = [ ./wine-ibkr.nix ];
   home.packages = [ pkgs.ticker pkgs.tickrs ];
   xdg.configFile = {
     "tickrs/config.yml".text = builtins.toJSON {

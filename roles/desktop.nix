@@ -3,6 +3,7 @@
     ../profiles/common.nix
     ../sys/keyd.nix
     ../profiles/remote-access.nix
+    ../profiles/qemu.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {

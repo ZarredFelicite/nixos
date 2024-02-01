@@ -256,6 +256,14 @@
       defaultApplications = {
         "*" = "~/scripts/file-ops/linkhandler.sh";
       };
+      associations.added = {
+        "application/pdf" = "zathura.desktop";
+        "application/octet-stream" = "nvim.desktop";
+        "text/xml" = [
+          "nvim.desktop"
+          "codium.desktop"
+        ];
+      };
     };
     userDirs = {
       enable = false;

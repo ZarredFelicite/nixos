@@ -29,6 +29,8 @@
       { streamer = "linustech"; }
       { streamer = "kaicenat"; }
       { streamer = "fanfan"; }
+      { streamer = "bonnierabbit"; }
+      { streamer = "sayeedblack"; }
     ];
   };
   #xdg.configFile."wtwitch/api.json".source = config.lib.file.mkOutOfStoreSymlink /run/secrets/twitch-api-token;

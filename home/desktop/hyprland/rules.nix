@@ -15,7 +15,7 @@
       "center, class:^(nova)$"
       "pin, class:^(nova)$"
       "stayfocused, class:^(nova)$"
-      "move cursor -90% 20, class:^(waybar)$"
+      #"move cursor -90% 20, class:^(waybar)$"
       "animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
       "stayfocused, class:^(rofi)$"

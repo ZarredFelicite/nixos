@@ -31,12 +31,13 @@
       "pseudo, class:^(imv)$"
       "float, class:^(kitty-scratchpad)$"
       "float, class:^(pavucontrol)$"
+      "tile, class:^(kdeconnect.sms)$"
     ];
     layerrule = [
       "blur, notifications"
       "blur, swaync-control-center"
       "blur, swaync-notification-window"
-      #"blur, waybar"
+      "blur, waybar"
       "blur, rofi"
       "blur, wlroots"
       "blur, gtk-layer-shell"
@@ -44,7 +45,7 @@
       "ignorezero, swaync-control-center"
       "ignorezero, notifications"
       "ignorezero, swaync-notification-window"
-      #"ignorezero, waybar"
+      "ignorezero, waybar"
       "ignorezero, rofi"
       "ignorezero, wlroots"
       "ignorezero, gtk-layer-shell"

@@ -105,12 +105,8 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            #"DP-3,3440x1440@144,0x110,1.25"
             "DP-3,3440x1440@144,0x110,1"
-            #"DP-3,addreserved,2,0,0,0"
-            #"DP-2,2560x1440@165,2752x0,1.25,transform,3"
             "DP-2,2560x1440@144,3440x0,1,transform,3"
-            #"DP-2,addreserved,2,0,0,0"
           ];
           env = [
             "GDK_BACKEND,wayland"

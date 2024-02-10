@@ -17,7 +17,7 @@ in {
   ];
   programs.swaylock.enable = true;
   programs.password-store.enable = true;
-  services.swayidle.enable = false;
+  services.swayidle.enable = true;
   services.gpg-agent.extraConfig = ''
     pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
     allow-preset-passphrase

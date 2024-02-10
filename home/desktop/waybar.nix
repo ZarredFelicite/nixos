@@ -1,7 +1,7 @@
 { pkgs, lib, osConfig, inputs, ... }:
 let
   height = if osConfig.networking.hostName == "web"
-    then "13"
+    then "14"
     else "16";
   cava_config = {
     framerate = 30;
@@ -58,6 +58,7 @@ let
         "class<virt-manager>" = "󰢹";
         "class<vlc>" = "󰕼";
         "class<mpv>" = "";
+        "class<stats>" = "";
         "nheko" = "<span color='#ABE9B3'>󰊌</span>";
         "newsboat" = "";
       };
@@ -100,7 +101,8 @@ in {
       secondary = workspaces // {
         layer = "top";
         position = "top";
-        mode = "dock";
+        #mode = "dock";
+        passthrough = false;
         exclusive = false;
         spacing = 0;
         gtk-layer-shell = true;
@@ -111,7 +113,8 @@ in {
       primary = workspaces // {
         layer = "top";
         position = "top";
-        mode = "dock";
+        #mode = "overlay";
+        passthrough = false;
         exclusive = false;
         spacing = 2;
         gtk-layer-shell = true;
@@ -269,14 +272,14 @@ in {
     }];
     style = ''
       * {
-          font-family: Iosevka Nerd Font Bold;
+          font-family: Iosevka Nerd Font;
           font-size: ${height}px;
-          min-height: ${height}px;
+          min-height: 0px;
           /*color: #B0C6F4;*/
       }
       tooltip {
-        background: rgba(38, 35, 58, 0.5);
-        border: 0px solid rgba(49, 116, 143, 1);
+        background: rgba(38, 35, 58, 0.3);
+        border: 1px solid rgba(49, 116, 143, 0.7);
       }
       tooltip label {
         color: rgb(235, 188, 186);
@@ -314,14 +317,15 @@ in {
           }
       }
       #workspaces {
-        background: rgb(38, 35, 58);
+        background: rgba(38, 35, 58, 0.4);
         margin: 1px;
-        padding: 0px 0px;
+        padding: 2px;
+        border-radius: 9px;
       }
       #workspaces box {
         margin: -1px -6px;
         padding: 0px;
-        background-color: rgba(43, 48, 59, 0);
+        background: transparent;
       }
       #workspaces button{
         color: #31748f;

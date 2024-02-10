@@ -82,6 +82,8 @@
       # latex
       texlive.combined.scheme-full
 
+      #piper-tts
+
       (python311.withPackages(ps: with ps; [
         pip
         ytmusicapi
@@ -95,6 +97,8 @@
         mutagen
         beautifulsoup4
         python-mpv-jsonipc
+        playsound
+        gtts
         (
           buildPythonPackage rec {
             pname = "reader";
@@ -248,6 +252,11 @@
       automount = true;
       notify = true;
       tray = "auto";
+      settings = {
+        program_options.udisks_version = 2;
+        program_options.tray = true;
+        icon_names.media = [ "media-optical" ];
+      };
     };
   };
   xdg = {
@@ -255,6 +264,11 @@
       enable = true;
       defaultApplications = {
         "*" = "~/scripts/file-ops/linkhandler.sh";
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/http" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+        "x-scheme-handler/about" = "firefox.desktop";
+        "x-scheme-handler/unknown" = "firefox.desktop";
       };
       associations.added = {
         "application/pdf" = "zathura.desktop";
@@ -263,6 +277,8 @@
           "nvim.desktop"
           "codium.desktop"
         ];
+        "x-scheme-handler/https" = "firefox.desktop";
+        "text/html" = "firefox.desktop";
       };
     };
     userDirs = {

@@ -10,12 +10,12 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { url = "github:hyprwm/Hyprland";};
-    hyprpaper = { url = "github:hyprwm/hyprpaper?rev=ef0e051255af1b96155b222da94c94ecad1f7708"; };
+    hyprland = { url = "github:hyprwm/Hyprland?ref=v0.35.0";};
+    hyprpaper = { url = "github:hyprwm/hyprpaper"; };
     hyprlang = { url = "github:hyprwm/hyprlang"; };
-    hy3 = { url = "github:outfoxxed/hy3"; inputs.hyprland.follows = "hyprland"; };
+    hy3 = { url = "github:outfoxxed/hy3?ref=hl0.35.0"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
-    hycov = { url = "github:DreamMaoMao/hycov"; inputs.hyprland.follows = "hyprland"; };
+    #hycov = { url = "github:DreamMaoMao/hycov"; inputs.hyprland.follows = "hyprland"; };
     hyprfocus = { url = "github:VortexCoyote/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
 
     #nixvim = { url = "github:nix-community/nixvim?rev=358f5732f2443a922a6ceee54b5740efabe0950c"; inputs.nixpkgs.follows = "nixpkgs"; };

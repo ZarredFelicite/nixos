@@ -57,7 +57,7 @@ imports = [
       lualine = {
         enable = true;
         extensions = [ "fzf" "fugitive" ];
-        theme = "palenight";
+        #theme = "palenight";
       };
       nvim-cmp = {
         enable = true;

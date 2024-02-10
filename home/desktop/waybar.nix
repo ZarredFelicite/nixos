@@ -216,7 +216,8 @@ in {
         };
         "custom/notification" = {
           tooltip = false;
-          format = "{icon}<sup> {}</sup>";
+          #format = "{icon}<sup> {}</sup>";
+          format = "{icon} {}";
           format-icons = {
             notification = "";
             none = "";
@@ -278,8 +279,9 @@ in {
           /*color: #B0C6F4;*/
       }
       tooltip {
-        background: rgba(38, 35, 58, 0.3);
-        border: 1px solid rgba(49, 116, 143, 0.7);
+        background: rgba(38, 35, 58, 0.9);
+        border: 2px solid rgba(49, 116, 143, 0.7);
+        border-radius: 10px ;
       }
       tooltip label {
         color: rgb(235, 188, 186);
@@ -292,7 +294,7 @@ in {
           margin: 0 0 0 0px;
       }
       .modules-right {
-          border: 1px solid rgba(100, 114, 125, 0.5);
+          border: 1px solid rgba(49, 116, 143, 0.7);
           background: rgba(43, 48, 59, 0.3);
           border-radius: 0 0 0 10px ;
           color: #c4a7e7;
@@ -320,10 +322,11 @@ in {
         background: rgba(38, 35, 58, 0.4);
         margin: 1px;
         padding: 2px;
-        border-radius: 9px;
+        border-radius: 12px;
+        border: 1px solid rgba(49, 116, 143, 0.7);
       }
       #workspaces box {
-        margin: -1px -6px;
+        margin: -2px -6px -4px -6px;
         padding: 0px;
         background: transparent;
       }

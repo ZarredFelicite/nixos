@@ -82,7 +82,7 @@
       # latex
       texlive.combined.scheme-full
 
-      #piper-tts
+      piper-tts
 
       (python311.withPackages(ps: with ps; [
         pip

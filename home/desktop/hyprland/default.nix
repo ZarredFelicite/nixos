@@ -141,7 +141,7 @@ in {
       xwayland.force_zero_scaling = true;
       general = {
         gaps_in = 4;
-        gaps_out = 3;
+        gaps_out = 6;
         border_size = 2;
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
         "col.inactive_border" = lib.mkForce "rgba(31748f99)";

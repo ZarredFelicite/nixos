@@ -40,25 +40,21 @@ let
       window-rewrite-default = "";
       window-rewrite = {
         "class<Caprine>" = "󰈎";
-        "class<Github Desktop>" = "󰊤";
         "class<Godot>" = "";
         "class<Slack>" = "󰒱";
         "class<code>" = "󰨞";
         "class<discord>" = "󰙯";
-        "class<firefox>" = "";
+        "class<firefox>" = "󰈹";
         "class<firefox> title<.*github.*>" = "";
         "class<firefox> title<.*twitch|youtube|plex|tntdrama|bally sports.*>" = "";
-        "class<kitty>" = "";
-        "class<mediainfo-gui>" = "󱂷";
-        "class<org.kde.digikam>" = "󰄄";
+        "class<kitty>" = "󰅬";
         "class<org.telegram.desktop>" = "";
-        "class<.pitivi-wrapped>" = "󱄢";
         "class<steam>" = "";
         "class<thunderbird>" = "";
         "class<virt-manager>" = "󰢹";
         "class<vlc>" = "󰕼";
         "class<mpv>" = "";
-        "class<stats>" = "";
+        "class<stats>" = "󱕍";
         "nheko" = "<span color='#ABE9B3'>󰊌</span>";
         "newsboat" = "";
       };
@@ -106,7 +102,8 @@ in {
         exclusive = false;
         spacing = 0;
         gtk-layer-shell = true;
-        modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
+        #modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
+        modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
         #modules-center = [ "mpris" ];
         modules-right = [ ];
       };
@@ -118,8 +115,8 @@ in {
         exclusive = false;
         spacing = 2;
         gtk-layer-shell = true;
-        modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        #modules-center = [ "mpris" ];
+        modules-left = [ "mpris" ];
+        modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-right = [ "custom/weather" "tray" "custom/notification" "idle_inhibitor" "network" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
         tray = {
           icon-size = 14;
@@ -326,7 +323,7 @@ in {
         border: 1px solid rgba(49, 116, 143, 0.7);
       }
       #workspaces box {
-        margin: -2px -6px -4px -6px;
+        margin: -2px -6px -2px -6px;
         padding: 0px;
         background: transparent;
       }

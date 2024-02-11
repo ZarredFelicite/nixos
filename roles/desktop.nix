@@ -4,6 +4,7 @@
     ../sys/keyd.nix
     ../profiles/remote-access.nix
     ../profiles/qemu.nix
+    ../profiles/ai.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
@@ -45,6 +46,7 @@
     ];
   };
   services = {
+    ollama.enable = true;
     printing.enable = true;
     avahi.enable = true;
     avahi.nssmdns4 = true;

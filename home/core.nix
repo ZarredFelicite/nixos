@@ -99,6 +99,7 @@
         python-mpv-jsonipc
         playsound
         gtts
+        flask
         (
           buildPythonPackage rec {
             pname = "reader";

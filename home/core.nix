@@ -75,6 +75,7 @@
       moreutils
       gnuplot
       neofetch
+      rpi-imager # Raspberry Pi Imaging Utility
 
       # nix
       nix-index

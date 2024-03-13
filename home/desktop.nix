@@ -41,6 +41,7 @@ in {
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
     prusa-slicer # G-code generator for 3D printer
+    orca-slicer
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
     # misc
     xdg-utils # for opening default programs when clicking links

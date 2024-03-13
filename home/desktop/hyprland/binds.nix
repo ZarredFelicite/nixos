@@ -2,39 +2,12 @@
   wayland.windowManager.hyprland.extraConfig = ''
       bind   =  $mod,      I,    submap, dropdowns
       submap = dropdowns
-      bind   =      ,      N, exec, pypr toggle kitty
-      bind   =      ,      E, exec, pypr toggle volume
+      bind   =      ,      E, togglespecialworkspace, volume
       bind   =      ,      E, submap, reset
-      bind   =      ,      I, exec, pypr toggle kitty
+      bind   =      ,      I, togglespecialworkspace, scratchpad
       bind   =      ,      I, submap, reset
-      bind   =      ,      S, exec, pypr toggle kitty
       bind   =      , escape, submap, reset
       submap = reset
-
-      bind   =  $mod,       O,    submap, mouse
-      submap = mouse
-      binde  =      ,       N, exec, ydotool mousemove -x -5 -y  0
-      binde  =      ,       E, exec, ydotool mousemove -x  0 -y -5
-      binde  =      ,       I, exec, ydotool mousemove -x  0 -y  5
-      binde  =      ,       O, exec, ydotool mousemove -x  5 -y  0
-      bind   =      , escape, submap, reset
-      submap = reset
-
-      #bind   =  $mod,      C,    submap, workspaces
-      #submap = workspaces
-      #bind   =      ,      C, workspace,         previous
-      #bind   =      ,      N, workspace,       name:music
-      #bind   =      ,      E, workspace,         name:mpv
-      #bind   =      ,      I, workspace,       name:stats
-      #bind   =      ,      S, workspace,      name:stocks
-      #bind   = SHIFT,      N, movetoworkspace, name:music
-      #bind   = SHIFT,      E, movetoworkspace,   name:mpv
-      #bind   = SHIFT,      I, movetoworkspace, name:stats
-      #bind   = SHIFT,      S, movetoworkspace,name:stocks
-      #bind   =      , escape,          submap,      reset
-      #bind   =      ,      R,          submap,      reset
-      #bind   =      ,      C,          submap,      reset
-      #submap = reset
   '';
   wayland.windowManager.hyprland.settings = {
     binds = {
@@ -51,12 +24,12 @@
     ];
     bind = [
       #"$mod, O, hycov:toggleoverview"
-      #"$mod, T, togglegroup,"
-      "$mod, T, hy3:makegroup, tab"
-      "$mod CTRL, T, hy3:changegroup, toggletab"
-      #"$mod CTRL, T, lockactivegroup, toggle"
-      "$mod, U, hy3:makegroup, opposite"
-      "$mod CTRL, U, hy3:changegroup, opposite"
+      "$mod, T, togglegroup,"
+      #"$mod, T, hy3:makegroup, tab"
+      "$mod CTRL, T, lockactivegroup, toggle"
+      #"$mod CTRL, T, hy3:changegroup, toggletab"
+      #"$mod, U, hy3:makegroup, opposite"
+      #"$mod CTRL, U, hy3:changegroup, opposite"
       "$mod, H, togglefloating,"
       "$mod, K, killactive,"
       "$mod CTRL, P, pseudo,"
@@ -83,26 +56,28 @@
       "$mod CTRL SHIFT, $NAVD, movetoworkspace, r-1"
       "$mod CTRL SHIFT, $NAVR, workspace, r+1"
       "$mod CTRL SHIFT, $NAVL, workspace, r-1"
-      #"$mod,            $NAVL, movefocus, l"
-      #"$mod,            $NAVD, movefocus, d"
-      #"$mod,            $NAVU, movefocus, u"
-      #"$mod,            $NAVR, movefocus, r"
-      "$mod,            $NAVL, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus l"
-      "$mod,            $NAVD, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus d"
-      "$mod,            $NAVU, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus u"
-      "$mod,            $NAVR, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus r"
-      #"$mod SHIFT,      $NAVL, swapwindow, l"
-      #"$mod SHIFT,      $NAVD, swapwindow, d"
-      #"$mod SHIFT,      $NAVU, swapwindow, u"
-      #"$mod SHIFT,      $NAVR, swapwindow, r"
-      "$mod SHIFT,      $NAVL, exec, ~/scripts/hyprland/navigation/hy3-movefocus move l"
-      "$mod SHIFT,      $NAVD, exec, ~/scripts/hyprland/navigation/hy3-movefocus move d"
-      "$mod SHIFT,      $NAVU, exec, ~/scripts/hyprland/navigation/hy3-movefocus move u"
-      "$mod SHIFT,      $NAVR, exec, ~/scripts/hyprland/navigation/hy3-movefocus move r"
-      "$mod SHIFT ALT,  $NAVL, movewindoworgroup, l"
-      "$mod SHIFT ALT,  $NAVD, movewindoworgroup, d"
-      "$mod SHIFT ALT,  $NAVU, movewindoworgroup, u"
-      "$mod SHIFT ALT,  $NAVR, movewindoworgroup, r"
+      "$mod,            $NAVL, movefocus, l"
+      "$mod,            $NAVD, movefocus, d"
+      "$mod,            $NAVU, movefocus, u"
+      "$mod,            $NAVR, movefocus, r"
+      "$mod,            Page_Up, changegroupactive, f"
+      "$mod,            Page_Down, changegroupactive, b"
+      #"$mod,            $NAVL, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus l"
+      #"$mod,            $NAVD, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus d"
+      #"$mod,            $NAVU, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus u"
+      #"$mod,            $NAVR, exec, ~/scripts/hyprland/navigation/hy3-movefocus focus r"
+      "$mod SHIFT,      $NAVL, swapwindow, l"
+      "$mod SHIFT,      $NAVD, swapwindow, d"
+      "$mod SHIFT,      $NAVU, swapwindow, u"
+      "$mod SHIFT,      $NAVR, swapwindow, r"
+      #"$mod SHIFT,      $NAVL, exec, ~/scripts/hyprland/navigation/hy3-movefocus move l"
+      #"$mod SHIFT,      $NAVD, exec, ~/scripts/hyprland/navigation/hy3-movefocus move d"
+      #"$mod SHIFT,      $NAVU, exec, ~/scripts/hyprland/navigation/hy3-movefocus move u"
+      #"$mod SHIFT,      $NAVR, exec, ~/scripts/hyprland/navigation/hy3-movefocus move r"
+      "$mod ALT,  $NAVL, movewindoworgroup, l"
+      "$mod ALT,  $NAVD, movewindoworgroup, d"
+      "$mod ALT,  $NAVU, movewindoworgroup, u"
+      "$mod ALT,  $NAVR, movewindoworgroup, r"
       "$mod,                1, workspace, 1"
       "$mod,                2, workspace, 2"
       "$mod,                3, workspace, 3"
@@ -124,14 +99,14 @@
       "$mod SHIFT,          9, movetoworkspace, 9"
       "$mod SHIFT,          0, movetoworkspace, 10"
       # move into submap
-      "$mod ALT, $NAVL, exec, ~/scripts/hyprland/moveintogroup.sh l"
-      "$mod ALT, $NAVD, exec, ~/scripts/hyprland/moveintogroup.sh d"
-      "$mod ALT, $NAVU, exec, ~/scripts/hyprland/moveintogroup.sh u"
-      "$mod ALT, $NAVR, exec, ~/scripts/hyprland/moveintogroup.sh r"
-      "$mod ALT CTRL, $NAVL, exec, ~/scripts/hyprland/moveoutofgroup.sh l"
-      "$mod ALT CTRL, $NAVD, exec, ~/scripts/hyprland/moveoutofgroup.sh d"
-      "$mod ALT CTRL, $NAVU, exec, ~/scripts/hyprland/moveoutofgroup.sh u"
-      "$mod ALT CTRL, $NAVR, exec, ~/scripts/hyprland/moveoutofgroup.sh r"
+      #"$mod ALT, $NAVL, exec, ~/scripts/hyprland/moveintogroup.sh l"
+      #"$mod ALT, $NAVD, exec, ~/scripts/hyprland/moveintogroup.sh d"
+      #"$mod ALT, $NAVU, exec, ~/scripts/hyprland/moveintogroup.sh u"
+      #"$mod ALT, $NAVR, exec, ~/scripts/hyprland/moveintogroup.sh r"
+      #"$mod ALT CTRL, $NAVL, exec, ~/scripts/hyprland/moveoutofgroup.sh l"
+      #"$mod ALT CTRL, $NAVD, exec, ~/scripts/hyprland/moveoutofgroup.sh d"
+      #"$mod ALT CTRL, $NAVU, exec, ~/scripts/hyprland/moveoutofgroup.sh u"
+      #"$mod ALT CTRL, $NAVR, exec, ~/scripts/hyprland/moveoutofgroup.sh r"
       #" , edge:r:l, exec, swaync-client -t -sw"
       #" , edge:l:r, togglespecialworkspace, "
       #" , edge:d:u, exec, pkill -RTMIN wvkbd-mobintl"

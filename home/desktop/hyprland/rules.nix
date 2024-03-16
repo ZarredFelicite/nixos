@@ -53,7 +53,7 @@
       "5, monitor:DP-2, default:true" # default/browser
       "4, monitor:DP-1, default:true" # default/media
       "special, on-created-empty:kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
-      "special:volume, on-created-empty pavucontrol"
+      "special:volume, on-created-empty:pavucontrol"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
     ];
   };

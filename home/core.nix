@@ -150,6 +150,14 @@
     userKnownHostsFile = "~/.ssh/known_hosts";
     addKeysToAgent = "yes";
     matchBlocks = {
+      rpi = {
+        hostname = "10.131.3.83";
+        user = "zarred";
+        extraOptions = {
+          RequestTTY = "yes";
+          RemoteCommand = "tmux new -A -s horus";
+        };
+      };
       nix-sankara = {
         hostname = "sankara";
         user = "nixremote";

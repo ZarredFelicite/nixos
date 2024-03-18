@@ -149,13 +149,15 @@ imports = [
       };
       undotree = {
         enable = true;
-        focusOnToggle = true;
-        diffCommand = null; #TODO
+        settings = {
+          focusOnToggle = true;
+          diffCommand = null; #TODO
+        };
       };
       fugitive.enable = true;
       vimtex = {
         enable = true;
-        extraConfig = {
+        settings = {
           compiler_enabled = true;
           view_method = "zathura";
         };

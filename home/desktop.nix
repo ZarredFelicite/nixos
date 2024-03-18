@@ -22,7 +22,7 @@ in {
     pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
     allow-preset-passphrase
   '';
-  services.gpg-agent.pinentryFlavor = null;
+  services.gpg-agent.pinentryPackage = null;
   home.packages = with pkgs; [
     # wayland tools
     wev # Wayland event viewer

@@ -158,12 +158,12 @@
           RemoteCommand = "tmux new -A -s horus";
         };
       };
-      nix-sankara = {
-        hostname = "sankara";
-        user = "nixremote";
-        identityFile = "/root/.ssh/nixremote";
-        identitiesOnly = true;
-      };
+      #nix-sankara = {
+      #  hostname = "sankara";
+      #  user = "nixremote";
+      #  identityFile = "/root/.ssh/nixremote";
+      #  identitiesOnly = true;
+      #};
       tmux-sankara = {
         hostname = "sankara";
         user = "zarred";

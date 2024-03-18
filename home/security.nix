@@ -67,7 +67,7 @@
     enableSshSupport = false;
     enableScDaemon = false;
     enableZshIntegration = true;
-    pinentryPackage = lib.mkDefault "curses";
+    pinentryPackage = null;
     defaultCacheTtl = 60480000;
     defaultCacheTtlSsh = 60480000;
     maxCacheTtl = 60480000;

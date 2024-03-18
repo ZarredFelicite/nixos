@@ -60,4 +60,8 @@
     apiSocket = "/run/klipper/api";
     configFile = "/var/lib/moonraker/config/printer.cfg";
   };
+  services.mjpg-streamer = {
+    outputPlugin = "output_http.so -p 5050 -w @www@";
+    inputPlugin = "input_uvc.so -d /dev/video0 -r FHD";
+  };
 }

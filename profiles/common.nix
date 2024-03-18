@@ -56,9 +56,9 @@
   users = {
     defaultUserShell = pkgs.zsh;
     mutableUsers = false;
-    groups = {
-      nixremote = {};
-    };
+    #groups = {
+    #  nixremote = {};
+    #};
     users = {
       root = {
         hashedPasswordFile = config.sops.secrets.users-root.path;
@@ -75,15 +75,15 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred"
         ];
       };
-      nixremote = {
-        description = "Unsecured user for distributed nix builds";
-        isNormalUser = true;
-        createHome = true;
-        group = "nixremote";
-        openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root"
-        ];
-      };
+      #nixremote = {
+      #  description = "Unsecured user for distributed nix builds";
+      #  isNormalUser = true;
+      #  createHome = true;
+      #  group = "nixremote";
+      #  openssh.authorizedKeys.keys = [
+      #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root"
+      #  ];
+      #};
     };
 	};
   sops = {

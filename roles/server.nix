@@ -29,6 +29,7 @@
   services.gotify.enable = true;
   services.mpd.enable = true;
   services.klipper.enable = true;
+  services.mjpg-streamer.enable = true;
 
   services.jellyfin.enable = true;
   services.jellyseerr.enable = true;

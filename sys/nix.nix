@@ -5,7 +5,8 @@
     registry = lib.mapAttrs (_: flake: {inherit flake; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
-      trusted-users = [ "zarred" "nixremote" ];
+      #trusted-users = [ "zarred" "nixremote" ];
+      trusted-users = [ "zarred" ];
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
@@ -40,30 +41,30 @@
   nixpkgs.config.allowUnfree = true;
 
   nix.distributedBuilds = false;
-  nix.buildMachines = [
-    {
-      hostName = "web";
-      sshUser = "nixremote";
-      sshKey = "/root/.ssh/nixremote";
-      system = "x86_64-linux";
-      protocol = "ssh-ng";
-      maxJobs = 1;
-      speedFactor = 1;
-      supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-      mandatoryFeatures = [ ];
-    }
-    #{
-    #  hostName = "sankara";
-    #  sshUser = "nixremote";
-    #  sshKey = "/root/.ssh/nixremote";
-    #  system = "x86_64-linux";
-    #  protocol = "ssh-ng";
-    #  maxJobs = 1;
-    #  speedFactor = 2;
-    #  supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-    #  mandatoryFeatures = [ ];
-    #}
-  ];
+  #nix.buildMachines = [
+  #  {
+  #    hostName = "web";
+  #    sshUser = "nixremote";
+  #    sshKey = "/root/.ssh/nixremote";
+  #    system = "x86_64-linux";
+  #    protocol = "ssh-ng";
+  #    maxJobs = 1;
+  #    speedFactor = 1;
+  #    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+  #    mandatoryFeatures = [ ];
+  #  }
+  #  #{
+  #  #  hostName = "sankara";
+  #  #  sshUser = "nixremote";
+  #  #  sshKey = "/root/.ssh/nixremote";
+  #  #  system = "x86_64-linux";
+  #  #  protocol = "ssh-ng";
+  #  #  maxJobs = 1;
+  #  #  speedFactor = 2;
+  #  #  supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+  #  #  mandatoryFeatures = [ ];
+  #  #}
+  #];
   #systemd.services.nix-daemon = {
   #  environment.TMPDIR = "/var/cache/nix";
   #  serviceConfig.CacheDirectory = "nix";

@@ -72,6 +72,6 @@ in {
   ];
   xdg.configFile."com.add0n.node.json" = {
     source = ./firefox_openwith/com.add0n.node.json;
-    target = "../.mozilla/native-messaging-hosts/com.add0n.node.json";
+    target = "./.mozilla/native-messaging-hosts/com.add0n.node.json";
   };
 }

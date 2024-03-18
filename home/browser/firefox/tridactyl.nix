@@ -18,6 +18,7 @@
         set smoothscroll true
         set scrollduration 150
         set editorcmd kitty -c "nvim"
+        set hintfiltermode vimperator-reflow
         set hintchars eiorsnta
         set modeindicatorshowkeys true
 
@@ -76,8 +77,8 @@
         "bind ;g composite js (new URLSearchParams((new URL(document.location.href)).search)).get('q') | fillcmdline_notrail open g
         "jsb ["--mode=insert", "--mode=input", "--mode=normal"].forEach(mode => { tri.excmds.bind(mode, `<A-H>`, `tabmove -1`) ; tri.excmds.bind(mode, `<A-L>`, `tabmove +1`) ; })
 
-        bind w composite hint -pipe a href | js -p tri.excmds.shellescape(JS_ARG) | exclaim_quiet mpv --ontop --keepaspect-window --profile=protocol.http
-        bind W js tri.excmds.shellescape(document.location.href).then(url => tri.native.run(`mpv --ontop --keepaspect-window --profile=protocol.http '$\{url}'`))
+        bind w composite hint -pipe a href | js -p tri.excmds.shellescape(JS_ARG) | exclaim_quiet linkhandler.sh
+        bind W composite get_current_url | exclaim_quiet ~/scripts/file-ops/linkhandler.sh
         "bind ;v composite hint -qpipe a href | js -p JS_ARG.map(h => `'$\{h}'`).join(" ") | ! mpv
         "bind e hint -W js -p tri.native.run(`\$HOME/bin/add-magnet '\$\{JS_ARG}'`)
 

@@ -3,6 +3,8 @@
     ../profiles/common.nix
     ../sys/keyd.nix
     ../profiles/remote-access.nix
+    ../profiles/qemu.nix
+    ../profiles/ai.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
@@ -44,6 +46,7 @@
     ];
   };
   services = {
+    ollama.enable = true;
     printing.enable = true;
     avahi.enable = true;
     avahi.nssmdns4 = true;
@@ -163,6 +166,7 @@
     fontDir.enable = true;
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
+      iosevka
       font-awesome
       noto-fonts
       noto-fonts-emoji

@@ -1,13 +1,13 @@
 { pkgs, ... }:
-let
-  mpv-quality-menu = pkgs.callPackage ./plugins/mpv-quality-menu.nix { };
-in {
+#let
+  #mpv-quality-menu = pkgs.callPackage ./plugins/mpv-quality-menu.nix { };
+#in {
+{
   home.packages = [
     pkgs.mpvc # A mpc-like control interface for mpv
     pkgs.playerctl # Command-line utility and library for controlling media players that implement MPRIS
   ];
   xdg.configFile."mpv/script-opts/uosc.conf".source = ./plugins/uosc.conf;
-  xdg.configFile."mpv/script-opts/quality-menu.conf".source = ./plugins/quality-menu.conf;
   xdg.configFile."mpv/scripts/skip_chapters.lua".source = ./plugins/skip_chapters.lua;
   xdg.configFile."mpv/scripts/sponsorblock_minimal.lua".source = ./plugins/sponsorblock_minimal.lua;
   xdg.configFile."mpv/scripts/history.lua".source = ./plugins/mpvhistory.lua;
@@ -95,7 +95,7 @@ in {
       mpris
       #mpv-playlistmanager
       webtorrent-mpv-hook
-      mpv-quality-menu
+      quality-menu
       thumbfast
       acompressor
       #autocrop
@@ -106,27 +106,23 @@ in {
         vidscale = false;
         visibility = "always";
       };
-      youtube-quality = {
-        toggle_menu_binding = "Ctrl+f";
-        up_binding = "up";
-        down_binding = "down";
-        select_binding = "right";
-        selected_and_active = "▶ -";
-        selected_and_inactive = "● -";
-        unselected_and_active = "▷ -";
-        unselected_and_inactive = "○ -";
+      quality-menu = {
+        up_binding = "UP";
+        down_binding = "DOWN";
+        select_binding = "RIGHT ENTER MBTN_LEFT";
+        close_menu_binding = "ESC LEFT";
         scale_playlist_by_window = true;
         style_ass_tags = "{\\fnIosevka NF\\fs20}";
         text_padding_x = 30;
         text_padding_y = 30;
+        curtain_opacity = 0.7;
         menu_timeout = 5;
+        ytdl_ver = "yt-dlp";
         fetch_formats = false;
-        quality_strings = [
-          "{'Best' : 'best'}"
-          "{'1080p' : 'bestvideo[height<=?1080]+bestaudio/best'}"
-          "{'1440p' : 'bestvideo[height<=?1440]+bestaudio/best'}"
-          "{'2160p' : 'bestvideo[height<=?2160]+bestaudio/best'}"
-        ];
+        fetch_on_start = false;
+        quality_strings_video = ''
+          [ {"Best" : "best"}, {"1080p" : "bestvideo[height<=?1080]+bestaudio/best"}, {"2160p" : "bestvideo[height<=?2160]"}, {"1440p" : "bestvideo[height<=?1440]"}, {"1080p" : "bestvideo[height<=?1080]"}, {"720p" : "bestvideo[height<=?720]+ba"}]
+        '';
       };
     };
     bindings = {

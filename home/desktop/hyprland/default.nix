@@ -17,7 +17,7 @@ in {
     inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper
     inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
-    pkgs.pyprland
+    #pkgs.pyprland
     #(pkgs.poetry2nix.mkPoetryApplication rec {
     #  pname = "pyprland";
     #  version = "1.4.1";
@@ -45,6 +45,13 @@ in {
     #  )
     #]))
   ];
+  #systemd.user.services.pyprland = mkHyprlandService {
+  #  Unit.Description = "Pyprland plugins";
+  #  Service = {
+  #    ExecStart = "${pkgs.pyprland}/bin/pypr";
+  #    Restart = "always";
+  #  };
+  #};
   services.hyprland-autoname-workspaces.enable = false;
   xdg.configFile."hypr/hyprpaper.conf".text = ''
     preload = ~/pictures/wallpapers/tarantula_nebula.png
@@ -56,36 +63,29 @@ in {
     wallpaper = DP-3,~/pictures/wallpapers/nebula2_dark.png
     ipc = off
   '';
-  systemd.user.services.pyprland = mkHyprlandService {
-    Unit.Description = "Pyprland plugins";
-    Service = {
-      ExecStart = "${pkgs.pyprland}/bin/pypr";
-      Restart = "always";
-    };
-  };
-  xdg.configFile."hypr/pyprland.json" = {
-    text = builtins.toJSON {
-      pyprland.plugins = [ "scratchpads" ];
-      scratchpads = {
-        kitty = {
-          command = "${pkgs.kitty}/bin/kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'";
-          lazy = true;
-          size = "80% 80%";
-          position = "40% 10%";
-          class = "kitty-scratchpad";
-          margin = 50;
-        };
-        volume = {
-          command = "${pkgs.pavucontrol}/bin/pavucontrol";
-          lazy = true;
-          size = "100% 100%";
-          position = "0% 0%";
-          class = "pavucontrol";
-          margin = 200;
-        };
-      };
-    };
-  };
+  #xdg.configFile."hypr/pyprland.json" = {
+  #  text = builtins.toJSON {
+  #    pyprland.plugins = [ "scratchpads" ];
+  #    scratchpads = {
+  #      kitty = {
+  #        command = "${pkgs.kitty}/bin/kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'";
+  #        lazy = true;
+  #        size = "80% 80%";
+  #        position = "40% 10%";
+  #        class = "kitty-scratchpad";
+  #        margin = 50;
+  #      };
+  #      volume = {
+  #        command = "${pkgs.pavucontrol}/bin/pavucontrol";
+  #        lazy = true;
+  #        size = "100% 100%";
+  #        position = "0% 0%";
+  #        class = "pavucontrol";
+  #        margin = 200;
+  #      };
+  #    };
+  #  };
+  #};
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
@@ -105,12 +105,8 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            #"DP-3,3440x1440@144,0x110,1.25"
             "DP-3,3440x1440@144,0x110,1"
-            #"DP-3,addreserved,2,0,0,0"
-            #"DP-2,2560x1440@165,2752x0,1.25,transform,3"
             "DP-2,2560x1440@144,3440x0,1,transform,3"
-            #"DP-2,addreserved,2,0,0,0"
           ];
           env = [
             "GDK_BACKEND,wayland"
@@ -130,14 +126,13 @@ in {
     plugins = [
         inputs.hy3.packages.x86_64-linux.hy3
         #inputs.hycov.packages.${pkgs.system}.hycov
-        inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
     ];
     settings = {
       exec-once = [
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper}/bin/hyprpaper"
-        "${pkgs.kitty}/bin/kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
       ];
@@ -145,11 +140,12 @@ in {
       xwayland.force_zero_scaling = true;
       general = {
         gaps_in = 4;
-        gaps_out = 3;
+        gaps_out = 6;
         border_size = 2;
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
         "col.inactive_border" = lib.mkForce "rgba(31748f99)";
-        layout = "hy3";
+        #layout = "hy3";
+        layout = "dwindle";
         no_cursor_warps = false;
         no_focus_fallback = true;
         resize_on_border = true;
@@ -199,7 +195,7 @@ in {
         #smart_split = true;
         #smart_resizing = true;
         preserve_split = false;
-        split_width_multiplier = 1.0;
+        split_width_multiplier = 2.0;
         special_scale_factor = 0.90;
         no_gaps_when_only = 0;
         use_active_for_splits = true;
@@ -219,15 +215,19 @@ in {
         vfr = true;
         vrr = true;
       };
-      #group = {
-      #  groupbar = {
-      #    render_titles = false;
-      #    font_size = 11;
-      #    gradients = false;
-      #    "col.active" = lib.mkForce "rgba(9ccfd899)";
-      #    "col.inactive" = lib.mkForce "rgba(31748f99)";
-      #  };
-      #};
+      group = {
+        insert_after_current = true;
+        "col.border_active" = lib.mkForce "rgba(9ccfd899)";
+        "col.border_inactive" = lib.mkForce "rgba(31748f99)";
+        groupbar = {
+          enabled = true;
+          height = 6;
+          render_titles = false;
+          gradients = false;
+          "col.active" = lib.mkForce "rgba(9ccfd899)";
+          "col.inactive" = lib.mkForce "rgba(31748f99)";
+        };
+      };
       input = {
         kb_layout = "us";
         repeat_rate = 60;
@@ -244,14 +244,16 @@ in {
         };
         sensitivity = 0;
       };
-      "device:tpps/2-elan-trackpoint" = {
+      device = {
+        name = "tpps/2-elan-trackpoint";
         sensitivity = -0.25;
         natural_scroll = false;
       };
-      "device:elan0670:00-04f3:3150-touchpad" = {
-        sensitivity = 0.1;
-        natural_scroll = true;
-      };
+      #  "elan0670:00-04f3:3150-touchpad" = {
+      #    sensitivity = 0.1;
+      #    natural_scroll = true;
+      #  };
+      #};
       gestures = {
         workspace_swipe = true;
         workspace_swipe_fingers = 4;

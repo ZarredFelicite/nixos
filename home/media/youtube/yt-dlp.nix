@@ -4,7 +4,6 @@
     -f bestvideo*+bestaudio/best
     --restrict-filenames
     --no-overwrites
-    --sponsorblock-mark all
     --embed-thumbnail
     --embed-subs
     --embed-metadata

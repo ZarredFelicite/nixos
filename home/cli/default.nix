@@ -32,7 +32,7 @@
       ];
       git = true;
       icons = true;
-      enableAliases = false;
+      enableZshIntegration = false;
     };
     script-directory = {
       enable = true;

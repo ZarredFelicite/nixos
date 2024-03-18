@@ -144,6 +144,7 @@
   services = {
     dbus.enable = true;
     fprintd.enable = true;
+    udisks2.enable = true;
     openssh = {
       enable = true;
     };

@@ -11,7 +11,7 @@
     ]; };
     cycle = false;
     location = "top";
-    font = lib.mkDefault "Iosevka NF 9";
+    font = lib.mkDefault "Iosevka Nerd Font 14";
     yoffset = 4;
     extraConfig = {
       auto-select = true;

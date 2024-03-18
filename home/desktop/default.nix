@@ -5,25 +5,6 @@ with lib; let
     Unit.After = ["hyprland-session.target"];
     Install.WantedBy = ["hyprland-session.target"];
   };
-  ocr = pkgs.writeShellScriptBin "ocr" ''
-    #!/bin/bash
-    set -e
-    hyprctl keyword animation "fadeOut,0,5,default"
-    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -b eebebe66)" /tmp/ocr.png
-    hyprctl keyword animation "fadeOut,1,5,default"
-    tesseract /tmp/ocr.png /tmp/ocr-output
-    wl-copy < /tmp/ocr-output.txt
-    notify-send "OCR" "Text copied!"
-    rm /tmp/ocr-output.txt -f
-  '';
-  screenshot = pkgs.writeShellScriptBin "screenshot" ''
-    #!/bin/bash
-    set -e
-    hyprctl keyword animation "fadeOut,0,5,default"
-    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -b 5e81ac66)" - \
-      | ${pkgs.swappy}/bin/swappy -f -
-    hyprctl keyword animation "fadeOut,1,5,default"
-  '';
 in {
   imports = [
     ./hyprland
@@ -40,14 +21,16 @@ in {
     slurp # Select a region in a Wayland compositor
     tesseract # OCR engine
     swappy # A Wayland native snapshot editing tool, inspired by Snappy on macOS
+    satty # A screenshot annotation tool inspired by Swappy and Flameshot
     wayshot # A native, blazing-fast screenshot tool for wlroots based compositors such as sway and river
     wf-recorder # Utility program for screen recording of wlroots-based compositors
-    ocr
+    wl-screenrec # High performance wlroots screen recording, featuring hardware encoding
     grim # Grab images from a Wayland compositor
-    screenshot
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
     cliphist # Wayland clipboard manager
     hyprpicker # A wlroots-compatible Wayland color picker that does not suck
+    wl-mirror # Mirrors an output onto a Wayland surface
+    pipectl # a simple named pipe management utility
   ];
   systemd.user.services.cliphist = mkHyprlandService {
     Unit.Description = "Clipboard history";

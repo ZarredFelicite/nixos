@@ -7,6 +7,7 @@
     pkgs.protonup-qt
     pkgs.wineWowPackages.waylandFull
     pkgs.gamescope
+    pkgs.samba
   ];
   xdg.configFile."lutris/system.yml".text = ''
     system:

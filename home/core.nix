@@ -75,12 +75,15 @@
       moreutils
       gnuplot
       neofetch
+      rpi-imager # Raspberry Pi Imaging Utility
 
       # nix
       nix-index
 
       # latex
       texlive.combined.scheme-full
+
+      piper-tts
 
       (python311.withPackages(ps: with ps; [
         pip
@@ -95,13 +98,16 @@
         mutagen
         beautifulsoup4
         python-mpv-jsonipc
+        playsound
+        gtts
+        flask
         (
           buildPythonPackage rec {
             pname = "reader";
-            version = "3.9";
+            version = "3.11";
             src = fetchPypi {
               inherit pname version;
-              hash = "sha256-Kynv7QRVos5fVWtbVLlW0Kf6619N8FwUNVFjPF431XQ=";
+              hash = "sha256-2ZwvD/QWca4wPorccUSeUBi/u5a7d5MKorpfFVufnF0=";
             };
             format = "pyproject";
             doCheck = false;
@@ -111,6 +117,8 @@
               pkgs.python3Packages.requests
               pkgs.python3Packages.werkzeug
               pkgs.python3Packages.iso8601
+              pkgs.python3Packages.typing-extensions
+              pkgs.python3Packages.beautifulsoup4
             ];
           }
         )
@@ -140,17 +148,23 @@
     #controlMaster = "yes";
     #controlPersist = "30m";
     userKnownHostsFile = "~/.ssh/known_hosts";
-    extraOptionOverrides = {
-      AddKeysToAgent = "yes";
-    };
+    addKeysToAgent = "yes";
     matchBlocks = {
+      rpi = {
+        hostname = "10.131.3.83";
+        user = "zarred";
+        extraOptions = {
+          RequestTTY = "yes";
+          RemoteCommand = "tmux new -A -s horus";
+        };
+      };
       nix-sankara = {
         hostname = "sankara";
         user = "nixremote";
         identityFile = "/root/.ssh/nixremote";
         identitiesOnly = true;
       };
-      sankara = {
+      tmux-sankara = {
         hostname = "sankara";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";
@@ -160,7 +174,7 @@
           RemoteCommand = "tmux new -A -s sankara_remote";
         };
       };
-      sankarah = {
+      home-sankara = {
         hostname = "sankara";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";
@@ -170,7 +184,7 @@
           RemoteCommand = "tmuxinator home";
         };
       };
-      web = {
+      tmux-web = {
         hostname = "web";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";
@@ -248,6 +262,11 @@
       automount = true;
       notify = true;
       tray = "auto";
+      settings = {
+        program_options.udisks_version = 2;
+        program_options.tray = true;
+        icon_names.media = [ "media-optical" ];
+      };
     };
   };
   xdg = {
@@ -255,6 +274,21 @@
       enable = true;
       defaultApplications = {
         "*" = "~/scripts/file-ops/linkhandler.sh";
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/http" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+        "x-scheme-handler/about" = "firefox.desktop";
+        "x-scheme-handler/unknown" = "firefox.desktop";
+      };
+      associations.added = {
+        "application/pdf" = "zathura.desktop";
+        "application/octet-stream" = "nvim.desktop";
+        "text/xml" = [
+          "nvim.desktop"
+          "codium.desktop"
+        ];
+        "x-scheme-handler/https" = "firefox.desktop";
+        "text/html" = "firefox.desktop";
       };
     };
     userDirs = {

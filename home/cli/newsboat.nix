@@ -175,6 +175,7 @@
       { url = "https://feeds.megaphone.fm/recodedecode"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.megaphone.fm/WWO6655869236"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.megaphone.fm/pivot"; tags = [ "!" "podcasts" ]; }
+      { url = "https://feeds.redcircle.com/e30b9f10-8c86-432e-9fa0-ba287fb94e7f"; tags = [ "!" "podcasts" "socialism" ]; }
     ];
   };
 }

@@ -4,9 +4,6 @@
       "center, ^(zenity)$"
       "pin, ^(dragon-drop)$"
       "tile, ^(Vtk)$"
-      "nofullscreenrequest, ^(code-oss)$"
-      #"nofullscreenrequest, ^(firefox)$"
-      "workspace 1 silent, ^(stats)$"
       "workspace special, (special)$"
     ];
     windowrulev2 = [
@@ -15,7 +12,6 @@
       "center, class:^(nova)$"
       "pin, class:^(nova)$"
       "stayfocused, class:^(nova)$"
-      "move cursor -90% 20, class:^(waybar)$"
       "animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
       "stayfocused, class:^(rofi)$"
@@ -29,14 +25,13 @@
       "float, title:^(mpd_cover)$"
       "size 1000 1000, title:^(mpd_cover)$"
       "pseudo, class:^(imv)$"
-      "float, class:^(kitty-scratchpad)$"
-      "float, class:^(pavucontrol)$"
+      "tile, class:^(kdeconnect.sms)$"
     ];
     layerrule = [
       "blur, notifications"
       "blur, swaync-control-center"
       "blur, swaync-notification-window"
-      #"blur, waybar"
+      "blur, waybar"
       "blur, rofi"
       "blur, wlroots"
       "blur, gtk-layer-shell"
@@ -44,17 +39,22 @@
       "ignorezero, swaync-control-center"
       "ignorezero, notifications"
       "ignorezero, swaync-notification-window"
-      #"ignorezero, waybar"
+      "ignorezero, waybar"
       "ignorezero, rofi"
       "ignorezero, wlroots"
       "ignorezero, gtk-layer-shell"
       "ignorezero, anyrun"
     ];
     workspace = [
-      "1, gapsin:20, gapsout:40" # stats
-      "2, gapsin:20, gapsout:40" # home
-      "3, gapsin:30, gapsout:60" # music
+      "1, gapsin:20, gapsout:40" # mail
+      "2, gapsin:30, gapsout:60" # music
+      "3, gapsin:30, gapsout:60" # media-menu
       "5, monitor:eDP-1, default:true" # default/browser
+      "5, monitor:DP-2, default:true" # default/browser
+      "4, monitor:DP-1, default:true" # default/media
+      "special, on-created-empty:kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
+      "special:volume, on-created-empty:pavucontrol"
+      "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
     ];
   };
 }

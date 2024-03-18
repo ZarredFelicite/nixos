@@ -17,12 +17,12 @@ in {
   ];
   programs.swaylock.enable = true;
   programs.password-store.enable = true;
-  services.swayidle.enable = false;
+  services.swayidle.enable = true;
   services.gpg-agent.extraConfig = ''
     pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
     allow-preset-passphrase
   '';
-  services.gpg-agent.pinentryFlavor = null;
+  services.gpg-agent.pinentryPackage = null;
   home.packages = with pkgs; [
     # wayland tools
     wev # Wayland event viewer
@@ -41,6 +41,7 @@ in {
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
     prusa-slicer # G-code generator for 3D printer
+    orca-slicer
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
     # misc
     xdg-utils # for opening default programs when clicking links

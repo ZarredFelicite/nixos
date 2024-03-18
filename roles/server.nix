@@ -28,7 +28,7 @@
   services.tt-rss.enable = true;
   services.gotify.enable = true;
   services.mpd.enable = true;
-  services.klipper.enable = false;
+  services.klipper.enable = true;
 
   services.jellyfin.enable = true;
   services.jellyseerr.enable = true;

@@ -152,6 +152,7 @@ in {
       };
       binds = {
         movefocus_cycles_fullscreen = false;
+        workspace_center_on = 1;
       };
       decoration = {
         rounding = 20;
@@ -163,7 +164,7 @@ in {
           ignore_opacity = true;
         };
         drop_shadow = false;
-        #dim_special = 0.0;
+        dim_special = 0.5;
       };
       animations = {
        enabled = true;
@@ -214,6 +215,8 @@ in {
         swallow_exception_regex = "^(cava|wev)$";
         vfr = true;
         vrr = true;
+        new_window_takes_over_fullscreen = 2;
+        #enable_hyprcursor = true;
       };
       group = {
         insert_after_current = true;

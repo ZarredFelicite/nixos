@@ -98,6 +98,8 @@
       "$mod SHIFT,          8, movetoworkspace, 8"
       "$mod SHIFT,          9, movetoworkspace, 9"
       "$mod SHIFT,          0, movetoworkspace, 10"
+      " , mouse:275, workspace, r-1"
+      " , mouse:276, workspace, r+1"
       # move into submap
       #"$mod ALT, $NAVL, exec, ~/scripts/hyprland/moveintogroup.sh l"
       #"$mod ALT, $NAVD, exec, ~/scripts/hyprland/moveintogroup.sh d"

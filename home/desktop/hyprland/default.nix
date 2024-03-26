@@ -153,6 +153,7 @@ in {
       binds = {
         movefocus_cycles_fullscreen = false;
         workspace_center_on = 1;
+        scroll_event_delay = 100;
       };
       decoration = {
         rounding = 20;

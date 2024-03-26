@@ -55,6 +55,8 @@
       "special, on-created-empty:kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
       "special:volume, on-created-empty:pavucontrol"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
+      "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh"
+      "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh"
     ];
   };
 }

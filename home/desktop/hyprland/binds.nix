@@ -6,6 +6,10 @@
       bind   =      ,      E, submap, reset
       bind   =      ,      I, togglespecialworkspace, scratchpad
       bind   =      ,      I, submap, reset
+      bind   =      ,      O, togglespecialworkspace, finance
+      bind   =      ,      O, submap, reset
+      bind   =      ,      N, togglespecialworkspace, mail
+      bind   =      ,      N, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
   '';
@@ -129,6 +133,8 @@
       " $mod CTRL, $NAVD, resizeactive, 0 20"
       " $mod CTRL, $NAVU, resizeactive, 0 -20"
       " $mod CTRL, $NAVR, resizeactive, 20 0"
+      "$mod CTRL, Next, exec, ~/scripts/hyprland/hyprzoom decrease"
+      "$mod CTRL, Prior, exec, ~/scripts/hyprland/hyprzoom increase"
       #" , edge:r:u, exec, brillo -A 1 -u 100000"
       #" , edge:r:d, exec, brillo -U 1 -u 100000"
       #" , edge:l:u, exec, wpctl set-volume @DEFAULT_SINK@ 0.05+ -l 1.5"

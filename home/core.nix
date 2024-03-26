@@ -104,10 +104,10 @@
         (
           buildPythonPackage rec {
             pname = "reader";
-            version = "3.11";
+            version = "3.12";
             src = fetchPypi {
               inherit pname version;
-              hash = "sha256-2ZwvD/QWca4wPorccUSeUBi/u5a7d5MKorpfFVufnF0=";
+              hash = "sha256-XueIGEwKnukr5NXm2sSk6WTR+ZhT6fhdPM3ElYkXkPg=";
             };
             format = "pyproject";
             doCheck = false;

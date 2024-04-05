@@ -1,19 +1,20 @@
 { config, pkgs, ... }: {
-  #virtualisation.oci-containers.backend = "docker";
-  virtualisation.podman = {
+  virtualisation.docker = {
     enable = true;
-    dockerCompat = true;
+    enableOnBoot = true;
+    enableNvidia = true;
+    storageDriver = "btrfs";
+    #rootless = {
+    #  enable = true;
+    #  setSocketVariable = true;
+    #};
+    #daemon.settings = {
+    #  data-root = "/home/zarred/.local/share/docker";
+    #};
   };
-  virtualisation.oci-containers.containers."stirling-pdf" = {
-    image = "docker.io/frooodle/s-pdf:latest";
-    ports = [ "8088:8080" ];
-    environment = {
-      DOCKER_ENABLE_SECURITY = "false";
-    };
-    volumes = [
-      "/var/lib/stirling-pdf/customFiles:/customFiles/"
-      "/var/lib/stirling-pdf/extraConfigs:/configs"
-      "/var/lib/stirling-pdf/trainingData:/usr/share/tesseract-ocr/4.00/tessdata"
-    ];
-  };
+  environment.systemPackages = [ pkgs.docker-compose ];
+  virtualisation.containers.cdi.dynamic.nvidia.enable = true;
+  systemd.enableUnifiedCgroupHierarchy = false;
+  users.users.zarred.extraGroups = [ "docker" ];
+  # windows in docker https://github.com/dockur/windows
 }

@@ -1,7 +1,7 @@
 { self, pkgs, inputs, outputs, config, ... }: {
   imports = [
     ../profiles/common.nix
-    ../containers/docker.nix
+    ../containers/podman.nix
     ../profiles/media-server.nix
     ../profiles/server-management.nix
     ../profiles/rss.nix

@@ -18,8 +18,9 @@
         set smoothscroll true
         set scrollduration 150
         set editorcmd kitty -c "nvim"
-        set hintfiltermode vimperator-reflow
+        set hintfiltermode simple
         set hintchars eiorsnta
+        set hintnames short
         set modeindicatorshowkeys true
 
         set completionfuzziness 0.5
@@ -34,7 +35,6 @@
 
 
         unbind <C-f>
-        unbind f
         bind --mode=ignore , mode normal
         unbind <C-e>
         unbind >
@@ -43,6 +43,8 @@
         bind <ArrowUp> scrollline -5
         bind <ArrowDown> scrollline 5
         bind a hint
+        bind A hint -b
+        bind <C-A> hint -t
         bind e tabprev
         bind i tabnext
         bind c tabclose

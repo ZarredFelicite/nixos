@@ -1,5 +1,6 @@
-{ lib, ... }: {
+{ pkgs, ... }: {
   #systemd.services.syncthing.unitConfig.After = lib.mkForce "multi-user.target";
+  environment.systemPackages = [ pkgs.syncthing ];
   services.syncthing = {
     enable = true;
     user = "zarred";

@@ -4,7 +4,6 @@
   xdg.configFile = {
     "tickrs/config.yml".text = builtins.toJSON {
       symbols = [
-        "^AXJO"
         "ADT.AX"
         "WHC.AX"
         "NHC.AX"
@@ -21,6 +20,7 @@
         "ES=F"
         "^GSPC"
         "AUDUSD=X"
+        "^AXJO"
       ];
       time_frame = "1D";
       update_interval = 60;
@@ -53,7 +53,7 @@
         "NC1.AX"
       ];
       lots = [
-        { symbol = "ADT.AX"; quantity = 11417; unit_cost = 0.791;}
+        { symbol = "ADT.AX"; quantity = 12000; unit_cost = 2.72;}
         { symbol = "BSX.AX"; quantity = 7571; unit_cost = 0.157;}
         { symbol = "GBZ.AX"; quantity = 11904; unit_cost = 0.086;}
         { symbol = "MZZ.AX"; quantity = 1942; unit_cost = 0.275;}

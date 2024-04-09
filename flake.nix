@@ -10,10 +10,10 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { url = "github:hyprwm/Hyprland?ref=v0.37.0";};
+    hyprland = { url = "github:hyprwm/Hyprland?ref=v0.38.0";};
     hyprpaper = { url = "github:hyprwm/hyprpaper"; };
     hyprlang = { url = "github:hyprwm/hyprlang"; };
-    hy3 = { url = "github:outfoxxed/hy3?ref=hl0.37.1"; inputs.hyprland.follows = "hyprland"; };
+    hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
     #hycov = { url = "github:DreamMaoMao/hycov"; inputs.hyprland.follows = "hyprland"; };
     #hyprfocus = { url = "github:VortexCoyote/hyprfocus"; inputs.hyprland.follows = "hyprland"; };

@@ -22,6 +22,7 @@ in {
     ];
   };
   programs.tmux = {
+    mouse = true;
     aggressiveResize = true;
     baseIndex = 1;
     disableConfirmationPrompt = true;

@@ -194,9 +194,10 @@
     autoEnable = true;
     image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
-    override = {
-      base00 = "#191724";
-    };
+    # https://github.com/tinted-theming/base16-schemes
+    #override = {
+    #  base00 = "#191724";
+    #};
     cursor = {
       package = pkgs.catppuccin-cursors.mochaDark;
       name = "Catppuccin-Mocha-Dark-Cursors";

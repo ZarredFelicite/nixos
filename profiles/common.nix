@@ -2,12 +2,13 @@
   imports = [
     ../sys/nix.nix
     inputs.sops-nix.nixosModules.sops
+    ../containers/docker.nix
   ];
   system.stateVersion = "23.05";
   boot.loader = {
     systemd-boot = {
       enable = true;
-      configurationLimit = 10;
+      configurationLimit = 20;
     };
     timeout = 0;
     #consoleLogLevel = 0;

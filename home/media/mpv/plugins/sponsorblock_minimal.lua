@@ -40,10 +40,10 @@ function skip_ads(name,pos)
 			v = i.segment[2]
 			if i.segment[1] <= pos and v > pos and ON then
 				mp.osd_message(("[sponsorblock] skipping forward %ds"):format(math.floor(v-mp.get_property("time-pos"))))
-        mp.set_property("speed", 4)
+        mp.set_property("speed", 3.5)
 				return
       else
-        if mp.get_property_number("speed") == 4 then
+        if mp.get_property_number("speed") == 3.5 then
           mp.set_property("speed", speed)
         else
           speed = mp.get_property_number("speed")

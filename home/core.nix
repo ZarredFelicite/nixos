@@ -76,6 +76,8 @@
       gnuplot
       neofetch
       rpi-imager # Raspberry Pi Imaging Utility
+      ventoy
+      exfatprogs
 
       # nix
       nix-index

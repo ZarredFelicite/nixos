@@ -141,7 +141,7 @@ imports = [
         keymaps = {
           "<C-p>" = {
             action = "git_files";
-            desc = "Telescope Git Files";
+            options.desc = "Telescope Git Files";
           };
           "<leader>fg" = "live_grep";
           "<leader>ff" = "find_files";

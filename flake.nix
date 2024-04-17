@@ -107,6 +107,15 @@
             ./sys/syncthing.nix
           ];
         };
+        liveIso = lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit self inputs ; };
+      	  modules = [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            inputs.stylix.nixosModules.stylix
+            ./roles/iso.nix
+          ];
+        };
       };
     };
 }

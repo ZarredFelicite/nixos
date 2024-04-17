@@ -183,6 +183,7 @@
   programs = {
     dconf.enable = true;
     zsh.enable = true;
+    mosh.enable = true;
   };
   documentation.man = {
     # In order to enable to mandoc man-db has to be disabled.

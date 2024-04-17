@@ -101,6 +101,8 @@
         playsound
         gtts
         flask
+        numpy
+        matplotlib
         (
           buildPythonPackage rec {
             pname = "reader";

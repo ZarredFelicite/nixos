@@ -86,6 +86,7 @@
       texlive.combined.scheme-full
 
       piper-tts
+      upscayl
 
       (python311.withPackages(ps: with ps; [
         pip

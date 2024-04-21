@@ -29,6 +29,7 @@
       ".config/polychromatic"
       ".config/keyboard"
       ".config/gh"
+      ".config/matlab"
     ];
     files = [
       ".config/wtwitch/api.json"

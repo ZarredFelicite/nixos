@@ -8,6 +8,7 @@
     pkgs.wineWowPackages.waylandFull
     pkgs.gamescope
     pkgs.samba
+    pkgs.bottles
   ];
   xdg.configFile."lutris/system.yml".text = ''
     system:

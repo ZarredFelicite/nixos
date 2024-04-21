@@ -57,6 +57,7 @@
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
       "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh"
       "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh"
+      "special:server, on-created-empty:~/scripts/hyprland/special_server.sh"
     ];
   };
 }

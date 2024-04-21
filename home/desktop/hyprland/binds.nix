@@ -10,6 +10,8 @@
       bind   =      ,      O, submap, reset
       bind   =      ,      N, togglespecialworkspace, mail
       bind   =      ,      N, submap, reset
+      bind   =      ,      F, togglespecialworkspace, server
+      bind   =      ,      F, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
   '';

@@ -17,41 +17,7 @@ in {
     inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper
     inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
-    #pkgs.pyprland
-    #(pkgs.poetry2nix.mkPoetryApplication rec {
-    #  pname = "pyprland";
-    #  version = "1.4.1";
-    #  src = pkgs.python311.fetchPypi {
-    #    inherit pname version;
-    #    sha256 = "sha256-JRxUn4uibkl9tyOe68YuHuJKwtJS//Pmi16el5gL9n8=";
-    #  };
-    #})
-    #(pkgs.python311.withPackages(ps: with ps; [
-    #  (
-    #    buildPythonPackage rec {
-    #      pname = "pyprland";
-    #      version = "1.4.1";
-    #      src = fetchPypi {
-    #        inherit pname version;
-    #        sha256 = "sha256-JRxUn4uibkl9tyOe68YuHuJKwtJS//Pmi16el5gL9n8=";
-    #      };
-    #      doCheck = false;
-    #      dontUseCmakeConfigure = true;
-    #      nativeBuildInputs = [
-    #        pkgs.poetry
-    #        setuptools
-    #      ];
-    #    }
-    #  )
-    #]))
   ];
-  #systemd.user.services.pyprland = mkHyprlandService {
-  #  Unit.Description = "Pyprland plugins";
-  #  Service = {
-  #    ExecStart = "${pkgs.pyprland}/bin/pypr";
-  #    Restart = "always";
-  #  };
-  #};
   services.hyprland-autoname-workspaces.enable = false;
   xdg.configFile."hypr/hyprpaper.conf".text = ''
     preload = ~/pictures/wallpapers/tarantula_nebula.png
@@ -63,29 +29,6 @@ in {
     wallpaper = DP-3,~/pictures/wallpapers/nebula2_dark.png
     ipc = off
   '';
-  #xdg.configFile."hypr/pyprland.json" = {
-  #  text = builtins.toJSON {
-  #    pyprland.plugins = [ "scratchpads" ];
-  #    scratchpads = {
-  #      kitty = {
-  #        command = "${pkgs.kitty}/bin/kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'";
-  #        lazy = true;
-  #        size = "80% 80%";
-  #        position = "40% 10%";
-  #        class = "kitty-scratchpad";
-  #        margin = 50;
-  #      };
-  #      volume = {
-  #        command = "${pkgs.pavucontrol}/bin/pavucontrol";
-  #        lazy = true;
-  #        size = "100% 100%";
-  #        position = "0% 0%";
-  #        class = "pavucontrol";
-  #        margin = 200;
-  #      };
-  #    };
-  #  };
-  #};
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
@@ -121,17 +64,15 @@ in {
     package = inputs.hyprland.packages.x86_64-linux.default;
     xwayland.enable = true;
     systemd.enable = true;
-    enableNvidiaPatches = false;
     extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
-        inputs.hy3.packages.x86_64-linux.hy3
         #inputs.hycov.packages.${pkgs.system}.hycov
-        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
     ];
     settings = {
       exec-once = [
-        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        #"systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        #"dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper}/bin/hyprpaper"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
@@ -144,7 +85,6 @@ in {
         border_size = 2;
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
         "col.inactive_border" = lib.mkForce "rgba(31748f99)";
-        #layout = "hy3";
         layout = "dwindle";
         no_cursor_warps = false;
         no_focus_fallback = true;
@@ -179,18 +119,6 @@ in {
           "specialWorkspace, 1, 6, overshot"
         ];
       };
-      #dwindle = {
-      #  pseudotile = true;
-      #  force_split = 2;
-      #  #smart_split = true;
-      #  #smart_resizing = true;
-      #  preserve_split = true;
-      #  split_width_multiplier = 2.35;
-      #  special_scale_factor = 0.95;
-      #  no_gaps_when_only = 0;
-      #  use_active_for_splits = true;
-      #  default_split_ratio = 1;
-      #};
       dwindle = {
         pseudotile = true;
         force_split = 2;
@@ -265,7 +193,6 @@ in {
         workspace_swipe_min_speed_to_force = 3;
         workspace_swipe_cancel_ratio = 0.2;
         workspace_swipe_forever = true;
-        workspace_swipe_numbered = true;
       };
     };
   }];

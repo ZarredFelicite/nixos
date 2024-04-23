@@ -7,7 +7,7 @@
       "workspace special, (special)$"
     ];
     windowrulev2 = [
-      "float, class:^(nova|zoom|imv)$"
+      "float, class:^(nova|zoom|imv|cctv)$"
       "size 800 500, class:^(nova)$"
       "center, class:^(nova)$"
       "pin, class:^(nova)$"
@@ -56,6 +56,7 @@
       "special:volume, on-created-empty:pavucontrol"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
       "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh"
+      "special:media, on-created-empty:~/scripts/hyprland/special_media.sh"
       "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh"
       "special:server, on-created-empty:~/scripts/hyprland/special_server.sh"
     ];

@@ -12,6 +12,10 @@
       bind   =      ,      N, submap, reset
       bind   =      ,      F, togglespecialworkspace, server
       bind   =      ,      F, submap, reset
+      bind   =      ,      M, togglespecialworkspace, media
+      bind   =      ,      M, submap, reset
+      bind   =      ,      C, exec, ~/scripts/hyprland/cctv
+      bind   =      ,      C, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
   '';

@@ -32,7 +32,7 @@ in {
     prefix = "C-a";
     customPaneNavigationAndResize = false;
     newSession = true;
-    terminal = "screen-256color";
+    terminal = "xterm-256color";
     sensibleOnTop = true;
     tmuxinator.enable = true;
     extraConfig = ''

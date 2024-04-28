@@ -34,6 +34,7 @@ imports = [
       hlsearch = false;
       incsearch = true;
 
+      termguicolors = false;
     };
     keymaps = [
       { key = "<leader>u"; action = "<cmd>UndotreeToggle<CR>"; }

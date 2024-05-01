@@ -5,7 +5,7 @@ imports = [
   programs.nixvim = {
     globals.mapleader = " ";
     clipboard.providers.wl-copy.enable = true;
-    options = {
+    opts = {
       undofile = true;
       spell = true;
       number = true;
@@ -33,8 +33,11 @@ imports = [
 
       hlsearch = false;
       incsearch = true;
+<<<<<<< HEAD
 
       termguicolors = false;
+=======
+>>>>>>> refs/remotes/origin/main
     };
     keymaps = [
       { key = "<leader>u"; action = "<cmd>UndotreeToggle<CR>"; }
@@ -52,7 +55,7 @@ imports = [
     ];
     colorschemes.catppuccin = {
       enable = false;
-      transparentBackground = true;
+      settings.transparent_background = true;
     };
     plugins = {
       lualine = {

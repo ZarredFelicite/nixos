@@ -84,7 +84,7 @@
       nix-index
 
       # latex
-      texlive.combined.scheme-full
+      texliveBasic
 
       piper-tts
       upscayl

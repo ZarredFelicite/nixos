@@ -15,6 +15,7 @@
         #"ssh://zarred@web"
         #"http://binarycache.zar.red"
         "https://cache.nixos.org"
+        "https://cuda-maintainers.cachix.org"
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
         #"https://anyrun.cachix.org"
@@ -26,6 +27,7 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
         "ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc="
+        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
       ];
     };
   };

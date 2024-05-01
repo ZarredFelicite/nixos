@@ -33,6 +33,11 @@ imports = [
 
       hlsearch = false;
       incsearch = true;
+<<<<<<< HEAD
+
+      termguicolors = false;
+=======
+>>>>>>> refs/remotes/origin/main
     };
     keymaps = [
       { key = "<leader>u"; action = "<cmd>UndotreeToggle<CR>"; }

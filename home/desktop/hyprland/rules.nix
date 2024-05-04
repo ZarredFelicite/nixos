@@ -7,7 +7,7 @@
       "workspace special, (special)$"
     ];
     windowrulev2 = [
-      "float, class:^(nova|zoom|imv|cctv)$"
+      "float, class:^(nova|zoom|cctv)$"
       "size 800 500, class:^(nova)$"
       "center, class:^(nova)$"
       "pin, class:^(nova)$"
@@ -16,7 +16,7 @@
       "rounding 6, class:^(waybar)$"
       "stayfocused, class:^(rofi)$"
       "stayfocused, class:^(Pinentry)$"
-      "keepaspectratio, class:^(mpv|imv)$"
+      "keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
       "fakefullscreen, class:^(firefox)$"
       "noborder, class:^(firefox)$"
@@ -24,7 +24,7 @@
       "size 60% 50%, title:^(Enter name of file to save to…)$|class:xdg-desktop-portal-gtk"
       "float, title:^(mpd_cover)$"
       "size 1000 1000, title:^(mpd_cover)$"
-      "pseudo, class:^(imv)$"
+      #"pseudo, class:^(imv)$"
       "tile, class:^(kdeconnect.sms)$"
     ];
     layerrule = [

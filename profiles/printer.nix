@@ -41,6 +41,7 @@
         cors_domains = [
           "https://mainsail.zar.red"
           "http://192.168.86.200:8001"
+          "http://sankara:8001"
         ];
         trusted_clients = [
           "192.168.86.0/24"

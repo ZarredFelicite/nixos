@@ -2,7 +2,7 @@
   virtualisation.oci-containers.backend = "podman";
   virtualisation.podman = {
     enable = true;
-    dockerCompat = true;
+    #dockerCompat = true;
   };
   virtualisation.oci-containers.containers."stirling-pdf" = {
     image = "docker.io/frooodle/s-pdf:latest";

@@ -8,7 +8,7 @@
   ];
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {
-    enable = true;
+    enable = false;
     preset = "autoeq" ;
   };
   programs.beets = {

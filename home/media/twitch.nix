@@ -1,7 +1,7 @@
 { pkgs, lib, osConfig, config, ... }: {
   home.packages = [
     pkgs.chatterino2
-    pkgs.streamlink
+    #pkgs.streamlink BROKEN
   ];
   xdg.configFile."wtwitch/config.json".text = builtins.toJSON {
     player = "mpv";

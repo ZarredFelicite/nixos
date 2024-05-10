@@ -156,6 +156,14 @@
     userKnownHostsFile = "~/.ssh/known_hosts";
     addKeysToAgent = "yes";
     matchBlocks = {
+      rpicam = {
+        hostname = "rpicam";
+        user = "zarred";
+        extraOptions = {
+          RequestTTY = "yes";
+          RemoteCommand = "export TERM=xterm-256color; tmux new -A -s rpicam";
+        };
+      };
       rpi = {
         hostname = "10.131.3.83";
         user = "zarred";

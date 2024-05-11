@@ -10,7 +10,7 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { url = "github:hyprwm/Hyprland?ref=v0.39.1";};
+    hyprland = { url = "github:hyprwm/Hyprland?ref=v0.40.0";};
     hyprpaper = { url = "github:hyprwm/hyprpaper"; };
     hyprlang = { url = "github:hyprwm/hyprlang"; };
     #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
@@ -67,6 +67,7 @@
             ./sys/impermanence.nix
             ./sys/nfs.nix
             ./sys/syncthing.nix
+            ./profiles/fans/fans.nix
           ];
         };
         nano = lib.nixosSystem {

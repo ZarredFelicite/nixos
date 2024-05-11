@@ -4,7 +4,7 @@
   networking.hostName = "web";
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = [ "kvm-amd" "nct6775" ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];

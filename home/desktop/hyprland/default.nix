@@ -50,6 +50,7 @@ in {
           monitor = [
             "DP-3,3440x1440@144,0x110,1"
             "DP-2,2560x1440@144,3440x0,1,transform,3"
+            "Unknown-1,disable"
           ];
           env = [
             "GDK_BACKEND,wayland"
@@ -67,7 +68,7 @@ in {
     extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
     ];
     settings = {
       exec-once = [
@@ -77,7 +78,7 @@ in {
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
       ];
-      monitor = [",preferred,auto,1"];
+      #monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;
       general = {
         gaps_in = 4;

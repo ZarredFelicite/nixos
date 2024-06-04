@@ -10,6 +10,7 @@
       "/var/lib"
       "/var/db/sudo/lectured"
       "/etc/NetworkManager/system-connections"
+      "/etc/coolercontrol"
     ];
     files = [
       "/etc/ssh/ssh_host_ed25519_key"

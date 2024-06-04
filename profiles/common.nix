@@ -184,6 +184,13 @@
     dconf.enable = true;
     zsh.enable = true;
     mosh.enable = true;
+    nh = {
+      enable = true;
+      flake = /home/zarred/dots;
+      clean.enable = true;
+      clean.extraArgs = "--keep 5 --keep-since 3d";
+      clean.dates = "weekly";
+    };
   };
   documentation.man = {
     # In order to enable to mandoc man-db has to be disabled.

@@ -48,8 +48,11 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            "DP-3,3440x1440@144,0x110,1"
-            "DP-2,2560x1440@144,3440x0,1,transform,3"
+            #"DP-3,3440x1440@144,0x0,1" # 0x110
+            "desc:Dell Inc. AW3423DWF 2ZVC2S3,3440x1440@165,0x1000,1"
+            "desc:XMI Mi Monitor,3440x1440@144,3440x0,1,transform,3" # 0x110
+            #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
+            #"DP-1,2560x1440@120.0,3440x0,1,transform,3"
             "Unknown-1,disable"
           ];
           env = [
@@ -57,7 +60,6 @@ in {
             "QT_QPA_PLATFORM,wayland"
             "SDL_VIDEODRIVER,wayland"
             "CLUTTER_BACKEND,wayland"
-            "WLR_NO_HARDWARE_CURSORS,1"
           ];
         };
       })
@@ -72,8 +74,8 @@ in {
     ];
     settings = {
       exec-once = [
-        #"systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        #"dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper}/bin/hyprpaper"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
@@ -138,8 +140,8 @@ in {
         animate_mouse_windowdragging = true;
         focus_on_activate = true;
         layers_hog_keyboard_focus = true;
-        mouse_move_enables_dpms = true;
-        key_press_enables_dpms = false;
+        mouse_move_enables_dpms = false;
+        key_press_enables_dpms = true;
         enable_swallow = false;
         swallow_regex = "^(kitty)$";
         swallow_exception_regex = "^(cava|wev)$";

@@ -1,15 +1,4 @@
-{ pkgs, fetchFromGithub, ... }:
-let
-  tmux-window-name = pkgs.tmuxPlugins.nord.overrideAttrs (oldAttrs: {
-    pluginName = "tmux-window-name";
-    src = pkgs.fetchFromGitHub {
-      owner = "ofirgall";
-      repo = "tmux-window-name";
-      rev = "f89e9c9d71f5a487e7276ff994cc6f7c1079c8ce";
-      sha256 = "sha256-B9l9MX4XjUThzJwL4RZtlMg9yRzWbTIkY70F2/FIDc8=";
-    };
-  });
-in {
+{ pkgs, fetchFromGithub, ... }: {
   stylix.targets.tmux.enable = false;
   xdg.configFile."tmuxinator/home.yml".text = builtins.toJSON {
     name = "home";
@@ -27,7 +16,7 @@ in {
     baseIndex = 1;
     disableConfirmationPrompt = true;
     escapeTime = 0;
-    historyLimit = 50000;
+    historyLimit = 100000;
     keyMode = "vi";
     prefix = "C-a";
     customPaneNavigationAndResize = false;
@@ -36,16 +25,15 @@ in {
     sensibleOnTop = true;
     tmuxinator.enable = true;
     extraConfig = ''
-      bind \ split-window -h
-      bind - split-window -v
       bind r source-file ~/.config/tmux/tmux.conf
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
+      set-option -g status-interval 5
+      set-option -g automatic-rename on
+      set-option -g automatic-rename-format '#{b:pane_current_path}'
+      set-option -g detach-on-destroy off
     '';
     plugins = with pkgs; [
-      { plugin = tmux-window-name;
-        extraConfig = "";
-      }
       { plugin = tmuxPlugins.catppuccin;
         # https://github.com/catppuccin/tmux
         extraConfig = ''

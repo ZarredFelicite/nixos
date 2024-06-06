@@ -19,7 +19,7 @@
 
     #nixvim = { url = "github:nix-community/nixvim?rev=358f5732f2443a922a6ceee54b5740efabe0950c"; inputs.nixpkgs.follows = "nixpkgs"; };
     nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
-    anyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };
+    #anyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };
     #waybar = { url = "github:Alexays/Waybar"; inputs.nixpkgs.follows = "nixpkgs"; };
     himalaya.url = "github:soywod/himalaya";
     qrrs.url = "github:Lenivaya/qrrs";

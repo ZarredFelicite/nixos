@@ -70,7 +70,7 @@ in {
     extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
     ];
     settings = {
       exec-once = [

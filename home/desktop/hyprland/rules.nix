@@ -16,7 +16,7 @@
       "rounding 6, class:^(waybar)$"
       "stayfocused, class:^(rofi)$"
       "stayfocused, class:^(Pinentry)$"
-      "keepaspectratio, class:^(mpv)$"
+      #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
       "fakefullscreen, class:^(firefox)$"
       "noborder, class:^(firefox)$"

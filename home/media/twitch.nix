@@ -11,7 +11,7 @@
     subscriptions = [
       { streamer = "anthonyz"; }
       { streamer = "buddha"; }
-      { streamer = "zetarkgg"; }
+      { streamer = "zetark"; }
       { streamer = "kyedae"; }
       { streamer = "ripoozi"; }
       { streamer = "jack"; }
@@ -31,6 +31,7 @@
       { streamer = "fanfan"; }
       { streamer = "bonnierabbit"; }
       { streamer = "sayeedblack"; }
+      { streamer = "geega"; }
     ];
   };
   #xdg.configFile."wtwitch/api.json".source = config.lib.file.mkOutOfStoreSymlink /run/secrets/twitch-api-token;

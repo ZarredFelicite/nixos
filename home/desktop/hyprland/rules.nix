@@ -46,12 +46,6 @@
       "ignorezero, anyrun"
     ];
     workspace = [
-      "1, gapsin:20, gapsout:40" # mail
-      "2, gapsin:30, gapsout:60" # music
-      "3, gapsin:30, gapsout:60" # media-menu
-      "5, monitor:eDP-1, default:true" # default/browser
-      "5, monitor:DP-2, default:true" # default/browser
-      "4, monitor:DP-1, default:true" # default/media
       "special, on-created-empty:kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
       "special:volume, on-created-empty:pavucontrol"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"

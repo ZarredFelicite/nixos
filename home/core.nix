@@ -38,6 +38,7 @@
       # archives
       atool
       unzip
+      unrar
       # utils
       ripgrep # recursively searches directories for a regex pattern
       jq # A lightweight and flexible command-line JSON processor
@@ -107,6 +108,8 @@
         flask
         numpy
         matplotlib
+        pybluez
+        libtmux
         (
           buildPythonPackage rec {
             pname = "reader";

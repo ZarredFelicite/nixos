@@ -4,7 +4,7 @@
     zsh-autosuggestions
     spaceship-prompt
     #zsh-fzf-history-search
-    cod
+    #cod
   ];
   programs.direnv = {
     enableBashIntegration = true;
@@ -65,7 +65,7 @@
       batdiff() { git diff --name-only --relative --diff-filter=d | xargs bat --diff; }
       video() { nohup mpv $@ >/dev/null 2>&1 &; }
       # auto completion generation from --help page
-      source <(cod init $$ zsh)
+      #source <(cod init $$ zsh)
     '';
     initExtraBeforeCompInit = "";
     initExtraFirst = "";
@@ -141,20 +141,12 @@
       NC = "\\033[0m";
     };
     shellAliases = {
-      reboot = "~/scripts/sys/reboot";
-      mon-off = "xset dpms force off";
       tw = "wtwitch";
-      c-awesome = "nvim ~/.config/awesome/rc.lua";
-      c-picom = "nvim ~/.config/picom/picom.conf";
-      c-auto = "nvim ~/.dotfiles/autostart.sh";
-      yt-subs = "nvim ~/.config/ytfzf/grouped_subscriptions.csv";
-      ytc = "/home/zarred/yt-subscription-terminal/sub_term.py";
       copy = "rsync -rh --info=progress2";
       vi = "nvim";
       fzf = "fzf -m --reverse --border --inline-info --bind=ctrl-l:accept";
       mkdir = "mkdir -pv";
       mv = "mv -i";
-      software = "nvim ~/bookmarks/software.md";
       tv = "tidy-viewer";
       skl = "lychee - --dump | sk";
       b = "buku --suggest";
@@ -168,7 +160,7 @@
       code = "code --enable-features=UseOzonePlatform --ozone-platform=wayland";
       sex = "sudo chmod +x";
       cura = "QT_QPA_PLATFORM=xcb; cura -platformtheme gtk3 & disown";
-      drag = "dragon-drop -x";
+      drag = "ripdrag";
       snvim = "sudo nvim -u ~/.config/nvim/init.lua";
       nvidia-settings = "nvidia-settings --config=\${XDG_CONFIG_HOME}/nvidia/settings";
       svn = "svn --config-dir \${XDG_CONFIG_HOME}/subversion";

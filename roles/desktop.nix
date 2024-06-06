@@ -77,9 +77,21 @@
     pipewire = {
       enable = true;
       alsa.enable = true;
-      alsa.support32Bit = false;
+      alsa.support32Bit = true;
       pulse.enable = true;
-      wireplumber.enable = true;
+      wireplumber = {
+        enable = true;
+        configPackages = [
+          (pkgs.writeTextDir "share/wireplumber/bluetooth.lua.d/51-bluez-config.lua" ''
+            bluez_monitor.properties = {
+              ["bluez5.enable-sbc-xq"] = true,
+              ["bluez5.enable-msbc"] = true,
+              ["bluez5.enable-hw-volume"] = true,
+              ["bluez5.headset-roles"] = "[ hsp_hs hsp_ag hfp_hf hfp_ag ]"
+            }
+          '')
+        ];
+      };
       audio.enable = true;
     };
     transmission = {
@@ -153,7 +165,33 @@
       };
     };
   };
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+  };
+  programs.gamescope = {
+    enable = true;
+    args = [ "--rt" ];
+  };
+  programs.gamemode = {
+    enable = true;
+    enableRenice = true;
+    settings = {
+      #general = {
+      #  renice = 10;
+      #};
+      ## Warning: GPU optimisations have the potential to damage hardware
+      #gpu = {
+      #  apply_gpu_optimisations = "accept-responsibility";
+      #  gpu_device = 0;
+      #  amd_performance_level = "high";
+      #};
+      custom = {
+        start = "${pkgs.libnotify}/bin/notify-send 'GameMode started'";
+        end = "${pkgs.libnotify}/bin/notify-send 'GameMode ended'";
+      };
+    };
+  };
   environment = {
     etc."greetd/environments".text = ''
       Hyprland

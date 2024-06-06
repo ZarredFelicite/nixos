@@ -3,8 +3,8 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-amd" ];
+    kernelPackages = pkgs.linuxPackages_zen;
+    kernelModules = [ "kvm-amd" "nct6775" ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
@@ -60,20 +60,17 @@
     # Apparently, without this nouveau may attempt to be used instead
     # (despite it being blacklisted)
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    # Hardware cursors are currently broken on nvidia
-    WLR_NO_HARDWARE_CURSORS = "1";
     # Required to use va-api it in Firefox. See
     # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
     MOZ_DISABLE_RDD_SANDBOX = "1";
     # It appears that the normal rendering mode is broken on recent
     # nvidia drivers:
     # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
-    #NVD_BACKEND = "direct";
+    NVD_BACKEND = "direct";
     # Required for firefox 98+, see:
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
   };
-
   powerManagement.cpuFreqGovernor = "performance";
   services.xserver.videoDrivers = ["nvidia"];
   services.hardware.openrgb = {
@@ -87,29 +84,17 @@
     };
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     nvidia = {
-      open = false;
+      open = true;
       nvidiaSettings = true;
-      #package = config.boot.kernelPackages.nvidiaPackages.stable;
-      package = let
-        linux_6_8_patch = pkgs.fetchpatch {
-          url = "https://gist.github.com/joanbm/24f4d4f4ec69f0c37038a6cc9d132b43/raw/bacb9bf3617529d54cb9a57ae8dc9f29b41d4362/nvidia-470xx-fix-linux-6.8.patch";
-          hash = "sha256-SPLC2uGdjHSy4h9i3YFjQ6se6OCdWYW6tlC0CtqmP50=";
-          extraPrefix = "kernel/";
-          stripLen = 1;
-        };
-        rcu_patch = pkgs.fetchpatch {
-          url = "https://github.com/gentoo/gentoo/raw/c64caf53/x11-drivers/nvidia-drivers/files/nvidia-drivers-470.223.02-gpl-pfn_valid.patch";
-          hash = "sha256-eZiQQp2S/asE7MfGvfe6dA/kdCvek9SYa/FFGp24dVg=";
-        };
-      in config.boot.kernelPackages.nvidiaPackages.mkDriver {
-        version = "545.29.06";
-        sha256_64bit = "sha256-grxVZ2rdQ0FsFG5wxiTI3GrxbMBMcjhoDFajDgBFsXs=";
-        sha256_aarch64 = "sha256-o6ZSjM4gHcotFe+nhFTePPlXm0+RFf64dSIDt+RmeeQ=";
-        openSha256 = "sha256-h4CxaU7EYvBYVbbdjiixBhKf096LyatU6/V6CeY9NKE=";
-        settingsSha256 = "sha256-YBaKpRQWSdXG8Usev8s3GYHCPqL8PpJeF6gpa2droWY=";
-        persistencedSha256 = "sha256-AiYrrOgMagIixu3Ss2rePdoL24CKORFvzgZY3jlNbwM=";
-        patches = [ rcu_patch linux_6_8_patch ];
-      };
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      #  version = "555.42.02";
+      #  sha256_64bit = "sha256-k7cI3ZDlKp4mT46jMkLaIrc2YUx1lh1wj/J4SVSHWyk=";
+      #  sha256_aarch64 = "sha256-rtDxQjClJ+gyrCLvdZlT56YyHQ4sbaL+d5tL4L4VfkA=";
+      #  openSha256 = "sha256-rtDxQjClJ+gyrCLvdZlT56YyHQ4sbaL+d5tL4L4VfkA=";
+      #  settingsSha256 = "sha256-rtDxQjClJ+gyrCLvdZlT56YyHQ4sbaL+d5tL4L4VfkA=";
+      #  persistencedSha256 = "sha256-3ae31/egyMKpqtGEqgtikWcwMwfcqMv2K4MVFa70Bqs=";
+      #};
       modesetting.enable = true;
       powerManagement.enable = false;
       powerManagement.finegrained = false;
@@ -132,5 +117,28 @@
   };
   environment.systemPackages = [
     pkgs.polychromatic
+    pkgs.gwe
   ];
+  systemd.services.nvidia-oc = {
+    wantedBy = [ "multi-user.target" ];
+    description = "Set nvidia GPU settings with python wrapper of NVML";
+    serviceConfig = {
+      Type = "simple";
+      User = "root";
+      Group = "root";
+      ExecStart = pkgs.writers.writePython3 "nvidia-oc" {
+        libraries = [ pkgs.python311Packages.nvidia-ml-py pkgs.python311Packages.pynvml ];
+        flakeIgnore = [ "E265" "E225" ];
+      }
+      ''
+        import pynvml
+        pynvml.nvmlInit()
+        myGPU = pynvml.nvmlDeviceGetHandleByIndex(0)
+        pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 130)
+        pynvml.nvmlDeviceSetMemClkVfOffset(myGPU, 3000)
+        pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 350000)
+      '';
+    };
+  };
 }
+

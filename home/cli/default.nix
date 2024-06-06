@@ -34,6 +34,10 @@
       icons = true;
       enableZshIntegration = false;
     };
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     script-directory = {
       enable = true;
       settings = {

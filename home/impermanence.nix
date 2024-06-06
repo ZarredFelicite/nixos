@@ -30,6 +30,7 @@
       ".config/keyboard"
       ".config/gh"
       ".config/matlab"
+      ".config/gcloud"
       ".config/lutris"
     ];
     files = [

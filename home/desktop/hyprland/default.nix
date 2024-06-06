@@ -127,8 +127,8 @@ in {
         force_split = 2;
         #smart_split = true;
         #smart_resizing = true;
-        preserve_split = false;
-        split_width_multiplier = 2.0;
+        preserve_split = true;
+        split_width_multiplier = 1.6;
         special_scale_factor = 0.90;
         no_gaps_when_only = 0;
         use_active_for_splits = true;

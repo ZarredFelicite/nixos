@@ -42,7 +42,7 @@
     #};
     extraPortals = [
       pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
+      #pkgs.xdg-desktop-portal-gtk
     ];
   };
   services = {
@@ -51,6 +51,12 @@
     avahi.enable = true;
     avahi.nssmdns4 = true;
     avahi.openFirewall = true;
+    xserver = {
+      enable = true;
+      desktopManager.gnome = {
+        enable = true;
+      };
+    };
     greetd = {
       enable = true;
       vt = 2; # clean login screen, no startup logs
@@ -210,4 +216,22 @@
       noto-fonts-emoji
     ];
   };
+  environment.gnome.excludePackages = (with pkgs; [
+    gnome-photos
+    gnome-tour
+    gedit # text editor
+  ]) ++ (with pkgs.gnome; [
+    cheese # webcam tool
+    gnome-music
+    gnome-terminal
+    epiphany # web browser
+    geary # email reader
+    evince # document viewer
+    gnome-characters
+    totem # video player
+    tali # poker game
+    iagno # go game
+    hitori # sudoku game
+    atomix # puzzle game
+  ]);
 }

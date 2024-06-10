@@ -176,6 +176,7 @@
       gitd = "git -C ~/dots";
       btc = "bluetoothctl connect";
       btd = "bluetoothctl disconnect";
+      rb = "~/scripts/sys/reboot";
     };
   };
   xdg.configFile."zsh/fzf-tab.conf".text = ''

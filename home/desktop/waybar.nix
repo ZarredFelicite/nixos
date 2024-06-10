@@ -55,6 +55,9 @@ let
         "class<vlc>" = "󰕼";
         "class<mpv>" = "";
         "class<stats>" = "󱕍";
+        "class<org.pwmt.zathura>" = "󰈦";
+        "class<brave-browser>" = "";
+        "class<PrusaSlicer>" = "";
         "nheko" = "<span color='#ABE9B3'>󰊌</span>";
         "newsboat" = "";
       };

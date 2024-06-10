@@ -13,6 +13,13 @@
     extraSpecialArgs = { inherit self inputs outputs; };
     users.zarred = import ../home/desktop.nix;
   };
+  hardware = {
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+    };
+    brillo.enable = true;
+  };
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
@@ -42,7 +49,7 @@
     #};
     extraPortals = [
       pkgs.xdg-desktop-portal-hyprland
-      #pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-gtk
     ];
   };
   services = {
@@ -54,7 +61,7 @@
     xserver = {
       enable = true;
       desktopManager.gnome = {
-        enable = true;
+        enable = false;
       };
     };
     greetd = {

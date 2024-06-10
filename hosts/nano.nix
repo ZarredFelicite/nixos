@@ -93,11 +93,6 @@
       sensitivity = 128;
       emulateWheel = true;
     };
-    bluetooth = {
-      enable = true;
-      powerOnBoot = true;
-    };
-    brillo.enable = true;
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     opengl = {
       enable = true;

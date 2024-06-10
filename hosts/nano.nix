@@ -63,6 +63,7 @@
     cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
     resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
+  services.power-profiles-daemon.enable = false;
   services.tlp = {
     enable = true;
     settings = {
@@ -86,6 +87,7 @@
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
   hardware = {
+    pulseaudio.enable = false;
     trackpoint = {
       enable = true;
       device = "tpps/2-elan-trackpoint";

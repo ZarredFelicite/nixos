@@ -1,4 +1,4 @@
-{ self, config, pkgs, inputs, outputs, ... }: {
+{ self, config, pkgs, lib, inputs, outputs, ... }: {
   imports = [
     ../profiles/common.nix
     ../sys/keyd.nix
@@ -74,6 +74,9 @@
               --asterisks \
               --user-menu \
               --cmd Hyprland \
+              -s ${config.services.xserver.displayManager.sessionData.desktops}/share/wayland-sessions \
+              --remember \
+              --remember-user-session \
               --width 50
           '';
           user = "greeter";

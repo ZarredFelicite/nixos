@@ -82,11 +82,42 @@
       { timeout = 190; command = "if [ $(${pkgs.coreutils}/bin/cat /sys/class/power_supply/AC/online) -eq 0 ]; then ${pkgs.hyprland}/bin/hyprctl dispatch dpms off eDP-1; fi "; }
       { timeout = 300; command = "if [ $(${pkgs.coreutils}/bin/cat /sys/class/power_supply/AC/online) -eq 0 ]; then ${pkgs.systemd}/bin/systemctl suspend; fi "; }
       { timeout = 590; command = "~/scripts/sys/idle_brightness.sh 0 &"; resumeCommand = "~/scripts/sys/idle_brightness.sh 0"; }
-      { timeout = 600; command = "if [ $(${pkgs.coreutils}/bin/cat /sys/class/power_supply/AC/online) -eq 1 ]; then ${pkgs.hyprland}/bin/hyprctl dispatch dpms off eDP-1; ${pkgs.swaylock}/bin/swaylock; fi "; }
+      { timeout = 600; command = "if [ $(${pkgs.coreutils}/bin/cat /sys/class/power_supply/AC/online) -eq 1 ]; then ${pkgs.hyprland}/bin/hyprctl dispatch dpms off eDP-1; ${pkgs.hyprlock}/bin/hyprlock; fi "; }
     ];
     events = [
-      { event = "before-sleep"; command = "${pkgs.swaylock}/bin/swaylock"; }
-      { event = "lock"; command = "${pkgs.swaylock}/bin/swaylock"; }
+      { event = "before-sleep"; command = "${pkgs.hyprlock}/bin/hyprlock"; }
+      { event = "lock"; command = "${pkgs.hyprlock}/bin/hyprlock"; }
     ];
   };
+  xdg.configFile."hypr/hypridle.conf".text = ''
+    general {
+        lock_cmd = ${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock       # avoid starting multiple hyprlock instances.
+        before_sleep_cmd = loginctl lock-session    # lock before suspend.
+        after_sleep_cmd = ${pkgs.hyprland}/bin/hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
+    }
+    listener {
+        timeout = 150                                # 2.5min.
+        on-timeout = ${pkgs.brillo}/bin/brillo -O; ${pkgs.brillo}/bin/brillo -S 10 -u 10000000
+        on-resume = ${pkgs.procps}/bin/pkill brillo; ${pkgs.brillo}/bin/brillo -I -u 500000
+    }
+    # turn off keyboard backlight, comment out this section if you dont have a keyboard backlight.
+    listener {
+        timeout = 150                                          # 2.5min.
+        on-timeout = ${pkgs.brillo}/bin/brillo -k -s tpacpi::kbd_backlight -S 50 -u 10000000
+        on-resume = ${pkgs.brillo}/bin/brillo -k -s tpacpi::kbd_backlight -S 100 -u 10000000
+    }
+    listener {
+        timeout = 300                                 # 5min
+        on-timeout = loginctl lock-session            # lock screen when timeout has passed
+    }
+    listener {
+        timeout = 330                                 # 5.5min
+        on-timeout = ${pkgs.hyprland}/bin/hyprctl dispatch dpms off        # screen off when timeout has passed
+        on-resume = ${pkgs.hyprland}/bin/hyprctl dispatch dpms on          # screen on when activity is detected after timeout has fired.
+    }
+    listener {
+        timeout = 900                                # 15min
+        on-timeout = systemctl suspend                # suspend pc
+    }
+  '';
 }

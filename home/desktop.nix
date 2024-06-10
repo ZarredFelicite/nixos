@@ -15,9 +15,11 @@ in {
     ./theme
     ./gaming
   ];
-  programs.swaylock.enable = true;
+  programs.swaylock.enable = false;
+  programs.hyprlock.enable = true;
   programs.password-store.enable = true;
-  services.swayidle.enable = true;
+  services.swayidle.enable = false;
+  services.hypridle.enable = true;
   services.gpg-agent.extraConfig = ''
     pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
     allow-preset-passphrase

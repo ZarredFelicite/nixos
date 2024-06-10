@@ -122,6 +122,17 @@
   security = {
     polkit.enable = true;
     rtkit.enable = true;
+    pam.services.hyprlock = {
+      text = ''
+        auth include login
+      '';
+      logFailures = true;
+      fprintAuth = true;
+      failDelay.enable = true;
+      failDelay.delay = 1000000;
+      gnupg.enable = true;
+      gnupg.noAutostart = true;
+    };
     pam.services.swaylock = {
       text = ''
         # PAM configuration file for the swaylock screen locker. By default, it includes

@@ -8,6 +8,9 @@
     extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
+    extraModprobeConfig = ''
+      options nvidia NVreg_UsePageAttributeTable=1 NVreg_RegistryDwords="OverrideMaxPerf=0x1" NVreg_PreserveVideoMemoryAllocations=1
+    '';
   };
   services.udev.extraRules = ''
     SUBSYSTEM=="i2c-dev", ACTION=="add",\
@@ -109,7 +112,7 @@
     nvidia = {
       open = true;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
       #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
       #  version = "555.42.02";
       #  sha256_64bit = "sha256-k7cI3ZDlKp4mT46jMkLaIrc2YUx1lh1wj/J4SVSHWyk=";

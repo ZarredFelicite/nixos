@@ -22,7 +22,7 @@
     networkmanager.enable = true;
     firewall = {
       enable = true;
-      #allowedTCPPorts = [ 111 ]; # showmount,
+      allowedTCPPorts = [ 111 8080 80 443 8384]; # showmount,
       allowedUDPPorts = [ config.services.tailscale.port ];
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
@@ -188,7 +188,8 @@
       ]))
       nodejs
     ];
-    shells = with pkgs; [ zsh bashInteractive ];
+    #shells = with pkgs; [ zsh bashInteractive ]; TODO: Failed build
+    shells = with pkgs; [ zsh ];
     pathsToLink = [ "/share/zsh" ];
   };
   programs = {
@@ -210,6 +211,7 @@
     generateCaches = true;
   };
   stylix = {
+    enable = true;
     autoEnable = true;
     image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
@@ -220,7 +222,7 @@
     cursor = {
       package = pkgs.catppuccin-cursors.mochaDark;
       name = "Catppuccin-Mocha-Dark-Cursors";
-      size = 20;
+      size = 18;
     };
     fonts = {
       sizes = {

@@ -1,9 +1,9 @@
 { lib, ... }: {
   programs.kitty = {
     font.name = lib.mkDefault "Iosevka Nerd Font Mono";
-    font.size = lib.mkDefault 10;
+    #font.size = lib.mkDefault 10;
     shellIntegration.enableZshIntegration = true;
-    theme = lib.mkDefault "Tomorrow Night Bright";
+    #theme = lib.mkDefault "Tomorrow Night Bright";
     #theme = "Tokyo Night";
     #theme = "Rosé Pine";
     settings = {

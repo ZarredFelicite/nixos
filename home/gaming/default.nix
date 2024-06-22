@@ -3,9 +3,8 @@
     pkgs.lutris
     pkgs.protonup-qt
     pkgs.wineWowPackages.waylandFull
-    pkgs.gamescope
     pkgs.samba
-    pkgs.bottles
+    #pkgs.bottles
     pkgs.mangohud
   ];
   #xdg.configFile."lutris/system.yml".text = ''

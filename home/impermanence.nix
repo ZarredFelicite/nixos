@@ -20,6 +20,8 @@
       ".local/share"
       ".cache"
       ".mozilla"
+      ".android"
+      ".java"
       ".config/kdeconnect"
       ".config/BraveSoftware"
       ".config/PrusaSlicer"
@@ -32,6 +34,7 @@
       ".config/matlab"
       ".config/gcloud"
       ".config/lutris"
+      ".config/android-studio"
     ];
     files = [
       ".config/wtwitch/api.json"

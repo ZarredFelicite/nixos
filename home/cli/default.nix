@@ -21,7 +21,7 @@
   programs = {
     zsh.enable = true;
     direnv.enable = true;
-    nixvim.enable = false;
+    nixvim.enable = true;
     nnn.enable = true;
     tmux.enable = true;
     eza = {

@@ -90,6 +90,8 @@
       piper-tts
       upscayl
 
+      android-studio
+
       (python311.withPackages(ps: with ps; [
         pip
         ytmusicapi

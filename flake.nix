@@ -34,9 +34,11 @@
       #packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
 
       # use updated wayland packages
+
       nixpkgs.overlays = [
         inputs.nixpkgs-wayland.overlay
         (import ./overlays)
+        (import ./overlays/omniverse.nix)
         (self: super: {
           nixos-option = let
             flake-compact = super.fetchFromGitHub {
@@ -74,6 +76,7 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs ; };
       	  modules = [
+            ({ nixpkgs.overlays = [ (import ./overlays/omniverse.nix ) ]; })
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
             ./hosts/nano.nix

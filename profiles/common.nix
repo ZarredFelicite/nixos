@@ -177,6 +177,7 @@
       tailscale
       sops
       direnv
+      omniverse-launcher
       (python311.withPackages(ps: with ps; [
         pip
         pandas

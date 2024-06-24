@@ -91,6 +91,9 @@
       upscayl
 
       android-studio
+      git-lfs
+
+      waypipe
 
       (python311.withPackages(ps: with ps; [
         pip
@@ -217,6 +220,7 @@
   };
   programs.git = {
     enable = true;
+    lfs.enable = true;
     userName = "ZarredFelicite";
     userEmail = "zarred.f@gmail.com";
     extraConfig = {

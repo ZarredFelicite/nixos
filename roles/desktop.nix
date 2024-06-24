@@ -20,37 +20,39 @@
     };
     brillo.enable = true;
   };
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    wlr.enable = true;
-    config.common.default = "*";
-    #config = {
-    #  common = {
-    #    default = [
-    #      "gtk"
-    #    ];
-    #  };
-    #  pantheon = {
-    #    default = [
-    #      "pantheon"
-    #      "gtk"
-    #    ];
-    #    "org.freedesktop.impl.portal.Secret" = [
-    #      "gnome-keyring"
-    #    ];
-    #  };
-    #  x-cinnamon = {
-    #    default = [
-    #      "xapp"
-    #      "gtk"
-    #    ];
-    #  };
-    #};
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
-    ];
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = false;
+      wlr.enable = true;
+      config.common.default = "*";
+      #config = {
+      #  common = {
+      #    default = [
+      #      "gtk"
+      #    ];
+      #  };
+      #  pantheon = {
+      #    default = [
+      #      "pantheon"
+      #      "gtk"
+      #    ];
+      #    "org.freedesktop.impl.portal.Secret" = [
+      #      "gnome-keyring"
+      #    ];
+      #  };
+      #  x-cinnamon = {
+      #    default = [
+      #      "xapp"
+      #      "gtk"
+      #    ];
+      #  };
+      #};
+      extraPortals = [
+        pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-gtk
+      ];
+    };
   };
   services = {
     ollama.enable = true;

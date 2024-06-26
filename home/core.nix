@@ -94,6 +94,8 @@
       git-lfs
 
       waypipe
+      wayvnc
+      moonlight-qt
 
       (python311.withPackages(ps: with ps; [
         pip

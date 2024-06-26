@@ -94,6 +94,11 @@
       git-lfs
 
       waypipe
+      wayvnc
+      tigervnc
+      remmina
+      wlvncc
+      moonlight-qt
 
       (python311.withPackages(ps: with ps; [
         pip

@@ -50,7 +50,7 @@ in {
     glib # gsettings
     dracula-theme # gtk theme
     gnome3.adwaita-icon-theme  # default gnome cursors
-    sunshine # Sunshine is a Game stream host for Moonlight.
+    #sunshine # Sunshine is a Game stream host for Moonlight.
     wtype # xdotool type for wayland
     # messaging
     signal-desktop # Private, simple, and secure messenger

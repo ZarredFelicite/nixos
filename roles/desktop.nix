@@ -185,10 +185,10 @@
   };
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = false; #TODO
+    gamescopeSession.enable = true; #TODO
   };
   programs.gamescope = {
-    enable = false; #TODO
+    enable = true; #TODO
     args = [ "--rt" ];
   };
   programs.gamemode = {

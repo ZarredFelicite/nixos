@@ -11,11 +11,20 @@
     capabilities = "cap_sys_admin+p";
     source = "${pkgs.sunshine}/bin/sunshine";
   };
-  #systemd.user.services.sunshine = {
-  #  description = "sunshine";
-  #  wantedBy = [ "graphical-session.target" ];
-  #  serviceConfig = {
-  #    ExecStart = "${config.security.wrapperDir}/sunshine";
-  #  };
-  #};
+  services.avahi.publish.enable = true;
+  services.avahi.publish.userServices = true;
+  networking.firewall = {
+    allowedTCPPorts = [ 47984 47989 47990 48010 ];
+    allowedUDPPortRanges = [
+      { from = 47998; to = 48000; }
+      { from = 8000; to = 8010; }
+    ];
+  };
+  systemd.user.services.sunshine = {
+    description = "sunshine";
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${config.security.wrapperDir}/sunshine";
+    };
+  };
 }

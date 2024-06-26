@@ -156,7 +156,7 @@ in {
     extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
     ];
     settings = {
       exec-once = [
@@ -165,6 +165,7 @@ in {
         "${inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper}/bin/hyprpaper"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
+        "${pkgs.wayvnc}/bin/wayvnc"
       ];
       #monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;

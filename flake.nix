@@ -38,7 +38,6 @@
       nixpkgs.overlays = [
         inputs.nixpkgs-wayland.overlay
         (import ./overlays)
-        (import ./overlays/omniverse.nix)
         (self: super: {
           nixos-option = let
             flake-compact = super.fetchFromGitHub {
@@ -63,6 +62,7 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs ; };
       	  modules = [
+            ({ nixpkgs.overlays = [ (import ./overlays/omniverse.nix ) ]; })
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix
             ./roles/desktop.nix

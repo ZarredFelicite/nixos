@@ -59,7 +59,7 @@
       dig # Domain name server
       # productivity
       tidy-viewer # A cross-platform CLI csv pretty printer that uses column styling to maximize viewer enjoyment
-      visidata # Interactive terminal multitool for tabular data
+      # TODO visidata # Interactive terminal multitool for tabular data
       xsv # A fast CSV toolkit written in Rust
       # web tools
       nodePackages_latest.readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
@@ -99,8 +99,10 @@
       remmina
       wlvncc
       moonlight-qt
+      bottles
+      protonup-qt
 
-      (python311.withPackages(ps: with ps; [
+      (python3.withPackages(ps: with ps; [
         pip
         ytmusicapi
         bullet
@@ -123,10 +125,10 @@
         (
           buildPythonPackage rec {
             pname = "reader";
-            version = "3.12";
+            version = "3.13";
             src = fetchPypi {
               inherit pname version;
-              hash = "sha256-XueIGEwKnukr5NXm2sSk6WTR+ZhT6fhdPM3ElYkXkPg=";
+              hash = "sha256-bmN204LLizc3esR5CuHe4PytqyN24LHUToKU8MSkyYE=";
             };
             format = "pyproject";
             doCheck = false;
@@ -307,6 +309,7 @@
         "x-scheme-handler/https" = "firefox.desktop";
         "x-scheme-handler/about" = "firefox.desktop";
         "x-scheme-handler/unknown" = "firefox.desktop";
+        "x-scheme-handler/omniverse-launcher" = "~/scripts/file-ops/linkhandler.sh";
       };
       associations.added = {
         "application/pdf" = "zathura.desktop";

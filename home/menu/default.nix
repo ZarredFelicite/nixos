@@ -16,18 +16,18 @@ in {
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
-    colors = {
-      "fg" = "blue";
-      "fg+" = "yellow";
-      "hl" = "yellow";
-      "hl+" = "red";
-      "bg+" = "-1";
-      "gutter" = "-1";
-      "pointer" = "yellow";
-      "border" = "#31748f";
-      "scrollbar" = "black";
-      "info" = "magenta";
-    };
+    #colors = {
+    #  "fg" = "blue";
+    #  "fg+" = "yellow";
+    #  "hl" = "yellow";
+    #  "hl+" = "red";
+    #  "bg+" = "-1";
+    #  "gutter" = "-1";
+    #  "pointer" = "yellow";
+    #  "border" = "#31748f";
+    #  "scrollbar" = "black";
+    #  "info" = "magenta";
+    #};
     defaultCommand = "fd --type file --hidden --no-ignore";
     defaultOptions = [
       "--layout reverse"

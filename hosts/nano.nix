@@ -60,7 +60,7 @@
 
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
+    #cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
     resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
   services.power-profiles-daemon.enable = false;

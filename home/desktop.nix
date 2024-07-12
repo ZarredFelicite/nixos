@@ -29,7 +29,7 @@ in {
     # wayland tools
     wev # Wayland event viewer
     # networking
-    transmission_4 # A fast, easy and free BitTorrent client
+    #transmission_4 # A fast, easy and free BitTorrent client #TODO
     # notifications
     libnotify # A library that sends desktop notifications to a notification daemon
     gotify-cli # A command line interface for pushing messages to gotify/server
@@ -57,7 +57,7 @@ in {
     telegram-desktop # Telegram Desktop messaging app
     caprine-bin # An elegant Facebook Messenger desktop app
     zoom-us # zoom.us video conferencing application
-    discord # All-in-one cross-platform voice and text chat for gamers
+    #discord # All-in-one cross-platform voice and text chat for gamers
     # themeing
     materia-kde-theme
     libsForQt5.qtstyleplugin-kvantum

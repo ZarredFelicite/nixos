@@ -21,7 +21,6 @@ in {
       "fg+" = "yellow";
       "hl" = "yellow";
       "hl+" = "red";
-      "bg+" = "-1";
       "gutter" = "-1";
       "pointer" = "yellow";
       "border" = "#31748f";

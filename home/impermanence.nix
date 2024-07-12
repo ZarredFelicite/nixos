@@ -35,6 +35,7 @@
       ".config/gcloud"
       ".config/lutris"
       ".config/android-studio"
+      ".config/sunshine"
     ];
     files = [
       ".config/wtwitch/api.json"

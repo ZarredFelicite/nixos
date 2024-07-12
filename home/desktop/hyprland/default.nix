@@ -139,6 +139,7 @@ in {
             "desc:XMI Mi Monitor,3440x1440@144,3440x0,1,transform,3" # 0x110
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             #"DP-1,2560x1440@120.0,3440x0,1,transform,3"
+            "sunshine,1920x1080,auto,1"
             "Unknown-1,disable"
           ];
           env = [

@@ -97,7 +97,7 @@
       wayvnc
       moonlight-qt
 
-      (python311.withPackages(ps: with ps; [
+      (python3.withPackages(ps: with ps; [
         pip
         ytmusicapi
         bullet
@@ -120,10 +120,10 @@
         (
           buildPythonPackage rec {
             pname = "reader";
-            version = "3.12";
+            version = "3.13";
             src = fetchPypi {
               inherit pname version;
-              hash = "sha256-XueIGEwKnukr5NXm2sSk6WTR+ZhT6fhdPM3ElYkXkPg=";
+              hash = "";
             };
             format = "pyproject";
             doCheck = false;

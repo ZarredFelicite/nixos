@@ -113,7 +113,7 @@
       audio.enable = true;
     };
     transmission = {
-      enable = true;
+      enable = false;
       package = pkgs.transmission_4;
       openRPCPort = true;
       group = "users";

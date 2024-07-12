@@ -13,7 +13,7 @@
     #};
   };
   environment.systemPackages = [ pkgs.docker-compose ];
-  virtualisation.containers.cdi.dynamic.nvidia.enable = true;
+  virtualisation.containers.cdi.dynamic.nvidia.enable = false;
   systemd.enableUnifiedCgroupHierarchy = false;
   users.users.zarred.extraGroups = [ "docker" ];
   # windows in docker https://github.com/dockur/windows

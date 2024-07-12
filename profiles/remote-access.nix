@@ -28,38 +28,9 @@
   #  };
   #};
   services.sunshine = {
-    enable = true;
+    enable = false; #TODO
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
-    settings = {
-      sw_preset = "fast";
-    };
-    applications = {
-      env = {
-        PATH = "$(PATH):$(HOME)/.local/bin";
-      };
-      apps = [
-        {
-          name = "Steam Big Picture";
-          detached = [
-            "setsid steam steam://open/bigpicture"
-          ];
-          image-path = "steam.png";
-        }
-        {
-          name = "1080p Desktop";
-          image-path = "desktop.png";
-          prep-cmd = [
-            {
-              do = "${pkgs.hyprland}/bin/hyprctl output create headless sunshine";
-              undo = "${pkgs.hyprland}/bin/hyprctl output remove sunshine";
-            }
-          ];
-          exclude-global-prep-cmd = "false";
-          auto-detach = "true";
-        }
-      ];
-    };
   };
 }

@@ -3,7 +3,7 @@
     enable = true;
   };
   programs.aerc = {
-    enable = true;
+    enable = false; #TODO
     extraConfig = {
       general.unsafe-accounts-conf = true;
       ui = {

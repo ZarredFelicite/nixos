@@ -21,7 +21,7 @@
   networking = {
     networkmanager.enable = true;
     firewall = {
-      enable = true;
+      enable = false;
       allowedTCPPorts = [ 111 8080 80 443 8384]; # showmount,
       allowedUDPPorts = [ config.services.tailscale.port ];
       checkReversePath = "loose";

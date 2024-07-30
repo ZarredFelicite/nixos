@@ -14,4 +14,5 @@ in
   inherit flake;
 
   wrapWine = cp ../pkgs/wrapWine.nix;
+  freenect = cp ../pkgs/freenect.nix; #TODO
 }

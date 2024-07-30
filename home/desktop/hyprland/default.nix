@@ -17,6 +17,7 @@ in {
     inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper
     inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
+    inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
   ];
   services.hyprland-autoname-workspaces.enable = false;
   xdg.configFile."hypr/hyprlock.conf".text = ''
@@ -147,6 +148,8 @@ in {
             "QT_QPA_PLATFORM,wayland"
             "SDL_VIDEODRIVER,wayland"
             "CLUTTER_BACKEND,wayland"
+            "HYPRCURSOR_THEME,rose-pine-hyprcursor"
+            "HYPRCURSOR_SIZE,24"
           ];
         };
       })
@@ -249,6 +252,9 @@ in {
           "col.active" = lib.mkForce "rgba(9ccfd899)";
           "col.inactive" = lib.mkForce "rgba(31748f99)";
         };
+      };
+      cursor = {
+        no_hardware_cursors = true;
       };
       input = {
         kb_layout = "us";

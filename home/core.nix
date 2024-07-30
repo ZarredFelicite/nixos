@@ -85,9 +85,6 @@
       nix-index
 
       # latex
-<<<<<<< HEAD
-      texliveSmall
-=======
       (texliveBasic.withPackages(ps: with ps; [
         enumitem
         enumitem-zref
@@ -95,7 +92,6 @@
       ]))
       #texlivePackages.enumitem
       #(texlive.combine { inherit (texlivePackages) texliveSmall enumitem; })
->>>>>>> refs/remotes/origin/main
 
       piper-tts
       upscayl

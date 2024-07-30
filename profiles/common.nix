@@ -122,6 +122,12 @@
   security = {
     polkit.enable = true;
     rtkit.enable = true;
+    pam.loginLimits = [{
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "8192";
+    }];
     pam.services.hyprlock = {
       text = ''
         auth include login
@@ -178,6 +184,7 @@
       sops
       direnv
       omniverse-launcher
+      inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
       (python311.withPackages(ps: with ps; [
         pip
         pandas
@@ -189,8 +196,7 @@
       ]))
       nodejs
     ];
-    #shells = with pkgs; [ zsh bashInteractive ]; TODO: Failed build
-    shells = with pkgs; [ zsh ];
+    shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };
   programs = {

@@ -28,7 +28,7 @@
   #  };
   #};
   services.sunshine = {
-    enable = false; #TODO
+    enable = true;
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;

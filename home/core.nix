@@ -59,7 +59,7 @@
       dig # Domain name server
       # productivity
       tidy-viewer # A cross-platform CLI csv pretty printer that uses column styling to maximize viewer enjoyment
-      # TODO visidata # Interactive terminal multitool for tabular data
+      visidata # Interactive terminal multitool for tabular data
       xsv # A fast CSV toolkit written in Rust
       # web tools
       nodePackages_latest.readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
@@ -85,7 +85,13 @@
       nix-index
 
       # latex
-      texliveBasic
+      (texliveBasic.withPackages(ps: with ps; [
+        enumitem
+        enumitem-zref
+        parskip
+      ]))
+      #texlivePackages.enumitem
+      #(texlive.combine { inherit (texlivePackages) texliveSmall enumitem; })
 
       piper-tts
       upscayl
@@ -122,6 +128,7 @@
         matplotlib
         pybluez
         libtmux
+        tensorboard
         (
           buildPythonPackage rec {
             pname = "reader";

@@ -29,7 +29,7 @@ in {
     # wayland tools
     wev # Wayland event viewer
     # networking
-    #transmission_4 # A fast, easy and free BitTorrent client #TODO
+    transmission_4 # A fast, easy and free BitTorrent client
     # notifications
     libnotify # A library that sends desktop notifications to a notification daemon
     gotify-cli # A command line interface for pushing messages to gotify/server

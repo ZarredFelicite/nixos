@@ -6,8 +6,7 @@
     settings = {
       theme = "dark";
       telemetry.metrics.enabled = false;
-      server.port = 9092;
-      server.host = "127.0.0.1";
+      server.address = "tcp://127.0.0.1:9092";
       default_redirection_url = "https://google.com";
       access_control = {
         default_policy = "deny";

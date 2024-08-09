@@ -18,7 +18,6 @@
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
-      "fakefullscreen, class:^(firefox)$"
       "suppressevent fullscreen, class:^(firefox)$"
       "noborder, class:^(firefox)$"
       "pin, title:^(ripdrag)$"

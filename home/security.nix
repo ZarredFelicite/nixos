@@ -3,7 +3,7 @@
     password-store = {
       package = pkgs.pass.withExtensions (exts: [
         exts.pass-otp
-        exts.pass-import
+        #exts.pass-import #TODO
       ]);
       settings = {
         PASSWORD_STORE_DIR = "sync/password-store";

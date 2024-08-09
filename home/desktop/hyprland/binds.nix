@@ -45,7 +45,7 @@
       "$mod CTRL, P, pseudo,"
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"
-      "$mod SHIFT, E, fakefullscreen,"
+      "$mod SHIFT, E, fullscreenstate, -1 2"
       "$mod, D, togglespecialworkspace,"
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"

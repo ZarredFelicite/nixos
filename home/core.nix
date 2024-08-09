@@ -89,6 +89,9 @@
         enumitem
         enumitem-zref
         parskip
+        etoolbox
+        fontawesome
+        metafont
       ]))
       #texlivePackages.enumitem
       #(texlive.combine { inherit (texlivePackages) texliveSmall enumitem; })

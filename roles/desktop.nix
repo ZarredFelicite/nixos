@@ -55,7 +55,7 @@
     };
   };
   services = {
-    ollama.enable = true;
+    ollama.enable = false; #TODO
     printing.enable = true;
     avahi.enable = true;
     avahi.nssmdns4 = true;

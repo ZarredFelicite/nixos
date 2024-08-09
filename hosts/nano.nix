@@ -5,6 +5,7 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "kvm-intel" ];
+    kernelParams = [ "SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1" ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];

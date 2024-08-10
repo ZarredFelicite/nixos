@@ -183,7 +183,6 @@
       tailscale
       sops
       direnv
-      omniverse-launcher
       inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
       (python311.withPackages(ps: with ps; [
         pip
@@ -206,7 +205,7 @@
     nh = {
       enable = true;
       flake = /home/zarred/dots;
-      clean.enable = true;
+      #clean.enable = true;
       clean.extraArgs = "--keep 5 --keep-since 3d";
       clean.dates = "weekly";
     };

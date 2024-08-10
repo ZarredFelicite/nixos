@@ -62,7 +62,7 @@
       visidata # Interactive terminal multitool for tabular data
       xsv # A fast CSV toolkit written in Rust
       # web tools
-      nodePackages_latest.readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
+      readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
       # misc
       ffmpeg_6-full # A complete, cross-platform solution to record, convert and stream audio and video
       android-tools # Android SDK platform tools

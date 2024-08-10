@@ -83,7 +83,7 @@
               --asterisks \
               --user-menu \
               --cmd Hyprland \
-              -s ${config.services.xserver.displayManager.sessionData.desktops}/share/wayland-sessions \
+              -s ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
               --remember \
               --remember-user-session \
               --width 50

@@ -120,7 +120,7 @@ imports = [
         };
       };
       lsp = {
-        enable = true;
+        enable = false; #TODO
         servers = {
           nil_ls.enable = true;
           pyright.enable = true;

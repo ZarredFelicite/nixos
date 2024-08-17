@@ -1,6 +1,6 @@
 { ... }: {
   services.gotify = {
-    port = 8081;
+    environment.GOTIFY_SERVER_PORT = 8081;
     stateDirectoryName = "gotify";
   };
   virtualisation.oci-containers.containers."homarr" = {

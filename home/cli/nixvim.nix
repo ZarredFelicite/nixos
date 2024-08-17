@@ -122,7 +122,7 @@ imports = [
       lsp = {
         enable = true;
         servers = {
-          nil_ls.enable = true;
+          nil-ls.enable = true;
           pyright.enable = true;
           texlab.enable = true;
           bashls.enable = true;
@@ -133,7 +133,9 @@ imports = [
       #cmp_luasnip.enable = true;
       treesitter = {
         enable = true;
-        indent = true;
+        settings = {
+          indent.enable = true;
+        };
       };
       telescope = {
         enable = true;

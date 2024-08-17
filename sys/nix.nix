@@ -41,11 +41,11 @@
   # environment.etc."nix/inputs/nixpkgs".source = "${nixpkgs}";
   nixpkgs.overlays = [
     inputs.nur.overlay
-    (final: prev: {
-      nodePackages = prev.nodePackages // {
-        inherit (inputs.nixpkgs-fixes.legacyPackages.${prev.system}.nodePackages) bash-language-server;
-      };
-    })
+    #(final: prev: {
+    #  nodePackages = prev.nodePackages // {
+    #    inherit (inputs.nixpkgs-fixes.legacyPackages.${prev.system}.nodePackages) bash-language-server;
+    #  };
+    #})
   ];
   nixpkgs.config.allowUnfree = true;
 

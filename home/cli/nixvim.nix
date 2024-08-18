@@ -59,7 +59,7 @@ imports = [
         #theme = "palenight";
       };
       cmp = {
-        enable = true;
+        enable = false;
         settings = {
           sources = [
             { name = "nvim_lsp"; }
@@ -129,11 +129,16 @@ imports = [
           ruff-lsp.enable = true;
         };
       };
-      luasnip.enable = true;
+      luasnip.enable = false; #TODO
       #cmp_luasnip.enable = true;
       treesitter = {
-        enable = true;
+        enable = false; #TODO
         indent = true;
+        nixGrammars = false;
+        grammarPackages = [
+          #TODO complete list
+          pkgs.vimPlugins.nvim-treesitter-parsers.python
+        ];
       };
       telescope = {
         enable = true;

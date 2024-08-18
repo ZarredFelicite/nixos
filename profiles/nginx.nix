@@ -7,7 +7,8 @@
       theme = "dark";
       telemetry.metrics.enabled = false;
       server.address = "tcp://127.0.0.1:9092";
-      default_redirection_url = "https://google.com";
+      #server.address = "tcp://:9092/";
+      #default_redirection_url = "https://google.com";
       access_control = {
         default_policy = "deny";
         rules = [
@@ -78,6 +79,7 @@
       let SSLA = {
         enableACME = true;
         forceSSL = true;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
         extraConfig = ''
           location /authelia {
             internal;
@@ -121,6 +123,7 @@
       SSL = {
         enableACME = true;
         forceSSL = true;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
       };
       AUTH = {
         extraConfig = ''
@@ -138,9 +141,28 @@
         '';
       };
       in {
-        "nextcloud.zar.red" = SSL;
+        # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
-        "gotify.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:8081"; locations."/".proxyWebsockets = true;};
+        "jellyfin.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
+        # AUTH
+        "nextcloud.zar.red" = SSLA//{locations."= /" = AUTH;};
+        "gotify.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app
+        "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
+        "ttrss.zar.red" = SSLA//{locations."/" = AUTH;};
+        "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};
+        "prowlarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9696";};};
+        "sonarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8989";};};
+        "radarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7878";};};
+        "lidarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8686";};};
+        "readarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8787";};};
+        "lazylibrarian.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5299";};};
+        "deemix.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6595";};};
+        "transmission.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9091"; proxyWebsockets = true;};};
+        "nzb.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6789"; proxyWebsockets = true;};};
+        "jellyseerr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5055";};};
+        "audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378";};};
+        "pdf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8088";};};
+        "mainsail.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8001"; proxyWebsockets = true;};};
         #"headscale.zar.red" = SSL//{
         #  locations."/" = {
         #    proxyPass = "http://127.0.0.1:8080";
@@ -157,64 +179,47 @@
         #    '';
         #  };
         #};
-        "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
-        "ttrss.zar.red" = SSL;
-        "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};
-        "prowlarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9696";};};
-        "sonarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8989";};};
-        "radarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7878";};};
-        "lidarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8686";};};
-        "readarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8787";};};
-        "lazylibrarian.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5299";};};
-        "deemix.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6595";};};
-        "transmission.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9091"; proxyWebsockets = true;};};
-        "nzb.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6789"; proxyWebsockets = true;};};
-        "jellyfin.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
-        "jellyseerr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5055";};};
-        "audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378";};};
-        "pdf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8088";};};
-        "mainsail.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8001"; proxyWebsockets = true;};};
         #"syncthing.zar.red" = SSLA // {
         #  locations."/web" = AUTH // {proxyPass = "http://192.168.86.150:8384";};
         #  locations."/sankara" = AUTH // {proxyPass = "http://localhost:8384";};
         #  locations."/nano" = AUTH // {proxyPass = "http://192.168.86.125:8384";};
         #};
-        "binarycache.zar.red" = { locations."/".proxyPass = "http://${config.services.nix-serve.bindAddress}:${toString config.services.nix-serve.port}"; };
-        "nixcache.zar.red" = {
-          locations."/" = {
-            root = "/var/public-nix-cache";
-            extraConfig = ''
-              expires max;
-              add_header Cache-Control $cache_header always;
-              # Ask the upstream server if a file isn't available locally
-              error_page 404 = @fallback;
-            '';
-          };
-          extraConfig = ''
-            resolver 10.42.42.42;
-            set $upstream_endpoint http://cache.nixos.org;
-          '';
-          locations."@fallback" = {
-            proxyPass = "$upstream_endpoint";
-            extraConfig = ''
-              proxy_cache cachecache;
-              proxy_cache_valid  200 302  60d;
-              expires max;
-              add_header Cache-Control $cache_header always;
-            '';
-          };
-          locations."= /nix-cache-info" = {
-            # Note: This is duplicated with the `@fallback` above,
-            # would be nicer if we could redirect to the @fallback instead.
-            proxyPass = "$upstream_endpoint";
-            extraConfig = ''
-              proxy_cache cachecache;
-              proxy_cache_valid  200 302  60d;
-              expires max;
-              add_header Cache-Control $cache_header always;
-            '';
-          };
-        };
+        #"binarycache.zar.red" = { locations."/".proxyPass = "http://${config.services.nix-serve.bindAddress}:${toString config.services.nix-serve.port}"; };
+        #"nixcache.zar.red" = {
+        #  locations."/" = {
+        #    root = "/var/public-nix-cache";
+        #    extraConfig = ''
+        #      expires max;
+        #      add_header Cache-Control $cache_header always;
+        #      # Ask the upstream server if a file isn't available locally
+        #      error_page 404 = @fallback;
+        #    '';
+        #  };
+        #  extraConfig = ''
+        #    resolver 10.42.42.42;
+        #    set $upstream_endpoint http://cache.nixos.org;
+        #  '';
+        #  locations."@fallback" = {
+        #    proxyPass = "$upstream_endpoint";
+        #    extraConfig = ''
+        #      proxy_cache cachecache;
+        #      proxy_cache_valid  200 302  60d;
+        #      expires max;
+        #      add_header Cache-Control $cache_header always;
+        #    '';
+        #  };
+        #  locations."= /nix-cache-info" = {
+        #    # Note: This is duplicated with the `@fallback` above,
+        #    # would be nicer if we could redirect to the @fallback instead.
+        #    proxyPass = "$upstream_endpoint";
+        #    extraConfig = ''
+        #      proxy_cache cachecache;
+        #      proxy_cache_valid  200 302  60d;
+        #      expires max;
+        #      add_header Cache-Control $cache_header always;
+        #    '';
+        #  };
+        #};
     };
   };
 }

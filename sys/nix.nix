@@ -39,16 +39,22 @@
   };
    # Make `nix repl '<nixpkgs>'` use the same nixpkgs as the one used by this flake.
   # environment.etc."nix/inputs/nixpkgs".source = "${nixpkgs}";
-  nixpkgs.overlays = [
-    inputs.nur.overlay
-    #(final: prev: { #TODO
-    #  nodePackages = prev.nodePackages // {
-    #    inherit (inputs.nixpkgs-fixes.legacyPackages.${prev.system}.nodePackages) bash-language-server;
-    #  };
-    #})
-  ];
-  nixpkgs.config.allowUnfree = true;
-
+  nixpkgs = {
+    overlays = [
+      inputs.nur.overlay
+      #(final: prev: {
+      #  nodePackages = prev.nodePackages // {
+      #    inherit (inputs.nixpkgs-fixes.legacyPackages.${prev.system}.nodePackages) bash-language-server;
+      #  };
+      #})
+    ];
+    config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [
+        "olm-3.2.16"
+      ];
+    };
+  };
   nix.distributedBuilds = false;
   #nix.buildMachines = [
   #  {

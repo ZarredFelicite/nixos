@@ -29,7 +29,7 @@
   services.gotify.enable = true;
   services.mpd.enable = true;
   services.klipper.enable = true;
-  services.mjpg-streamer.enable = true;
+  services.mjpg-streamer.enable = false; #TODO enable for 3d printer monitoring
 
   services.jellyfin.enable = true;
   services.jellyseerr.enable = true;

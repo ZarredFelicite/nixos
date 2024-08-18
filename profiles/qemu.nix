@@ -20,6 +20,6 @@
     win-virtio
     win-spice
     gnome.adwaita-icon-theme
-    quickemu
+    #quickemu #TOOD broken build
   ];
 }

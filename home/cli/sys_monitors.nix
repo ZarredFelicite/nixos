@@ -13,6 +13,11 @@
     };
   };
   programs.btop = {
+    package = lib.mkIf (osConfig.networking.hostName == "web") (
+      pkgs.btop.override {
+        cudaSupport = true;
+      }
+    );
     enable = true;
     settings = {
       #color_theme = "tokyo-night";
@@ -27,7 +32,7 @@
       graph_symbol_mem = "default";
       graph_symbol_net = "default";
       graph_symbol_proc = "default";
-      shown_boxes = "cpu mem net proc";
+      shown_boxes = "cpu gpu0 mem net proc";
       update_ms = 500;
       proc_sorting = "cpu direct";
       proc_reversed = false;

@@ -2,7 +2,7 @@
   #xdg.configFile.".config/nnn/plugins/previewer" = { source = ./nnn-previewer; executable = true; };
   programs.nnn = {
     package = pkgs.nnn.override ({ withNerdIcons = true; });
-    extraPackages = [ pkgs.ffmpegthumbnailer pkgs.mediainfo ];
+    extraPackages = [ pkgs.mediainfo ]; #TODO broken pkg: pkgs.ffmpegthumbnailer
     plugins = {
       mappings = {
         #f = "finder";

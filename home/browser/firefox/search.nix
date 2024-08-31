@@ -6,6 +6,10 @@
       urls = [{ template = "https://search.brave.com/search?q={searchTerms}"; }];
       definedAliases = [ "b" ];
     };
+    "Gooogle" = {
+      urls = [{ template = "https://www.google.com/search?q={searchTerms}"; }];
+      definedAliases = ["go"];
+    };
     "Nix Packages" = {
       urls = [{
         template = "https://search.nixos.org/packages";
@@ -61,7 +65,6 @@
       urls = [{ template = "https://www.cmcmarketsstockbroking.com.au/net/UI/Chart/AdvancedChart.aspx?asxcode={searchTerms}"; }];
       definedAliases = ["cmc"];
     };
-    "Google".definedAliases = ["g"];
     "Bing".metaData.hidden = true;
     "DuckDuckGo".metaData.hidden = true;
   };

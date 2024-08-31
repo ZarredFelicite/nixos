@@ -125,7 +125,7 @@
       powerManagement.enable = false;
       powerManagement.finegrained = false;
     };
-    opengl = {
+    graphics = {
       enable = true;
       extraPackages = with pkgs; [
         #vaapiVdpau

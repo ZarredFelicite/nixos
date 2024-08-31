@@ -62,7 +62,7 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs ; };
       	  modules = [
-            ({ nixpkgs.overlays = [ (import ./overlays/omniverse.nix ) ]; })
+            #({ nixpkgs.overlays = [ (import ./overlays/omniverse.nix ) ]; })
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix
             ./roles/desktop.nix

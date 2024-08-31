@@ -194,6 +194,7 @@
         shtab
       ]))
       nodejs
+      openjpeg
     ];
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];

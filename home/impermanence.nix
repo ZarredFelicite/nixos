@@ -2,18 +2,18 @@
   imports = [ inputs.impermanence.nixosModules.home-manager.impermanence ];
   home.persistence."/persist/home/zarred" = {
     directories = [
+      # userDirs
       "downloads"
-      "music"
-      "pictures"
-      "documents"
-      "videos"
-      "sync"
-      "scripts"
+      "documents" # syncthing
+      "pictures" # syncthing
+      "videos" # syncthing
+      "sync" # syncthing
+      "scripts" # syncthing
       "nb"
-      "mail"
+      ".mail"
       "games"
       "dots"
-      "dev"
+      "dev" # syncthing
       ".gnupg"
       ".ssh"
       ".nixops"

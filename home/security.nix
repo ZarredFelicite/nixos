@@ -64,7 +64,7 @@
   };
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = false;
+    enableSshSupport = true;
     enableScDaemon = false;
     enableZshIntegration = true;
     pinentryPackage = null;

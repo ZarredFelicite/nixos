@@ -102,6 +102,7 @@
         users-zarred.neededForUsers = true;
         users-root.neededForUsers = true;
         gmail-personal = { owner = "zarred"; };
+        restic-home = { owner = "zarred"; };
         twitch-oauth = {};
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
@@ -206,7 +207,7 @@
     nh = {
       enable = true;
       flake = /home/zarred/dots;
-      #clean.enable = true;
+      clean.enable = false;
       clean.extraArgs = "--keep 5 --keep-since 3d";
       clean.dates = "weekly";
     };
@@ -230,6 +231,9 @@
       package = pkgs.catppuccin-cursors.mochaDark;
       name = "Catppuccin-Mocha-Dark-Cursors";
       size = 18;
+    };
+    opacity = {
+      terminal = 0.4;
     };
     fonts = {
       sizes = {

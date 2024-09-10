@@ -3,6 +3,7 @@ imports = [
   inputs.nixvim.homeManagerModules.nixvim
   ./conform.nix
 ];
+  stylix.targets.nixvim.enable = false;
   programs.nixvim = {
     defaultEditor = true;
     globals = {
@@ -35,6 +36,7 @@ imports = [
       foldmethod = "indent";
       wrap = false;
       foldlevelstart = 99;
+      completeopt = ["menu" "menuone" "noselect"];
 
       swapfile = false;
       backup = false;
@@ -52,6 +54,9 @@ imports = [
 
       list = true;
       listchars.__raw = "{ tab = '» ', trail = '·', nbsp = '␣' }"; # NOTE: .__raw here means that this field is raw lua code
+
+      termguicolors = true;
+      background = "dark";
     };
     keymaps = [
       { key = "<leader>u"; action = "<cmd>UndotreeToggle<CR>"; }
@@ -67,9 +72,26 @@ imports = [
       { mode = "v"; key = "<leader>p"; action = "\"_dP"; } # paste over selection and keep clipboard
       { mode = "v"; key = "<leader>y"; action = "\"+y"; }
     ];
-    colorschemes.catppuccin = {
-      enable = false;
-      settings.transparent_background = true;
+    colorschemes = {
+      poimandres = {
+        enable = false;
+        settings = {
+          bold_vert_split = false;
+          dim_nc_background = true;
+          disable_background = true;
+          disable_float_background = false;
+        };
+      };
+      rose-pine = {
+        enable = true;
+        settings.dim_inactive_windows = false;
+      };
+      catppuccin = {
+        settings = {
+          flavour = "mocha";
+          transparent_background = true;
+        };
+      };
     };
     autoGroups = {
       kickstart-highlight-yank = {
@@ -95,6 +117,7 @@ imports = [
       }
     ];
     plugins = {
+      lspkind.enable = true;
       lualine = {
         enable = true;
         extensions = [ "fzf" "fugitive" ];
@@ -109,6 +132,7 @@ imports = [
           };
         };
       };
+      cmp-treesitter.enable = true;
       cmp = {
         enable = true;
         settings = {
@@ -185,7 +209,6 @@ imports = [
           texlab.enable = true;
           bashls.enable = true;
           ruff-lsp.enable = true;
-          tsserver.enable = true;
         };
         keymaps = {
           # Diagnostic keymaps
@@ -341,13 +364,21 @@ imports = [
       luasnip.enable = true; # TODO Setup luasnip https://piped.video/watch?v=FmHhonPjvvA
       #cmp_luasnip.enable = true;
       treesitter = {
-        enable = true; # TODO
-        settings.indent.enable = true;
-        nixGrammars = false;
-        grammarPackages = [
-          # TODO complete list
-          pkgs.vimPlugins.nvim-treesitter-parsers.python
-        ];
+        enable = true;
+        settings = {
+          indent.enable = true;
+          highlight = {
+            enable = true;
+            # Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+            additional_vim_regex_highlighting = true;
+          };
+        };
+        folding = true;
+        nixGrammars = true;
+        #grammarPackages = [
+        #  # Default: config.plugins.treesitter.package.passthru.allGrammars
+        #  pkgs.vimPlugins.nvim-treesitter-parsers.python
+        #];
       };
       telescope = {
         enable = true;
@@ -447,7 +478,9 @@ imports = [
       fugitive.enable = true;
       todo-comments = {
         enable = true;
-        signs = true;
+        settings = {
+          signs = true;
+        };
       };
       vimtex = {
         enable = true;

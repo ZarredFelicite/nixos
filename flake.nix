@@ -67,6 +67,7 @@
             ./hosts/web.nix
             ./roles/desktop.nix
             ./sys/impermanence.nix
+            ./sys/backups.nix
             ./sys/nfs.nix
             ./sys/syncthing.nix
             ./profiles/fans/fans.nix

@@ -4,7 +4,8 @@
   networking.hostName = "web";
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev"]; # "ddcci_backlight"
+    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev"]; #TODO
+    #kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     #extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver]; #TODO
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
@@ -151,7 +152,7 @@
       User = "root";
       Group = "root";
       ExecStart = pkgs.writers.writePython3 "nvidia-oc" {
-        libraries = [ pkgs.python311Packages.nvidia-ml-py pkgs.python311Packages.pynvml ];
+        libraries = [ pkgs.python312Packages.nvidia-ml-py pkgs.python312Packages.pynvml ];
         flakeIgnore = [ "E265" "E225" ];
       }
       ''

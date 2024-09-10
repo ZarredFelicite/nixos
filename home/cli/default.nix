@@ -1,7 +1,7 @@
 { self, inputs, outputs, config, pkgs, lib, ... }: {
   imports = [
     ./zsh
-    ./nixvim.nix
+    ./nixvim
     ./neovim.nix
     ./nb.nix
     ./sys_monitors.nix
@@ -21,7 +21,7 @@
   programs = {
     zsh.enable = true;
     direnv.enable = true;
-    nixvim.enable = false;
+    nixvim.enable = true;
     nnn.enable = true;
     tmux.enable = true;
     eza = {
@@ -32,7 +32,7 @@
       ];
       git = true;
       icons = true;
-      enableZshIntegration = false;
+      enableZshIntegration = true;
     };
     zoxide = {
       enable = true;

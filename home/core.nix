@@ -177,7 +177,7 @@
       italic-text = "always";
     };
   };
-  services.ssh-agent.enable = true;
+  services.ssh-agent.enable = false; # TODO: vs GPG-agent
   programs.ssh = {
     enable = true;
     #controlMaster = "yes";
@@ -346,7 +346,6 @@
       documents = "/home/zarred/documents";
       pictures = "/home/zarred/pictures";
       videos = "/home/zarred/videos";
-      music = "/home/zarred/music";
     };
   };
   editorconfig = {

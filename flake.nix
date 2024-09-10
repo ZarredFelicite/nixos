@@ -10,7 +10,7 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland"; submodules = true;};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.42.0"; submodules = true;};
     hyprpaper = { url = "github:hyprwm/hyprpaper"; };
     hyprlang = { url = "github:hyprwm/hyprlang"; };
     #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
@@ -67,6 +67,7 @@
             ./hosts/web.nix
             ./roles/desktop.nix
             ./sys/impermanence.nix
+            ./sys/backups.nix
             ./sys/nfs.nix
             ./sys/syncthing.nix
             ./profiles/fans/fans.nix

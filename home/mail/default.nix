@@ -7,18 +7,17 @@
     ./frontends/aerc.nix
     ./frontends/alot.nix
     ./frontends/neomutt.nix
-    #./frontends/neomutt/neomutt.nix
     ./imapnotify.nix
   ];
   accounts.email = {
-    maildirBasePath = "mail";
+    maildirBasePath = ".mail";
     accounts = {
       personal = {
         primary = true;
         address = "zarred.f@gmail.com";
         userName = "zarred.f@gmail.com";
         flavor = "gmail.com";
-        passwordCommand = "${pkgs.coreutils}/bin/cat ${osConfig.sops.secrets.gmail-personal.path} 2> gmail-personal-password-cmd.txt";
+        passwordCommand = "${pkgs.coreutils}/bin/cat ${osConfig.sops.secrets.gmail-personal.path}";
         realName = "Zarred Felicite";
         maildir.path = "personal";
         folders = {

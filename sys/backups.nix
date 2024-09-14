@@ -1,5 +1,6 @@
 { pkgs, lib, config, ... }: {
   environment.systemPackages = [ pkgs.restic ];
+  systemd.services.restic-backups-sankara-home.environment.SSH_AUTH_SOCK = "/run/user/1002/gnupg/S.gpg-agent.ssh";
   services.restic.backups = {
     sankara-home = {
       repository = "sftp:zarred@sankara:/mnt/gargantua/backups/restic";
@@ -7,6 +8,9 @@
       extraOptions = [
         "sftp.command='ssh sankara -i /home/zarred/.ssh/id_ed25519 -s sftp'"
       ];
+      #extraBackupArgs = [
+      #  "--dry-run"
+      #];
       passwordFile = "${config.sops.secrets.restic-home.path}";
       paths = [
         "/home/zarred"
@@ -18,7 +22,7 @@
       ];
       timerConfig = {
         #OnCalendar = "daily";
-        OnCalendar = "18:35";
+        OnCalendar = "23:04";
         Persistent = true;
         #RandomizedDelaySec = "5h";
       };
@@ -29,7 +33,7 @@
         "--keep-yearly 75"
       ];
       inhibitsSleep = false; # TODO: systemd-inhibit[388820]: Failed to inhibit: Access denied
-      backupPrepareCommand = "export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup starting'";
+      backupPrepareCommand = "export SSH_AUTH_SOCK=/run/user/1002/gnupg/S.gpg-agent.ssh; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup starting'";
       backupCleanupCommand = "export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup complete'";
     };
   };

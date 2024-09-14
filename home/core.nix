@@ -136,6 +136,7 @@
         pybluez
         libtmux
         tensorboard
+        cloudscraper
         (
           buildPythonPackage rec {
             pname = "reader";

@@ -62,8 +62,13 @@
       keyserver-options = "honor-keyserver-url";
     };
   };
+  home.file.".pam-gnupg".text = "1504 329B CE4A E308 C221  8F2C D276 AC44 4633 E146";
   services.gpg-agent = {
     enable = true;
+    sshKeys = [
+      "4AFAAA07700925FBEF6260C4862B0A3BC164D71F 0"
+      "1504 329B CE4A E308 C221  8F2C D276 AC44 4633 E146"
+    ];
     enableSshSupport = true;
     enableScDaemon = false;
     enableZshIntegration = true;
@@ -72,7 +77,7 @@
     defaultCacheTtlSsh = 60480000;
     maxCacheTtl = 60480000;
     maxCacheTtlSsh = 60480000;
-    grabKeyboardAndMouse = true;
+    grabKeyboardAndMouse = false;
     verbose = true;
   };
   services.swayidle = {

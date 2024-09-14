@@ -72,7 +72,7 @@
     "/swap" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "noatime" "compress-force=zstd" "ssd" "subvol=swap" ];
+      options = [ "noatime" "ssd" "subvol=swap" ];
     };
   };
   swapDevices = [{

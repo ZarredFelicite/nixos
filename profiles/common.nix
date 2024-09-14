@@ -166,6 +166,11 @@
     udisks2.enable = true;
     openssh = {
       enable = true;
+      settings = {
+        PermitRootLogin = "yes";
+        PasswordAuthentication = true;
+        KbdInteractiveAuthentication = true;
+      };
     };
     udev.extraRules = ''
     '';

@@ -20,6 +20,30 @@
     };
     brillo.enable = true;
   };
+  #stylix.targets.plymouth.enable = false;
+  #systemd.tmpfiles.rules = [
+  #  "d /etc/systemd/system/display-manager.service.d 1777 root root"
+  #];
+  environment.etc = {
+    #"systemd/system/display-manager.service.d/plymouth.conf".text = ''
+    #  [Unit]
+    #  Conflicts=plymouth-quit.service
+    #  After=plymouth-quit.service rc-local.service plymouth-start.service systemd-user-sessions.service
+    #  OnFailure=plymouth-quit.service
+
+    #  [Service]
+    #  ExecStartPost=-/usr/bin/sleep 30
+    #  ExecStartPost=-/usr/bin/plymouth quit --retain-splash
+    #'';
+  };
+  boot.plymouth = {
+    # TODO: add fireship nix video to stylix-plymouth generation script
+    enable = true;
+    #theme = "breeze";
+    #themePackages = [
+    #  (pkgs.catppuccin-plymouth.override { variant = "mocha"; })
+    #];
+  };
   xdg = {
     portal = {
       enable = true;
@@ -89,28 +113,31 @@
       desktopManager.gnome = {
         enable = false;
       };
+      #displayManager.session = [
+      #  { name = "Desktop"; manage = "desktop"; start = "Hyprland"; }
+      #];
     };
     greetd = {
       enable = true;
       vt = 2; # clean login screen, no startup logs
       restart = false;
       settings = rec {
-        #initial_session = {
-	      #  command = "${pkgs.hyprland}/bin/Hyprland";
-	      #  user = "zarred";
-	      #};
-        #default_session = initial_session;
+        initial_session = {
+	        command = "${pkgs.hyprland}/bin/Hyprland";
+	        user = "zarred";
+	      };
         default_session = {
           command = ''
             ${pkgs.greetd.tuigreet}/bin/tuigreet \
               --time \
               --asterisks \
-              --user-menu \
               --cmd Hyprland \
               -s ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
               --remember \
               --remember-user-session \
               --width 50
+              --theme "border=magenta;text=cyan;prompt=lightblue;time=lightblue;action=lightblue;button=darkgrey;container=black;input=lightcyan"
+              --debug /tmp/tuigreet.log
           '';
           user = "greeter";
         };
@@ -235,9 +262,6 @@
     };
   };
   environment = {
-    etc."greetd/environments".text = ''
-      Hyprland
-    '';
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
     };

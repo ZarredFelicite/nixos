@@ -10,6 +10,7 @@
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/923d48e9-065c-4608-b797-d995fd6c4283";
+    initrd.systemd.enable = true;
   };
 
   fileSystems = {
@@ -97,7 +98,7 @@
       emulateWheel = true;
     };
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    opengl = {
+    graphics = {
       enable = true;
       #driSupport32Bit = true;
       extraPackages = with pkgs; [

@@ -83,7 +83,7 @@
         set pager_format=" %n %zc  %T %s%*  %{!%d %b · %H:%M} %?X?  %X ? %P  "
         set status_format = " %f%?r? %r?   %m %?n? 󰛮 %n ?  %?d?  %d ?%?t?  %t ?%?F?  %F? %> %?p?   %p ?"
         set vfolder_format = " %N %?n?%3n&   ?  %8m  · %f"
-        set attach_format = "%u%D  %T%-75.75d %?T?%&   ? %5s · %m/%M"
+        #TODO set attach_format = "%u%D  %T%-75.75d %?T?%&   ? %5s · %m/%M"
 
         # no addressed to me, to me, group, cc, sent by me, mailing list
         set to_chars=""

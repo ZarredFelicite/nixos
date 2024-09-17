@@ -99,7 +99,6 @@
   };
   home.packages = [
     pkgs.notmuch
-    pkgs.python311Packages.html2text
     #pkgs.evolution
     pkgs.lynx
   ];

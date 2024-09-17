@@ -68,7 +68,7 @@
         isNormalUser = true;
         description = "Zarred";
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" "render" ];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss"];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;
@@ -121,6 +121,12 @@
     ];
   };
   security = {
+    # TODO: enable lanzaboote for secureboot on nixos
+    tpm2 = {
+      enable = true;
+      pkcs11.enable = true;
+      tctiEnvironment.enable = true;
+    };
     polkit.enable = true;
     rtkit.enable = true;
     pam.loginLimits = [{
@@ -168,8 +174,8 @@
       enable = true;
       settings = {
         PermitRootLogin = "yes";
-        PasswordAuthentication = true;
-        KbdInteractiveAuthentication = true;
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
       };
     };
     udev.extraRules = ''

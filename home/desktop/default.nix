@@ -12,7 +12,10 @@ in {
     ./notifications.nix
     ./waybar.nix
   ];
-  wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland = {
+    enable = true;
+    systemd.variables = ["--all"];
+  };
   programs.waybar.enable = true;
   services.mako.enable = true;
   home.packages = with pkgs; [

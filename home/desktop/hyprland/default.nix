@@ -19,6 +19,7 @@ in {
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
   ];
   services.hyprland-autoname-workspaces.enable = false;
+  #programs.hyprlock.package = inputs.hyprlock.packages.${pkgs.hostPlatform.system}.hyprlock;
   programs.hyprlock.settings = {
     general = {
       hide_cursor = true;
@@ -193,7 +194,7 @@ in {
       exec-once = [
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "${pkgs.hyprlock}/bin/hyprlock"
+        "${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
         "${pkgs.wayvnc}/bin/wayvnc"

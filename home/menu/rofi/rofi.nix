@@ -3,8 +3,8 @@
   programs.rofi = {
     cycle = false;
     location = "top";
-    font = lib.mkDefault "Iosevka Nerd Font 14";
-    yoffset = 4;
+    font = lib.mkDefault "Iosevka Nerd Font 16";
+    #yoffset = 4;
     extraConfig = {
       auto-select = true;
       fixed-num-lines = false;

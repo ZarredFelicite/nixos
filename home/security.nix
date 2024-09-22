@@ -44,7 +44,7 @@
     settings.general = {
       lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";       # avoid starting multiple hyprlock instances.
       before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
-      after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
+      #after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
     };
     settings.listener = [
       {
@@ -59,7 +59,7 @@
       }
       {
         timeout = 300;
-        on-timeout = "loginctl lock-session";            # lock screen when timeout has passed
+        on-timeout = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render";            # lock screen when timeout has passed
       }
       {
         timeout = 330;

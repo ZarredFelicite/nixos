@@ -1,6 +1,6 @@
 * {
     fg:               #c4a7e7;
-    fg2:              #9ccfd8;
+    fg2:              #ebbcba;
     bg:               #1f1d2e30;
     bg2:              #31748f40;
 	  border-radius:    6px;
@@ -12,31 +12,42 @@
 window {
 	transparency:     "real";
 	width:			    	30%;
-	y-offset:         2px;
 	padding: 			    0px;
 	margin: 			    0px;
 	location: 			  north;
 }
 
-prompt { enabled: false; }
-
-entry {
-    text-color:        @fg;
-    background-color:  transparent;
-    cursor:            text;
-    placeholder-color: Gray;
-    expand:            true;
-    width:              5em;
-    vertical-align:     0.5;
-    border-radius:     0px;
+mainbox {
+  children:             [ inputbar, message, listview ];
+  border:               0;
+  spacing:              4px;
+	padding:              0px;
 }
 
 inputbar {
 	children: 			      [ prompt, entry ];
-	background-color:     @bg2;
-	text-color:           @fg;
+	background-color:     @bg;
 	expand:               false;
-	padding:              4px;
+	padding:              2px 6px;
+	margin:               6px;
+	border-radius:        14px;
+}
+
+prompt {
+  background-color:     transparent;
+  enabled:              true;
+	padding:              0px 12px;
+}
+
+entry {
+    text-color:         @fg2;
+    background-color:   transparent;
+    cursor:             text;
+    placeholder-color:  Gray;
+    expand:             true;
+    width:              5em;
+    vertical-align:     0.5;
+    border-radius:      0px;
 }
 
 listview {
@@ -44,19 +55,18 @@ listview {
 	lines:	              8;
 	cycle:                false;
 	dynamic:              true;
+	scrollbar:            true;
 	layout:               vertical;
+  margin:               6px;
+  padding:              6px 0px;
+	border-radius:        14px;
 }
 
-mainbox {
-  children:             [ inputbar, message, listview ];
-  padding:              0;
-  border:               0;
-  spacing:              4px;
-	padding:              0px;
-}
 element {
     orientation:        vertical;
 	  padding:            2px;
+	  margin:             2px 6px;
+	  border-radius:      12px;
 }
 element selected {
     background-color:   @bg2;
@@ -67,5 +77,5 @@ element-text {
     text-color:       inherit;
     background-color: transparent;
     vertical-align:   0.5;
-    margin:           2px;
+    margin:           0px 12px;
 }

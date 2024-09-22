@@ -171,6 +171,7 @@
       "tab"             = "script-binding uosc/toggle-ui";
       a                 = "script-binding uosc/menu";
       r                 = "script-binding uosc/items                                            #! Playlist";
+      "ctrl+r"          = "script-binding playlistmanager/reverse";
       s                 = "script-binding uosc/chapters                                         #! Chapters";
       w                 = "script-binding uosc/stream-quality                                   #! Stream quality";
       p                 = "add panscan -0.1";

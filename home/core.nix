@@ -127,6 +127,7 @@
         pixcat
         mutagen
         beautifulsoup4
+        html2text
         python-mpv-jsonipc
         playsound
         gtts
@@ -137,6 +138,7 @@
         libtmux
         tensorboard
         cloudscraper
+        openai
         (
           buildPythonPackage rec {
             pname = "reader";

@@ -1,17 +1,17 @@
 { ... }: {
-  nixpkgs.overlays = [(
-    final: prev: {
-      tridactyl-native = prev.tridactyl-native.overrideAttrs (old: {
-        version = "0.4.0";
-        src = prev.fetchFromGitHub {
-          owner = "tridactyl";
-          repo = "native_messenger";
-          rev = "6e0d2cd3bc7dab02e8e87aaaa60b52c20131db42";
-          sha256 = "";
-        };
-      });
-    }
-  )];
+  #nixpkgs.overlays = [(
+  #  final: prev: {
+  #    tridactyl-native = prev.tridactyl-native.overrideAttrs (old: {
+  #      version = "0.4.0";
+  #      src = prev.fetchFromGitHub {
+  #        owner = "tridactyl";
+  #        repo = "native_messenger";
+  #        rev = "6e0d2cd3bc7dab02e8e87aaaa60b52c20131db42";
+  #        sha256 = "";
+  #      };
+  #    });
+  #  }
+  #)];
   xdg.configFile = {
       "tridactyl/tridactylrc".text = ''
         set findcase insensitive

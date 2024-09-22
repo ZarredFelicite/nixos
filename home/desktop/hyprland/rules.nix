@@ -7,19 +7,20 @@
       "workspace special, (special)$"
     ];
     windowrulev2 = [
-      "float, class:^(nova|zoom|cctv)$"
+      "float, class:^(nova|zoom|cctv|Rofi)$"
       "size 800 500, class:^(nova)$"
       #"center, class:^(nova)$"
       #"pin, class:^(nova)$"
       #"stayfocused, class:^(nova)$"
       #"animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
-      #"stayfocused, class:^(rofi)$"
+      "stayfocused, class:^(Rofi)$"
+      "center, class:^(Rofi)$"
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
       "suppressevent fullscreen, class:^(firefox)$"
-      "noborder, class:^(firefox)$"
+      #"noborder, class:^(firefox)$"
       "pin, title:^(ripdrag)$"
       "size 60% 50%, title:^(Enter name of file to save to…)$|class:xdg-desktop-portal-gtk"
       "float, title:^(mpd_cover)$"
@@ -46,7 +47,7 @@
       "ignorezero, anyrun"
     ];
     workspace = [
-      "special, on-created-empty:kitty --class stats --override window_border_width=0 --session ~/scripts/sys/stats"
+      "special:special, on-created-empty:kitty --class stats zsh -c 'btop'"
       "special:volume, on-created-empty:pavucontrol"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
       "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh"

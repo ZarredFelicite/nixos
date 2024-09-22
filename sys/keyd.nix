@@ -6,16 +6,22 @@
         src = prev.fetchFromGitHub {
           owner = "rvaiya";
           repo = "keyd";
-          rev = "dcbb68b12f71245121035b730b50872802a259b4";
-          hash = "sha256-NhZnFIdK0yHgFR+rJm4cW+uEhuQkOpCSLwlXNQy6jas=";
+          rev = "v2.5.0";
+          hash = "sha256-pylfQjTnXiSzKPRJh9Jli1hhin/MIGIkZxLKxqlReVo=";
         };
         postPatch = ''
           substituteInPlace Makefile \
-            --replace /usr ""
-          substituteInPlace keyd.service \
-            --replace /usr/bin $out/bin
+            --replace-fail /usr ""
+          #substituteInPlace keyd.service.in \
+          #  --replace-fail /usr/bin $out/bin
         '';
         installFlags = [ "DESTDIR=${placeholder "out"}" ];
+        postInstall = ''
+          rm -rf $out/etc
+          mkdir $out/bin
+          ln -sf $out/local/bin/keyd $out/bin/keyd
+          ln -sf $out/local/bin/keyd-application-mapper $out/bin/keyd-application-mapper
+        '';
       });
     }
   )];

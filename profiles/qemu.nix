@@ -19,7 +19,7 @@
     spice-protocol
     win-virtio
     win-spice
-    gnome.adwaita-icon-theme
-    quickemu
+    adwaita-icon-theme
+    #quickemu #TOOD broken build
   ];
 }

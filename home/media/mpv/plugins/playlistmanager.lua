@@ -29,9 +29,9 @@ local settings = {
   -- extra functionality keys
   key_sortplaylist = "",
   key_shuffleplaylist = "",
-  key_reverseplaylist = "",
+  key_reverseplaylist = "Ctrl+r",
   key_loadfiles = "",
-  key_saveplaylist = "ctrl+p",
+  key_saveplaylist = "Ctrl+p",
 
   --replaces matches on filenames based on extension, put as empty string to not replace anything
   --replace rules are executed in provided order

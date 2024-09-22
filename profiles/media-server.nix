@@ -93,15 +93,6 @@
         }
       '');
   };
-  #services.mpd = {
-  #  startWhenNeeded = false;
-  #  network.port = 6600;
-  #  dataDir = "/mnt/gargantua/media/music/data";
-  #  musicDirectory = "/mnt/gargantua/media/music";
-  #  playlistDirectory = "/mnt/gargantua/media/music/playlists";
-  #  dbFile = "/mnt/gargantua/media/music/data/mpd.db";
-  #  group = "users";
-  #};
   virtualisation.oci-containers.containers."audiobookshelf" = {
     autoStart = true;
     image = "ghcr.io/advplyr/audiobookshelf:latest";

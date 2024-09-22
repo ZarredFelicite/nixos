@@ -5,7 +5,7 @@
   ];
   services = {
     mpdris2 = {
-      enable = true;
+      enable = osConfig.services.mpd.enable;
       mpd = {
         host = osConfig.services.mpd.network.listenAddress;
         #musicDirectory = osConfig.services.mpd.musicDirectory;
@@ -21,7 +21,7 @@
   #systemd.user.services.mpd.Unit.After = lib.mkForce "mnt-gargantua.automount";
   programs = {
     ncmpcpp = {
-      enable = true;
+      enable = osConfig.services.mpd.enable;
       bindings = [
         { key = "e"; command = "scroll_down"; }
         { key = "i"; command = "scroll_up"; }

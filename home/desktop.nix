@@ -15,11 +15,9 @@ in {
     ./theme
     ./gaming
   ];
-  programs.swaylock.enable = false;
   programs.hyprlock.enable = true;
   programs.password-store.enable = true;
-  services.swayidle.enable = false;
-  services.hypridle.enable = false;
+  services.hypridle.enable = true;
   services.gpg-agent.extraConfig = ''
     pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
     allow-preset-passphrase
@@ -49,7 +47,6 @@ in {
     xdg-utils # for opening default programs when clicking links
     glib # gsettings
     dracula-theme # gtk theme
-    gnome3.adwaita-icon-theme  # default gnome cursors
     #sunshine # Sunshine is a Game stream host for Moonlight.
     wtype # xdotool type for wayland
     # messaging

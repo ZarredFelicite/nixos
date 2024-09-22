@@ -20,6 +20,30 @@
     };
     brillo.enable = true;
   };
+  #stylix.targets.plymouth.enable = false;
+  #systemd.tmpfiles.rules = [
+  #  "d /etc/systemd/system/display-manager.service.d 1777 root root"
+  #];
+  environment.etc = {
+    #"systemd/system/display-manager.service.d/plymouth.conf".text = ''
+    #  [Unit]
+    #  Conflicts=plymouth-quit.service
+    #  After=plymouth-quit.service rc-local.service plymouth-start.service systemd-user-sessions.service
+    #  OnFailure=plymouth-quit.service
+
+    #  [Service]
+    #  ExecStartPost=-/usr/bin/sleep 30
+    #  ExecStartPost=-/usr/bin/plymouth quit --retain-splash
+    #'';
+  };
+  boot.plymouth = {
+    # TODO: add fireship nix video to stylix-plymouth generation script
+    enable = false;
+    #theme = "breeze";
+    #themePackages = [
+    #  (pkgs.catppuccin-plymouth.override { variant = "mocha"; })
+    #];
+  };
   xdg = {
     portal = {
       enable = true;
@@ -49,10 +73,34 @@
       #  };
       #};
       extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-hyprland #TODO
+        #pkgs.xdg-desktop-portal-wlr # RM
         pkgs.xdg-desktop-portal-gtk
       ];
     };
+  };
+  # https://www.reddit.com/r/NixOS/comments/u0cdpi/tuigreet_with_xmonad_how/
+  #systemd.services.greetd.serviceConfig = {
+  #  Type = "idle";
+  #  StandardInput = "tty";
+  #  StandardOutput = "tty";
+  #  StandardError = "journal"; # Without this errors will spam on screen
+  #  # Without these bootlogs will spam on screen
+  #  TTYReset = true;
+  #  TTYVHangup = true;
+  #  TTYVTDisallocate = true;
+  #};
+  security.pam.services =
+    let defaults = {
+      gnupg = {
+        enable = true;
+        noAutostart = true;
+        #storeOnly = true;
+      };
+    };
+    in {
+      login = defaults;
+      greetd = defaults;
   };
   services = {
     ollama.enable = false; #TODO
@@ -65,35 +113,39 @@
       desktopManager.gnome = {
         enable = false;
       };
+      #displayManager.session = [
+      #  { name = "Desktop"; manage = "desktop"; start = "Hyprland"; }
+      #];
     };
     greetd = {
       enable = true;
-      vt = 2; # clean login screen, no startup logs
+      vt = 1; # clean login screen, no startup logs
       restart = false;
       settings = rec {
-        #initial_session = {
-	      #  command = "${pkgs.hyprland}/bin/Hyprland";
-	      #  user = "zarred";
-	      #};
-        #default_session = initial_session;
+        initial_session = {
+	        command = "${pkgs.hyprland}/bin/Hyprland";
+	        user = "zarred";
+	      };
         default_session = {
           command = ''
             ${pkgs.greetd.tuigreet}/bin/tuigreet \
               --time \
               --asterisks \
-              --user-menu \
-              --cmd Hyprland \
-              -s ${config.services.xserver.displayManager.sessionData.desktops}/share/wayland-sessions \
+              --cmd ${pkgs.hyprland}/bin/Hyprland \
+              -s ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
               --remember \
               --remember-user-session \
               --width 50
+              --theme "border=magenta;text=cyan;prompt=lightblue;time=lightblue;action=lightblue;button=darkgrey;container=black;input=lightcyan"
+              --debug /tmp/tuigreet.log
           '';
-          user = "greeter";
+          #user = "greeter";
         };
       };
     };
     pipewire = {
       enable = true;
+      audio.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
@@ -110,10 +162,44 @@
           '')
         ];
       };
-      audio.enable = true;
+    };
+    mpd = {
+      user = "zarred";
+      group = "users";
+      enable = false;
+      dataDir = "/mnt/gargantua/media/music/data";
+      musicDirectory = lib.mkMerge [ (lib.mkIf (config.networking.hostName == "sankara") "/mnt/gargantua/media/music") (lib.mkIf (config.networking.hostName == "nano") "nfs://192.168.86.200/mnt/gargantua/media/music") ];
+      #playlistDirectory = /mnt/gargantua/media/music/data/playlists;
+      dbFile = null;
+      network.listenAddress = "any";
+      network.port = 6600;
+      startWhenNeeded = false;
+      extraConfig = (if config.networking.hostName == "sankara"
+        then ''
+          database {
+            plugin  "simple"
+            path    "/mnt/gargantua/media/music/data/mpd.db"
+            cache_directory    "/mnt/gargantua/media/music/data/cache"
+          }
+          audio_output {
+            type    "null"
+            name    "MPD Server"
+          }
+          ''
+        else ''
+          database {
+            plugin  "proxy"
+            host    "sankara"
+            port    "6600"
+          }
+          audio_output {
+            type    "pipewire"
+            name    "Pipewire Sound Server"
+          }
+        '');
     };
     transmission = {
-      enable = false;
+      enable = true;
       package = pkgs.transmission_4;
       openRPCPort = true;
       group = "users";
@@ -183,6 +269,17 @@
       };
     };
   };
+  #TODO:  compilation failed
+  #nixpkgs.overlays = [(final: prev: {
+  #  mpd = prev.mpd.overrideAttrs (old: {
+  #    src = prev.fetchFromGitHub {
+  #      owner = "MusicPlayerDaemon";
+  #      repo = "MPD";
+  #      rev = "9ff8e02e543ede2b1964e5ea3f26f00bf2ff90ec";
+  #      sha256 = "sha256-dlkMUKY8OAC+kwQ6twWgctV/+zxTikhq5MrXBL4+5TQ=";
+  #    };
+  #  });
+  #})];
   programs.steam = {
     enable = true;
     gamescopeSession.enable = true; #TODO
@@ -211,9 +308,6 @@
     };
   };
   environment = {
-    etc."greetd/environments".text = ''
-      Hyprland
-    '';
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
     };

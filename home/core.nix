@@ -62,9 +62,9 @@
       visidata # Interactive terminal multitool for tabular data
       xsv # A fast CSV toolkit written in Rust
       # web tools
-      nodePackages_latest.readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
+      readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
       # misc
-      ffmpeg_6-full # A complete, cross-platform solution to record, convert and stream audio and video
+      ffmpeg_7 # A complete, cross-platform solution to record, convert and stream audio and video
       android-tools # Android SDK platform tools
       imagemagick # A software suite to create, edit, compose, or convert bitmap images
       gotify-cli # A command line interface for pushing messages to gotify/server
@@ -113,6 +113,7 @@
 
       # kinect
       #freenect
+      #freecad
 
       (python3.withPackages(ps: with ps; [
         pip
@@ -126,6 +127,7 @@
         pixcat
         mutagen
         beautifulsoup4
+        html2text
         python-mpv-jsonipc
         playsound
         gtts
@@ -135,6 +137,8 @@
         pybluez
         libtmux
         tensorboard
+        cloudscraper
+        openai
         (
           buildPythonPackage rec {
             pname = "reader";
@@ -176,7 +180,7 @@
       italic-text = "always";
     };
   };
-  services.ssh-agent.enable = true;
+  services.ssh-agent.enable = false; # TODO: vs GPG-agent
   programs.ssh = {
     enable = true;
     #controlMaster = "yes";
@@ -345,7 +349,6 @@
       documents = "/home/zarred/documents";
       pictures = "/home/zarred/pictures";
       videos = "/home/zarred/videos";
-      music = "/home/zarred/music";
     };
   };
   editorconfig = {

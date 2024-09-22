@@ -68,7 +68,7 @@
         isNormalUser = true;
         description = "Zarred";
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" "render" ];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss"];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;
@@ -102,6 +102,7 @@
         users-zarred.neededForUsers = true;
         users-root.neededForUsers = true;
         gmail-personal = { owner = "zarred"; };
+        restic-home = { owner = "zarred"; };
         twitch-oauth = {};
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
@@ -120,6 +121,12 @@
     ];
   };
   security = {
+    # TODO: enable lanzaboote for secureboot on nixos
+    tpm2 = {
+      enable = true;
+      pkcs11.enable = true;
+      tctiEnvironment.enable = true;
+    };
     polkit.enable = true;
     rtkit.enable = true;
     pam.loginLimits = [{
@@ -165,6 +172,11 @@
     udisks2.enable = true;
     openssh = {
       enable = true;
+      settings = {
+        PermitRootLogin = "yes";
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+      };
     };
     udev.extraRules = ''
     '';
@@ -194,6 +206,7 @@
         shtab
       ]))
       nodejs
+      openjpeg
     ];
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
@@ -205,7 +218,7 @@
     nh = {
       enable = true;
       flake = /home/zarred/dots;
-      #clean.enable = true;
+      clean.enable = false;
       clean.extraArgs = "--keep 5 --keep-since 3d";
       clean.dates = "weekly";
     };
@@ -229,6 +242,9 @@
       package = pkgs.catppuccin-cursors.mochaDark;
       name = "Catppuccin-Mocha-Dark-Cursors";
       size = 18;
+    };
+    opacity = {
+      terminal = 0.4;
     };
     fonts = {
       sizes = {

@@ -1,9 +1,9 @@
 { pkgs, inputs, ... }:
 let
   css = ( builtins.readFile( builtins.fetchGit {
-      url = "https://codeberg.org/Freeplay/Firefox-Onebar";
-      rev = "efc2ce9634f0cfc47e92535fa32b52aacf2d97da";
-    } + "/userChrome.css" ) + builtins.readFile ./firefox_css.css);
+      url = "https://git.gay/freeplay/Firefox-Onebar";
+      rev = "197a5e5298985be3767da504bac153f3b75b63f7";
+    } + "/onebar.css" ) + builtins.readFile ./firefox_css.css);
 in {
   imports = [
     ./tridactyl.nix
@@ -21,7 +21,8 @@ in {
           #"https://github.com/hensm/fx_cast/releases/download/v0.3.1/fx_cast-0.3.1.xpi"
           "https://addons.mozilla.org/firefox/downloads/latest/imagus/latest.xpi"
           "https://addons.mozilla.org/firefox/downloads/latest/roseppuccin/latest.xpi"
-          "https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"
+          #"https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"
+          "https://tridactyl.cmcaine.co.uk/betas/tridactyl-latest.xpi"
           "https://addons.mozilla.org/firefox/downloads/latest/stylebot-web/latest.xpi"
         ]; };
       };

@@ -45,11 +45,11 @@
       fsType = "btrfs";
       options = [ "defaults" "compress-force=zstd" "auto" ];
     };
-    "/mnt/dagobah" = {
-      device = "/dev/disk/by-uuid/47b66da6-0d0f-45aa-a43c-63f636496dbe";
-      fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "auto" ];
-    };
+    #"/mnt/dagobah" = {
+    #  device = "/dev/disk/by-uuid/47b66da6-0d0f-45aa-a43c-63f636496dbe";
+    #  fsType = "btrfs";
+    #  options = [ "defaults" "compress-force=zstd" "auto" ];
+    #};
     "/mnt/eros" = {
       device = "/dev/disk/by-uuid/bf0612f6-780c-410b-b723-b9d3f182cf0e";
       fsType = "btrfs";
@@ -87,6 +87,7 @@
   services.nfs.server.exports = ''
     /mnt        *(rw,fsid=0,no_subtree_check)
     /mnt/gargantua   *(rw,fsid=1,nohide,insecure,no_subtree_check)
+    /mnt/gargantua/media/music   *(rw,fsid=5,nohide,insecure,no_subtree_check)
     /mnt/ceres   *(rw,fsid=2,nohide,insecure,no_subtree_check)
     /mnt/eros   *(rw,fsid=3,nohide,insecure,no_subtree_check)
     /mnt/turing   *(rw,fsid=4,nohide,insecure,no_subtree_check)

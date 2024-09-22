@@ -1,44 +1,24 @@
-{ config, pkgs, lib, ... }:
+{ osConfig, config, pkgs, lib, ... }:
 {
   home.packages = [
     pkgs.mpc-cli # A minimalist command line interface to MPD
   ];
   services = {
-    mpd = {
-      enable = true;
-      dataDir = /mnt/gargantua/media/music/data;
-      musicDirectory = /mnt/gargantua/media/music;
-      playlistDirectory = /mnt/gargantua/media/music/data/playlists;
-      dbFile = null;
-      network.listenAddress = "0.0.0.0";
-      network.port = 6600;
-      network.startWhenNeeded = true;
-      extraConfig = ''
-      #database {
-      #  plugin  "proxy"
-      #  host    "sankara"
-      #  port    "6600"
-      #}
-      audio_output {
-        type    "pipewire"
-        name    "PipeWire Sound Server"
-      }
-      '';
-    };
     mpdris2 = {
       enable = true;
       mpd = {
-        host = config.services.mpd.network.listenAddress;
-        musicDirectory = config.services.mpd.musicDirectory;
-        port = config.services.mpd.network.port;
+        host = osConfig.services.mpd.network.listenAddress;
+        #musicDirectory = osConfig.services.mpd.musicDirectory;
+        musicDirectory = null;
+        port = osConfig.services.mpd.network.port;
       };
       multimediaKeys = true;
     };
   };
   systemd.user.services.mpdris2.Unit.Requires = lib.mkForce "mpd.service";
   systemd.user.services.mpdris2.Unit.After = lib.mkForce "mpd.service";
-  systemd.user.services.mpd.Service.ExecStartPre = lib.mkForce "";
-  systemd.user.services.mpd.Unit.After = lib.mkForce "mnt-gargantua.automount";
+  #systemd.user.services.mpd.Service.ExecStartPre = lib.mkForce "";
+  #systemd.user.services.mpd.Unit.After = lib.mkForce "mnt-gargantua.automount";
   programs = {
     ncmpcpp = {
       enable = true;
@@ -69,11 +49,11 @@
         { key = "/"; command = "find"; }
         { key = "?"; command = "show_help"; }
       ];
-      mpdMusicDir = config.services.mpd.musicDirectory;
+      mpdMusicDir = osConfig.services.mpd.musicDirectory;
       settings = {
-        mpd_host = config.services.mpd.network.listenAddress;
-        mpd_port = config.services.mpd.network.port;
-        lyrics_directory = config.services.mpd.musicDirectory;
+        mpd_host = osConfig.services.mpd.network.listenAddress;
+        mpd_port = osConfig.services.mpd.network.port;
+        #lyrics_directory = osConfig.services.mpd.musicDirectory;
         store_lyrics_in_song_dir = "yes";
         lines_scrolled = 1;
         execute_on_song_change = "~/scripts/music/song_change.py & >/dev/null";

@@ -4,7 +4,7 @@
     hostName = "nextcloud.zar.red";
     https = true;
     home = "/var/lib/nextcloud";
-    datadir = config.services.nextcloud.home;
+    datadir = "/mnt/gargantua/nextcloud";
     settings = {
       trusted_domains = [ "localhost" ];
     };

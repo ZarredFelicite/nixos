@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, config, ... }: {
   users.users.media = {
     isSystemUser = true;
     group = "media";
@@ -60,11 +60,13 @@
   };
   services.mpd = {
     enable = true;
+    user = "zarred";
+    group = "users";
     dataDir = "/mnt/gargantua/media/music/data";
     musicDirectory = lib.mkMerge [ (lib.mkIf (config.networking.hostName == "sankara") "/mnt/gargantua/media/music") (lib.mkIf (config.networking.hostName == "nano") "nfs://sankara/mnt/gargantua/media/music") ];
     #playlistDirectory = /mnt/gargantua/media/music/data/playlists;
     dbFile = null;
-    network.listenAddress = "0.0.0.0";
+    network.listenAddress = "any";
     network.port = 6600;
     startWhenNeeded = false;
     extraConfig = (if config.networking.hostName == "sankara"
@@ -91,15 +93,6 @@
         }
       '');
   };
-  #services.mpd = {
-  #  startWhenNeeded = false;
-  #  network.port = 6600;
-  #  dataDir = "/mnt/gargantua/media/music/data";
-  #  musicDirectory = "/mnt/gargantua/media/music";
-  #  playlistDirectory = "/mnt/gargantua/media/music/playlists";
-  #  dbFile = "/mnt/gargantua/media/music/data/mpd.db";
-  #  group = "users";
-  #};
   virtualisation.oci-containers.containers."audiobookshelf" = {
     autoStart = true;
     image = "ghcr.io/advplyr/audiobookshelf:latest";

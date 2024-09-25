@@ -9,6 +9,8 @@
     #extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver]; #TODO
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
+    initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
+    initrd.systemd.enable = true;
     extraModprobeConfig = ''
       options nvidia NVreg_UsePageAttributeTable=1 NVreg_RegistryDwords="OverrideMaxPerf=0x1" NVreg_PreserveVideoMemoryAllocations=1
     '';
@@ -39,7 +41,6 @@
   #  '';
   #  serviceConfig.Type = "oneshot";
   #};
-  boot.initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
   fileSystems = {
     "/boot" = {
       device = "/dev/disk/by-partuuid/32b7f825-a526-b14a-b44a-327f158f3c34";
@@ -107,6 +108,10 @@
     enable = true;
     motherboard = "amd";
   };
+  # HibernateDelaySec=1h
+  systemd.sleep.extraConfig = ''
+    MemorySleepMode=s2idle
+  '';
   hardware = {
     pulseaudio.enable = false;
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

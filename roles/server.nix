@@ -1,4 +1,4 @@
-{ self, pkgs, inputs, outputs, config, ... }: {
+{ self, pkgs, lib, inputs, outputs, config, ... }: {
   imports = [
     ../profiles/common.nix
     ../containers/podman.nix
@@ -27,10 +27,10 @@
 
   services.tt-rss.enable = true;
   services.gotify.enable = true;
-  services.mpd.enable = true;
   services.klipper.enable = true;
   services.mjpg-streamer.enable = false; #TODO enable for 3d printer monitoring
 
+  services.mpd.enable = true;
   services.jellyfin.enable = true;
   services.jellyseerr.enable = true;
   services.radarr.enable = true;

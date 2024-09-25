@@ -4,8 +4,8 @@
       submap = dropdowns
       bind   =      ,      E, togglespecialworkspace, volume
       bind   =      ,      E, submap, reset
-      bind   =      ,      I, togglespecialworkspace, scratchpad
-      bind   =      ,      I, submap, reset
+      bind   =      ,      S, togglespecialworkspace, scratchpad
+      bind   =      ,      S, submap, reset
       bind   =      ,      O, togglespecialworkspace, finance
       bind   =      ,      O, submap, reset
       bind   =      ,      N, togglespecialworkspace, mail
@@ -16,6 +16,12 @@
       bind   =      ,      M, submap, reset
       bind   =      ,      C, exec, ~/scripts/hyprland/cctv
       bind   =      ,      C, submap, reset
+      bind   =      ,      I, submap, browser
+      bind   =      , escape, submap, reset
+      submap = reset
+      submap = browser
+      bind   =      ,      T, togglespecialworkspace, browser-tradingview
+      bind   =      ,      T, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
   '';
@@ -33,7 +39,7 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      #"$mod, O, hycov:toggleoverview"
+      "$mod, O, overview:toggle, all"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -42,6 +48,7 @@
       #"$mod CTRL, U, hy3:changegroup, opposite"
       "$mod, H, togglefloating,"
       "$mod, K, killactive,"
+      "$mod, X, hyprexpo:expo, toggle"
       "$mod CTRL, P, pseudo,"
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"

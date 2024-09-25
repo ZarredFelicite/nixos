@@ -81,19 +81,19 @@ in {
       halign = "center";
       valign = "center";
     };
-      #shape = {
-      #  monitor = "";
-      #  size = "360, 60";
-      #  color = "rgba(25, 23, 36, 0.8)";
-      #  rounding = -1;
-      #  border_size = 4;
-      #  border_color = "rgba(49, 116, 143, 0.8)";
-      #  rotate = 0;
-      #  xray = false; # if true, make a "hole" in the background (rectangle of specified size, no rotation)
-      #  position = "0, 80";
-      #  halign = "center";
-      #  valign = "center";
-      #};
+     shape = {
+       monitor = "";
+       size = "360, 60";
+       color = "rgba(25, 23, 36, 0.8)";
+       rounding = -1;
+       border_size = 4;
+       border_color = "rgba(49, 116, 143, 0.8)";
+       rotate = 0;
+       xray = false; # if true, make a "hole" in the background (rectangle of specified size, no rotation)
+       position = "0, 80";
+       halign = "center";
+       valign = "center";
+     };
     label = [
       {
         monitor = "";
@@ -107,18 +107,18 @@ in {
         halign = "center";
         valign = "top";
       }
-      {
-        monitor = "";
-        text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
-        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-        color = "rgba(196, 167, 231, 1.0)";
-        font_size = 18;
-        font_family = "Iosevka";
-        rotate = 0; # degrees, counter-clockwise
-        position = "0, -200";
-        halign = "center";
-        valign = "top";
-      }
+        #{
+        #  monitor = "";
+        #  text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
+        #  text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+        #  color = "rgba(196, 167, 231, 1.0)";
+        #  font_size = 18;
+        #  font_family = "Iosevka";
+        #  rotate = 0; # degrees, counter-clockwise
+        #  position = "0, -200";
+        #  halign = "center";
+        #  valign = "top";
+        #}
     ];
   };
   services.hyprpaper = {

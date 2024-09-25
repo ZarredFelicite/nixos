@@ -7,7 +7,6 @@
       theme = "dark";
       telemetry.metrics.enabled = false;
       server.address = "tcp://127.0.0.1:9092";
-      #server.address = "tcp://:9092/";
       #default_redirection_url = "https://google.com";
       access_control = {
         default_policy = "deny";
@@ -26,6 +25,7 @@
         file = {
           path = "/var/lib/authelia-primary/users_database.yml";
         };
+        password_reset.disable = false;
       };
       session = {
         name = "authelia_session";
@@ -79,6 +79,7 @@
       let SSLA = {
         enableACME = true;
         forceSSL = true;
+        #listen = [ { addr = "0.0.0.0"; port = 2053; ssl = true; } { addr = "[::0]"; port = 2053; ssl = true; } { addr = "0.0.0.0"; port = 8080; } { addr = "[::0]"; port = 8080; }];
         sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
         extraConfig = ''
           location /authelia {
@@ -123,6 +124,7 @@
       SSL = {
         enableACME = true;
         forceSSL = true;
+        #listen = [ { addr = "0.0.0.0"; port = 2053; ssl = true; } { addr = "[::0]"; port = 2053; ssl = true; } { addr = "0.0.0.0"; port = 8080; } { addr = "[::0]"; port = 8080; }];
         sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
       };
       AUTH = {
@@ -144,6 +146,7 @@
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
         "jellyfin.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
+        #"cvat.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8082";};};
         # AUTH
         "nextcloud.zar.red" = SSLA//{locations."= /" = AUTH;};
         "gotify.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app

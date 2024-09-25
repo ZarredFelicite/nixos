@@ -185,10 +185,11 @@ in {
     package = inputs.hyprland.packages.x86_64-linux.default;
     xwayland.enable = true;
     systemd.enable = true;
-    extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        pkgs.hyprlandPlugins.hyprfocus
+        pkgs.hyprlandPlugins.hyprexpo
+        pkgs.hyprlandPlugins.hyprspace
     ];
     settings = {
       exec-once = [
@@ -247,7 +248,7 @@ in {
         #smart_resizing = true;
         preserve_split = true;
         split_width_multiplier = 1.6;
-        special_scale_factor = 0.90;
+          #special_scale_factor = 0.90;
         no_gaps_when_only = 0;
         use_active_for_splits = true;
         default_split_ratio = 1.2;
@@ -317,6 +318,120 @@ in {
         workspace_swipe_min_speed_to_force = 3;
         workspace_swipe_cancel_ratio = 0.2;
         workspace_swipe_forever = true;
+      };
+      plugin = {
+        touch_gestures = {
+          sensitivity = 4.0;
+          workspace_swipe_fingers = 4;
+        };
+        hyprfocus = {
+          enabled = "yes";
+          keyboard_focus_animation = "flash";
+          mouse_focus_animation = "flash";
+          bezier = [
+            "bezIn, 0.5,0.0,1.0,0.5"
+            "bezOut, 0.0,0.5,0.5,1.0"
+          ];
+          flash = {
+            flash_opacity = 0.7;
+            in_bezier = "bezIn";
+            in_speed = 0.5;
+            out_bezier = "bezOut";
+            out_speed = 3;
+          };
+        };
+        hycov = {
+          overview_gappo = 60; # gas width from screem
+          overview_gappi = 24; # gas width from clients
+          hotarea_size = 10; # hotarea size in bottom left,10x10
+          enable_hotarea = 1; # enable mouse cursor hotarea
+          swipe_fingers = 3; # finger number of gesture,move any directory
+          move_focus_distance = 100; # distance for movefocus,only can use 3 finger to move
+          enable_gesture = 0; # enable gesture
+          disable_workspace_change = 0; # disable workspace change when in overview mode
+          disable_spawn = 0; # disable bind exec when in overview mode
+          auto_exit = 1; # enable auto exit when no client in overview
+        };
+        hy3 = {
+          no_gaps_when_only = false;
+          node_collapse_policy = 2;
+          autotile = {
+            enable = false;
+            ephemeral_groups = true;
+            trigger_width = 800;
+            trigger_height = 200;
+            workspaces = "all";
+          };
+          tab_first_window = false;
+          tabs = {
+            height = 6;
+            padding = 4;
+            from_top = true;
+            rounding = 6;
+            render_text = false;
+            "col.active" = "0xccc4a7e7";
+            "col.urgent" = "0xccff4f4f";
+            "col.inactive" = "0xcc31748f";
+          };
+        };
+        hyprexpo = {
+          columns = 3;
+          gap_size = 5;
+          bg_col = "rgb(111111)";
+          workspace_method = "center current"; # [center/first] [workspace] e.g. first 1 or center m+1
+          enable_gesture = true; # laptop touchpad
+          gesture_fingers = 3;  # 3 or 4
+          gesture_distance = 300; # how far is the "max"
+          gesture_positive = true; # positive = swipe down. Negative = swipe up.
+        };
+        # TODO: https://github.com/KZDKM/Hyprspace
+          #overview = {
+          #  panelColor = "0xHEXCOLOR"; # Set color for the panel
+          #  panelBorderColor = "0xHEXCOLOR"; # Set border color for the panel
+          #  workspaceActiveBackground = "0xHEXCOLOR"; # Active workspace background color
+          #  workspaceInactiveBackground = "0xHEXCOLOR"; # Inactive workspace background color
+          #  workspaceActiveBorder = "0xHEXCOLOR"; # Border color for active workspace
+          #  workspaceInactiveBorder = "0xHEXCOLOR"; # Border color for inactive workspace
+          #  dragAlpha = 0.7; # Set alpha value for window when dragged in overview (0-1)
+
+          #  # Layout
+          #  panelHeight = 30; # Height of the panel in pixels
+          #  panelBorderWidth = 2; # Border width of the panel in pixels
+          #  onBottom = true; # Set to true if the panel should be at the bottom
+          #  workspaceMargin = 10; # Margin between workspaces and the panel edges
+          #  reservedArea = 20; # Padding for camera notch (Macbook)
+          #  workspaceBorderSize = 2; # Border size for workspaces
+          #  centerAligned = true; # True for center alignment, false for left alignment
+          #  hideBackgroundLayers = false; # Hide background layers
+          #  hideTopLayers = false; # Hide top layers
+          #  hideOverlayLayers = false; # Hide overlay layers
+          #  hideRealLayers = false; # Hide layers in actual workspace
+          #  drawActiveWorkspace = true; # Draw active workspace as-is in overview
+          #  overrideGaps = true; # Override layout gaps in overview
+          #  gapsIn = 5; # Gaps inside the workspace
+          #  gapsOut = 10; # Gaps outside the workspace
+          #  affectStrut = true; # Push window aside, disabling also disables overrideGaps
+
+          #  # Animation
+          #  overrideAnimSpeed = 1.0; # Speed of slide-in animation
+
+          #  # Behaviors
+          #  autoDrag = true; # Always drag window when overview is open
+          #  autoScroll = true; # Scroll on active workspace area switches workspace
+          #  exitOnClick = true; # Exits overview on click without dragging
+          #  switchOnDrop = true; # Switch workspace when window is dropped into it
+          #  exitOnSwitch = true; # Exit overview on switch
+          #  showNewWorkspace = true; # Add new empty workspace at the end
+          #  showEmptyWorkspace = true; # Show empty workspaces between non-empty ones
+          #  showSpecialWorkspace = false; # Show special workspace if any
+          #  disableGestures = false; # Disable gestures
+          #  reverseSwipe = false; # Reverse swipe gesture direction (for macOS style)
+
+          #  # Touchpad gesture settings
+          #  gestures.workspace_swipe_fingers = 4; # Number of fingers for swipe
+          #  gestures.workspace_swipe_cancel_ratio = 0.5; # Ratio to cancel swipe
+          #  gestures.workspace_swipe_min_speed_to_force = 1000; # Min speed to force switch
+          #};
       };
     };
   }];

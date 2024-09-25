@@ -6,6 +6,7 @@
     pkgs.samba
     pkgs.bottles
     pkgs.mangohud
+    pkgs.darling
   ];
   #xdg.configFile."lutris/system.yml".text = ''
   #  system:

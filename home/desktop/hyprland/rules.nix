@@ -27,6 +27,8 @@
       "size 1000 1000, title:^(mpd_cover)$"
       #"pseudo, class:^(imv)$"
       "tile, class:^(kdeconnect.sms)$"
+      "fullscreenstate -1 2, onworkspace:special:browser-tradingview"
+      "fullscreenstate -1 2, onworkspace:special:server"
     ];
     layerrule = [
       "blur, notifications"
@@ -41,19 +43,20 @@
       "ignorezero, notifications"
       "ignorezero, swaync-notification-window"
       "ignorezero, waybar"
-      "ignorezero, rofi"
+      "ignorealpha 0.1, rofi"
       "ignorezero, wlroots"
       "ignorezero, gtk-layer-shell"
       "ignorezero, anyrun"
     ];
     workspace = [
-      "special:special, on-created-empty:kitty --class stats zsh -c 'btop'"
-      "special:volume, on-created-empty:pavucontrol"
-      "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad'"
-      "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh"
-      "special:media, on-created-empty:~/scripts/hyprland/special_media.sh"
-      "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh"
-      "special:server, on-created-empty:~/scripts/hyprland/special_server.sh"
+      "special:special, on-created-empty:kitty --class stats zsh -c 'btop', gapsout:40, gapsin:40"
+      "special:volume, on-created-empty:pavucontrol, gapsout:40, gapsin:40"
+      "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad', gapsout:40, gapsin:40"
+      "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh, gapsout:40, gapsin:40"
+      "special:media, on-created-empty:~/scripts/hyprland/special_media.sh, gapsout:40, gapsin:40"
+      "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh, gapsout:40, gapsin:40"
+      "special:server, on-created-empty:~/scripts/hyprland/special_server.sh, gapsout:40, gapsin:40"
+      "special:browser-tradingview, on-created-empty:firefox --new-window 'https://www.tradingview.com/chart', gapsout:40"
     ];
   };
 }

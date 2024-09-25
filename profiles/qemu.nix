@@ -20,6 +20,6 @@
     win-virtio
     win-spice
     adwaita-icon-theme
-    #quickemu #TOOD broken build
+    quickemu
   ];
 }

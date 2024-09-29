@@ -1,5 +1,6 @@
 { pkgs, lib, config, ... }: {
   environment.systemPackages = [ pkgs.restic ];
+  environment.sessionVariables.RESTIC_REPOSITORY = config.services.restic.backups.home.repository;
   systemd.services.restic-backups-home.environment.SSH_AUTH_SOCK = "/run/user/1002/gnupg/S.gpg-agent.ssh";
   services.restic.backups = {
     home = {

@@ -221,8 +221,12 @@ in {
         rounding = 20;
         blur = {
           enabled = true;
-          size = 5;
+          size = 10;
           passes = 3;
+          brightness = 0.7;
+          special = true;
+          popups = true;
+          popups_ignorealpha = 0.1;
           new_optimizations = true;
           ignore_opacity = true;
         };

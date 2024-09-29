@@ -493,6 +493,15 @@ imports = [
         #viewMethod = "zathura";
       };
     };
+    extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
+      name = "render-markdown.nvim";
+      src = pkgs.fetchFromGitHub {
+        owner = "MeanderingProgrammer";
+        repo = "render-markdown.nvim";
+        rev = "d3a565eb4c46005a390d4b19f80f9ad719607df6";
+        hash = "sha256-flX0NauKE/+FQfFSH1uTDbY7Qb0Hp1/NXgWtfu0T/v8=";
+      };
+    })];
   };
 }
 

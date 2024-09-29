@@ -239,9 +239,9 @@
     #  base00 = "#191724";
     #};
     cursor = {
-      package = pkgs.catppuccin-cursors.mochaDark;
-      name = "Catppuccin-Mocha-Dark-Cursors";
-      size = 18;
+      package = pkgs.rose-pine-cursor;
+      name = "BreezeX-RosePine-Linux";
+      size = 24;
     };
     opacity = {
       terminal = 0.4;

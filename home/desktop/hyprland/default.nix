@@ -267,7 +267,6 @@ in {
         vfr = true;
         vrr = true;
         new_window_takes_over_fullscreen = 2;
-        #enable_hyprcursor = true;
       };
       group = {
         insert_after_current = true;
@@ -283,7 +282,12 @@ in {
         };
       };
       cursor = {
-        no_hardware_cursors = true;
+        enable_hyprcursor = true;
+        sync_gsettings_theme = true;
+          #no_hardware_cursors = true;
+        persistent_warps = true;
+        warp_on_change_workspace = true;
+        allow_dumb_copy = true;
       };
       input = {
         kb_layout = "us";

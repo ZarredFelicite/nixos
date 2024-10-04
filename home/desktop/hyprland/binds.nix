@@ -56,6 +56,7 @@
       "$mod, D, togglespecialworkspace, special"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"
+      "$mod SHIFT, C, centerwindow"
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"

@@ -10,7 +10,7 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.42.0"; submodules = true;};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.43.0"; submodules = true;};
     hyprpaper = { url = "github:hyprwm/hyprpaper";};
     hyprlang = { url = "github:hyprwm/hyprlang";};
     hyprlock = { url = "github:hyprwm/hyprlock";};

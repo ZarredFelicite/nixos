@@ -291,7 +291,7 @@ in {
           #no_hardware_cursors = true;
         persistent_warps = true;
         warp_on_change_workspace = true;
-        allow_dumb_copy = true;
+          #allow_dumb_copy = true;
       };
       input = {
         kb_layout = "us";

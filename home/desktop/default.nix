@@ -20,7 +20,6 @@ in {
   services.mako.enable = true;
   home.packages = with pkgs; [
     #swaynotificationcenter # Simple notification daemon with a GUI built for Sway
-    catppuccin-cursors.mochaDark
     slurp # Select a region in a Wayland compositor
     tesseract # OCR engine
     swappy # A Wayland native snapshot editing tool, inspired by Snappy on macOS

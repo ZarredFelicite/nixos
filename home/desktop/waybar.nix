@@ -120,7 +120,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "mpris" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        modules-right = [ "custom/weather" "tray" "custom/notification" "idle_inhibitor" "network" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
+        modules-right = [ "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -238,6 +238,13 @@ in {
           exec-if = "hyprctl activewindow -j | jq .class | grep firefox || exit 1 && exit 0";
           format = "";
           #exec = "echo 'hello'";
+        };
+        "custom/updates" = {
+          format = "{}";
+          tooltip = true;
+          interval = 3600;
+          exec = "~/scripts/nix/nix-update";
+          return-type = "json";
         };
         "custom/weather" = {
           format = "{}";

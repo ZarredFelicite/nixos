@@ -20,6 +20,21 @@
     };
     brillo.enable = true;
   };
+  system.autoUpgrade = {
+    enable = true;
+    operation = "boot";
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "--commit-lock-file"
+      "-L" # print build logs
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+    persistent = true;
+    allowReboot = false;
+  };
   #stylix.targets.plymouth.enable = false;
   #systemd.tmpfiles.rules = [
   #  "d /etc/systemd/system/display-manager.service.d 1777 root root"

@@ -67,7 +67,7 @@
     "/persist" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "ssd" "subvol=persist" ];
+      options = [ "defaults" "compress-force=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
       neededForBoot = true;
     };
     "/swap" = {
@@ -102,7 +102,10 @@
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
   };
-  powerManagement.cpuFreqGovernor = "performance";
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "performance";
+  };
   services.xserver.videoDrivers = ["nvidia"];
   services.hardware.openrgb = {
     enable = true;
@@ -114,7 +117,7 @@
   '';
   hardware = {
     pulseaudio.enable = false;
-    cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.amd.updateMicrocode = true;
     nvidia = {
       open = true;
       nvidiaSettings = true;

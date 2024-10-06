@@ -1,5 +1,6 @@
 { pkgs, lib, ... }: {
-  systemd.services.syncthing.unitConfig.After = lib.mkForce "graphical-session.target";
+  #systemd.services.syncthing.unitConfig.After = lib.mkForce "graphical-session.target";
+  #systemd.services.syncthing.serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 120";
   environment.systemPackages = [ pkgs.syncthing ];
   services.syncthing = {
     enable = true;

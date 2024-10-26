@@ -121,8 +121,10 @@ imports = [
       lspkind.enable = true;
       lualine = {
         enable = true;
-        extensions = [ "fzf" "fugitive" ];
-        #theme = "palenight";
+        settings = {
+          extensions = [ "fzf" "fugitive" ];
+          #theme = "palenight";
+        };
       };
       copilot-vim = {
         enable = true;
@@ -493,6 +495,8 @@ imports = [
         #texLivePackage = nixpkgs.texlive.combined.scheme-basic;
         #viewMethod = "zathura";
       };
+      web-devicons.enable = true;
+      mini.enable = true;
     };
     extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
       name = "render-markdown.nvim";

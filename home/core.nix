@@ -143,6 +143,7 @@
         openai
         jupyter-core
         nbconvert
+        dbus-next
         (
           buildPythonPackage rec {
             pname = "reader";

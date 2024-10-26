@@ -5,6 +5,15 @@ with lib; let
     Unit.After = ["hyprland-session.target"];
     Install.WantedBy = ["hyprland-session.target"];
   };
+  cliphist = (pkgs.cliphist.overrideAttrs (_old: {
+    src = pkgs.fetchFromGitHub {
+      owner = "sentriz";
+      repo = "cliphist";
+      rev = "c49dcd26168f704324d90d23b9381f39c30572bd";
+      sha256 = "sha256-2mn55DeF8Yxq5jwQAjAcvZAwAg+pZ4BkEitP6S2N0HY=";
+    };
+    vendorHash = "sha256-M5n7/QWQ5POWE4hSCMa0+GOVhEDCOILYqkSYIGoy/l0=";
+  }));
 in {
   imports = [
     ./hyprland
@@ -37,7 +46,7 @@ in {
   systemd.user.services.cliphist = mkHyprlandService {
     Unit.Description = "Clipboard history";
     Service = {
-      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${lib.getExe pkgs.cliphist} store";
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${lib.getExe cliphist} store";
       Restart = "always";
     };
   };

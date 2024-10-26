@@ -17,6 +17,7 @@ in {
     inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
+    pkgs.hyprpanel
   ];
   services.hyprland-autoname-workspaces.enable = false;
   #programs.hyprlock.package = inputs.hyprlock.packages.${pkgs.hostPlatform.system}.hyprlock;
@@ -164,8 +165,8 @@ in {
         settings = {
           monitor = [
             #"DP-3,3440x1440@144,0x0,1" # 0x110
-            "desc:Dell Inc. AW3423DWF 2ZVC2S3,3440x1440@165,0x1000,1"
-            "desc:XMI Mi Monitor,3440x1440@144,3440x0,1,transform,3" # 0x110
+            "DP-3,3440x1440@164.90,0x1000,1"
+            "DP-2,3440x1440@144.00,3440x0,1,transform,3" # 0x110
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             #"DP-1,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"

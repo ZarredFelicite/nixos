@@ -7,6 +7,7 @@ let
 in {
   imports = [
     ./tridactyl.nix
+    inputs.textfox.homeManagerModules.default
   ];
   programs.firefox = {
     enable = true;
@@ -65,7 +66,12 @@ in {
           "privacy.trackingprotection.enabled" = false;
         };
       };
+      textfox.id = 3;
     };
+  };
+  textfox = {
+    enable = true;
+    profile = "textfox";
   };
   home.packages = with pkgs; [
     buku # Private cmdline bookmark manager

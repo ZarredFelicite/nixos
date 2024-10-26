@@ -22,6 +22,8 @@
       submap = browser
       bind   =      ,      T, togglespecialworkspace, browser-tradingview
       bind   =      ,      T, submap, reset
+      bind   =      ,      M, togglespecialworkspace, browser-messages
+      bind   =      ,      M, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
   '';
@@ -53,6 +55,7 @@
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"
       "$mod SHIFT, E, fullscreenstate, -1 2"
+      "$mod CTRL, E, fullscreenstate, 2 -1"
       "$mod, D, togglespecialworkspace, special"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"

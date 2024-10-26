@@ -1,16 +1,32 @@
-{ config, ... }: {
+{ config, pkgs, inputs, ... }: {
   imports = [
     ./mpd_clients.nix
     ./mpv
     ./twitch.nix
     ./youtube/ytfzf.nix
     ./youtube/yt-dlp.nix
+    inputs.spicetify-nix.homeManagerModules.default
   ];
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {
     enable = false;
     preset = "autoeq" ;
   };
+  programs.spicetify =
+    let
+      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+    in
+    {
+      enable = true;
+      enabledExtensions = with spicePkgs.extensions; [
+        adblock
+        hidePodcasts
+        shuffle # shuffle+ (special characters are sanitized out of extension names)
+      ];
+      theme = spicePkgs.themes.text;
+      colorScheme = "rosepine";
+    };
+  stylix.targets.spicetify.enable = false;
   programs.beets = {
     enable = false;
     mpdIntegration = {

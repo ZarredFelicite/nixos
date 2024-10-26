@@ -120,7 +120,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "mpris" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        modules-right = [ "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
+        modules-right = [ "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -229,15 +229,23 @@ in {
             dnd-inhibited-none = "";
           };
           return-type = "json";
-          exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
-          on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
-          on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+            #exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+          exec = "${pkgs.mako}/bin/makoctl history | ${pkgs.jq}/bin/jq '.data[] | length'";
+            #on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+            #on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
           escape = true;
         };
         "custom/firefox" = {
           exec-if = "hyprctl activewindow -j | jq .class | grep firefox || exit 1 && exit 0";
           format = "";
           #exec = "echo 'hello'";
+        };
+        "custom/zmk-battery" = {
+          format = "{}";
+          tooltip = false;
+          interval = 3600;
+          exec = "~/scripts/waybar/zmk-battery.py icons";
+            #return-type = "json";
         };
         "custom/updates" = {
           format = "{}";
@@ -299,12 +307,15 @@ in {
       .modules-left, .modules-right {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
-      }
-      .modules-right {
           border: 1px solid rgba(49, 116, 143, 0.7);
           background: rgba(43, 48, 59, 0.3);
-          border-radius: 0 0 0 10px ;
           color: #c4a7e7;
+      }
+      .modules-left {
+          border-radius: 0 0 10 0px ;
+      }
+      .modules-right {
+          border-radius: 0 0 0 10px ;
       }
       /*
       .modules-center {
@@ -312,10 +323,6 @@ in {
           color: #c4a7e7;
       }
       */
-      .modules-left {
-          background: rgba(43, 48, 59, 0);
-          color: rgba(43, 48, 59, 0);
-      }
       #battery.charging {
           color: #a6e3a1;
       }

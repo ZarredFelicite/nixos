@@ -8,7 +8,7 @@
     pkgs.playerctl # Command-line utility and library for controlling media players that implement MPRIS
   ];
   xdg.configFile."mpv/script-opts/uosc.conf".source = ./plugins/uosc.conf;
-  xdg.configFile."mpv/scripts/skip_chapters.lua".source = ./plugins/skip_chapters.lua;
+  # TODO:add way to disable skipping before enabling. xdg.configFile."mpv/scripts/skip_chapters.lua".source = ./plugins/skip_chapters.lua;
   xdg.configFile."mpv/scripts/sponsorblock_minimal.lua".source = ./plugins/sponsorblock_minimal.lua;
   xdg.configFile."mpv/scripts/history.lua".source = ./plugins/mpvhistory.lua;
   programs.mpv = {

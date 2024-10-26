@@ -14,6 +14,7 @@
     hyprpaper = { url = "github:hyprwm/hyprpaper";};
     hyprlang = { url = "github:hyprwm/hyprlang";};
     hyprlock = { url = "github:hyprwm/hyprlock";};
+    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel";};
     #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
     hyprfocus = { url = "github:pyt0xic/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
@@ -24,6 +25,8 @@
     #waybar = { url = "github:Alexays/Waybar"; inputs.nixpkgs.follows = "nixpkgs"; };
     himalaya.url = "github:soywod/himalaya";
     qrrs.url = "github:Lenivaya/qrrs";
+    textfox.url = "github:adriankarlen/textfox";
+    spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
   outputs = { self, nixpkgs, home-manager, nixos-hardware, ...  }@inputs:
     let
@@ -63,7 +66,10 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs ; };
       	  modules = [
-            #({ nixpkgs.overlays = [ (import ./overlays/omniverse.nix ) ]; })
+            ({ nixpkgs.overlays = [
+              (import ./overlays/omniverse.nix )
+              inputs.hyprpanel.overlay
+            ]; })
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix
             ./roles/desktop.nix

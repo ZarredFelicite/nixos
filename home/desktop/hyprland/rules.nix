@@ -7,7 +7,7 @@
       "workspace special, (special)$"
     ];
     windowrulev2 = [
-      "float, class:^(nova|zoom|cctv|Rofi)$"
+      "float, class:^(nova|zoom|cctv|xdg-desktop-portal-gtk)$"
       "size 800 500, class:^(nova)$"
       #"center, class:^(nova)$"
       #"pin, class:^(nova)$"
@@ -15,12 +15,11 @@
       #"animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
       "stayfocused, class:^(Rofi)$"
-      "center, class:^(Rofi)$"
+      "center, class:^(Rofi|xdg-desktop-portal-gtk)$"
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
-      "suppressevent fullscreen, class:^(firefox)$"
-      #"noborder, class:^(firefox)$"
+      "suppressevent maximize, class:^(firefox)$"
       "pin, title:^(ripdrag)$"
       "size 60% 50%, title:^(Enter name of file to save to…)$|class:xdg-desktop-portal-gtk"
       "float, title:^(mpd_cover)$"
@@ -28,6 +27,7 @@
       #"pseudo, class:^(imv)$"
       "tile, class:^(kdeconnect.sms)$"
       "fullscreenstate -1 2, onworkspace:special:browser-tradingview"
+      "fullscreenstate -1 2, onworkspace:special:browser-messages"
       "fullscreenstate -1 2, onworkspace:special:server"
     ];
     layerrule = [
@@ -57,6 +57,7 @@
       "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh, gapsout:40, gapsin:40"
       "special:server, on-created-empty:~/scripts/hyprland/special_server.sh, gapsout:40, gapsin:40"
       "special:browser-tradingview, on-created-empty:firefox --new-window 'https://www.tradingview.com/chart', gapsout:40"
+      "special:browser-messages, on-created-empty:firefox --new-window 'https://messages.google.com/web', gapsout:40"
     ];
   };
 }

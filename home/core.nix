@@ -141,6 +141,7 @@
         tensorboard
         cloudscraper
         openai
+        dbus-next
         (
           buildPythonPackage rec {
             pname = "reader";

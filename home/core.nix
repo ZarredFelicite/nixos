@@ -141,6 +141,8 @@
         tensorboard
         cloudscraper
         openai
+        jupyter-core
+        nbconvert
         (
           buildPythonPackage rec {
             pname = "reader";

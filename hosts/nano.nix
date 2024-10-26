@@ -38,7 +38,7 @@
     "/persist" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "noatime" "ssd" "subvol=persist" ];
+      options = [ "defaults" "compress-force=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
       neededForBoot = true;
     };
     "/swap" = {
@@ -62,7 +62,7 @@
   powerManagement = {
     enable = true;
     #cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
-    resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
+    #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
   services.power-profiles-daemon.enable = false;
   services.tlp = {
@@ -96,7 +96,7 @@
       sensitivity = 128;
       emulateWheel = true;
     };
-    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.intel.updateMicrocode = true;
     graphics = {
       enable = true;
       enable32Bit = true;

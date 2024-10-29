@@ -6,9 +6,9 @@ let
   cava_config = {
     framerate = 30;
     autosens = 1;
-    #sensitivity = 7;
+    sensitivity = 1;
     lower_cutoff_freq = 20;
-    higher_cutoff_freq = 15000;
+    higher_cutoff_freq = 20000;
     method = "pipewire";
     source = "auto";
     #channels = "mono";
@@ -19,6 +19,7 @@ let
     noise_reduction = 0.3;
     input_delay = 1;
     sleep_timer = 5;
+    hide_on_silence = true;
     format-icons = [ " " "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
   };
   workspaces = {
@@ -102,8 +103,9 @@ in {
         position = "top";
         #mode = "dock";
         passthrough = false;
-        exclusive = false;
-        spacing = 0;
+        exclusive = true;
+        spacing = 4;
+        margin = "4 4 0 4";
         gtk-layer-shell = true;
         #modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
@@ -115,12 +117,13 @@ in {
         position = "top";
         #mode = "overlay";
         passthrough = false;
-        exclusive = false;
-        spacing = 2;
+        exclusive = true;
+        spacing = 4;
+        margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "mpris" ];
+        modules-left = [ "cava" "mpris" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        modules-right = [ "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
+        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -307,22 +310,11 @@ in {
       .modules-left, .modules-right {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
+          border-radius: 12px;
           border: 1px solid rgba(49, 116, 143, 0.7);
           background: rgba(43, 48, 59, 0.3);
           color: #c4a7e7;
       }
-      .modules-left {
-          border-radius: 0 0 10 0px ;
-      }
-      .modules-right {
-          border-radius: 0 0 0 10px ;
-      }
-      /*
-      .modules-center {
-          border-radius: 0 0 10 10px ;
-          color: #c4a7e7;
-      }
-      */
       #battery.charging {
           color: #a6e3a1;
       }

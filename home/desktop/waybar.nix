@@ -58,7 +58,7 @@ let
         "class<stats>" = "󱕍";
         "class<org.pwmt.zathura>" = "󰈦";
         "class<brave-browser>" = "";
-        "class<PrusaSlicer>" = "";
+        "class<.*Slicer>" = "";
         "nheko" = "<span color='#ABE9B3'>󰊌</span>";
         "newsboat" = "";
       };

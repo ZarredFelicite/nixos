@@ -18,6 +18,7 @@ in {
     pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
     pkgs.hyprpanel
+    pkgs.ags
   ];
   services.hyprland-autoname-workspaces.enable = false;
   #programs.hyprlock.package = inputs.hyprlock.packages.${pkgs.hostPlatform.system}.hyprlock;
@@ -29,6 +30,7 @@ in {
     };
     background = {
       monitor = "";
+      #lib.mkIf (osConfig.networking.hostName == "nano")
       path = "~/pictures/wallpapers/tarantula_nebula_nano.png";
       color = "rgba(25, 20, 20, 1.0)";
       blur_passes = 4;
@@ -126,25 +128,20 @@ in {
     enable = true;
     package = inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper;
     settings = {
-      #lib.mkIf (osConfig.networking.hostName == "nano")
-      preload = [ "~/pictures/wallpapers/tarantula_nebula_nano.png" ];
+      preload = [
+        "~/pictures/wallpapers/tarantula_nebula_nano.png"
+        "~/pictures/wallpapers/tarantula_nebula_web_left.png"
+        "~/pictures/wallpapers/tarantula_nebula_web_right.png"
+      ];
       wallpaper = [
         ",~/pictures/wallpapers/tarantula_nebula_nano.png"
         "eDP-1,~/pictures/wallpapers/tarantula_nebula_nano.png"
+        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left.png"
+        "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right.png"
       ];
       ipc = "off";
     };
   };
-  #xdg.configFile."hypr/hyprpaper.conf".text = ''
-  #  preload = ~/pictures/wallpapers/tarantula_nebula_nano.png
-  #  preload = ~/pictures/wallpapers/nebula1_r.png
-  #  preload = ~/pictures/wallpapers/nebula2_dark.png
-  #  wallpaper = ,~/pictures/wallpapers/tarantula_nebula_nano.png
-  #  wallpaper = eDP-1,~/pictures/wallpapers/tarantula_nebula_nano.png
-  #  wallpaper = DP-2,~/pictures/wallpapers/nebula1_r.png
-  #  wallpaper = DP-3,~/pictures/wallpapers/nebula2_dark.png
-  #  ipc = off
-  #'';
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
@@ -164,11 +161,9 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            #"DP-3,3440x1440@144,0x0,1" # 0x110
             "DP-3,3440x1440@164.90,0x1000,1"
-            "DP-2,3440x1440@144.00,3440x0,1,transform,3" # 0x110
+            "DP-2,3440x1440@144.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
-            #"DP-1,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
             "Unknown-1,disable"
           ];
@@ -204,7 +199,7 @@ in {
       #monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;
       general = {
-        gaps_in = 4;
+        gaps_in = 8;
         gaps_out = 6;
         border_size = 2;
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";

@@ -117,7 +117,7 @@ imports = [
       }
     ];
     plugins = {
-      web-devicons.enable = true;
+      #web-devicons.enable = true;
       lspkind.enable = true;
       lualine = {
         enable = true;

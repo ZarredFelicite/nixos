@@ -3,7 +3,7 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "nano";
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-intel" ];
     #kernelParams = [ "SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1" ];
     extraModulePackages = [ ];
@@ -64,9 +64,9 @@
     #cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
     #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
-  services.power-profiles-daemon.enable = false;
+  services.power-profiles-daemon.enable = true;
   services.tlp = {
-    enable = true;
+    enable = false;
     settings = {
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";

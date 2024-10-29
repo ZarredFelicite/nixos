@@ -10,7 +10,7 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.43.0"; submodules = true;};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.44.1"; submodules = true;};
     hyprpaper = { url = "github:hyprwm/hyprpaper";};
     hyprlang = { url = "github:hyprwm/hyprlang";};
     hyprlock = { url = "github:hyprwm/hyprlock";};
@@ -84,7 +84,10 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs ; };
       	  modules = [
-            ({ nixpkgs.overlays = [ (import ./overlays/omniverse.nix ) ]; })
+            ({ nixpkgs.overlays = [
+              (import ./overlays/omniverse.nix )
+              inputs.hyprpanel.overlay
+            ]; })
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
             ./hosts/nano.nix

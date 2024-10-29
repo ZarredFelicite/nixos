@@ -10,7 +10,7 @@
       enable = true;
       configurationLimit = 20;
     };
-    timeout = 0;
+    timeout = 1;
     #consoleLogLevel = 0;
     efi.canTouchEfiVariables = true;
   };

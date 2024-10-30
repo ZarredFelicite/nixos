@@ -84,19 +84,19 @@ in {
       halign = "center";
       valign = "center";
     };
-     shape = {
-       monitor = "";
-       size = "360, 60";
-       color = "rgba(25, 23, 36, 0.8)";
-       rounding = -1;
-       border_size = 4;
-       border_color = "rgba(49, 116, 143, 0.8)";
-       rotate = 0;
-       xray = false; # if true, make a "hole" in the background (rectangle of specified size, no rotation)
-       position = "0, 80";
-       halign = "center";
-       valign = "center";
-     };
+      #shape = {
+      #  monitor = "";
+      #  size = "360, 60";
+      #  color = "rgba(25, 23, 36, 0.8)";
+      #  rounding = -1;
+      #  border_size = 4;
+      #  border_color = "rgba(49, 116, 143, 0.8)";
+      #  rotate = 0;
+      #  xray = false; # if true, make a "hole" in the background (rectangle of specified size, no rotation)
+      #  position = "0, 80";
+      #  halign = "center";
+      #  valign = "center";
+      #};
     label = [
       {
         monitor = "";
@@ -129,13 +129,13 @@ in {
     package = inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper;
     settings = {
       preload = [
-        "~/pictures/wallpapers/tarantula_nebula_nano.png"
+        "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
         "~/pictures/wallpapers/tarantula_nebula_web_left.png"
         "~/pictures/wallpapers/tarantula_nebula_web_right.png"
       ];
       wallpaper = [
         ",~/pictures/wallpapers/tarantula_nebula_nano.png"
-        "eDP-1,~/pictures/wallpapers/tarantula_nebula_nano.png"
+        "eDP-1,~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
         "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left.png"
         "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right.png"
       ];

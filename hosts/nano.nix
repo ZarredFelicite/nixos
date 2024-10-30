@@ -60,13 +60,13 @@
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   powerManagement = {
-    enable = true;
+    enable = false;
     #cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
     #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
-  services.power-profiles-daemon.enable = true;
+  services.power-profiles-daemon.enable = false;
   services.tlp = {
-    enable = false;
+    enable = true;
     settings = {
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";

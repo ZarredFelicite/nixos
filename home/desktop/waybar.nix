@@ -55,6 +55,7 @@ let
         "class<virt-manager>" = "󰢹";
         "class<vlc>" = "󰕼";
         "class<mpv>" = "";
+        "class<imv>" = " ";
         "class<stats>" = "󱕍";
         "class<org.pwmt.zathura>" = "󰈦";
         "class<brave-browser>" = "";

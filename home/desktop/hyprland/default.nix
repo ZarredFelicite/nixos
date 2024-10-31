@@ -21,7 +21,6 @@ in {
     pkgs.ags
   ];
   services.hyprland-autoname-workspaces.enable = false;
-  #programs.hyprlock.package = inputs.hyprlock.packages.${pkgs.hostPlatform.system}.hyprlock;
   programs.hyprlock.settings = {
     general = {
       hide_cursor = true;
@@ -31,10 +30,10 @@ in {
     background = {
       monitor = "";
       #lib.mkIf (osConfig.networking.hostName == "nano")
-      path = "~/pictures/wallpapers/tarantula_nebula_nano.png";
+      path = "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
       color = "rgba(25, 20, 20, 1.0)";
-      blur_passes = 4;
-      blur_size = 7;
+      #blur_passes = 4;
+      #blur_size = 7;
       #noise = 0.0117
       #contrast = 0.8916
       brightness = 0.7;
@@ -98,30 +97,30 @@ in {
       #  valign = "center";
       #};
     label = [
-      {
-        monitor = "";
-        text = "cmd[update:1000] echo $TIME";
-        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-        color = "rgba(196, 167, 231, 1.0)";
-        font_size = 100;
-        font_family = "Iosevka";
-        rotate = 0; # degrees, counter-clockwise
-        position = "0, -40";
-        halign = "center";
-        valign = "top";
-      }
-        #{
-        #  monitor = "";
-        #  text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
-        #  text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-        #  color = "rgba(196, 167, 231, 1.0)";
-        #  font_size = 18;
-        #  font_family = "Iosevka";
-        #  rotate = 0; # degrees, counter-clockwise
-        #  position = "0, -200";
-        #  halign = "center";
-        #  valign = "top";
-        #}
+        {
+          monitor = "";
+          text = "$TIME12";
+          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 100;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "0, -40";
+          halign = "center";
+          valign = "top";
+        }
+        {
+          monitor = "";
+          text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
+          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 24;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "0, -200";
+          halign = "center";
+          valign = "top";
+        }
     ];
   };
   services.hyprpaper = {

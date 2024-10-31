@@ -42,10 +42,9 @@
   };
   services.hypridle = {
     settings.general = {
-      #lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock; sleep 5";       # avoid starting multiple hyprlock instances.
-      lock_cmd = "${pkgs.hyprlock}/bin/hyprlock";       # avoid starting multiple hyprlock instances.
-      #before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
-      #after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
+      lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --no-fade-in --immediate-render";       # avoid starting multiple hyprlock instances.
+      before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
+      after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
     };
     settings.listener = [
       {
@@ -60,7 +59,7 @@
       }
       {
         timeout = 300;
-        on-timeout = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render";            # lock screen when timeout has passed
+        on-timeout = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";            # lock screen when timeout has passed
       }
       {
         timeout = 330;

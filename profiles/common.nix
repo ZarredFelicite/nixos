@@ -232,7 +232,7 @@
   stylix = {
     enable = true;
     autoEnable = true;
-    image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;
+    image = /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {

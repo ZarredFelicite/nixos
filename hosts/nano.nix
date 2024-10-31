@@ -7,7 +7,7 @@
     kernelModules = [ "kvm-intel" ];
     #kernelParams = [ "SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1" ];
     extraModulePackages = [ ];
-    initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+    initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/923d48e9-065c-4608-b797-d995fd6c4283";
     initrd.systemd.enable = true;
@@ -60,28 +60,28 @@
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   powerManagement = {
-    enable = false;
+    enable = true;
     #cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
     #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
-  services.power-profiles-daemon.enable = false;
+  services.power-profiles-daemon.enable = false; # not optimal
   services.tlp = {
     enable = true;
     settings = {
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
 
       CPU_MIN_PERF_ON_AC = 0;
       CPU_MAX_PERF_ON_AC = 100;
       CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 50;
+      CPU_MAX_PERF_ON_BAT = 75;
 
      #Optional helps save long term battery health
-     START_CHARGE_THRESH_BAT0 = 40; # 40 and bellow it starts to charge
-     STOP_CHARGE_THRESH_BAT0 = 90; # 80 and above it stops charging
+     START_CHARGE_THRESH_BAT0 = 60; # 60 and bellow it starts to charge
+     STOP_CHARGE_THRESH_BAT0 = 95; # 80 and above it stops charging
     };
   };
   nixpkgs.config.packageOverrides = pkgs: {

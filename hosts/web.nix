@@ -104,7 +104,7 @@
   };
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "performance";
+    #cpuFreqGovernor = "performance";
   };
   services.xserver.videoDrivers = ["nvidia"];
   services.hardware.openrgb = {
@@ -144,6 +144,7 @@
     pkgs.polychromatic
     pkgs.gwe # ISSUE: unnesesary pkg?  ERROR: NV-CONTROL missing!
   ];
+  environment.etc.machine-id.text = "b7608440568f4ffb8d26dcadf1eb28d6";
   systemd.services.nvidia-oc = {
     wantedBy = [ "multi-user.target" ];
     description = "Set nvidia GPU settings with python wrapper of NVML";

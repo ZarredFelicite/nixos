@@ -17,8 +17,8 @@ in {
     inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
-    pkgs.hyprpanel
-    pkgs.ags
+    #pkgs.hyprpanel
+    #pkgs.ags
   ];
   services.hyprland-autoname-workspaces.enable = false;
   programs.hyprlock.settings = {

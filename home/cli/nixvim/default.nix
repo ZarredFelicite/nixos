@@ -206,12 +206,12 @@ imports = [
       lsp = {
         enable = true; # TODO
         servers = {
-          nil-ls.enable = true;
+          nil_ls.enable = true;
           #lua-ls.enable = true;
           pyright.enable = true;
           texlab.enable = true;
           bashls.enable = true;
-          ruff-lsp.enable = true;
+          ruff_lsp.enable = true;
         };
         keymaps = {
           # Diagnostic keymaps

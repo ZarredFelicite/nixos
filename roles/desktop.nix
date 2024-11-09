@@ -20,6 +20,22 @@
     };
     brillo.enable = true;
   };
+  system.autoUpgrade = {
+    enable = true;
+    operation = "boot";
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "--commit-lock-file"
+      "-L" # print build logs
+      "--impure"
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+    persistent = true;
+    allowReboot = false;
+  };
   #stylix.targets.plymouth.enable = false;
   #systemd.tmpfiles.rules = [
   #  "d /etc/systemd/system/display-manager.service.d 1777 root root"
@@ -73,8 +89,7 @@
       #  };
       #};
       extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland #TODO
-        #pkgs.xdg-desktop-portal-wlr # RM
+        pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-gtk
       ];
     };

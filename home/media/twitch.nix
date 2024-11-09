@@ -41,10 +41,10 @@
     player-args='--no-terminal'
     default-stream=best
   '';
-  systemd.user.services.twitch-notify = {
-    Unit.Description = "Notify on live status change of subscriptions in wtwitch";
-    Unit.After = [ "graphical-session.target" ];
-    Install.WantedBy = [ "graphical-session.target" ];
-    Service.ExecStart = "/run/current-system/sw/bin/python /home/zarred/scripts/video/twitch/twitch_recorder.py";
-  };
+  #systemd.user.services.twitch-notify = {
+  #  Unit.Description = "Notify on live status change of subscriptions in wtwitch";
+  #  Unit.After = [ "graphical-session.target" ];
+  #  Install.WantedBy = [ "graphical-session.target" ];
+  #  Service.ExecStart = "/run/current-system/sw/bin/python /home/zarred/scripts/video/twitch/twitch_recorder.py";
+  #};
 }

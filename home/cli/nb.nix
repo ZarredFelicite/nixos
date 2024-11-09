@@ -26,6 +26,7 @@
       export NB_COLOR_SECONDARY="12"
       export EDITOR="nvim"
       export NB_LIMIT="auto"
+      export NB_MARKDOWN_TOOL="glow"
     '';
   };
 }

@@ -42,6 +42,7 @@ in {
     f3d # Fast and minimalist 3D viewer using VTK
     prusa-slicer # G-code generator for 3D printer
     orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
+    bambu-studio # PC Software for BambuLab's 3D printers
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
     # misc
     xdg-utils # for opening default programs when clicking links

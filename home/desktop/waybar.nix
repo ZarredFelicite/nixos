@@ -6,9 +6,9 @@ let
   cava_config = {
     framerate = 30;
     autosens = 1;
-    #sensitivity = 7;
+    sensitivity = 1;
     lower_cutoff_freq = 20;
-    higher_cutoff_freq = 15000;
+    higher_cutoff_freq = 20000;
     method = "pipewire";
     source = "auto";
     #channels = "mono";
@@ -19,6 +19,7 @@ let
     noise_reduction = 0.3;
     input_delay = 1;
     sleep_timer = 5;
+    hide_on_silence = true;
     format-icons = [ " " "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
   };
   workspaces = {
@@ -54,10 +55,11 @@ let
         "class<virt-manager>" = "󰢹";
         "class<vlc>" = "󰕼";
         "class<mpv>" = "";
+        "class<imv>" = " ";
         "class<stats>" = "󱕍";
         "class<org.pwmt.zathura>" = "󰈦";
         "class<brave-browser>" = "";
-        "class<PrusaSlicer>" = "";
+        "class<.*Slicer>" = "";
         "nheko" = "<span color='#ABE9B3'>󰊌</span>";
         "newsboat" = "";
       };
@@ -102,8 +104,9 @@ in {
         position = "top";
         #mode = "dock";
         passthrough = false;
-        exclusive = false;
-        spacing = 0;
+        exclusive = true;
+        spacing = 4;
+        margin = "4 4 0 4";
         gtk-layer-shell = true;
         #modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
@@ -115,12 +118,13 @@ in {
         position = "top";
         #mode = "overlay";
         passthrough = false;
-        exclusive = false;
-        spacing = 2;
+        exclusive = true;
+        spacing = 4;
+        margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "mpris" ];
+        modules-left = [ "cava" "mpris" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        modules-right = [ "custom/weather" "tray" "custom/notification" "idle_inhibitor" "network" "bluetooth" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
+        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -229,15 +233,30 @@ in {
             dnd-inhibited-none = "";
           };
           return-type = "json";
-          exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
-          on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
-          on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+            #exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+          exec = "${pkgs.mako}/bin/makoctl history | ${pkgs.jq}/bin/jq '.data[] | length'";
+            #on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+            #on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
           escape = true;
         };
         "custom/firefox" = {
           exec-if = "hyprctl activewindow -j | jq .class | grep firefox || exit 1 && exit 0";
           format = "";
           #exec = "echo 'hello'";
+        };
+        "custom/zmk-battery" = {
+          format = "{}";
+          tooltip = false;
+          interval = 3600;
+          exec = "~/scripts/waybar/zmk-battery.py icons";
+            #return-type = "json";
+        };
+        "custom/updates" = {
+          format = "{}";
+          tooltip = true;
+          interval = 3600;
+          exec = "~/scripts/nix/nix-update";
+          return-type = "json";
         };
         "custom/weather" = {
           format = "{}";
@@ -292,22 +311,10 @@ in {
       .modules-left, .modules-right {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
-      }
-      .modules-right {
+          border-radius: 12px;
           border: 1px solid rgba(49, 116, 143, 0.7);
           background: rgba(43, 48, 59, 0.3);
-          border-radius: 0 0 0 10px ;
           color: #c4a7e7;
-      }
-      /*
-      .modules-center {
-          border-radius: 0 0 10 10px ;
-          color: #c4a7e7;
-      }
-      */
-      .modules-left {
-          background: rgba(43, 48, 59, 0);
-          color: rgba(43, 48, 59, 0);
       }
       #battery.charging {
           color: #a6e3a1;

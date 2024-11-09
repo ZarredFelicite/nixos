@@ -177,6 +177,8 @@
       btc = "bluetoothctl connect";
       btd = "bluetoothctl disconnect";
       rb = "~/scripts/sys/reboot";
+      kip = "magick $1 -resize 960x960 /tmp/kip_out; kitty icat /tmp/kip_out";
+      ki = "kitty icat";
     };
   };
   xdg.configFile."zsh/fzf-tab.conf".text = ''

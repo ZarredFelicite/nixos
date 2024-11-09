@@ -117,11 +117,14 @@ imports = [
       }
     ];
     plugins = {
+      #web-devicons.enable = true;
       lspkind.enable = true;
       lualine = {
         enable = true;
-        extensions = [ "fzf" "fugitive" ];
-        #theme = "palenight";
+        settings = {
+          extensions = [ "fzf" "fugitive" ];
+          #theme = "palenight";
+        };
       };
       copilot-vim = {
         enable = true;
@@ -203,12 +206,12 @@ imports = [
       lsp = {
         enable = true; # TODO
         servers = {
-          nil-ls.enable = true;
+          nil_ls.enable = true;
           #lua-ls.enable = true;
           pyright.enable = true;
           texlab.enable = true;
           bashls.enable = true;
-          ruff-lsp.enable = true;
+          ruff_lsp.enable = true;
         };
         keymaps = {
           # Diagnostic keymaps
@@ -492,7 +495,18 @@ imports = [
         #texLivePackage = nixpkgs.texlive.combined.scheme-basic;
         #viewMethod = "zathura";
       };
+      web-devicons.enable = true;
+      mini.enable = true;
     };
+    extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
+      name = "render-markdown.nvim";
+      src = pkgs.fetchFromGitHub {
+        owner = "MeanderingProgrammer";
+        repo = "render-markdown.nvim";
+        rev = "d3a565eb4c46005a390d4b19f80f9ad719607df6";
+        hash = "sha256-flX0NauKE/+FQfFSH1uTDbY7Qb0Hp1/NXgWtfu0T/v8=";
+      };
+    })];
   };
 }
 

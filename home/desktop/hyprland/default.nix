@@ -17,9 +17,10 @@ in {
     inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
+    #pkgs.hyprpanel
+    #pkgs.ags
   ];
   services.hyprland-autoname-workspaces.enable = false;
-  #programs.hyprlock.package = inputs.hyprlock.packages.${pkgs.hostPlatform.system}.hyprlock;
   programs.hyprlock.settings = {
     general = {
       hide_cursor = true;
@@ -28,10 +29,11 @@ in {
     };
     background = {
       monitor = "";
-      path = "~/pictures/wallpapers/tarantula_nebula_nano.png";
+      #lib.mkIf (osConfig.networking.hostName == "nano")
+      path = "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
       color = "rgba(25, 20, 20, 1.0)";
-      blur_passes = 4;
-      blur_size = 7;
+      #blur_passes = 4;
+      #blur_size = 7;
       #noise = 0.0117
       #contrast = 0.8916
       brightness = 0.7;
@@ -95,55 +97,50 @@ in {
       #  valign = "center";
       #};
     label = [
-      {
-        monitor = "";
-        text = "cmd[update:1000] echo $TIME";
-        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-        color = "rgba(196, 167, 231, 1.0)";
-        font_size = 100;
-        font_family = "Iosevka";
-        rotate = 0; # degrees, counter-clockwise
-        position = "0, -40";
-        halign = "center";
-        valign = "top";
-      }
-      {
-        monitor = "";
-        text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
-        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-        color = "rgba(196, 167, 231, 1.0)";
-        font_size = 18;
-        font_family = "Iosevka";
-        rotate = 0; # degrees, counter-clockwise
-        position = "0, -200";
-        halign = "center";
-        valign = "top";
-      }
+        {
+          monitor = "";
+          text = "$TIME12";
+          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 100;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "0, -40";
+          halign = "center";
+          valign = "top";
+        }
+        {
+          monitor = "";
+          text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
+          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 24;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "0, -200";
+          halign = "center";
+          valign = "top";
+        }
     ];
   };
   services.hyprpaper = {
     enable = true;
     package = inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper;
     settings = {
-      #lib.mkIf (osConfig.networking.hostName == "nano")
-      preload = [ "~/pictures/wallpapers/tarantula_nebula_nano.png" ];
+      preload = [
+        "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
+        "~/pictures/wallpapers/tarantula_nebula_web_left.png"
+        "~/pictures/wallpapers/tarantula_nebula_web_right.png"
+      ];
       wallpaper = [
         ",~/pictures/wallpapers/tarantula_nebula_nano.png"
-        "eDP-1,~/pictures/wallpapers/tarantula_nebula_nano.png"
+        "eDP-1,~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
+        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left.png"
+        "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right.png"
       ];
       ipc = "off";
     };
   };
-  #xdg.configFile."hypr/hyprpaper.conf".text = ''
-  #  preload = ~/pictures/wallpapers/tarantula_nebula_nano.png
-  #  preload = ~/pictures/wallpapers/nebula1_r.png
-  #  preload = ~/pictures/wallpapers/nebula2_dark.png
-  #  wallpaper = ,~/pictures/wallpapers/tarantula_nebula_nano.png
-  #  wallpaper = eDP-1,~/pictures/wallpapers/tarantula_nebula_nano.png
-  #  wallpaper = DP-2,~/pictures/wallpapers/nebula1_r.png
-  #  wallpaper = DP-3,~/pictures/wallpapers/nebula2_dark.png
-  #  ipc = off
-  #'';
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
@@ -163,11 +160,9 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            #"DP-3,3440x1440@144,0x0,1" # 0x110
-            "desc:Dell Inc. AW3423DWF 2ZVC2S3,3440x1440@165,0x1000,1"
-            "desc:XMI Mi Monitor,3440x1440@144,3440x0,1,transform,3" # 0x110
+            "DP-3,3440x1440@164.90,0x1000,1"
+            "DP-2,3440x1440@144.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
-            #"DP-1,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
             "Unknown-1,disable"
           ];
@@ -185,10 +180,11 @@ in {
     package = inputs.hyprland.packages.x86_64-linux.default;
     xwayland.enable = true;
     systemd.enable = true;
-    extraConfig = builtins.readFile(./plugins.conf);
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        #inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        pkgs.hyprlandPlugins.hyprfocus
+        pkgs.hyprlandPlugins.hyprexpo
+        pkgs.hyprlandPlugins.hyprspace
     ];
     settings = {
       exec-once = [
@@ -202,7 +198,7 @@ in {
       #monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;
       general = {
-        gaps_in = 4;
+        gaps_in = 8;
         gaps_out = 6;
         border_size = 2;
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
@@ -220,8 +216,12 @@ in {
         rounding = 20;
         blur = {
           enabled = true;
-          size = 5;
+          size = 10;
           passes = 3;
+          brightness = 0.7;
+          special = true;
+          popups = true;
+          popups_ignorealpha = 0.1;
           new_optimizations = true;
           ignore_opacity = true;
         };
@@ -247,7 +247,7 @@ in {
         #smart_resizing = true;
         preserve_split = true;
         split_width_multiplier = 1.6;
-        special_scale_factor = 0.90;
+          #special_scale_factor = 0.90;
         no_gaps_when_only = 0;
         use_active_for_splits = true;
         default_split_ratio = 1.2;
@@ -266,7 +266,6 @@ in {
         vfr = true;
         vrr = true;
         new_window_takes_over_fullscreen = 2;
-        #enable_hyprcursor = true;
       };
       group = {
         insert_after_current = true;
@@ -282,7 +281,12 @@ in {
         };
       };
       cursor = {
-        no_hardware_cursors = true;
+        enable_hyprcursor = true;
+        sync_gsettings_theme = true;
+          #no_hardware_cursors = true;
+        persistent_warps = true;
+        warp_on_change_workspace = true;
+          #allow_dumb_copy = true;
       };
       input = {
         kb_layout = "us";
@@ -317,6 +321,120 @@ in {
         workspace_swipe_min_speed_to_force = 3;
         workspace_swipe_cancel_ratio = 0.2;
         workspace_swipe_forever = true;
+      };
+      plugin = {
+        touch_gestures = {
+          sensitivity = 4.0;
+          workspace_swipe_fingers = 4;
+        };
+        hyprfocus = {
+          enabled = "yes";
+          keyboard_focus_animation = "flash";
+          mouse_focus_animation = "flash";
+          bezier = [
+            "bezIn, 0.5,0.0,1.0,0.5"
+            "bezOut, 0.0,0.5,0.5,1.0"
+          ];
+          flash = {
+            flash_opacity = 0.7;
+            in_bezier = "bezIn";
+            in_speed = 0.5;
+            out_bezier = "bezOut";
+            out_speed = 3;
+          };
+        };
+        hycov = {
+          overview_gappo = 60; # gas width from screem
+          overview_gappi = 24; # gas width from clients
+          hotarea_size = 10; # hotarea size in bottom left,10x10
+          enable_hotarea = 1; # enable mouse cursor hotarea
+          swipe_fingers = 3; # finger number of gesture,move any directory
+          move_focus_distance = 100; # distance for movefocus,only can use 3 finger to move
+          enable_gesture = 0; # enable gesture
+          disable_workspace_change = 0; # disable workspace change when in overview mode
+          disable_spawn = 0; # disable bind exec when in overview mode
+          auto_exit = 1; # enable auto exit when no client in overview
+        };
+        hy3 = {
+          no_gaps_when_only = false;
+          node_collapse_policy = 2;
+          autotile = {
+            enable = false;
+            ephemeral_groups = true;
+            trigger_width = 800;
+            trigger_height = 200;
+            workspaces = "all";
+          };
+          tab_first_window = false;
+          tabs = {
+            height = 6;
+            padding = 4;
+            from_top = true;
+            rounding = 6;
+            render_text = false;
+            "col.active" = "0xccc4a7e7";
+            "col.urgent" = "0xccff4f4f";
+            "col.inactive" = "0xcc31748f";
+          };
+        };
+        hyprexpo = {
+          columns = 3;
+          gap_size = 5;
+          bg_col = "rgb(111111)";
+          workspace_method = "center current"; # [center/first] [workspace] e.g. first 1 or center m+1
+          enable_gesture = true; # laptop touchpad
+          gesture_fingers = 3;  # 3 or 4
+          gesture_distance = 300; # how far is the "max"
+          gesture_positive = true; # positive = swipe down. Negative = swipe up.
+        };
+        # TODO: https://github.com/KZDKM/Hyprspace
+          #overview = {
+          #  panelColor = "0xHEXCOLOR"; # Set color for the panel
+          #  panelBorderColor = "0xHEXCOLOR"; # Set border color for the panel
+          #  workspaceActiveBackground = "0xHEXCOLOR"; # Active workspace background color
+          #  workspaceInactiveBackground = "0xHEXCOLOR"; # Inactive workspace background color
+          #  workspaceActiveBorder = "0xHEXCOLOR"; # Border color for active workspace
+          #  workspaceInactiveBorder = "0xHEXCOLOR"; # Border color for inactive workspace
+          #  dragAlpha = 0.7; # Set alpha value for window when dragged in overview (0-1)
+
+          #  # Layout
+          #  panelHeight = 30; # Height of the panel in pixels
+          #  panelBorderWidth = 2; # Border width of the panel in pixels
+          #  onBottom = true; # Set to true if the panel should be at the bottom
+          #  workspaceMargin = 10; # Margin between workspaces and the panel edges
+          #  reservedArea = 20; # Padding for camera notch (Macbook)
+          #  workspaceBorderSize = 2; # Border size for workspaces
+          #  centerAligned = true; # True for center alignment, false for left alignment
+          #  hideBackgroundLayers = false; # Hide background layers
+          #  hideTopLayers = false; # Hide top layers
+          #  hideOverlayLayers = false; # Hide overlay layers
+          #  hideRealLayers = false; # Hide layers in actual workspace
+          #  drawActiveWorkspace = true; # Draw active workspace as-is in overview
+          #  overrideGaps = true; # Override layout gaps in overview
+          #  gapsIn = 5; # Gaps inside the workspace
+          #  gapsOut = 10; # Gaps outside the workspace
+          #  affectStrut = true; # Push window aside, disabling also disables overrideGaps
+
+          #  # Animation
+          #  overrideAnimSpeed = 1.0; # Speed of slide-in animation
+
+          #  # Behaviors
+          #  autoDrag = true; # Always drag window when overview is open
+          #  autoScroll = true; # Scroll on active workspace area switches workspace
+          #  exitOnClick = true; # Exits overview on click without dragging
+          #  switchOnDrop = true; # Switch workspace when window is dropped into it
+          #  exitOnSwitch = true; # Exit overview on switch
+          #  showNewWorkspace = true; # Add new empty workspace at the end
+          #  showEmptyWorkspace = true; # Show empty workspaces between non-empty ones
+          #  showSpecialWorkspace = false; # Show special workspace if any
+          #  disableGestures = false; # Disable gestures
+          #  reverseSwipe = false; # Reverse swipe gesture direction (for macOS style)
+
+          #  # Touchpad gesture settings
+          #  gestures.workspace_swipe_fingers = 4; # Number of fingers for swipe
+          #  gestures.workspace_swipe_cancel_ratio = 0.5; # Ratio to cancel swipe
+          #  gestures.workspace_swipe_min_speed_to_force = 1000; # Min speed to force switch
+          #};
       };
     };
   }];

@@ -6,6 +6,7 @@
     pkgs.samba
     pkgs.bottles
     pkgs.mangohud
+    # pkgs.darling # Open-source Darwin/macOS emulation layer for Linux
   ];
   #xdg.configFile."lutris/system.yml".text = ''
   #  system:

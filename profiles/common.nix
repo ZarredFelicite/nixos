@@ -10,7 +10,7 @@
       enable = true;
       configurationLimit = 20;
     };
-    timeout = 0;
+    timeout = 1;
     #consoleLogLevel = 0;
     efi.canTouchEfiVariables = true;
   };
@@ -232,16 +232,16 @@
   stylix = {
     enable = true;
     autoEnable = true;
-    image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;
+    image = /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {
     #  base00 = "#191724";
     #};
     cursor = {
-      package = pkgs.catppuccin-cursors.mochaDark;
-      name = "Catppuccin-Mocha-Dark-Cursors";
-      size = 18;
+      package = pkgs.rose-pine-cursor;
+      name = "BreezeX-RosePine-Linux";
+      size = 24;
     };
     opacity = {
       terminal = 0.4;

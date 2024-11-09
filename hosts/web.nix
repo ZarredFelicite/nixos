@@ -9,6 +9,8 @@
     #extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver]; #TODO
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
+    initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
+    initrd.systemd.enable = true;
     extraModprobeConfig = ''
       options nvidia NVreg_UsePageAttributeTable=1 NVreg_RegistryDwords="OverrideMaxPerf=0x1" NVreg_PreserveVideoMemoryAllocations=1
     '';
@@ -39,7 +41,6 @@
   #  '';
   #  serviceConfig.Type = "oneshot";
   #};
-  boot.initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
   fileSystems = {
     "/boot" = {
       device = "/dev/disk/by-partuuid/32b7f825-a526-b14a-b44a-327f158f3c34";
@@ -66,7 +67,7 @@
     "/persist" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "ssd" "subvol=persist" ];
+      options = [ "defaults" "compress-force=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
       neededForBoot = true;
     };
     "/swap" = {
@@ -101,27 +102,26 @@
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
   };
-  powerManagement.cpuFreqGovernor = "performance";
+  powerManagement = {
+    enable = true;
+    #cpuFreqGovernor = "performance";
+  };
   services.xserver.videoDrivers = ["nvidia"];
   services.hardware.openrgb = {
     enable = true;
     motherboard = "amd";
   };
+  # HibernateDelaySec=1h
+  systemd.sleep.extraConfig = ''
+    MemorySleepMode=s2idle
+  '';
   hardware = {
     pulseaudio.enable = false;
-    cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.amd.updateMicrocode = true;
     nvidia = {
       open = true;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      #  version = "555.42.02";
-      #  sha256_64bit = "sha256-k7cI3ZDlKp4mT46jMkLaIrc2YUx1lh1wj/J4SVSHWyk=";
-      #  sha256_aarch64 = "sha256-rtDxQjClJ+gyrCLvdZlT56YyHQ4sbaL+d5tL4L4VfkA=";
-      #  openSha256 = "sha256-rtDxQjClJ+gyrCLvdZlT56YyHQ4sbaL+d5tL4L4VfkA=";
-      #  settingsSha256 = "sha256-rtDxQjClJ+gyrCLvdZlT56YyHQ4sbaL+d5tL4L4VfkA=";
-      #  persistencedSha256 = "sha256-3ae31/egyMKpqtGEqgtikWcwMwfcqMv2K4MVFa70Bqs=";
-      #};
       modesetting.enable = true;
       powerManagement.enable = false;
       powerManagement.finegrained = false;
@@ -129,8 +129,8 @@
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
-        #vaapiVdpau
-        #libvdpau-va-gl
+        vaapiVdpau
+        libvdpau-va-gl
         nvidia-vaapi-driver
       ];
     };
@@ -142,8 +142,9 @@
   };
   environment.systemPackages = [
     pkgs.polychromatic
-    pkgs.gwe
+    pkgs.gwe # ISSUE: unnesesary pkg?  ERROR: NV-CONTROL missing!
   ];
+  environment.etc.machine-id.text = "b7608440568f4ffb8d26dcadf1eb28d6";
   systemd.services.nvidia-oc = {
     wantedBy = [ "multi-user.target" ];
     description = "Set nvidia GPU settings with python wrapper of NVML";

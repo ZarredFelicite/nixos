@@ -31,7 +31,7 @@
         "--sort=modified"
       ];
       git = true;
-      icons = true;
+      icons = "auto";
       enableZshIntegration = true;
     };
     zoxide = {

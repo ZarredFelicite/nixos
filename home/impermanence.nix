@@ -25,6 +25,8 @@
       ".config/kdeconnect"
       ".config/BraveSoftware"
       ".config/PrusaSlicer"
+      ".config/OrcaSlicer"
+      ".config/BambuStudio"
       ".config/Caprine"
       ".config/cava"
       ".config/OpenRGB"

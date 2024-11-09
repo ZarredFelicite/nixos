@@ -82,7 +82,9 @@
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
 
       # nix
-      nix-index
+      nix-index # A files database for nixpkgs
+      manix # A fast CLI documentation searcher for Nix
+      comma # Runs programs without installing them
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -139,6 +141,9 @@
         tensorboard
         cloudscraper
         openai
+        jupyter-core
+        nbconvert
+        dbus-next
         (
           buildPythonPackage rec {
             pname = "reader";

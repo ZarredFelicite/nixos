@@ -180,7 +180,7 @@
       rpc-bind-address = "0.0.0.0";
       rpc-host-whitelist-enabled = false;
       rpc-whitelist-enabled = true;
-      rpc-whitelist = "127.0.0.* 192.168.*.*";
+      rpc-whitelist = "127.0.0.* 192.168.*.* 100.64.1.*";
       rpc-authentication-required = false;
       anti-brute-force-enabled = true;
       anti-brute-force-threshold = 50;

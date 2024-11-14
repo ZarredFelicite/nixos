@@ -8,6 +8,14 @@
     ];
     windowrulev2 = [
       "float, class:^(nova|zoom|cctv|xdg-desktop-portal-gtk)$"
+      "float, initialTitle:^(Picture-in-Picture)$"
+      "move 100%-w-10 40, initialTitle:^(Picture-in-Picture)$"
+      "size 850 480, initialTitle:^(Picture-in-Picture)$"
+      "pin, initialTitle:^(Picture-in-Picture)$"
+      "noblur, initialTitle:^(Picture-in-Picture)$"
+      "group barred, initialTitle:^(Picture-in-Picture)$"
+      "opacity 1.0 override 0.7 override 1.0 override, initialTitle:^(Picture-in-Picture)$"
+      "noinitialfocus, initialTitle:^(Picture-in-Picture)$"
       "size 800 500, class:^(nova)$"
       #"center, class:^(nova)$"
       #"pin, class:^(nova)$"
@@ -49,11 +57,12 @@
       "ignorezero, anyrun"
     ];
     workspace = [
-      "special:special, on-created-empty:kitty --class stats zsh -c 'btop', gapsout:40, gapsin:40"
+      "special:stats, on-created-empty:kitty --class stats zsh -c 'btop', gapsout:40, gapsin:40"
       "special:volume, on-created-empty:pavucontrol, gapsout:40, gapsin:40"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad', gapsout:40, gapsin:40"
       "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh, gapsout:40, gapsin:40"
       "special:media, on-created-empty:~/scripts/hyprland/special_media.sh, gapsout:40, gapsin:40"
+      "special:music, on-created-empty:spotify & kitty zsh -c 'cava', gapsout:80, gapsin:80"
       "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh, gapsout:40, gapsin:40"
       "special:server, on-created-empty:~/scripts/hyprland/special_server.sh, gapsout:40, gapsin:40"
       "special:browser-tradingview, on-created-empty:firefox --new-window 'https://www.tradingview.com/chart', gapsout:40"

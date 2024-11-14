@@ -104,6 +104,7 @@
         gmail-personal = { owner = "zarred"; };
         restic-home = { owner = "zarred"; };
         twitch-oauth = {};
+        cloudflare-api-token = {};
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";

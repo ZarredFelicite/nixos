@@ -7,6 +7,8 @@
     ./youtube/yt-dlp.nix
     inputs.spicetify-nix.homeManagerModules.default
   ];
+  #nixpkgs.overlays = [( final: pre
+  home.packages = [ (pkgs.callPackage ../../pkgs/lowfi {}) ];
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {
     enable = false;

@@ -38,6 +38,7 @@
       ".config/lutris"
       ".config/android-studio"
       ".config/sunshine"
+      ".config/spotify"
     ];
     files = [
       ".config/wtwitch/api.json"

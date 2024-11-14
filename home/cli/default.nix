@@ -20,10 +20,22 @@
   '';
   programs = {
     zsh.enable = true;
-    direnv.enable = true;
     nixvim.enable = true;
     nnn.enable = true;
     tmux.enable = true;
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+      config = {
+        whitelist = {
+          prefix = [
+            "/home/zarred/dev"
+            "/home/zarred/scripts"
+          ];
+        };
+      };
+    };
     eza = {
       enable = true;
       extraOptions = [

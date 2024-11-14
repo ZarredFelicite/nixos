@@ -29,7 +29,9 @@
         " command tradingview_max fillcmdline hint -Jc HTML > BODY:nth-of-type(1) > DIV:nth-of-type(2) > DIV:nth-of-type(3) > DIV:nth-of-type(1) > DIV:nth-of-type(1) > DIV:nth-of-type(3) > DIV:nth-of-type(1) > DIV:nth-of-type(1) > DIV:nth-of-type(1) > DIV:nth-of-type(1) > DIV:nth-of-type(1) > DIV:nth-of-type(16) > DIV:nth-of-type(1) > BUTTON:nth-of-type(1)
         " autocmd DocLoad https://www.tradingview.com/chart* composite tradingview_max | mode ignore
         autocmd DocLoad https://www.tradingview.com/chart* mode ignore
+        autocmd DocLoad https://cad.onshape.com* mode ignore
         autocmd DocLoad https://www.youtube.com/watch?v=* mode ignore
+        autocmd DocLoad https://hotcopper.com.au* mode ignore
         autocmd DocLoad https://monkeytype.com mode ignore
         autocmd DocLoad https://web.tabliss.io fillcmdline open
 

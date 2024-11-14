@@ -53,11 +53,12 @@
   };
   services.ddclient = {
     enable = true;
-    verbose = true;
+    verbose = false;
+    interval = "1d";
     protocol = "cloudflare";
-    usev4 = "web,web=ifconfig.me/ip";
+    usev4 = "webv4, webv4=ifconfig.me/ip, webv4-skip='Current IP Address: '";
     zone = "zar.red";
-    #inherit (config.services.nginx) domains;
+    domains = [ "zar.red" ];
     username = "token";
     passwordFile = config.sops.secrets.cloudflare-api-token.path;
     ssl = true;

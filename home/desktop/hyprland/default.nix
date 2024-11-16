@@ -21,6 +21,7 @@ in {
     #pkgs.ags
   ];
   services.hyprland-autoname-workspaces.enable = false;
+  stylix.targets.hyprlock.enable = false;
   programs.hyprlock.settings = {
     general = {
       hide_cursor = true;
@@ -29,8 +30,10 @@ in {
     };
     background = {
       monitor = "";
-      #lib.mkIf (osConfig.networking.hostName == "nano")
-      path = "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
+      image = lib.mkMerge [
+        (lib.mkIf (osConfig.networking.hostName == "nano") "/persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg")
+        (lib.mkIf (osConfig.networking.hostName == "web") "/persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg")
+      ];
       color = "rgba(25, 20, 20, 1.0)";
       #blur_passes = 4;
       #blur_size = 7;
@@ -225,7 +228,6 @@ in {
           new_optimizations = true;
           ignore_opacity = true;
         };
-        drop_shadow = false;
         dim_special = 0.5;
       };
       animations = {
@@ -245,10 +247,9 @@ in {
         force_split = 2;
         #smart_split = true;
         #smart_resizing = true;
-        preserve_split = true;
+        preserve_split = false;
         split_width_multiplier = 1.6;
           #special_scale_factor = 0.90;
-        no_gaps_when_only = 0;
         use_active_for_splits = true;
         default_split_ratio = 1.2;
       };

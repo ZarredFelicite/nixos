@@ -4,9 +4,9 @@
   networking.hostName = "web";
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev"]; #TODO
-    #kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
-    #extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver]; #TODO
+    #kernelModules = [ "kvm-amd" "nct6775" "i2c-dev"]; #TODO
+    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
+    extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver]; #TODO
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";

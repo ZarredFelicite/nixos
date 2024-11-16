@@ -122,7 +122,7 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "cava" "mpris" ];
+        modules-left = [ "image" "cava" "mpris" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
         tray = {
@@ -142,6 +142,10 @@ in {
             mpv = " ";
             firefox = " ";
           };
+        };
+        "image" = {
+          exec = "/home/zarred/scripts/waybar/playerctl-art.sh";
+          interval = 30;
         };
         bluetooth = {
           format = " ";

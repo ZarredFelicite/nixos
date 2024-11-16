@@ -21,6 +21,19 @@ in {
     ./notifications.nix
     ./waybar.nix
   ];
+    # NOTE: test nixpkgs patch overlay
+    #nixpkgs.overlays = [
+    #  (final: prev: {
+    #    wl-screenrec = prev.wl-screenrec.overrideAttrs (old: {
+    #      patches = (old.patches or []) ++ [
+    #        (prev.fetchpatch {
+    #          url = "https://github.com/NixOS/nixpkgs/pull/353815/commits/a36b4d9ac9e2f4c42b145685a31ac8b58776e8cb.patch";
+    #          hash = "";
+    #        })
+    #      ];
+    #    });
+    #  })
+    #];
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.variables = ["--all"];
@@ -35,6 +48,7 @@ in {
     satty # A screenshot annotation tool inspired by Swappy and Flameshot
     wayshot # A native, blazing-fast screenshot tool for wlroots based compositors such as sway and river
     wf-recorder # Utility program for screen recording of wlroots-based compositors
+    #TODO:build failure fixed by #353815 // wl-screenrec # High performance wlroots screen recording, featuring hardware encoding
     wl-screenrec # High performance wlroots screen recording, featuring hardware encoding
     grim # Grab images from a Wayland compositor
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout

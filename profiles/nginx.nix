@@ -51,6 +51,18 @@
     acceptTerms = true;
     defaults.email = "zarred.f@gmail.com";
   };
+  services.ddclient = {
+    enable = true;
+    verbose = false;
+    interval = "1d";
+    protocol = "cloudflare";
+    usev4 = "webv4, webv4=ifconfig.me/ip, webv4-skip='Current IP Address: '";
+    zone = "zar.red";
+    domains = [ "zar.red" ];
+    username = "token";
+    passwordFile = config.sops.secrets.cloudflare-api-token.path;
+    ssl = true;
+  };
   services.nginx = {
     package = pkgs.nginxStable.override { openssl = pkgs.libressl; };
     logError = "stderr debug";

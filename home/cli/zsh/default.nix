@@ -6,19 +6,6 @@
     #zsh-fzf-history-search
     #cod
   ];
-  programs.direnv = {
-    enableBashIntegration = true;
-    enableZshIntegration = true;
-    nix-direnv.enable = true;
-    config = {
-      whitelist = {
-        prefix = [
-          "/home/zarred/dev"
-          "/home/zarred/scripts"
-        ];
-      };
-    };
-  };
   programs.zsh = {
     dotDir = ".config/zsh";
     autosuggestion.enable = true;

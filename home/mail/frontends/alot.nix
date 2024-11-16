@@ -1,5 +1,5 @@
 { ... }: {
   programs.alot = {
-    enable = true;
+    enable = false; #TODO: failing build
   };
 }

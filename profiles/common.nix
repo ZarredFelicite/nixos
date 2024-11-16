@@ -104,6 +104,7 @@
         gmail-personal = { owner = "zarred"; };
         restic-home = { owner = "zarred"; };
         twitch-oauth = {};
+        cloudflare-api-token = {};
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";
@@ -232,7 +233,10 @@
   stylix = {
     enable = true;
     autoEnable = true;
-    image = /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg;
+    image = lib.mkMerge [
+      (lib.mkIf (config.networking.hostName == "nano") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
+      (lib.mkIf (config.networking.hostName == "web") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
+    ];
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {

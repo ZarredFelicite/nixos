@@ -118,7 +118,7 @@
       greetd = defaults;
   };
   services = {
-    ollama.enable = false; #TODO
+    ollama.enable = true;
     printing.enable = true;
     avahi.enable = true;
     avahi.nssmdns4 = true;

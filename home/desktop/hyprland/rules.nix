@@ -24,7 +24,7 @@
       "size 60% 50%, title:^(Enter name of file to save to…)$|class:xdg-desktop-portal-gtk"
       "float, title:^(mpd_cover)$"
       "size 1000 1000, title:^(mpd_cover)$"
-      #"pseudo, class:^(imv)$"
+      "pseudo, class:^(imv)$"
       "tile, class:^(kdeconnect.sms)$"
       "fullscreenstate -1 2, onworkspace:special:browser-tradingview"
       "fullscreenstate -1 2, onworkspace:special:browser-messages"

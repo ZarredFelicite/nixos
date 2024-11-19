@@ -6,10 +6,11 @@
     #zsh-fzf-history-search
     #cod
   ];
+  # TODO: investigate https://github.com/marlonrichert/zsh-autocomplete
   programs.zsh = {
     dotDir = ".config/zsh";
     autosuggestion.enable = true;
-    enableCompletion = true;
+    enableCompletion = false; # enables https://github.com/nix-community/nix-zsh-completions which significantly slows zsh init
     syntaxHighlighting.enable = true;
     autocd = true;
     cdpath = [
@@ -21,7 +22,6 @@
       path = "$HOME/.cache/zsh_history";
       expireDuplicatesFirst = true;
       extended = true;
-      ignorePatterns = [ "*porn*" ];
       ignoreSpace = true;
       save = 1000000;
       size = 1000000;
@@ -55,7 +55,7 @@
       #source <(cod init $$ zsh)
     '';
     initExtraBeforeCompInit = "";
-    initExtraFirst = "";
+    initExtraFirst = "zmodload zsh/zprof";
     loginExtra = "";
     logoutExtra = "";
     plugins = [

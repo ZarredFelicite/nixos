@@ -4,9 +4,8 @@
   networking.hostName = "web";
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    #kernelModules = [ "kvm-amd" "nct6775" "i2c-dev"]; #TODO
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
-    extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver]; #TODO
+    extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
@@ -15,32 +14,32 @@
       options nvidia NVreg_UsePageAttributeTable=1 NVreg_RegistryDwords="OverrideMaxPerf=0x1" NVreg_PreserveVideoMemoryAllocations=1
     '';
   };
-  #services.udev.extraRules = ''
-  #  SUBSYSTEM=="i2c-dev", ACTION=="add",\
-  #    ATTR{name}=="NVIDIA i2c adapter*",\
-  #    TAG+="ddcci",\
-  #    TAG+="systemd",\
-  #    ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
-  #'';
-  #systemd.services."ddcci@" = {
-  #  scriptArgs = "%i";
-  #  script = ''
-  #    echo Trying to attach ddcci to $1
-  #    i=0
-  #    id=$(echo $1 | cut -d "-" -f 2)
-  #    counter=5
-  #    while [ $counter -gt 0 ]; do
-  #      if ${pkgs.ddcutil}/bin/ddcutil getvcp 10 -b $id; then
-  #        sleep 5
-  #        echo ddcci 0x37 > /sys/bus/i2c/devices/$1/new_device
-  #        break
-  #      fi
-  #      sleep 1
-  #      counter=$((counter - 1))
-  #    done
-  #  '';
-  #  serviceConfig.Type = "oneshot";
-  #};
+  services.udev.extraRules = ''
+    SUBSYSTEM=="i2c-dev", ACTION=="add",\
+      ATTR{name}=="NVIDIA i2c adapter*",\
+      TAG+="ddcci",\
+      TAG+="systemd",\
+      ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
+  '';
+  systemd.services."ddcci@" = {
+    scriptArgs = "%i";
+    script = ''
+      echo Trying to attach ddcci to $1
+      i=0
+      id=$(echo $1 | cut -d "-" -f 2)
+      counter=5
+      while [ $counter -gt 0 ]; do
+        if ${pkgs.ddcutil}/bin/ddcutil getvcp 10 -b $id; then
+          sleep 5
+          echo ddcci 0x37 > /sys/bus/i2c/devices/$1/new_device
+          break
+        fi
+        sleep 1
+        counter=$((counter - 1))
+      done
+    '';
+    serviceConfig.Type = "oneshot";
+  };
   fileSystems = {
     "/boot" = {
       device = "/dev/disk/by-partuuid/32b7f825-a526-b14a-b44a-327f158f3c34";

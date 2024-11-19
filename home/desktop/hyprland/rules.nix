@@ -23,7 +23,7 @@
       #"animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
       "stayfocused, class:^(Rofi)$"
-      "center, class:^(Rofi|xdg-desktop-portal-gtk)$"
+      "center, class:^(xdg-desktop-portal-gtk)$"
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"

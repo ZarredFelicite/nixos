@@ -9,10 +9,9 @@ with lib; let
     src = pkgs.fetchFromGitHub {
       owner = "sentriz";
       repo = "cliphist";
-      rev = "c49dcd26168f704324d90d23b9381f39c30572bd";
-      sha256 = "sha256-2mn55DeF8Yxq5jwQAjAcvZAwAg+pZ4BkEitP6S2N0HY=";
+      rev = "v0.6.1";
+      sha256 = "sha256-tImRbWjYCdIY8wVMibc5g5/qYZGwgT9pl4pWvY7BDlI=";
     };
-    vendorHash = "sha256-M5n7/QWQ5POWE4hSCMa0+GOVhEDCOILYqkSYIGoy/l0=";
   }));
 in {
   imports = [
@@ -48,7 +47,6 @@ in {
     satty # A screenshot annotation tool inspired by Swappy and Flameshot
     wayshot # A native, blazing-fast screenshot tool for wlroots based compositors such as sway and river
     wf-recorder # Utility program for screen recording of wlroots-based compositors
-    #TODO:build failure fixed by #353815 // wl-screenrec # High performance wlroots screen recording, featuring hardware encoding
     wl-screenrec # High performance wlroots screen recording, featuring hardware encoding
     grim # Grab images from a Wayland compositor
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout

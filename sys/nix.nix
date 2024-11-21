@@ -5,8 +5,8 @@
     registry = lib.mapAttrs (_: flake: {inherit flake; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
-      #trusted-users = [ "zarred" "nixremote" ];
-      trusted-users = [ "zarred" ];
+      trusted-users = [ "zarred" "nixremote" ];
+      #trusted-users = [ "zarred" ];
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;

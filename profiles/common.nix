@@ -57,9 +57,9 @@
   users = {
     defaultUserShell = pkgs.zsh;
     mutableUsers = false;
-    #groups = {
-    #  nixremote = {};
-    #};
+    groups = {
+      nixremote = {};
+    };
     users = {
       root = {
         hashedPasswordFile = config.sops.secrets.users-root.path;
@@ -76,15 +76,18 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred"
         ];
       };
-      #nixremote = {
-      #  description = "Unsecured user for distributed nix builds";
-      #  isNormalUser = true;
-      #  createHome = true;
-      #  group = "nixremote";
-      #  openssh.authorizedKeys.keys = [
-      #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root"
-      #  ];
-      #};
+      nixremote = {
+        # TODO: disable su into user
+        description = "Unsecured user for distributed nix builds";
+        isNormalUser = true;
+        createHome = true;
+        shell = pkgs.bash;
+        #homeMode =
+        group = "nixremote";
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root@nano"
+        ];
+      };
     };
 	};
   sops = {
@@ -231,13 +234,13 @@
     generateCaches = true;
   };
   stylix = {
-    enable = false;
+    enable = true;
     autoEnable = true;
     image = lib.mkMerge [
       (lib.mkIf (config.networking.hostName == "nano") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
       (lib.mkIf (config.networking.hostName == "web") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
     ];
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {
     #  base00 = "#191724";

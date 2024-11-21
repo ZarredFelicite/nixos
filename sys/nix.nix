@@ -55,31 +55,31 @@
       ];
     };
   };
-  nix.distributedBuilds = false;
-  #nix.buildMachines = [
-  #  {
-  #    hostName = "web";
-  #    sshUser = "nixremote";
-  #    sshKey = "/root/.ssh/nixremote";
-  #    system = "x86_64-linux";
-  #    protocol = "ssh-ng";
-  #    maxJobs = 1;
-  #    speedFactor = 1;
-  #    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-  #    mandatoryFeatures = [ ];
-  #  }
-  #  #{
-  #  #  hostName = "sankara";
-  #  #  sshUser = "nixremote";
-  #  #  sshKey = "/root/.ssh/nixremote";
-  #  #  system = "x86_64-linux";
-  #  #  protocol = "ssh-ng";
-  #  #  maxJobs = 1;
-  #  #  speedFactor = 2;
-  #  #  supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-  #  #  mandatoryFeatures = [ ];
-  #  #}
-  #];
+  nix.distributedBuilds = true;
+  nix.buildMachines = [
+    {
+      hostName = "web";
+      sshUser = "nixremote";
+      sshKey = "/root/.ssh/nixremote";
+      system = "x86_64-linux";
+      protocol = "ssh-ng";
+      maxJobs = 1;
+      speedFactor = 1;
+      supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+      mandatoryFeatures = [ ];
+    }
+    #{
+    #  hostName = "sankara";
+    #  sshUser = "nixremote";
+    #  sshKey = "/root/.ssh/nixremote";
+    #  system = "x86_64-linux";
+    #  protocol = "ssh-ng";
+    #  maxJobs = 1;
+    #  speedFactor = 2;
+    #  supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+    #  mandatoryFeatures = [ ];
+    #}
+  ];
   #systemd.services.nix-daemon = {
   #  environment.TMPDIR = "/var/cache/nix";
   #  serviceConfig.CacheDirectory = "nix";

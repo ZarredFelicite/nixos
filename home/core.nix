@@ -101,7 +101,7 @@
       piper-tts
       upscayl
 
-      android-studio
+      #android-studio
       git-lfs
 
       waypipe

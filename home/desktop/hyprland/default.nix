@@ -158,6 +158,7 @@ in {
         settings.monitor = [
           "eDP-1,preferred,auto,1"
           "desc:Dell Inc. AW3423DWF 2ZVC2S3,3440x1440@165,auto,1"
+          "DP-2,preferred,auto,1"
         ];
       })
       (lib.mkIf (osConfig.networking.hostName == "web") {

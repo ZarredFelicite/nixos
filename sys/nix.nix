@@ -6,7 +6,6 @@
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       trusted-users = [ "zarred" "nixremote" ];
-      #trusted-users = [ "zarred" ];
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
@@ -63,8 +62,8 @@
       sshKey = "/root/.ssh/nixremote";
       system = "x86_64-linux";
       protocol = "ssh-ng";
-      maxJobs = 1;
-      speedFactor = 1;
+      maxJobs = 3;
+      speedFactor = 5;
       supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
       mandatoryFeatures = [ ];
     }

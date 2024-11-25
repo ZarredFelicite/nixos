@@ -29,6 +29,10 @@
       speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
       libva-utils
       expect # A tool for automating interactive applications (provides unbuffer)
+      # stress-testing / benchmarking
+      stress-ng
+      s-tui
+      sysbench
       # media
       mediainfo # Supplies technical and tag information about a video or audio file
       # system call monitoring

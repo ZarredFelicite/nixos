@@ -161,9 +161,9 @@
     pipewire = {
       enable = true;
       audio.enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
+      alsa.enable = false;
+      alsa.support32Bit = false;
+      pulse.enable = false;
       wireplumber = {
         enable = true;
         configPackages = [

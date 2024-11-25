@@ -474,11 +474,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1732114162,
-        "narHash": "sha256-+6M+V2djJBaZHr0w9i3rhmCVzFjS0Gc9Ayzdqh95GgM=",
+        "lastModified": 1732177223,
+        "narHash": "sha256-+XJllhSZPtR082lIC7ar6KgoOloqcS6C5fH9DmmckJ4=",
         "owner": "soywod",
         "repo": "himalaya",
-        "rev": "d7c4abf2e3f708aab12631c1da900312ee146474",
+        "rev": "59ed5f8687b7de8d32d6ac76213ec91c8a94c246",
         "type": "github"
       },
       "original": {
@@ -640,12 +640,12 @@
         "revCount": 5484,
         "submodules": true,
         "type": "git",
-        "url": "https://github.com/hyprwm/Hyprland?ref=v0.45.0"
+        "url": "https://github.com/hyprwm/Hyprland?ref=v0.45.2"
       },
       "original": {
         "submodules": true,
         "type": "git",
-        "url": "https://github.com/hyprwm/Hyprland?ref=v0.45.0"
+        "url": "https://github.com/hyprwm/Hyprland?ref=v0.45.2"
       }
     },
     "hyprland-protocols": {
@@ -1423,11 +1423,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1732163411,
-        "narHash": "sha256-SPVZNI5PWoIuQSTwxs51EI3JHNBbLvJTYIHpmqfavQw=",
+        "lastModified": 1732176813,
+        "narHash": "sha256-q/3aUnK1aBdoB6ukMr3WW4yoVLQeHlKGlR/EHVtBspA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "159109d408ff0eec3fe9a4c60073481aa21f9b6a",
+        "rev": "5eb8ad0a754cb74786eacb7c339e180154f6eba5",
         "type": "github"
       },
       "original": {

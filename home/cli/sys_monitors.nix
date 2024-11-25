@@ -87,7 +87,7 @@
     };
   };
   home.packages =
-    lib.optional (osConfig.networking.hostName == "nano") pkgs.nvtopPackages.intel ++
+    #lib.optional (osConfig.networking.hostName == "nano") pkgs.nvtopPackages.intel ++
     lib.optional (osConfig.networking.hostName == "web") pkgs.nvtopPackages.nvidia
   ;
   xdg.configFile."nvtop/interface.ini".text = ''

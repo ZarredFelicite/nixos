@@ -41,7 +41,6 @@
     enable = true;
     extraSetFlags = [ "--operator=$USER" ];
   };
-  environment.systemPackages = [ pkgs.trayscale ];
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   i18n.extraLocaleSettings = {

@@ -29,6 +29,10 @@
       speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
       libva-utils
       expect # A tool for automating interactive applications (provides unbuffer)
+      # stress-testing / benchmarking
+      stress-ng
+      s-tui
+      sysbench
       # media
       mediainfo # Supplies technical and tag information about a video or audio file
       # system call monitoring
@@ -57,6 +61,7 @@
       socat # replacement of openbsd-netcat
       nmap # A utility for network discovery and security auditing
       dig # Domain name server
+      trayscale # An unofficial GUI wrapper around the Tailscale CLI client
       # productivity
       tidy-viewer # A cross-platform CLI csv pretty printer that uses column styling to maximize viewer enjoyment
       visidata # Interactive terminal multitool for tabular data

@@ -175,7 +175,7 @@
         "transmission.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9091"; proxyWebsockets = true;};};
         "nzb.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6789"; proxyWebsockets = true;};};
         "jellyseerr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5055";};};
-        "audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378";};};
+        "audiobookshelf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:13378"; proxyWebsockets = true;};};
         "pdf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8088";};};
         "mainsail.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8001"; proxyWebsockets = true;};};
         #"headscale.zar.red" = SSL//{

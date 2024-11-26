@@ -4,13 +4,14 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.45.0"; submodules = true;};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.45.2"; submodules = true;};
     hyprpaper = { url = "github:hyprwm/hyprpaper";};
     hyprlang = { url = "github:hyprwm/hyprlang";};
     hyprlock = { url = "github:hyprwm/hyprlock";};
@@ -71,6 +72,7 @@
               inputs.hyprpanel.overlay
             ]; })
             inputs.stylix.nixosModules.stylix
+            inputs.chaotic.nixosModules.default
             ./hosts/web.nix
             ./roles/desktop.nix
             ./sys/impermanence.nix
@@ -90,6 +92,7 @@
             ]; })
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
+            inputs.chaotic.nixosModules.default
             ./hosts/nano.nix
             ./roles/desktop.nix
             ./sys/impermanence.nix
@@ -116,6 +119,7 @@
           specialArgs = { inherit self inputs ; };
       	  modules = [
             inputs.stylix.nixosModules.stylix
+            inputs.chaotic.nixosModules.default
             ./hosts/sankara.nix
             ./roles/server.nix
             ./sys/impermanence.nix

@@ -43,7 +43,7 @@
     "/mnt/gargantua" = {
       device = "/dev/disk/by-uuid/30899f26-306a-42d1-b6a8-61d47a2fe5c1";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "auto" ];
+      options = [ "defaults" "compress-force=zstd" "auto" "nofail" ];
     };
     #"/mnt/dagobah" = {
     #  device = "/dev/disk/by-uuid/47b66da6-0d0f-45aa-a43c-63f636496dbe";

@@ -39,7 +39,7 @@
   };
   services.tailscale = {
     enable = true;
-    extraSetFlags = [ "--operator=$USER" ];
+    extraSetFlags = [ "--operator=zarred" ];
   };
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
@@ -262,15 +262,15 @@
         terminal = 14;
       };
       sansSerif = {
-        package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
+        package = pkgs.nerd-fonts.iosevka;
         name = "Iosevka Nerd Font";
       };
       serif = {
-        package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
+        package = pkgs.nerd-fonts.iosevka;
         name = "Iosevka Nerd Font";
       };
       monospace = {
-        package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
+        package = pkgs.nerd-fonts.iosevka;
         name = "Iosevka Nerd Font Mono";
       };
       emoji = {

@@ -3,9 +3,16 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
   boot = {
+    #kernelPackages = pkgs.linuxPackages_cachyos;
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
+    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm"];
+    blacklistedKernelModules = ["nouveau"];
+    kernelParams = [
+      "nvidia-drm.fbdev=1"
+      "nvidia-drm.modeset=1"
+    ];
     extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver];
+    #extraModulePackages = [ pkgs.linuxPackages_cachyos.ddcci-driver ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
@@ -103,8 +110,9 @@
   };
   powerManagement = {
     enable = true;
-    #cpuFreqGovernor = "performance";
+    cpuFreqGovernor = "powersave";
   };
+  services.power-profiles-daemon.enable = true;
   services.xserver.videoDrivers = ["nvidia"];
   services.hardware.openrgb = {
     enable = true;
@@ -120,9 +128,10 @@
     nvidia = {
       open = true;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      #package = config.boot.kernelPackages.nvidia_x11;
       modesetting.enable = true;
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
     };
     graphics = {
@@ -159,9 +168,10 @@
         import pynvml
         pynvml.nvmlInit()
         myGPU = pynvml.nvmlDeviceGetHandleByIndex(0)
-        pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 130)
+        pynvml.nvmlDeviceSetGpuLockedClocks(myGPU, 225, 2115)
+        pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 250)
         pynvml.nvmlDeviceSetMemClkVfOffset(myGPU, 3000)
-        pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 350000)
+        pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 370000)
       '';
     };
   };

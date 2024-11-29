@@ -41,7 +41,8 @@ in {
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
     #prusa-slicer # G-code generator for 3D printer
-    orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
+    #TODO: rca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
+    #PR [#358948](https://github.com/NixOS/nixpkgs/pull/358948) ("orca-slicer: fix webkit2gtk")
     # bambu-studio # PC Software for BambuLab's 3D printers
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
     # misc

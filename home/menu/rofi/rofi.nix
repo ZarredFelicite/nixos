@@ -1,10 +1,10 @@
 { config, pkgs, lib, ... }: {
   stylix.targets.rofi.enable = false;
   programs.rofi = {
+    package = pkgs.rofi-wayland;
     cycle = false;
-    location = "top";
+    location = "center";
     font = lib.mkDefault "Iosevka Nerd Font 16";
-    #yoffset = 4;
     extraConfig = {
       auto-select = true;
       fixed-num-lines = false;

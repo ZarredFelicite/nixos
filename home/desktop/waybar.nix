@@ -124,7 +124,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image" "cava" "mpris" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "clock" ];
+        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -191,6 +191,17 @@ in {
           tooltip-format = "{capacity}% | {power:.2f}W | {timeTo}";
           format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
         };
+        power-profiles-daemon = {
+          format = "{icon}";
+          tooltip-format = "Power profile: {profile}\nDriver: {driver}";
+          tooltip = true;
+          format-icons = {
+            default = " ";
+            performance = " ";
+            balanced = " ";
+            power-saver = " ";
+          };
+        };
         backlight = {
           device = "intel_backlight";
           format = "{icon}";
@@ -221,6 +232,24 @@ in {
             on-scroll-up = "shift_up";
             on-scroll-down = "shift_down";
           };
+        };
+        "custom/timer" = {
+          exec = "/home/zarred/scripts/waybar/timer.sh updateandprint";
+          exec-on-event = true;
+          return-type = "json";
+          interval = 5;
+          signal = 4;
+          format = "{icon} {}";
+          format-icons = {
+            standby = "󱎫";
+            running = "󱫡";
+            paused = "󱫟";
+          };
+          on-click = "/home/zarred/scripts/waybar/timer.sh new 15 'notify-send \"Session finished\"'";
+          on-click-middle = "/home/zarred/scripts/waybar/timer.sh cancel";
+          on-click-right = "/home/zarred/scripts/waybar/timer.sh togglepause";
+          on-scroll-up = "/home/zarred/scripts/waybar/timer.sh increase 60 || /home/zarred/scripts/waybar/timer.sh new 1 'notify-send -u critical \"Timer expired.\"'";
+          on-scroll-down = "/home/zarred/scripts/waybar/timer.sh increase -60";
         };
         "custom/notification" = {
           tooltip = false;
@@ -292,6 +321,35 @@ in {
           reverse = false;
           bars = 8;
         });
+        "group/group-power" = {
+          orientation = "inherit";
+          drawer = {
+            transition-duration = 500;
+            children-class = "not-power";
+            transition-left-to-right = false;
+          };
+          modules = [ "custom/power" "custom/quit" "custom/lock" "custom/reboot" ];
+        };
+        "custom/quit" = {
+          format = "󰗼 ";
+          tooltip = false;
+          on-click = "hyprctl dispatch exit";
+        };
+        "custom/lock" = {
+          format = "󰍁 ";
+          tooltip = false;
+          on-click = "hyprlock";
+        };
+        "custom/reboot" = {
+          format = "󰜉 ";
+          tooltip = false;
+          on-click = "reboot";
+        };
+        "custom/power" = {
+          format = " ";
+          tooltip = false;
+          on-click = "shutdown now";
+        };
       };
     }];
     style = ''

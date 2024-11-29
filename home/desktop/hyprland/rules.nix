@@ -1,9 +1,7 @@
 { ... }: {
   wayland.windowManager.hyprland.settings = {
     windowrule = [
-      "center, ^(zenity)$"
-      "pin, ^(dragon-drop)$"
-      "tile, ^(Vtk)$"
+      #"tile, ^(Vtk)$"
       "workspace special, (special)$"
     ];
     windowrulev2 = [
@@ -22,8 +20,7 @@
       #"stayfocused, class:^(nova)$"
       #"animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
-      "stayfocused, class:^(Rofi)$"
-      "center, class:^(xdg-desktop-portal-gtk)$"
+      "center, class:^(xdg-desktop-portal-gtk|zenity)$"
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
@@ -44,6 +41,7 @@
       "blur, swaync-notification-window"
       "blur, waybar"
       "blur, rofi"
+      "animation slidefadevert, rofi"
       "blur, wlroots"
       "blur, gtk-layer-shell"
       "blur, anyrun"
@@ -57,6 +55,8 @@
       "ignorezero, anyrun"
     ];
     workspace = [
+      "1, monitor:DP-3, default:true"
+      "5, monitor:DP-2, default:true"
       "special:stats, on-created-empty:kitty --class stats zsh -c 'btop', gapsout:40, gapsin:40"
       "special:volume, on-created-empty:pavucontrol, gapsout:40, gapsin:40"
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad', gapsout:40, gapsin:40"

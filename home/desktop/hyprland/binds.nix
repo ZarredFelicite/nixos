@@ -41,7 +41,7 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      "$mod, O, overview:toggle, all"
+      #"$mod, O, overview:toggle, all"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -50,7 +50,7 @@
       #"$mod CTRL, U, hy3:changegroup, opposite"
       "$mod, H, togglefloating,"
       "$mod, K, killactive,"
-      "$mod, X, hyprexpo:expo, toggle"
+      #"$mod, X, hyprexpo:expo, toggle"
       "$mod CTRL, P, pseudo,"
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"
@@ -72,7 +72,7 @@
       "$mod SHIFT, N, exec, makoctl dismiss"
       "$mod, Q, exec, hyprctl dispatch dpms off & loginctl lock-session"
       "$mod, S, exec, ~/scripts/nova/nova_window"
-      "$mod, P, exec, ~/scripts/launcher/rofi_programs "
+      "$mod, P, exec, ~/scripts/launcher/rofi_programs rofi"
       "$mod, F, exec, firefox"
       " , PRINT, exec, ~/scripts/screencapture/screenshot > /dev/null"
 

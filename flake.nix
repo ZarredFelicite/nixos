@@ -12,6 +12,7 @@
     sops-nix.url = "github:Mic92/sops-nix";
 
     hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.45.2"; submodules = true;};
+    hyprland-plugins = { url = "github:hyprwm/hyprland-plugins"; inputs.hyprland.follows = "hyprland"; };
     hyprpaper = { url = "github:hyprwm/hyprpaper";};
     hyprlang = { url = "github:hyprwm/hyprlang";};
     hyprlock = { url = "github:hyprwm/hyprlock";};

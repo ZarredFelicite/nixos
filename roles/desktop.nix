@@ -166,6 +166,7 @@
       pulse.enable = false;
       wireplumber = {
         enable = true;
+        extraConfig."11-bluetooth-policy" = {"wireplumber.settings" = {"bluetooth.autoswitch-to-headset-profile" = false;};};
         configPackages = [
           (pkgs.writeTextDir "share/wireplumber/bluetooth.lua.d/51-bluez-config.lua" ''
             bluez_monitor.properties = {
@@ -297,11 +298,22 @@
   #})];
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = true; #TODO
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    gamescopeSession.enable = true;
   };
   programs.gamescope = {
-    enable = true; #TODO
-    args = [ "--rt" ];
+    # NOTE: Gamescope Compositor / "Boot to Steam Deck"
+    enable = true;
+    capSysNice = true;
+    args = [
+      "--rt"
+      "--adaptive-sync" # VRR support
+      "--hdr-enabled"
+      "--mangoapp"
+      "--steam"
+    ];
   };
   programs.gamemode = {
     enable = true;
@@ -330,10 +342,10 @@
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
-      iosevka
+      nerd-fonts.iosevka
+      nerd-fonts.hack
       font-awesome
-      noto-fonts
+      #noto-fonts
       noto-fonts-emoji
     ];
   };

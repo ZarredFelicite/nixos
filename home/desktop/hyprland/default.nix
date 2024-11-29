@@ -25,24 +25,40 @@ in {
   programs.hyprlock.settings = {
     general = {
       hide_cursor = true;
-      grace = 3;
+      grace = 5;
       ignore_empty_input = true;
+      immediate_render = false;
     };
-    background = {
-      monitor = "";
-      image = lib.mkMerge [
-        (lib.mkIf (osConfig.networking.hostName == "nano") "/persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg")
-        (lib.mkIf (osConfig.networking.hostName == "web") "/persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg")
-      ];
-      color = "rgba(25, 20, 20, 1.0)";
-      #blur_passes = 4;
-      #blur_size = 7;
-      #noise = 0.0117
-      #contrast = 0.8916
-      brightness = 0.7;
-      #vibrancy = 0.1696
-      #vibrancy_darkness = 0.0
-    };
+    background = [
+      {
+        monitor = "DP-2";
+        path = "/home/zarred/pictures/wallpapers/tarantula_nebula_web_right.png";
+        color = "rgba(25, 20, 20, 1.0)";
+        blur_passes = 4;
+        blur_size = 7;
+        #noise = 0.0117
+        #contrast = 0.8916
+        brightness = 0.7;
+        #vibrancy = 0.1696
+        #vibrancy_darkness = 0.0
+      }
+      {
+        monitor = "DP-3";
+        path = "/home/zarred/pictures/wallpapers/tarantula_nebula_web_left.png";
+        color = "rgba(25, 20, 20, 1.0)";
+        blur_passes = 4;
+        blur_size = 7;
+        brightness = 0.7;
+      }
+      {
+        monitor = "eDP-1";
+        path = "/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
+        color = "rgba(25, 20, 20, 1.0)";
+        blur_passes = 4;
+        blur_size = 7;
+        brightness = 0.7;
+      }
+    ];
     image = {
       monitor = "";
       path = "/home/zarred/documents/career/photos/ProfilePhoto.jpg";
@@ -188,7 +204,7 @@ in {
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
         pkgs.hyprlandPlugins.hyprfocus
-        pkgs.hyprlandPlugins.hyprexpo
+        #TODO: (init failure) inputs.hyprland-plugins.packages.${pkgs.system}.hyprexpo
         pkgs.hyprlandPlugins.hyprspace
     ];
     settings = {
@@ -199,8 +215,10 @@ in {
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
         "${pkgs.wayvnc}/bin/wayvnc"
+        "${pkgs.wayvnc}/bin/wayvnc"
+        "${pkgs.trayscale}/bin/trayscale --hide-window"
       ];
-      #monitor = [",preferred,auto,1"];
+      monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;
       general = {
         gaps_in = 8;

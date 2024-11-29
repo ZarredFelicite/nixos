@@ -13,6 +13,7 @@ in {
     #selectorScript
     clipboardSelector
   ];
+  programs.rofi.enable = true;
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
@@ -48,7 +49,6 @@ in {
     historyWidgetOptions = [ "--sort" "--exact" ];
     tmux.enableShellIntegration = true;
   };
-  programs.rofi.enable = true;
   #programs.anyrun = {
   #  enable = false;
   #  package = inputs.anyrun.packages.${pkgs.system}.anyrun-with-all-plugins;

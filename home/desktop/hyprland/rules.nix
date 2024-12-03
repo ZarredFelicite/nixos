@@ -5,7 +5,7 @@
       "workspace special, (special)$"
     ];
     windowrulev2 = [
-      "float, class:^(nova|zoom|cctv|xdg-desktop-portal-gtk)$"
+      "float, class:^(nova|zoom|cctv|xdg-desktop-portal-gtk|steam)$"
       "float, initialTitle:^(Picture-in-Picture)$"
       "move 100%-w-10 40, initialTitle:^(Picture-in-Picture)$"
       "size 850 480, initialTitle:^(Picture-in-Picture)$"

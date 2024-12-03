@@ -2,7 +2,7 @@
   home.packages = [
     pkgs.lutris
     pkgs.protonup-qt
-    pkgs.wineWowPackages.waylandFull
+    #pkgs.wineWowPackages.waylandFull
     pkgs.samba
     pkgs.bottles
     pkgs.mangohud

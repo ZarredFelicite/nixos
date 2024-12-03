@@ -190,7 +190,7 @@ in {
           env = [
             "GDK_BACKEND,wayland"
             "QT_QPA_PLATFORM,wayland"
-            "SDL_VIDEODRIVER,wayland"
+          #"SDL_VIDEODRIVER,wayland"
             "CLUTTER_BACKEND,wayland"
             "HYPRCURSOR_THEME,rose-pine-hyprcursor"
             "HYPRCURSOR_SIZE,24"
@@ -210,11 +210,10 @@ in {
     settings = {
       exec-once = [
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
-        "${pkgs.wayvnc}/bin/wayvnc"
         "${pkgs.wayvnc}/bin/wayvnc"
         "${pkgs.trayscale}/bin/trayscale --hide-window"
       ];

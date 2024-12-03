@@ -1,4 +1,4 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{ self, inputs, outputs, config, pkgs, pkgs-unstable, lib, ... }:
 let
   pinentryRofi = pkgs.writeShellApplication {
     name= "pinentry-rofi-with-env";
@@ -23,7 +23,10 @@ in {
     allow-preset-passphrase
   '';
   services.gpg-agent.pinentryPackage = null;
-  home.packages = with pkgs; [
+  home.packages = ( with pkgs-unstable; [
+    orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
+    ] ) ++
+    ( with pkgs; [
     # wayland tools
     wev # Wayland event viewer
     # networking
@@ -40,9 +43,7 @@ in {
     nb # A command line note-taking, bookmarking, archiving, and knowledge base application
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
-    #prusa-slicer # G-code generator for 3D printer
-    #TODO: rca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
-    #PR [#358948](https://github.com/NixOS/nixpkgs/pull/358948) ("orca-slicer: fix webkit2gtk")
+    # prusa-slicer # G-code generator for 3D printer
     # bambu-studio # PC Software for BambuLab's 3D printers
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
     # misc
@@ -62,7 +63,7 @@ in {
     libsForQt5.qtstyleplugin-kvantum
     # security
     pinentry-rofi
-  ];
+  ] );
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;
     XDG_CURRENT_DESKTOP = "hyprland";

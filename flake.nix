@@ -1,7 +1,8 @@
 {
   description = "Zarred's NixOS flake";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -30,17 +31,16 @@
     textfox.url = "github:adriankarlen/textfox";
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ...  }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-      forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
+      system = "x86_64-linux";
+      #systems = [ "x86_64-linux" "aarch64-linux" ];
+      #forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
+      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     in {
       inherit lib;
-      #packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-
-      # use updated wayland packages
-
       nixpkgs.overlays = [
         inputs.nixpkgs-wayland.overlay
         (import ./overlays)
@@ -65,8 +65,11 @@
 
       nixosConfigurations = {
         web = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs ; };
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
@@ -84,8 +87,11 @@
           ];
         };
         nano = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs ; };
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
@@ -102,22 +108,12 @@
             ./sys/syncthing.nix
           ];
         };
-        surface = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit self inputs ; };
-      	  modules = [
-            nixos-hardware.nixosModules.microsoft-surface-common
-            inputs.stylix.nixosModules.stylix
-            ./hosts/surface.nix
-            ./roles/desktop.nix
-            ./sys/impermanence.nix
-            ./sys/nfs.nix
-            ./sys/syncthing.nix
-          ];
-        };
         sankara = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit self inputs ; };
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
       	  modules = [
             inputs.stylix.nixosModules.stylix
             inputs.chaotic.nixosModules.default

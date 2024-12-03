@@ -103,8 +103,10 @@
       #texlivePackages.enumitem
       #(texlive.combine { inherit (texlivePackages) texliveSmall enumitem; })
 
-      piper-tts
-      upscayl
+      # AI
+      piper-tts # A fast, local neural text to speech system
+      upscayl # Free and Open Source AI Image Upscaler
+      openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
 
       #android-studio
       git-lfs

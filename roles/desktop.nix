@@ -1,4 +1,4 @@
-{ self, config, pkgs, lib, inputs, outputs, ... }: {
+{ self, config, pkgs, pkgs-unstable, lib, inputs, outputs, ... }: {
   imports = [
     ../profiles/common.nix
     ../sys/keyd.nix
@@ -10,7 +10,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
     users.zarred = import ../home/desktop.nix;
   };
   hardware = {
@@ -163,7 +163,7 @@
       audio.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
-      pulse.enable = false;
+      pulse.enable = true;
       wireplumber = {
         enable = true;
         extraConfig."11-bluetooth-policy" = {"wireplumber.settings" = {"bluetooth.autoswitch-to-headset-profile" = false;};};
@@ -296,28 +296,73 @@
   #    };
   #  });
   #})];
+  services.flatpak.enable = false;
+  nixpkgs.config.packageOverrides = pkgs: {
+    steam = pkgs.steam.override {
+      extraPkgs = pkgs:
+        with pkgs; [
+          xorg.libXcursor
+          xorg.libXi
+          xorg.libXinerama
+          xorg.libXScrnSaver
+          libpng
+          libpulseaudio
+          libvorbis
+          stdenv.cc.cc.lib
+          libkrb5
+          keyutils
+          gamescope-wsi
+          vulkan-loader
+          zenity
+          wayland
+        ];
+    };
+  };
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
     gamescopeSession.enable = true;
+    #extraCompatPackages = with pkgs; [
+    #  vkd3d-proton
+    #  vkd3d
+    #  dxvk_2
+    #  proton-ge-bin
+    #  freetype
+    #  openjdk21_headless
+    #  wineWowPackages.waylandFull
+    #  gamescope
+    #  #gamescope-wsi
+    #  vulkan-loader
+    #];
   };
+  environment.systemPackages = with pkgs; [
+    freetype
+    mangohud
+    vulkan-tools
+    wine
+    #gamemode
+    libva
+    libva-utils
+    protonup
+  ];
+  #environment.sessionVariables.STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/zarred/.steam/root/compatibilitytools.d";
   programs.gamescope = {
     # NOTE: Gamescope Compositor / "Boot to Steam Deck"
     enable = true;
     capSysNice = true;
-    args = [
-      "--rt"
-      "--adaptive-sync" # VRR support
-      "--hdr-enabled"
-      "--mangoapp"
-      "--steam"
-    ];
+    #args = [
+      #"--rt"
+      #"--adaptive-sync" # VRR support
+      #"--hdr-enabled"
+      #"--mangoapp"
+      #"--steam"
+    #];
   };
   programs.gamemode = {
     enable = true;
-    enableRenice = true;
+    #enableRenice = true;
     settings = {
       #general = {
       #  renice = 10;
@@ -334,18 +379,13 @@
       };
     };
   };
-  environment = {
-    sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-    };
-  };
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
       nerd-fonts.iosevka
       nerd-fonts.hack
       font-awesome
-      #noto-fonts
+      noto-fonts
       noto-fonts-emoji
     ];
   };

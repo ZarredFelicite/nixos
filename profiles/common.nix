@@ -1,8 +1,9 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
   imports = [
     ../sys/nix.nix
     inputs.sops-nix.nixosModules.sops
     ../containers/docker.nix
+    ../containers/podman.nix
   ];
   system.stateVersion = "23.05";
   boot.loader = {
@@ -10,10 +11,11 @@
       enable = true;
       configurationLimit = 20;
     };
-    timeout = 1;
+    timeout = 0;
     #consoleLogLevel = 0;
     efi.canTouchEfiVariables = true;
   };
+  boot.kernel.sysctl."fs.file-max" = 524288;
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=10s
   '';
@@ -187,7 +189,7 @@
     '';
   };
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = (with pkgs; [
       git
       jq
       iotop
@@ -212,7 +214,10 @@
       ]))
       nodejs
       openjpeg
-    ];
+    ]) ++
+    ( with pkgs-unstable; [
+        #
+    ]);
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };

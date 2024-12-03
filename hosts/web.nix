@@ -5,12 +5,12 @@
   boot = {
     #kernelPackages = pkgs.linuxPackages_cachyos;
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm"];
+    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     blacklistedKernelModules = ["nouveau"];
-    kernelParams = [
-      "nvidia-drm.fbdev=1"
-      "nvidia-drm.modeset=1"
-    ];
+    #kernelParams = [
+    #  "nvidia-drm.fbdev=1"
+    #  "nvidia-drm.modeset=1"
+    #];
     extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver];
     #extraModulePackages = [ pkgs.linuxPackages_cachyos.ddcci-driver ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
@@ -94,6 +94,8 @@
     LIBVA_DRIVER_NAME = "nvidia";
     # Required to run the correct GBM backend for nvidia GPUs on wayland
     GBM_BACKEND = "nvidia-drm";
+    GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
+    WLR_BACKEND = "vulkan";
     # Apparently, without this nouveau may attempt to be used instead
     # (despite it being blacklisted)
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -107,6 +109,9 @@
     # Required for firefox 98+, see:
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
+    __EGL_VENDOR_LIBRARY_FILENAMES = "${pkgs.mesa.drivers.outPath}/share/glvnd/egl_vendor.d/50_mesa.json";
+    VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+    NIXOS_OZONE_WL = "1";
   };
   powerManagement = {
     enable = true;
@@ -129,18 +134,19 @@
       open = true;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.beta;
-      #package = config.boot.kernelPackages.nvidia_x11;
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;
     };
     graphics = {
       enable = true;
+      enable32Bit = true;
       extraPackages = with pkgs; [
         vaapiVdpau
         libvdpau-va-gl
         nvidia-vaapi-driver
       ];
+      extraPackages32 = with pkgs.pkgsi686Linux; [nvidia-vaapi-driver];
     };
     openrazer = {
       enable = true;
@@ -150,9 +156,32 @@
   };
   environment.systemPackages = [
     pkgs.polychromatic
-    pkgs.gwe # ISSUE: unnesesary pkg?  ERROR: NV-CONTROL missing!
   ];
   environment.etc.machine-id.text = "b7608440568f4ffb8d26dcadf1eb28d6";
+  environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.txt".text = ''
+    {
+        "rules": [
+            {
+                "pattern": {
+                    "feature": "procname",
+                    "matches": "Hyprland"
+                },
+                "profile": "Limit Free Buffer Pool On Wayland Compositors"
+            }
+        ],
+        "profiles": [
+            {
+                "name": "Limit Free Buffer Pool On Wayland Compositors",
+                "settings": [
+                    {
+                        "key": "GLVidHeapReuseRatio",
+                        "value": 1
+                    }
+                ]
+            }
+        ]
+    }
+'';
   systemd.services.nvidia-oc = {
     wantedBy = [ "multi-user.target" ];
     description = "Set nvidia GPU settings with python wrapper of NVML";
@@ -168,9 +197,9 @@
         import pynvml
         pynvml.nvmlInit()
         myGPU = pynvml.nvmlDeviceGetHandleByIndex(0)
-        pynvml.nvmlDeviceSetGpuLockedClocks(myGPU, 225, 2115)
-        pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 250)
-        pynvml.nvmlDeviceSetMemClkVfOffset(myGPU, 3000)
+        #pynvml.nvmlDeviceSetGpuLockedClocks(myGPU, 225, 2115)
+        pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 100)
+        pynvml.nvmlDeviceSetMemClkVfOffset(myGPU, 1000)
         pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 370000)
       '';
     };

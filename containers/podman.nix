@@ -5,6 +5,8 @@
   virtualisation.oci-containers.backend = "podman";
   virtualisation.podman = {
     enable = true;
-    dockerCompat = true;
+    dockerCompat = false;
+    dockerSocket.enable = false;
   };
+  users.users.zarred.extraGroups = [ "podman" ];
 }

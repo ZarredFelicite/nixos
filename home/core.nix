@@ -150,7 +150,7 @@
         openai
         jupyter-core
         nbconvert
-        dbus-next
+        # TODO: broken build: dbus-next
         (
           buildPythonPackage rec {
             pname = "reader";

@@ -167,12 +167,6 @@
       gnupg.noAutostart = true;
     };
   };
-  #virtualisation = {
-  #  docker = {
-  #    enable = false;
-  #    rootless.enable = true;
-  #  };
-  #};
   services = {
     dbus.enable = true;
     fprintd.enable = false;

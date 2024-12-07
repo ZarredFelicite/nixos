@@ -47,7 +47,7 @@ let
         "class<discord>" = "󰙯";
         "class<firefox>" = "󰈹";
         "class<firefox> title<.*github.*>" = "";
-        "class<firefox> title<.*twitch|youtube|plex|tntdrama|bally sports.*>" = "";
+        "class<firefox> title<.*twitch|youtube.*>" = "";
         "class<kitty>" = "󰅬";
         "class<org.telegram.desktop>" = "";
         "class<steam>" = "";

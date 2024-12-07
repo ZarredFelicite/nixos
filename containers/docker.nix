@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
   virtualisation.docker = {
-    enable = false;
+    enable = true;
     enableOnBoot = true;
     enableNvidia = false; #TODO
     storageDriver = "btrfs";

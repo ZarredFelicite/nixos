@@ -25,6 +25,7 @@
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
       "suppressevent maximize, class:^(firefox)$"
+      "suppressevent activatefocus, class:^(OrcaSlicer)$"
       "pin, title:^(ripdrag)$"
       "size 60% 50%, title:^(Enter name of file to save to…)$|class:xdg-desktop-portal-gtk"
       "float, title:^(mpd_cover)$"
@@ -32,6 +33,7 @@
       "pseudo, class:^(imv)$"
       "tile, class:^(kdeconnect.sms)$"
       "fullscreenstate -1 2, onworkspace:special:browser-tradingview"
+      "fullscreenstate -1 2, onworkspace:special:browser-chatgpt"
       "fullscreenstate -1 2, onworkspace:special:browser-messages"
       "fullscreenstate -1 2, onworkspace:special:server"
     ];
@@ -62,10 +64,12 @@
       "special:scratchpad, on-created-empty:kitty --class kitty-scratchpad zsh -c 'tmux new -A -s scratchpad', gapsout:40, gapsin:40"
       "special:mail, on-created-empty:~/scripts/hyprland/special_mail.sh, gapsout:40, gapsin:40"
       "special:media, on-created-empty:~/scripts/hyprland/special_media.sh, gapsout:40, gapsin:40"
-      "special:music, on-created-empty:spotify & kitty zsh -c 'cava', gapsout:80, gapsin:80"
+      #"special:music, on-created-empty:spotify & kitty zsh -c 'cava', gapsout:80, gapsin:80"
+      "special:music, on-created-empty:spotify, gapsout:80, gapsin:80"
       "special:finance, on-created-empty:~/scripts/hyprland/special_finance.sh, gapsout:40, gapsin:40"
       "special:server, on-created-empty:~/scripts/hyprland/special_server.sh, gapsout:40, gapsin:40"
       "special:browser-tradingview, on-created-empty:firefox --new-window 'https://www.tradingview.com/chart', gapsout:40"
+      "special:browser-chatgpt, on-created-empty:firefox --new-window 'https://chatgpt.com', gapsout:100"
       "special:browser-messages, on-created-empty:firefox --new-window 'https://messages.google.com/web', gapsout:40"
     ];
   };

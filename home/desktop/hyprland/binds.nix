@@ -21,6 +21,7 @@
       submap = reset
       submap = browser
       bind   =      ,      T, togglespecialworkspace, browser-tradingview
+      bind   =      ,      G, togglespecialworkspace, browser-chatgpt
       bind   =      ,      T, submap, reset
       bind   =      ,      M, togglespecialworkspace, browser-messages
       bind   =      ,      M, submap, reset

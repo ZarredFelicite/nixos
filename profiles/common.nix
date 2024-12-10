@@ -93,6 +93,16 @@
       };
     };
 	};
+  # Permission modes are in octal representation (same as chmod),
+  # the digits represent: user|group|others
+  # 7 - full (rwx)
+  # 6 - read and write (rw-)
+  # 5 - read and execute (r-x)
+  # 4 - read only (r--)
+  # 3 - write and execute (-wx)
+  # 2 - write only (-w-)
+  # 1 - execute only (--x)
+  # 0 - none (---)
   sops = {
     defaultSopsFile = ../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
@@ -124,6 +134,7 @@
         #  path = "/home/zarred/.config/gh/hosts.yml";
         #};
         binary-cache-key = {};
+        nixremote-private = { owner = config.users.users.zarred.name; group = config.users.users.zarred.group; mode = "0440";};
       }
     ];
   };

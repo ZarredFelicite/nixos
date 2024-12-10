@@ -32,8 +32,10 @@
     };
     sshServe = {
       enable = true;
+      protocol = "ssh-ng";
       keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred@web"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root@nano"
       ];
     };
     distributedBuilds = true;
@@ -41,7 +43,7 @@
       {
         hostName = "web";
         sshUser = "nixremote";
-        sshKey = "/root/.ssh/nixremote";
+        sshKey = config.sops.secrets.nixremote-private.path;
         system = "x86_64-linux";
         protocol = "ssh-ng";
         maxJobs = 3;

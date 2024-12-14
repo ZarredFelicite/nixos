@@ -150,6 +150,7 @@
         openai
         jupyter-core
         nbconvert
+        yfinance
         # TODO: broken build: dbus-next
         (
           buildPythonPackage rec {

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ pkgs, lib, osConfig, ... }: {
   stylix.targets.rofi.enable = false;
   programs.rofi = {
     package = pkgs.rofi-wayland;
@@ -11,7 +11,7 @@
     };
     theme = ./theme.rasi;
     plugins = [
-      pkgs.rofi-calc
+      pkgs.rofi-calc # overlay for rofi-wayland
       pkgs.rofi-mpd
       pkgs.rofi-pass
       pkgs.rofi-emoji

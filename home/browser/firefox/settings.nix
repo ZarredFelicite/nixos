@@ -203,6 +203,8 @@
   "mousewheel.default.delta_multiplier_y" = 200; # 250-400
 
   # CUSTOM
+  ## UI
+  "browser.tabs.allow_transparent_browser" = true;
   ## typeahead find
   "accessibility.typeaheadfind" = false;
   "accessibility.typeaheadfind.autostart" = true;

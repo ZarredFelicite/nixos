@@ -14,7 +14,7 @@ in {
   ];
   stylix.targets.hyprland.enable = false;
   home.packages = [
-    inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
+    #inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
     #pkgs.hyprpanel

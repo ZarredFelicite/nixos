@@ -134,7 +134,8 @@
         #  path = "/home/zarred/.config/gh/hosts.yml";
         #};
         binary-cache-key = {};
-        nixremote-private = { owner = config.users.users.zarred.name; group = config.users.users.zarred.group; mode = "0440";};
+        #nixremote-private = { owner = config.users.users.zarred.name; group = config.users.users.zarred.group; mode = "0440";};
+        nixremote-private = { };
       }
     ];
   };
@@ -189,8 +190,27 @@
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
       };
+      hostKeys = [
+        {
+          bits = 4096;
+          path = "/etc/ssh/ssh_host_rsa_key";
+          type = "rsa";
+        }
+        {
+          path = "/etc/ssh/ssh_host_ed25519_key";
+          type = "ed25519";
+        }
+      ];
     };
     udev.extraRules = ''
+    '';
+  };
+  programs.ssh = {
+    extraConfig = ''
+      Host nixremote-web
+        HostName web
+        User nixremote
+        IdentityFile ${config.sops.secrets.nixremote-private.path}
     '';
   };
   environment = {

@@ -11,22 +11,22 @@
       options = "--delete-older-than 7d";
     };
     settings = {
-      trusted-users = [ "zarred" "nixremote" ];
+      trusted-users = [ "nixremote" "zarred" ]; # "zarred"
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
       substituters = [
-        "ssh-ng://nixremote@web"
+        "ssh-ng://nixremote-web"
         "https://cache.nixos.org"
         "https://cuda-maintainers.cachix.org"
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
       ];
       trusted-public-keys = [
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        "web-binary-cache:Hsy/WnNAxGvN4SE7bzaBY68O+wkicqTE2fW5iaDFao0="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-        "web-binary-cache:Hsy/WnNAxGvN4SE7bzaBY68O+wkicqTE2fW5iaDFao0="
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
       secret-key-files = config.sops.secrets.binary-cache-key.path;
     };
@@ -34,7 +34,7 @@
       enable = true;
       protocol = "ssh-ng";
       keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred@web"
+        #"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred@web"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root@nano"
       ];
     };
@@ -68,7 +68,8 @@
   # environment.etc."nix/inputs/nixpkgs".source = "${nixpkgs}";
   nixpkgs = {
     overlays = [
-      inputs.nur.overlay
+      inputs.nur.overlays.default
+      (final: prev: { rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; }; })
     ];
     config = {
       allowUnfree = true;

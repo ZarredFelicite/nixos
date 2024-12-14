@@ -1,5 +1,23 @@
 { pkgs, lib, osConfig, inputs, ... }:
 let
+  stocks = pkgs.writers.writePython3 "stocks-waybar" { libraries = [ pkgs.python312Packages.yfinance ]; flakeIgnore = [ "E265" "E225" "E501" "F401"];}
+    ''
+      import yfinance as yf
+      import sys
+
+      def process(ticker, yfticker):
+        text = ticker.replace('.AX',"") + ' '
+        text += str(yfticker.info['currentPrice']) + ' '
+        data = yfticker.history(period="1d")
+        change = round((data['Close'].iloc[0] - data['Open'].iloc[0])/data['Open'].iloc[0] * 100, 2)
+        text += str(change) + '%'
+        return text
+
+      tickers = sys.argv[1:]
+      yftickers = [yf.Ticker(ticker) for ticker in tickers]
+      formatted = ' '.join([process(ticker,yfticker) for ticker, yfticker in zip(tickers, yftickers)])
+      print(formatted)
+    '';
   height = if osConfig.networking.hostName == "web"
     then "14"
     else "16";
@@ -122,7 +140,7 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "image" "cava" "mpris" ];
+        modules-left = [ "cava" "mpris" "group/group-stocks" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" ];
         tray = {
@@ -350,6 +368,76 @@ in {
           tooltip = false;
           on-click = "shutdown now";
         };
+        "group/group-stocks" = {
+          orientation = "inherit";
+          drawer = {
+            transition-duration = 500;
+            children-class = "stocks-ticker";
+            transition-left-to-right = true;
+          };
+          modules = [
+            "custom/stock-ticker0"
+            "custom/stock-ticker1"
+            "custom/stock-ticker2"
+            "custom/stock-ticker3"
+            "custom/stock-ticker4"
+            "custom/stock-ticker5"
+            "custom/stock-ticker6"
+            "custom/stock-ticker7"
+            "custom/stock-ticker8"
+            "custom/stock-ticker9"
+          ];
+        };
+        "custom/stock-ticker0" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 0 ADT.AX AFM.V MLX.AX AAR.AX AWJ.AX MM8.AX AUC.AX USL.AX AZY.AX HRZ.AX";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker1" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 1";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker2" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 2";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker3" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 3";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker4" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 4";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker5" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 5";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker6" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 6";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker7" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 7";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker8" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 8";
+          tooltip = false;
+          restart-interval = 60;
+        };
+        "custom/stock-ticker9" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 9";
+          tooltip = false;
+          restart-interval = 60;
+        };
       };
     }];
     style = ''
@@ -370,7 +458,7 @@ in {
       window#waybar {
           background: rgba(0, 0, 0, 0);
       }
-      .modules-left, .modules-right {
+      .modules-right {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
           border-radius: 12px;
@@ -386,6 +474,31 @@ in {
               background-color: #ffffff;
               color: black;
           }
+      }
+      #custom-stock-ticker0,
+      #custom-stock-ticker1,
+      #custom-stock-ticker2,
+      #custom-stock-ticker3,
+      #custom-stock-ticker4,
+      #custom-stock-ticker5,
+      #custom-stock-ticker6,
+      #custom-stock-ticker7,
+      #custom-stock-ticker8,
+      #custom-stock-ticker9 {
+          color: #c4a7e7;
+          padding: 0 0 0 0px;
+          margin: 0px 2px 0px 2px;
+          background: rgba(38, 35, 58, 0.5);
+          border-radius: 12px;
+          border: 0px solid #26233a;
+      }
+      #mpris {
+          padding: 0 2 0 2px;
+          margin: 0 0 0 0px;
+          border-radius: 12px;
+          border: 1px solid rgba(49, 116, 143, 0.7);
+          background: rgba(43, 48, 59, 0.3);
+          color: #c4a7e7;
       }
       #workspaces {
         background: rgba(38, 35, 58, 0.4);

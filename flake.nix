@@ -12,16 +12,17 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.45.2"; submodules = true;};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland"; submodules = true;};
+    # TODO: switch to latest version when available https://github.com/NixOS/nix/issues/11946
     hyprland-plugins = { url = "github:hyprwm/hyprland-plugins"; inputs.hyprland.follows = "hyprland"; };
-    hyprpaper = { url = "github:hyprwm/hyprpaper";};
-    hyprlang = { url = "github:hyprwm/hyprlang";};
-    hyprlock = { url = "github:hyprwm/hyprlock";};
-    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel";};
+    hyprpaper = { url = "github:hyprwm/hyprpaper"; };
+    hyprlang = { url = "github:hyprwm/hyprlang"; };
+    hyprlock = { url = "github:hyprwm/hyprlock"; };
+    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
     hyprfocus = { url = "github:pyt0xic/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
-    rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
+    rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
     nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
     #ianyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };

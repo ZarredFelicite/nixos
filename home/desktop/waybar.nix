@@ -126,9 +126,7 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        #modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        #modules-center = [ "mpris" ];
         modules-right = [ ];
       };
       primary = workspaces // {
@@ -140,7 +138,7 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "cava" "mpris" "group/group-stocks" ];
+        modules-left = [ "cava" "mpris" "group/group-stocks" "custom/news" ];
         modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" ];
         tray = {
@@ -149,7 +147,8 @@ in {
         };
         mpris = {
           format = "{dynamic}";
-          format-paused = " ";
+          dynamic-len = 100;
+            #format-paused = " ";
           status-icons = {
             paused = "⏸";
             playing = "▶";
@@ -314,6 +313,13 @@ in {
           tooltip = true;
           interval = 3600;
           exec = "~/scripts/waybar/weather.sh -37.99116,145.17385";
+          return-type = "json";
+        };
+        "custom/news" = {
+          format = "{}";
+          tooltip = true;
+          interval = 1800;
+          exec = "~/scripts/waybar/rss.py -f 'http://feeds.bbci.co.uk/news/world/rss.xml' 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' 'https://news.google.com/rss' -s";
           return-type = "json";
         };
         idle_inhibitor = {
@@ -492,7 +498,7 @@ in {
           border-radius: 12px;
           border: 0px solid #26233a;
       }
-      #mpris {
+      #mpris, #submap, #custom-news {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
           border-radius: 12px;
@@ -539,14 +545,14 @@ in {
           animation-iteration-count: infinite;
           animation-direction: alternate;
       }
-      /*
       #cava {
-        opacity: 0.80;
-        font-size: 0;
-        margin: 0;
-        padding: 0;
+          color: #c4a7e7;
+          padding: 0 0 0 0px;
+          margin: 0px 2px 0px 2px;
+          background: rgba(38, 35, 58, 0.5);
+          border-radius: 12px;
+          border: 0px solid #26233a;
       }
-      */
     '';
   };
 }

@@ -35,7 +35,7 @@ in {
     libnotify # A library that sends desktop notifications to a notification daemon
     gotify-cli # A command line interface for pushing messages to gotify/server
     # audio
-    #TODO: build failure pr=355948 cava # Console-based Audio Visualizer for Alsa
+    cava # Console-based Audio Visualizer for Alsa
     songrec # An open-source Shazam client for Linux, written in Rust
     sox # Sample Rate Converter for audio
     # productivity

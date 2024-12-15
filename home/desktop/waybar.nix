@@ -18,9 +18,7 @@ let
       formatted = ' '.join([process(ticker,yfticker) for ticker, yfticker in zip(tickers, yftickers)])
       print(formatted)
     '';
-  height = if osConfig.networking.hostName == "web"
-    then "14"
-    else "16";
+  height = if osConfig.networking.hostName == "web" then "14" else "14";
   cava_config = {
     framerate = 30;
     autosens = 1;
@@ -126,7 +124,7 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
+        modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
         modules-right = [ ];
       };
       primary = workspaces // {
@@ -138,9 +136,9 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "cava" "mpris" "group/group-stocks" "custom/news" ];
-        modules-center = [ "hyprland/workspaces#number" "hyprland/submap" ];
-        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" ];
+        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "hyprland/submap" "cava" "mpris" "group/group-stocks" "custom/news" ];
+        modules-center = [  ];
+        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" "image#logo-nixos"];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -159,6 +157,14 @@ in {
             mpv = " ";
             firefox = " ";
           };
+        };
+        "image#logo-hyprland" = {
+          path = "/home/zarred/pictures/Icons/hyprland.png";
+          size = 24;
+        };
+        "image#logo-nixos" = {
+          path = "/home/zarred/pictures/Icons/nixos.png";
+          size = 24;
         };
         "image" = {
           exec = "/home/zarred/scripts/waybar/playerctl-art.sh";
@@ -496,14 +502,14 @@ in {
           margin: 0px 2px 0px 2px;
           background: rgba(38, 35, 58, 0.5);
           border-radius: 12px;
-          border: 0px solid #26233a;
+          border: 1px solid rgba(49, 116, 143, 0.7);
       }
       #mpris, #submap, #custom-news {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
           border-radius: 12px;
           border: 1px solid rgba(49, 116, 143, 0.7);
-          background: rgba(43, 48, 59, 0.3);
+          background: rgba(38, 35, 58, 0.5);
           color: #c4a7e7;
       }
       #workspaces {
@@ -547,11 +553,11 @@ in {
       }
       #cava {
           color: #c4a7e7;
-          padding: 0 0 0 0px;
+          padding: 0 1 0 1px;
           margin: 0px 2px 0px 2px;
           background: rgba(38, 35, 58, 0.5);
           border-radius: 12px;
-          border: 0px solid #26233a;
+          border: 1px solid rgba(49, 116, 143, 0.7);
       }
     '';
   };

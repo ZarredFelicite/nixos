@@ -268,10 +268,10 @@ in {
             running = "󱫡";
             paused = "󱫟";
           };
-          on-click = "/home/zarred/scripts/waybar/timer.sh new 15 'notify-send \"Session finished\"'";
+          on-click = "/home/zarred/scripts/waybar/timer.sh new 15 'notify-send -u critical \"Timer expired.\"; mpv --force-window=no /home/zarred/scripts/notifications/audio/soft-4.mp3'";
           on-click-middle = "/home/zarred/scripts/waybar/timer.sh cancel";
           on-click-right = "/home/zarred/scripts/waybar/timer.sh togglepause";
-          on-scroll-up = "/home/zarred/scripts/waybar/timer.sh increase 60 || /home/zarred/scripts/waybar/timer.sh new 1 'notify-send -u critical \"Timer expired.\"'";
+          on-scroll-up = "/home/zarred/scripts/waybar/timer.sh increase 60 || /home/zarred/scripts/waybar/timer.sh new 1 'notify-send -u critical \"Timer expired.\"; mpv --force-window=no /home/zarred/scripts/notifications/audio/soft-4.mp3'";
           on-scroll-down = "/home/zarred/scripts/waybar/timer.sh increase -60";
         };
         "custom/notification" = {
@@ -498,7 +498,7 @@ in {
       #custom-stock-ticker8,
       #custom-stock-ticker9 {
           color: #c4a7e7;
-          padding: 0 0 0 0px;
+          padding: 0 2 0 2px;
           margin: 0px 2px 0px 2px;
           background: rgba(38, 35, 58, 0.5);
           border-radius: 12px;

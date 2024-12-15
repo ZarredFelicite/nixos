@@ -5,6 +5,7 @@ let
     Unit.After = ["hyprland-session.target"];
     Install.WantedBy = ["hyprland-session.target"];
   };
+  monitor = if osConfig.networking.hostName == "web" then "DP-3" else "eDP-1";
 in {
   imports = [
     #inputs.hyprland.homeManagerModules.default
@@ -60,7 +61,7 @@ in {
       }
     ];
     image = {
-      monitor = "";
+      monitor = monitor;
       path = "/home/zarred/documents/career/photos/ProfilePhoto.jpg";
       size = 150; # lesser side if not 1:1 ratio
       rounding = -1; # negative values mean circle
@@ -74,7 +75,7 @@ in {
       valign = "center";
     };
     input-field = {
-      monitor = "";
+      monitor = monitor;
       size = "200, 50";
       outline_thickness = 3;
       dots_size = 0.33; # Scale of input-field height, 0.2 - 0.8
@@ -117,7 +118,7 @@ in {
       #};
     label = [
         {
-          monitor = "";
+          monitor = monitor;
           text = "$TIME12";
           text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
           color = "rgba(196, 167, 231, 1.0)";
@@ -129,7 +130,31 @@ in {
           valign = "top";
         }
         {
-          monitor = "";
+          monitor = monitor;
+          text = "cmd[update:300000] cat /tmp/tickers";
+          text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 20;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "20, 0";
+          halign = "left";
+          valign = "center";
+        }
+        {
+          monitor = monitor;
+          text = "cmd[update:300000] cat /tmp/rss-news | jq -r '.text,.tooltip' | sed '1s/$/\\n----------------------------------------------------------------------/'";
+          text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 12;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "20, 20";
+          halign = "left";
+          valign = "bottom";
+        }
+        {
+          monitor = monitor;
           text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
           text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
           color = "rgba(196, 167, 231, 1.0)";

@@ -155,6 +155,18 @@ in {
         }
         {
           monitor = monitor;
+          text = "cmd[update:300000] playerctl metadata --format \"{{ title }}|{{ artist }}|{{ album }}\" | tr \"|\" \"\\n\"";
+          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+          color = "rgba(196, 167, 231, 1.0)";
+          font_size = 20;
+          font_family = "Iosevka";
+          rotate = 0; # degrees, counter-clockwise
+          position = "0, -250";
+          halign = "center";
+          valign = "top";
+        }
+        {
+          monitor = monitor;
           text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
           text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
           color = "rgba(196, 167, 231, 1.0)";

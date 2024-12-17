@@ -1,23 +1,5 @@
 { pkgs, lib, osConfig, inputs, ... }:
 let
-  stocks = pkgs.writers.writePython3 "stocks-waybar" { libraries = [ pkgs.python312Packages.yfinance ]; flakeIgnore = [ "E265" "E225" "E501" "F401"];}
-    ''
-      import yfinance as yf
-      import sys
-
-      def process(ticker, yfticker):
-        text = ticker.replace('.AX',"") + ' '
-        text += str(yfticker.info['currentPrice']) + ' '
-        data = yfticker.history(period="1d")
-        change = round((data['Close'].iloc[0] - data['Open'].iloc[0])/data['Open'].iloc[0] * 100, 2)
-        text += str(change) + '%'
-        return text
-
-      tickers = sys.argv[1:]
-      yftickers = [yf.Ticker(ticker) for ticker in tickers]
-      formatted = ' '.join([process(ticker,yfticker) for ticker, yfticker in zip(tickers, yftickers)])
-      print(formatted)
-    '';
   height = if osConfig.networking.hostName == "web" then "14" else "14";
   cava_config = {
     framerate = 30;
@@ -138,7 +120,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "hyprland/submap" "cava" "mpris" "group/group-stocks" "custom/news" ];
         modules-center = [  ];
-        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" "image#logo-nixos"];
+        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -358,20 +340,20 @@ in {
             children-class = "not-power";
             transition-left-to-right = false;
           };
-          modules = [ "custom/power" "custom/quit" "custom/lock" "custom/reboot" ];
+          modules = [ "image#logo-nixos" "custom/quit" "custom/lock" "custom/reboot" "custom/power" ];
         };
         "custom/quit" = {
-          format = "󰗼 ";
+          format = "󰈆 ";
           tooltip = false;
           on-click = "hyprctl dispatch exit";
         };
         "custom/lock" = {
-          format = "󰍁 ";
+          format = " ";
           tooltip = false;
-          on-click = "hyprlock";
+          on-click = "loginctl lock-session";
         };
         "custom/reboot" = {
-          format = "󰜉 ";
+          format = " ";
           tooltip = false;
           on-click = "reboot";
         };
@@ -401,54 +383,54 @@ in {
           ];
         };
         "custom/stock-ticker0" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 0 ADT.AX AFM.V MLX.AX AAR.AX AWJ.AX MM8.AX AUC.AX USL.AX AZY.AX HRZ.AX";
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 0";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker1" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 1";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker2" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 2";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker3" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 3";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker4" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 4";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker5" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 5";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker6" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 6";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker7" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 7";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker8" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 8";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
         "custom/stock-ticker9" = {
           exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 9";
           tooltip = false;
-          restart-interval = 60;
+          restart-interval = 300;
         };
       };
     }];
@@ -511,6 +493,14 @@ in {
           border: 1px solid rgba(49, 116, 143, 0.7);
           background: rgba(38, 35, 58, 0.5);
           color: #c4a7e7;
+      }
+      #custom-power, #custom-reboot, #custom-lock, #custom-quit {
+        color: #31748f;
+        border-radius: 8px;
+        margin: 1px 2px;
+        padding: 0px 6px;
+        background-color: #31748f;
+        transition: all 0.2s ease-in-out;
       }
       #workspaces {
         background: rgba(38, 35, 58, 0.4);

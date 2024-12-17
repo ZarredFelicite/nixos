@@ -124,6 +124,7 @@
       #freenect
       #freecad
 
+      uv # Extremely fast Python package installer and resolver, written in Rust
       (python3.withPackages(ps: with ps; [
         pip
         ytmusicapi

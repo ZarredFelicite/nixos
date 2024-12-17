@@ -16,7 +16,7 @@
       auto-optimise-store = true;
       builders-use-substitutes = true;
       substituters = [
-        "ssh-ng://nixremote-web"
+        #"ssh-ng://nixremote-web"
         "https://cache.nixos.org"
         "https://cuda-maintainers.cachix.org"
         "https://nix-community.cachix.org"

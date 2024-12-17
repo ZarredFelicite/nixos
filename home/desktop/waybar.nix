@@ -307,7 +307,7 @@ in {
           format = "{}";
           tooltip = true;
           interval = 1800;
-          exec = "~/scripts/waybar/rss.py -f 'http://feeds.bbci.co.uk/news/world/rss.xml' 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' 'https://news.google.com/rss' -s";
+          exec = "~/scripts/waybar/rss.py -s";
           return-type = "json";
         };
         idle_inhibitor = {

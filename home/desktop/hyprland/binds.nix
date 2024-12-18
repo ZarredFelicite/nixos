@@ -71,7 +71,7 @@
       "$mod, N, exec, makoctl invoke"
       "$mod CTRL, N, exec, makoctl restore"
       "$mod SHIFT, N, exec, makoctl dismiss"
-      "$mod, Q, exec, hyprctl dispatch dpms off & loginctl lock-session"
+      "$mod, Q, exec, loginctl lock-session"
       "$mod, S, exec, ~/scripts/nova/nova_window"
       "$mod, P, exec, ~/scripts/launcher/rofi_programs rofi"
       "$mod, F, exec, firefox"

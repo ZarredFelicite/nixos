@@ -343,22 +343,22 @@ in {
           modules = [ "image#logo-nixos" "custom/quit" "custom/lock" "custom/reboot" "custom/power" ];
         };
         "custom/quit" = {
-          format = "󰈆 ";
+          format = "󰈆";
           tooltip = false;
           on-click = "hyprctl dispatch exit";
         };
         "custom/lock" = {
-          format = " ";
+          format = "";
           tooltip = false;
           on-click = "loginctl lock-session";
         };
         "custom/reboot" = {
-          format = " ";
+          format = "";
           tooltip = false;
           on-click = "reboot";
         };
         "custom/power" = {
-          format = " ";
+          format = "";
           tooltip = false;
           on-click = "shutdown now";
         };
@@ -495,11 +495,10 @@ in {
           color: #c4a7e7;
       }
       #custom-power, #custom-reboot, #custom-lock, #custom-quit {
-        color: #31748f;
-        border-radius: 8px;
-        margin: 1px 2px;
-        padding: 0px 6px;
-        background-color: #31748f;
+        border-radius: 10px;
+        margin: 2px;
+        padding: 0 8 0 4px;
+        background-color: rgba(49, 116, 143, 0.4);
         transition: all 0.2s ease-in-out;
       }
       #workspaces {

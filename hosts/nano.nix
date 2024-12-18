@@ -5,7 +5,25 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-intel" ];
-    #kernelParams = [ "SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1" ];
+    #kernelParams = [
+    #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
+    #  "initcall_debug"
+    #  "log_buf_len=16M"
+    #];
+    #kernelPatches = [ {
+    #  name = "sleepdebug-config";
+    #  patch = null;
+    #  extraConfig = ''
+    #    PM y
+    #    PM_DEBUG y
+    #    PM_SLEEP_DEBUG y
+    #    FTRACE y
+    #    FUNCTION_TRACER y
+    #    FUNCTION_GRAPH_TRACER y
+    #    KPROBES y
+    #    KPROBES_ON_FTRACE y
+    #  '';
+    #} ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];
@@ -50,7 +68,7 @@
 
   swapDevices = [{
     device = "/swap/swapfile";
-    size = 16392;
+    size = 24 * 1024;
   }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

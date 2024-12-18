@@ -7,6 +7,7 @@
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     blacklistedKernelModules = ["nouveau"];
+    kernel.sysctl = { "vm.swappiness" = 90;};
     #kernelParams = [
     #  "nvidia-drm.fbdev=1"
     #  "nvidia-drm.modeset=1"

@@ -307,7 +307,7 @@ in {
           format = "{}";
           tooltip = true;
           interval = 1800;
-          exec = "~/scripts/waybar/rss.py -s";
+          exec = "~/scripts/waybar/rss.py -c news -s";
           return-type = "json";
         };
         idle_inhibitor = {

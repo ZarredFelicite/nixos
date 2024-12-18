@@ -15,6 +15,8 @@
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
+      max-jobs = 32;
+      cores = 16;
       substituters = [
         #"ssh-ng://nixremote-web"
         "https://cache.nixos.org"

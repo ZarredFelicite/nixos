@@ -15,10 +15,10 @@
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
-      max-jobs = 32;
-      cores = 16;
+      #max-jobs = 32;
+      #cores = 16;
       substituters = [
-        #"ssh-ng://nixremote-web"
+        "ssh-ng://nixremote-web"
         "https://cache.nixos.org"
         "https://cuda-maintainers.cachix.org"
         "https://nix-community.cachix.org"
@@ -80,8 +80,8 @@
       ];
     };
   };
-  #systemd.services.nix-daemon = {
-  #  environment.TMPDIR = "/var/cache/nix";
-  #  serviceConfig.CacheDirectory = "nix";
-  #};
+  systemd.services.nix-daemon = {
+    environment.TMPDIR = "/var/cache/nix";
+    serviceConfig.CacheDirectory = "nix";
+  };
 }

@@ -6,6 +6,25 @@
     #kernelPackages = pkgs.linuxPackages_cachyos;
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
+    kernelParams = [
+      #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
+      "initcall_debug"
+      "log_buf_len=16M"
+    ];
+    kernelPatches = [ {
+      name = "sleepdebug-config";
+      patch = null;
+      extraConfig = ''
+        PM y
+        PM_DEBUG y
+        PM_SLEEP_DEBUG y
+        FTRACE y
+        FUNCTION_TRACER y
+        FUNCTION_GRAPH_TRACER y
+        KPROBES y
+        KPROBES_ON_FTRACE y
+      '';
+    } ];
     blacklistedKernelModules = ["nouveau"];
     kernel.sysctl = { "vm.swappiness" = 90;};
     #kernelParams = [

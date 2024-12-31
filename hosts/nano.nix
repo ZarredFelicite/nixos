@@ -9,6 +9,11 @@
     #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
     #  "initcall_debug"
     #  "log_buf_len=16M"
+    #  "i915.force_probe=!9a40"
+    #  #"i915.enable_dc=0"
+    #  "xe.force_probe=9a40"
+    #  #"intel_idle.max_cstate=1"
+    #  #"ahci.mobile_lpm_policy=1"
     #];
     #kernelPatches = [ {
     #  name = "sleepdebug-config";
@@ -101,6 +106,7 @@
      STOP_CHARGE_THRESH_BAT0 = 95; # 80 and above it stops charging
     };
   };
+  services.fwupd.enable = true;
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };

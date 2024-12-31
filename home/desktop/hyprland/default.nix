@@ -98,7 +98,7 @@ in {
         "${pkgs.wayvnc}/bin/wayvnc"
         "${pkgs.trayscale}/bin/trayscale --hide-window"
       ];
-      monitor = [",preferred,auto,1"];
+      monitor = [",preferred,auto,1,transform,1"];
       xwayland.force_zero_scaling = true;
       general = {
         gaps_in = 8;

@@ -72,7 +72,7 @@
         { symbol = "POL.AX"; quantity = 1379; unit_cost = 0.729;}
         { symbol = "WIN.AX"; quantity = 50000; unit_cost = 0.042;}
         { symbol = "BRX.AX"; quantity = 5882; unit_cost = 0.171;}
-        { symbol = "IPB.AX"; quantity = 120000; unit_cost = 0.013;}
+        #{ symbol = "IPB.AX"; quantity = 120000; unit_cost = 0.013;}
         { symbol = "MLX.AX"; quantity = 13200; unit_cost = 0.38;}
         { symbol = "CTM.AX"; quantity = 3700; unit_cost = 0.778;}
         { symbol = "AFM.V"; quantity = 5118; unit_cost = 0.88;}

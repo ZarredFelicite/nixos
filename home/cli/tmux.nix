@@ -13,9 +13,9 @@
   programs.tmux = {
     mouse = true;
     aggressiveResize = true;
-    baseIndex = 1;
+    baseIndex = 1;  # recommended by tilish plugin
     disableConfirmationPrompt = true;
-    escapeTime = 0;
+    escapeTime = 0; # recommended by tilish plugin
     historyLimit = 100000;
     keyMode = "vi";
     prefix = "C-a";
@@ -31,7 +31,9 @@
       set-option -g status-interval 5
       set-option -g automatic-rename on
       set-option -g automatic-rename-format '#{b:pane_current_path}'
-      set-option -g detach-on-destroy off
+      # set-option -g detach-on-destroy off
+      # in .tmux.conf
+      # set -g status-right '#{cpu_bg_color} CPU: #{cpu_icon} #{cpu_percentage} | %a %h-%d %H:%M '
     '';
     plugins = with pkgs; [
       { plugin = tmuxPlugins.catppuccin;
@@ -55,7 +57,7 @@
           set -g @catppuccin_window_default_fill "none"
           set -g @catppuccin_window_current_fill "all"
         '' ;}
-      tmuxPlugins.cpu
+      #tmuxPlugins.cpu
       { plugin = tmuxPlugins.resurrect;
         extraConfig = ''
           set -g @resurrect-strategy-nvim 'session'
@@ -78,7 +80,30 @@
         extraConfig = ''
           set -g @tilish-default 'main-vertical'
           set -g @tilish-easymode 'on'
-        ''; }
+        '';}
+      #   -------------------------------------------------
+      #   Alt + 0-9 	Switch to workspace number 0-9
+      #   Alt + Shift + 0-9 	Move pane to workspace 0-9
+      #   Alt + hjkl 	Move focus left/down/up/right
+      #   Alt + Shift + hjkl 	Move pane left/down/up/right
+      #   Alt + o 	Move focus cyclically
+      #   Alt + Shift + o 	Move pane cyclically
+      #   Alt + Enter 	Create a new pane at "the end" of the current layout
+      #   Alt + s 	Switch to layout: split then vsplit
+      #   Alt + Shift + s 	Switch to layout: only split
+      #   Alt + v 	Switch to layout: vsplit then split
+      #   Alt + Shift + v 	Switch to layout: only vsplit
+      #   Alt + t 	Switch to layout: fully tiled
+      #   Alt + z 	Switch to layout: zoom (fullscreen)
+      #   Alt + r 	Refresh current layout
+      #   Alt + n 	Name current workspace
+      #   Alt + d 	Application launcher (if enabled)
+      #   Alt + p 	Project launcher (if enabled)
+      #   Alt + Shift + q 	Quit (close) pane
+      #   Alt + Shift + e 	Exit (detach) tmux
+      #   Alt + Shift + c 	Reload config
+      #   -------------------------------------------------
+
       #{ plugin = tmuxPlugins.vim-tmux-navigator;
       #  extraConfig = ''
       #    # Smart pane switching with awareness of Vim splits.

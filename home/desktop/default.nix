@@ -18,7 +18,7 @@ in {
     ./hyprland
     ./swaync
     ./notifications.nix
-    ./waybar.nix
+    ./waybar
   ];
     # NOTE: test nixpkgs patch overlay
     #nixpkgs.overlays = [

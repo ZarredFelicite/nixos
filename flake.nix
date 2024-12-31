@@ -12,7 +12,7 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.46.0"; submodules = true;};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.46.2"; submodules = true;};
     # TODO: switch to latest version when available https://github.com/NixOS/nix/issues/11946
     hyprland-plugins = { url = "github:hyprwm/hyprland-plugins"; inputs.hyprland.follows = "hyprland"; };
     hyprpaper = { url = "github:hyprwm/hyprpaper"; };

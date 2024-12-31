@@ -79,6 +79,25 @@ let
 in {
   home.packages = [ pkgs.wttrbar ];
   stylix.targets.waybar.enable = false;
+  systemd.user.services.zmk_battery = {
+    Unit.Description = "Get ZMK Keyboard battery";
+    Service.ExecStart = "/home/zarred/scripts/waybar/zmk-battery.py json";
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  systemd.user.services.airpods_battery = {
+    Unit.Description = "Get AirPods battery";
+    Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";
+      #Service.ExecStart = pkgs.writers.writePython3 "airpods_battery_python" {
+      #  libraries = with pkgs.python3Packages; [ bleak ];
+      #  flakeIgnore = [ "E265" "E225" ];
+      #  doCheck = false;
+      #  } (builtins.readFile ./scripts/airpods_battery.py);
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   programs.waybar = {
     systemd.enable = true;
     #package = inputs.waybar.packages.${pkgs.system}.waybar.overrideAttrs (oldAttrs: {
@@ -118,9 +137,9 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "hyprland/submap" "cava" "mpris" "group/group-stocks" "custom/news" ];
+        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "hyprland/submap" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "systemd-failed-units" "custom/weather" "custom/updates" "tray" "custom/notification" "idle_inhibitor" "network" "custom/zmk-battery" "bluetooth" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" "battery" "custom/timer" "clock" "group/group-power" ];
+        modules-right = [ "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -140,6 +159,60 @@ in {
             firefox = " ";
           };
         };
+        "group/updates-group" = {
+          orientation = "horizontal";
+          modules = [ "systemd-failed-units" "custom/updates" ];
+        };
+        "group/network-group" = {
+          orientation = "horizontal";
+          modules = [ "network" "bluetooth" ];
+        };
+        "group/clock-group" = {
+          orientation = "horizontal";
+          modules = [ "custom/timer" "clock" ];
+        };
+        "group/stats-group" = {
+          orientation = "inherit";
+          modules = [ "idle_inhibitor" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" ];
+        };
+        "group/airpods-battery" = {
+          orientation = "inherit";
+          modules = [ "image#airpods-battery-left" "image#airpods-battery-case" "image#airpods-battery-right" ];
+        };
+        "image#airpods-battery-left" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods left 100";
+          interval = 2;
+          size = 20;
+        };
+        "image#airpods-battery-right" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
+          interval = 2;
+          size = 20;
+        };
+        "image#airpods-battery-case" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods case 100";
+          interval = 2;
+          size = 20;
+        };
+        "group/zmk-battery" = {
+          orientation = "inherit";
+          modules = [ "image#zmk-battery-left" "image#zmk-battery-central" "image#zmk-battery-right" ];
+        };
+        "image#zmk-battery-left" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk left 70";
+          interval = 2;
+          size = 20;
+        };
+        "image#zmk-battery-right" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk right 70";
+          interval = 2;
+          size = 20;
+        };
+        "image#zmk-battery-central" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk central 70";
+          interval = 2;
+          size = 20;
+        };
         "image#logo-hyprland" = {
           path = "/home/zarred/pictures/Icons/hyprland.png";
           size = 24;
@@ -156,7 +229,8 @@ in {
           format = " ";
           format-disabled = "";
           format-connected = "<sup> {num_connections}</sup>";
-          format-connected-battery = " {num_connections} {device_battery_percentage}%";
+          format-connected-battery = "<sup> {num_connections}</sup>";
+            #format-connected-battery = " {num_connections} {device_battery_percentage}%";
           tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
           tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
           tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
@@ -213,7 +287,7 @@ in {
           format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
         };
         clock = {
-          format = "{:%I:%M}";
+          format = " {:%I:%M %d}";
           format-alt = "{ :%A; %B %d; %Y (%R)} ";
           tooltip-format = "{:%d/%m/%Y}";
           calendar = {
@@ -244,7 +318,7 @@ in {
           return-type = "json";
           interval = 5;
           signal = 4;
-          format = "{icon} {}";
+          format = "{icon}<sup> {}</sup>";
           format-icons = {
             standby = "󱎫";
             running = "󱫡";
@@ -289,6 +363,20 @@ in {
           exec = "~/scripts/waybar/zmk-battery.py icons";
             #return-type = "json";
         };
+          #"custom/airpods-battery" = {
+          #  format = "{}";
+          #  tooltip = true;
+          #  exec = "${airpods_battery_python} /tmp/airpods_battery | jq --unbuffered --compact-output";
+          #  return-type = "json";
+          #  restart-interval = 1;
+          #};
+        "custom/mail" = {
+          format = "{}";
+          tooltip = false;
+          interval = 60;
+          max-length = 100;
+          exec = "~/scripts/waybar/last_mail.sh";
+        };
         "custom/updates" = {
           format = "{}";
           tooltip = true;
@@ -307,7 +395,7 @@ in {
           format = "{}";
           tooltip = true;
           interval = 1800;
-          exec = "~/scripts/waybar/rss.py -s";
+          exec = "~/scripts/waybar/rss.py -c news -s";
           return-type = "json";
         };
         idle_inhibitor = {
@@ -452,14 +540,16 @@ in {
       window#waybar {
           background: rgba(0, 0, 0, 0);
       }
+      /*
       .modules-right {
           padding: 0 2 0 2px;
           margin: 0 0 0 0px;
           border-radius: 12px;
-          border: 1px solid rgba(49, 116, 143, 0.7);
+          border: 2px solid rgba(49, 116, 143, 0.6);
           background: rgba(43, 48, 59, 0.3);
           color: #c4a7e7;
       }
+      */
       #battery.charging {
           color: #a6e3a1;
       }
@@ -480,18 +570,19 @@ in {
       #custom-stock-ticker8,
       #custom-stock-ticker9 {
           color: #c4a7e7;
-          padding: 0 2 0 2px;
+          padding: 0 3 0 3px;
           margin: 0px 2px 0px 2px;
           background: rgba(38, 35, 58, 0.5);
           border-radius: 12px;
-          border: 1px solid rgba(49, 116, 143, 0.7);
+          border: 2px solid rgba(49, 116, 143, 0.6);
       }
-      #mpris, #submap, #custom-news {
-          padding: 0 2 0 2px;
-          margin: 0 0 0 0px;
+      #mpris, #submap, #custom-news, #custom-mail, #airpods-battery, #zmk-battery,
+      #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray, #custom-weather {
+          padding: 0 4 0 4px;
+          margin: 0px 4px 0px 4px;
           border-radius: 12px;
-          border: 1px solid rgba(49, 116, 143, 0.7);
-          background: rgba(38, 35, 58, 0.5);
+          border: 2px solid rgba(49, 116, 143, 0.6);
+          background: rgba(38, 35, 58, 0.4);
           color: #c4a7e7;
       }
       #custom-power, #custom-reboot, #custom-lock, #custom-quit {
@@ -506,7 +597,7 @@ in {
         margin: 1px;
         padding: 2px;
         border-radius: 12px;
-        border: 1px solid rgba(49, 116, 143, 0.7);
+        border: 2px solid rgba(49, 116, 143, 0.6);
       }
       #workspaces box {
         margin: -2px -6px -2px -6px;
@@ -542,11 +633,15 @@ in {
       }
       #cava {
           color: #c4a7e7;
-          padding: 0 1 0 1px;
+          padding: 0 2 0 2px;
           margin: 0px 2px 0px 2px;
           background: rgba(38, 35, 58, 0.5);
           border-radius: 12px;
           border: 1px solid rgba(49, 116, 143, 0.7);
+      }
+      #image, #backlight, #cpu, #temperature, #wireplumber, #power-profiles-daemon, #idle_inhibitor {
+          padding: 0 1 0 1px;
+          margin: 0px;
       }
     '';
   };

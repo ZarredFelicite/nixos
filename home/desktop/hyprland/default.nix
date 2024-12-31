@@ -30,16 +30,16 @@ in {
     settings = {
       preload = [
         "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
-        "~/pictures/wallpapers/tarantula_nebula_web_left.png"
-        "~/pictures/wallpapers/tarantula_nebula_web_right.png"
+        "~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
+        "~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
       ];
       wallpaper = [
         ",~/pictures/wallpapers/tarantula_nebula_nano.png"
         "eDP-1,~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
-        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left.png"
-        "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right.png"
+        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
+        "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
       ];
-      ipc = "off";
+      ipc = "on";
     };
   };
   wayland.windowManager.hyprland = lib.mkMerge [
@@ -85,10 +85,11 @@ in {
     systemd.enable = true;
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        pkgs.hyprlandPlugins.hyprfocus
-        pkgs.hyprlandPlugins.hyprspace
+        #pkgs.hyprlandPlugins.hyprfocus
+        #pkgs.hyprlandPlugins.hyprspace
     ];
     settings = {
+      debug.disable_logs = false;
       exec-once = [
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
@@ -229,7 +230,7 @@ in {
           workspace_swipe_fingers = 4;
         };
         hyprfocus = {
-          enabled = "yes";
+          enabled = true;
           keyboard_focus_animation = "flash";
           mouse_focus_animation = "flash";
           bezier = [

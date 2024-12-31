@@ -12,7 +12,7 @@
   home = {
     username = "zarred";
     homeDirectory = "/home/zarred";
-    stateVersion = "23.05";
+    stateVersion = "24.11";
     packages = with pkgs; [
       # system tools
       gtk3
@@ -44,6 +44,7 @@
       unzip
       unrar
       # utils
+      fd # A simple, fast and user-friendly alternative to find
       ripgrep # recursively searches directories for a regex pattern
       jq # A lightweight and flexible command-line JSON processor
       yq-go # yaml processer https://github.com/mikefarah/yq
@@ -117,7 +118,7 @@
       remmina
       wlvncc
       moonlight-qt
-      bottles
+      #TODO: broken bottles
       protonup-qt
 
       # kinect
@@ -152,28 +153,11 @@
         jupyter-core
         nbconvert
         yfinance
-        # TODO: broken build: dbus-next
-        (
-          buildPythonPackage rec {
-            pname = "reader";
-            version = "3.13";
-            src = fetchPypi {
-              inherit pname version;
-              hash = "sha256-bmN204LLizc3esR5CuHe4PytqyN24LHUToKU8MSkyYE=";
-            };
-            format = "pyproject";
-            doCheck = false;
-            propagatedBuildInputs = [
-              pkgs.python3Packages.setuptools
-              pkgs.python3Packages.feedparser
-              pkgs.python3Packages.requests
-              pkgs.python3Packages.werkzeug
-              pkgs.python3Packages.iso8601
-              pkgs.python3Packages.typing-extensions
-              pkgs.python3Packages.beautifulsoup4
-            ];
-          }
-        )
+        bleak
+        dbus-next
+        ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
+        # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
+        ( pkgs.callPackage ../pkgs/python/reader {})
       ]))
     ];
     sessionVariables = {

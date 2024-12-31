@@ -32,7 +32,7 @@ in {
           "https://addons.mozilla.org/firefox/downloads/latest/imagus/latest.xpi"
           #"https://addons.mozilla.org/firefox/downloads/latest/roseppuccin/latest.xpi"
           #"https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"
-          "https://tridactyl.cmcaine.co.uk/betas/tridactyl-latest.xpi"
+          #"https://tridactyl.cmcaine.co.uk/betas/tridactyl-latest.xpi"
           "https://addons.mozilla.org/firefox/downloads/latest/stylebot-web/latest.xpi"
         ]; };
       };
@@ -52,6 +52,7 @@ in {
           user-agent-string-switcher
           redirector
           #tampermonkey
+          tridactyl
           firemonkey
           consent-o-matic
           decentraleyes

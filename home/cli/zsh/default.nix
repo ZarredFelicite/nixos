@@ -166,6 +166,7 @@
       rb = "~/scripts/sys/reboot";
       kip = "magick $1 -resize 960x960 /tmp/kip_out; kitty icat /tmp/kip_out";
       ki = "kitty icat";
+      sshk = "kitty +kitten ssh";
     };
   };
   xdg.configFile."zsh/fzf-tab.conf".text = ''

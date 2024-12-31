@@ -39,6 +39,7 @@
       ".config/android-studio"
       ".config/sunshine"
       ".config/spotify"
+      ".config/GIMP"
     ];
     files = [
       ".config/wtwitch/api.json"

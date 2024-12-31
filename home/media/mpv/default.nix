@@ -64,8 +64,11 @@
       sub-font-size = 24;
       sub-auto = "fuzzy";
       demuxer-mkv-subtitle-preroll = true;
-      demuxer-max-bytes = 419430400;
-      demuxer-max-back-bytes = 419430400;
+      #demuxer-max-bytes = 419430400;
+      #demuxer-max-back-bytes = 419430400;
+      demuxer-max-bytes = "512MiB";
+      demuxer-readahead-secs = 60;
+      demuxer-max-back-bytes = "512MiB";
       slang = "eng,en";
       vlang = "eng,en";
       screenshot-template = "%X{~~desktop/}%F [%wH.%wM.%wS.%wT]";
@@ -75,7 +78,7 @@
       msg-color = true;
       msg-module = true;
       script-opts = "ytdl_hook-try_ytdl_first=yes,ytdl_hook-exclude='%.webm$|%.ts$|%.mp3$|%.m3u8$|%.m3u$|%.mkv$|%.mp4$|%.VOB$'";
-      #ytdl-format = "best";
+      #ytdl-format = "bestvideo[height<=?1080]+bestaudio";
     };
     profiles = {
       gpu-hq = {

@@ -24,7 +24,6 @@ in {
   '';
   services.gpg-agent.pinentryPackage = null;
   home.packages = ( with pkgs-unstable; [
-    orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     ] ) ++
     ( with pkgs; [
     # wayland tools
@@ -43,6 +42,7 @@ in {
     nb # A command line note-taking, bookmarking, archiving, and knowledge base application
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
+    # TODO: broken orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     # prusa-slicer # G-code generator for 3D printer
     # bambu-studio # PC Software for BambuLab's 3D printers
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
@@ -63,6 +63,9 @@ in {
     libsForQt5.qtstyleplugin-kvantum
     # security
     pinentry-rofi
+    # image viewer
+    swayimg
+    gimp
   ] );
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;
@@ -83,6 +86,7 @@ in {
     imv = {
       enable = true;
     };
+    feh.enable = true;
     zathura = {
       enable = true;
       options = {
@@ -126,15 +130,90 @@ in {
       indicator = true;
     };
   };
-  xdg.desktopEntries.OrcaSlicer = {
-    name = "OrcaSlicer";
-    genericName = "3D Printing Software";
-    icon = "OrcaSlicer";
-    exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs-unstable.orca-slicer}/bin/orca-slicer";
-    terminal = false;
-    type = "Application";
-    mimeType = ["model/stl" "model/3mf" "application/vnd.ms-3mfdocument" "application/prs.wavefront-obj" "application/x-amf" "x-scheme-handler/orcaslicer"];
-    categories = ["Graphics" "3DGraphics" "Engineering"];
-    startupNotify = false;
-};
+  # TODO: broken
+    #xdg.desktopEntries.OrcaSlicer = {
+    #  name = "OrcaSlicer";
+    #  genericName = "3D Printing Software";
+    #  icon = "OrcaSlicer";
+    #  exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs.orca-slicer}/bin/orca-slicer";
+    #  terminal = false;
+    #  type = "Application";
+    #  mimeType = ["model/stl" "model/3mf" "application/vnd.ms-3mfdocument" "application/prs.wavefront-obj" "application/x-amf" "x-scheme-handler/orcaslicer"];
+    #  categories = ["Graphics" "3DGraphics" "Engineering"];
+    #  startupNotify = false;
+    #};
+  xdg.configFile."swayimg/config".text = ''
+      [general]
+      #scale = optimal # Initial scale (optimal/fit/width/height/fill/real)
+      #fullscreen = no
+      #antialiasing = no
+      #transparency = grid # Background for transparent images (none/grid/RGB, e.g. #112233)
+      #position = parent # Window position (parent or absolute coordinates, e.g. 100,200)
+      # Window size (parent, image, or absolute size, e.g. 800,600)
+      size = image
+      #background = none # Window background mode/color (none/RGB, e.g. #112233)
+      #slideshow = no # Run slideshow at startup (yes/no)
+      #slideshow_time = 3 # Slideshow image display time (seconds)
+
+      #[list]
+      #order = alpha # Default order (none/alpha/random)
+      #loop = yes # Looping list of images (yes/no)
+      #recursive = no # Read directories recursively (yes/no)
+      #all = yes # Open all files in the start directory (yes/no)
+
+      #[font]
+      #name = monospace
+      #size = 14
+      #color = #cccccc
+      #shadow = #000000
+
+      #[info]
+      #mode = full # Mode on startup (off/brief/full)
+      #full.topleft = name,format,filesize,imagesize,exif # Display scheme for the "full" mode: position = content
+      #full.topright = index
+      #full.bottomleft = scale,frame
+      #full.bottomright = status
+      #brief.topleft = index # Display scheme for the "brief" mode: position = content
+      #brief.topright = none
+      #brief.bottomleft = none
+      #brief.bottomright = status
+
+      #[keys]
+      #F1 = help
+      #Home = first_file
+      #End = last_file
+      #Prior = prev_file
+      #Next = next_file
+      #Space = next_file
+      #Shift+d = prev_dir
+      #d = next_dir
+      #Shift+o = prev_frame
+      #o = next_frame
+      #Shift+s = slideshow
+      #s = animation
+      #f = fullscreen
+      #Left = step_left 10
+      #Right = step_right 10
+      #Up = step_up 10
+      #Down = step_down 10
+      #Equal = zoom +10
+      #Plus = zoom +10
+      #Minus = zoom -10
+      #w = zoom width
+      #Shift+w = zoom height
+      #z = zoom fit
+      #Shift+z = zoom fill
+      #0 = zoom real
+      #BackSpace = zoom optimal
+      #bracketleft = rotate_left
+      #bracketright = rotate_right
+      #m = flip_vertical
+      #Shift+m = flip_horizontal
+      #a = antialiasing
+      #r = reload
+      #i = info
+      #e = exec echo "Image: %"
+      #Escape = exit
+      #q = exit
+  '';
 }

@@ -54,4 +54,18 @@
       #dns_config.base_domain = "zar.red";
     };
   };
+
+  services.vsftpd = {
+    enable = true;
+    localUsers = true;
+    userlist = [ "zarred" ];
+    writeEnable = true;
+    allowWriteableChroot = true;
+    anonymousUser = true;
+    anonymousUserHome = "/mnt/gargantua/ftp";
+    anonymousMkdirEnable = true;
+    anonymousUploadEnable = true;
+    anonymousUserNoPassword = true;
+    anonymousUmask = "002";
+  };
 }

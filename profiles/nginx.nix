@@ -161,7 +161,7 @@
         #"cvat.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8082";};};
         # AUTH
         "nextcloud.zar.red" = SSLA//{locations."= /" = AUTH;};
-        "gotify.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app
+        "gotify.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app
         "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
         "ttrss.zar.red" = SSLA//{locations."/" = AUTH;};
         "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};

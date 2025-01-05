@@ -5,7 +5,30 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-intel" ];
-    #kernelParams = [ "SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1" ];
+    #kernelParams = [
+    #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
+    #  "initcall_debug"
+    #  "log_buf_len=16M"
+    #  "i915.force_probe=!9a40"
+    #  #"i915.enable_dc=0"
+    #  "xe.force_probe=9a40"
+    #  #"intel_idle.max_cstate=1"
+    #  #"ahci.mobile_lpm_policy=1"
+    #];
+    #kernelPatches = [ {
+    #  name = "sleepdebug-config";
+    #  patch = null;
+    #  extraConfig = ''
+    #    PM y
+    #    PM_DEBUG y
+    #    PM_SLEEP_DEBUG y
+    #    FTRACE y
+    #    FUNCTION_TRACER y
+    #    FUNCTION_GRAPH_TRACER y
+    #    KPROBES y
+    #    KPROBES_ON_FTRACE y
+    #  '';
+    #} ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];
@@ -50,7 +73,7 @@
 
   swapDevices = [{
     device = "/swap/swapfile";
-    size = 16392;
+    size = 24 * 1024;
   }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -61,7 +84,6 @@
 
   powerManagement = {
     enable = true;
-    #cpuFreqGovernor = lib.mkDefault "powersave"; # “ondemand”, “powersave”, “performance”
     #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
   services.power-profiles-daemon.enable = false; # not optimal
@@ -84,6 +106,7 @@
      STOP_CHARGE_THRESH_BAT0 = 95; # 80 and above it stops charging
     };
   };
+  services.fwupd.enable = true;
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
@@ -102,7 +125,7 @@
       enable32Bit = true;
       extraPackages = with pkgs; [
         intel-media-driver # LIBVA_DRIVER_NAME=iHD
-        intel-ocl
+        # TODO: build fail? intel-ocl
         #vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
         vaapiVdpau
         libvdpau-va-gl

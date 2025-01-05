@@ -1,7 +1,6 @@
-{ self, pkgs, lib, inputs, outputs, config, ... }: {
+{ self, pkgs, pkgs-unstable, lib, inputs, outputs, config, ... }: {
   imports = [
     ../profiles/common.nix
-    ../containers/podman.nix
     ../profiles/media-server.nix
     ../profiles/server-management.nix
     ../profiles/rss.nix
@@ -13,7 +12,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
     users.zarred = import ../home/core.nix;
   };
   #environment.systemPackages = [

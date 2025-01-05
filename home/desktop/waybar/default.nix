@@ -1,0 +1,655 @@
+{ pkgs, lib, osConfig, inputs, ... }:
+let
+  height = if osConfig.networking.hostName == "web" then "14" else "14";
+  cava_config = {
+    framerate = 30;
+    autosens = 1;
+    sensitivity = 1;
+    lower_cutoff_freq = 20;
+    higher_cutoff_freq = 20000;
+    method = "pipewire";
+    source = "auto";
+    #channels = "mono";
+    waves = false;
+    monstercat = true;
+    #bar_delimiter = 32;
+    bar_delimiter = 0;
+    noise_reduction = 0.3;
+    input_delay = 1;
+    sleep_timer = 5;
+    hide_on_silence = true;
+    format-icons = [ " " "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
+  };
+  workspaces = {
+    "hyprland/workspaces#pills" = {
+      format = "{icon}";
+      format-icons = {
+        default = "";
+      };
+      #active-only = true;
+      all-outputs = false;
+      show-special = false;
+      on-scroll-up = "hyprctl dispatch workspace +1";
+      on-scroll-down = "hyprctl dispatch workspace -1";
+    };
+    "hyprland/workspaces#number" = {
+      format = " <span color='#1f1d2e'>{name} {windows}</span> ";
+      all-outputs = false;
+      show-special = false;
+      window-rewrite-default = "";
+      window-rewrite = {
+        "class<Caprine>" = "󰈎";
+        "class<Godot>" = "";
+        "class<Slack>" = "󰒱";
+        "class<code>" = "󰨞";
+        "class<discord>" = "󰙯";
+        "class<firefox>" = "󰈹";
+        "class<firefox> title<.*github.*>" = "";
+        "class<firefox> title<.*twitch|youtube.*>" = "";
+        "class<kitty>" = "󰅬";
+        "class<org.telegram.desktop>" = "";
+        "class<steam>" = "";
+        "class<thunderbird>" = "";
+        "class<virt-manager>" = "󰢹";
+        "class<vlc>" = "󰕼";
+        "class<mpv>" = "";
+        "class<imv>" = " ";
+        "class<stats>" = "󱕍";
+        "class<org.pwmt.zathura>" = "󰈦";
+        "class<brave-browser>" = "";
+        "class<.*Slicer>" = "";
+        "nheko" = "<span color='#ABE9B3'>󰊌</span>";
+        "newsboat" = "";
+      };
+    };
+    "hyprland/window" = {
+      separate-outputs = true;
+      tooltip = true;
+      rewrite = {
+        #" - ([^|]+)\|" = "$1";
+        ".* Mozilla Firefox" = "$1";
+      };
+    };
+    "hyprland/submap" = {
+      format = " {}";
+      max-length = 20;
+      tooltip = true;
+    };
+  };
+in {
+  home.packages = [ pkgs.wttrbar ];
+  stylix.targets.waybar.enable = false;
+  systemd.user.services.zmk_battery = {
+    Unit.Description = "Get ZMK Keyboard battery";
+    Service.ExecStart = "/home/zarred/scripts/waybar/zmk-battery.py json";
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  systemd.user.services.airpods_battery = {
+    Unit.Description = "Get AirPods battery";
+    Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";
+      #Service.ExecStart = pkgs.writers.writePython3 "airpods_battery_python" {
+      #  libraries = with pkgs.python3Packages; [ bleak ];
+      #  flakeIgnore = [ "E265" "E225" ];
+      #  doCheck = false;
+      #  } (builtins.readFile ./scripts/airpods_battery.py);
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  programs.waybar = {
+    systemd.enable = true;
+    #package = inputs.waybar.packages.${pkgs.system}.waybar.overrideAttrs (oldAttrs: {
+    #  mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+    #});
+    settings = lib.mkMerge [
+      (lib.mkIf (osConfig.networking.hostName == "web"){
+        primary.output = "DP-3";
+        secondary.output = "DP-2";
+      })
+      (lib.mkIf (osConfig.networking.hostName == "nano"){
+        primary.output = "eDP-1";
+        secondary.output = "DP-2";
+      })
+      (lib.mkIf (osConfig.networking.hostName == "surface"){
+        primary.output = "eDP-1";
+      })
+      {
+      secondary = workspaces // {
+        layer = "top";
+        position = "top";
+        #mode = "dock";
+        passthrough = false;
+        exclusive = true;
+        spacing = 4;
+        margin = "4 4 0 4";
+        gtk-layer-shell = true;
+        modules-left = [ "hyprland/workspaces#number" "hyprland/submap" ];
+        modules-right = [ ];
+      };
+      primary = workspaces // {
+        layer = "top";
+        position = "top";
+        #mode = "overlay";
+        passthrough = false;
+        exclusive = true;
+        spacing = 4;
+        margin = "4 4 0 4";
+        gtk-layer-shell = true;
+        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "hyprland/submap" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
+        modules-center = [  ];
+        modules-right = [ "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
+        tray = {
+          icon-size = 14;
+          spacing = 3;
+        };
+        mpris = {
+          format = "{dynamic}";
+          dynamic-len = 100;
+            #format-paused = " ";
+          status-icons = {
+            paused = "⏸";
+            playing = "▶";
+          };
+          player-icons = {
+            default = "▶";
+            mpd = "󰎆 ";
+            mpv = " ";
+            firefox = " ";
+          };
+        };
+        "group/updates-group" = {
+          orientation = "horizontal";
+          modules = [ "systemd-failed-units" "custom/updates" ];
+        };
+        "group/network-group" = {
+          orientation = "horizontal";
+          modules = [ "network" "bluetooth" ];
+        };
+        "group/clock-group" = {
+          orientation = "horizontal";
+          modules = [ "custom/timer" "clock" ];
+        };
+        "group/stats-group" = {
+          orientation = "inherit";
+          modules = [ "idle_inhibitor" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" ];
+        };
+        "group/airpods-battery" = {
+          orientation = "inherit";
+          modules = [ "image#airpods-battery-left" "image#airpods-battery-case" "image#airpods-battery-right" ];
+        };
+        "image#airpods-battery-left" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods left 100";
+          interval = 1;
+          size = 20;
+        };
+        "image#airpods-battery-right" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
+          interval = 1;
+          size = 20;
+        };
+        "image#airpods-battery-case" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods case 100";
+          interval = 1;
+          size = 20;
+        };
+        "group/zmk-battery" = {
+          orientation = "inherit";
+          modules = [ "image#zmk-battery-left" "image#zmk-battery-central" "image#zmk-battery-right" ];
+        };
+        "image#zmk-battery-left" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk left 70";
+          interval = 2;
+          size = 20;
+        };
+        "image#zmk-battery-right" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk right 70";
+          interval = 2;
+          size = 20;
+        };
+        "image#zmk-battery-central" = {
+          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk central 70";
+          interval = 2;
+          size = 20;
+        };
+        "image#logo-hyprland" = {
+          path = "/home/zarred/pictures/Icons/hyprland.png";
+          size = 24;
+        };
+        "image#logo-nixos" = {
+          path = "/home/zarred/pictures/Icons/nixos.png";
+          size = 24;
+        };
+        "image" = {
+          exec = "/home/zarred/scripts/waybar/playerctl-art.sh";
+          interval = 30;
+        };
+        systemd-failed-units = {
+          hide-on-ok = true;
+          format = "✗ {nr_failed}";
+          #format-ok": "✓",
+          system = true;
+          user = true;
+        };
+        bluetooth = {
+          format = " ";
+          format-disabled = "";
+          format-connected = "<sup> {num_connections}</sup>";
+          format-connected-battery = "<sup> {num_connections}</sup>";
+            #format-connected-battery = " {num_connections} {device_battery_percentage}%";
+          tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
+          tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
+          tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+          tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
+        };
+        wireplumber = {
+          format = "{icon}";
+          format-muted = " ";
+          on-click = "pavucontrol";
+          max-volume = 150;
+          scroll-step = 0.2;
+          format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
+        };
+        network = {
+          format-wifi = " ";
+          format-ethernet = " ";
+          format-disconnected = "󰤮 ";
+          tooltip-format = "{ifname} via {gwaddr}  ";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)  ";
+          tooltip-format-ethernet = "{ifname}\n{ipaddr}/{cidr}";
+          tooltip-format-disconnected = "Disconnected";
+        };
+        cpu = {
+          interval = 5;
+          format = "{icon}";
+          format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
+        };
+        temperature = {
+          hwmon-path = "/sys/class/hwmon/hwmon2/temp1_input";
+          format = "{icon}";
+          format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
+        };
+        battery = {
+          interval = 10;
+          format = "{icon}";
+          format-time = "{H}:{m}";
+          tooltip-format = "{capacity}% | {power:.2f}W | {timeTo}";
+          format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
+        };
+        power-profiles-daemon = {
+          format = "{icon}";
+          tooltip-format = "Power profile: {profile}\nDriver: {driver}";
+          tooltip = true;
+          format-icons = {
+            default = " ";
+            performance = " ";
+            balanced = " ";
+            power-saver = " ";
+          };
+        };
+        backlight = {
+          device = "intel_backlight";
+          format = "{icon}";
+          format-icons = [ "󰝦 " "󰪞 " "󰪟 " "󰪠 " "󰪡 " "󰪢 " "󰪣 " "󰪤 " "󰪥 " ];
+        };
+        clock = {
+          format = " {:%I:%M %d}";
+          format-alt = "{ :%A; %B %d; %Y (%R)} ";
+          tooltip-format = "{:%d/%m/%Y}";
+          calendar = {
+            mode = "year";
+            mode-mon-col = 3;
+            weeks-pos = "right";
+            on-scroll = 1;
+            on-click-right = "mode";
+            format = {
+              months = "<span color='#ffead3'><b>{}</b></span>";
+              days = "<span color='#ecc6d9'><b>{}</b></span>";
+              weeks = "<span color='#99ffdd'><b>W{}</b></span>";
+              weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+              today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+            };
+          };
+          actions =  {
+            on-click-right = "mode";
+            on-click-forward = "tz_up";
+            on-click-backward = "tz_down";
+            on-scroll-up = "shift_up";
+            on-scroll-down = "shift_down";
+          };
+        };
+        "custom/timer" = {
+          exec = "/home/zarred/scripts/waybar/timer.sh updateandprint";
+          exec-on-event = true;
+          return-type = "json";
+          interval = 5;
+          signal = 4;
+          format = "{icon}<sup> {}</sup>";
+          format-icons = {
+            standby = "󱎫";
+            running = "󱫡";
+            paused = "󱫟";
+          };
+          on-click = "/home/zarred/scripts/waybar/timer.sh new 15 'notify-send -u critical \"Timer expired.\"; mpv --force-window=no /home/zarred/scripts/notifications/audio/soft-4.mp3'";
+          on-click-middle = "/home/zarred/scripts/waybar/timer.sh cancel";
+          on-click-right = "/home/zarred/scripts/waybar/timer.sh togglepause";
+          on-scroll-up = "/home/zarred/scripts/waybar/timer.sh increase 60 || /home/zarred/scripts/waybar/timer.sh new 1 'notify-send -u critical \"Timer expired.\"; mpv --force-window=no /home/zarred/scripts/notifications/audio/soft-4.mp3'";
+          on-scroll-down = "/home/zarred/scripts/waybar/timer.sh increase -60";
+        };
+        "custom/notification" = {
+          tooltip = false;
+          #format = "{icon}<sup> {}</sup>";
+          format = "{icon} {}";
+          format-icons = {
+            notification = "";
+            none = "";
+            dnd-notification = "";
+            dnd-none = "";
+            inhibited-notification = "";
+            inhibited-none = "";
+            dnd-inhibited-notification = "";
+            dnd-inhibited-none = "";
+          };
+          return-type = "json";
+            #exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+          exec = "${pkgs.mako}/bin/makoctl history | ${pkgs.jq}/bin/jq '.data[] | length'";
+            #on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+            #on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+          escape = true;
+        };
+        "custom/firefox" = {
+          exec-if = "hyprctl activewindow -j | jq .class | grep firefox || exit 1 && exit 0";
+          format = "";
+          #exec = "echo 'hello'";
+        };
+        "custom/zmk-battery" = {
+          format = "{}";
+          tooltip = false;
+          interval = 3600;
+          exec = "~/scripts/waybar/zmk-battery.py icons";
+            #return-type = "json";
+        };
+          #"custom/airpods-battery" = {
+          #  format = "{}";
+          #  tooltip = true;
+          #  exec = "${airpods_battery_python} /tmp/airpods_battery | jq --unbuffered --compact-output";
+          #  return-type = "json";
+          #  restart-interval = 1;
+          #};
+        "custom/mail" = {
+          format = "{}";
+          tooltip = false;
+          interval = 60;
+          max-length = 100;
+          exec = "~/scripts/waybar/last_mail.sh";
+        };
+        "custom/updates" = {
+          format = "{}";
+          tooltip = true;
+          interval = 10;
+          exec = "~/scripts/nix/nix-update | sed 's/\\n/\\r/g' | jq --unbuffered --compact-output";
+          return-type = "json";
+        };
+        "custom/weather" = {
+          format = "{}";
+          tooltip = true;
+          interval = 3600;
+          exec = "~/scripts/waybar/weather.sh -37.99116,145.17385";
+          return-type = "json";
+        };
+        "custom/news" = {
+          format = "{}";
+          tooltip = true;
+          interval = 1800;
+          exec = "~/scripts/waybar/rss.py -c news -s";
+          return-type = "json";
+        };
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = " ";
+            deactivated = " ";
+          };
+        };
+        cava = (cava_config // {
+          stereo = true;
+          bars = 12;
+        });
+        "cava#before" = (cava_config // {
+          mono_option = "left";
+          stereo = false;
+          reverse = true;
+          bars = 8;
+        });
+        "cava#after" = (cava_config // {
+          mono_option = "right";
+          stereo = false;
+          reverse = false;
+          bars = 8;
+        });
+        "group/group-power" = {
+          orientation = "inherit";
+          drawer = {
+            transition-duration = 500;
+            children-class = "not-power";
+            transition-left-to-right = false;
+          };
+          modules = [ "image#logo-nixos" "custom/quit" "custom/lock" "custom/reboot" "custom/power" ];
+        };
+        "custom/quit" = {
+          format = "󰈆";
+          tooltip = false;
+          on-click = "hyprctl dispatch exit";
+        };
+        "custom/lock" = {
+          format = "";
+          tooltip = false;
+          on-click = "loginctl lock-session";
+        };
+        "custom/reboot" = {
+          format = "";
+          tooltip = false;
+          on-click = "reboot";
+        };
+        "custom/power" = {
+          format = "";
+          tooltip = false;
+          on-click = "shutdown now";
+        };
+        "group/group-stocks" = {
+          orientation = "inherit";
+          drawer = {
+            transition-duration = 500;
+            children-class = "stocks-ticker";
+            transition-left-to-right = true;
+          };
+          modules = [
+            "custom/stock-ticker0"
+            "custom/stock-ticker1"
+            "custom/stock-ticker2"
+            "custom/stock-ticker3"
+            "custom/stock-ticker4"
+            "custom/stock-ticker5"
+            "custom/stock-ticker6"
+            "custom/stock-ticker7"
+            "custom/stock-ticker8"
+            "custom/stock-ticker9"
+          ];
+        };
+        "custom/stock-ticker0" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 0";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker1" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 1";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker2" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 2";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker3" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 3";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker4" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 4";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker5" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 5";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker6" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 6";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker7" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 7";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker8" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 8";
+          tooltip = false;
+          restart-interval = 300;
+        };
+        "custom/stock-ticker9" = {
+          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 9";
+          tooltip = false;
+          restart-interval = 300;
+        };
+      };
+    }];
+    style = ''
+      * {
+          font-family: Iosevka Nerd Font;
+          font-size: ${height}px;
+          min-height: 0px;
+          /*color: #B0C6F4;*/
+      }
+      tooltip {
+        background: rgba(38, 35, 58, 0.9);
+        border: 2px solid rgba(49, 116, 143, 0.7);
+        border-radius: 10px ;
+      }
+      tooltip label {
+        color: rgb(235, 188, 186);
+      }
+      window#waybar {
+          background: rgba(0, 0, 0, 0);
+      }
+      /*
+      .modules-right {
+          padding: 0 2 0 2px;
+          margin: 0 0 0 0px;
+          border-radius: 12px;
+          border: 2px solid rgba(49, 116, 143, 0.6);
+          background: rgba(43, 48, 59, 0.3);
+          color: #c4a7e7;
+      }
+      */
+      #battery.charging {
+          color: #a6e3a1;
+      }
+      @keyframes blink {
+          to {
+              background-color: #ffffff;
+              color: black;
+          }
+      }
+      #custom-stock-ticker0,
+      #custom-stock-ticker1,
+      #custom-stock-ticker2,
+      #custom-stock-ticker3,
+      #custom-stock-ticker4,
+      #custom-stock-ticker5,
+      #custom-stock-ticker6,
+      #custom-stock-ticker7,
+      #custom-stock-ticker8,
+      #custom-stock-ticker9 {
+          color: #c4a7e7;
+          padding: 0 3 0 3px;
+          margin: 0px 2px 0px 2px;
+          background: rgba(38, 35, 58, 0.5);
+          border-radius: 12px;
+          border: 2px solid rgba(49, 116, 143, 0.6);
+      }
+      #mpris, #submap, #custom-news, #custom-mail, #airpods-battery, #zmk-battery,
+      #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray, #custom-weather {
+          padding: 0 4 0 4px;
+          margin: 0px 1px 0px 1px;
+          border-radius: 12px;
+          border: 2px solid rgba(49, 116, 143, 0.6);
+          background: rgba(38, 35, 58, 0.4);
+          color: #c4a7e7;
+      }
+      #custom-power, #custom-reboot, #custom-lock, #custom-quit {
+        border-radius: 10px;
+        margin: 2px;
+        padding: 0 8 0 4px;
+        background-color: rgba(49, 116, 143, 0.4);
+        transition: all 0.2s ease-in-out;
+      }
+      #workspaces {
+        background: rgba(38, 35, 58, 0.4);
+        margin: 1px;
+        padding: 2px;
+        border-radius: 12px;
+        border: 2px solid rgba(49, 116, 143, 0.6);
+      }
+      #workspaces box {
+        margin: -2px -6px -2px -6px;
+        padding: 0px;
+        background: transparent;
+      }
+      #workspaces button{
+        color: #31748f;
+        border-radius: 8px;
+        margin: 1px 2px;
+        padding: 0px 6px;
+        background-color: #31748f;
+        transition: all 0.2s ease-in-out;
+      }
+      #workspaces button.empty{
+        background-color: #31748f;
+        transition: all 0.2s ease-in-out;
+      }
+      #workspaces button.active {
+        color: #c4a7e7;
+        padding: 0px 10px;
+        background-color: #c4a7e7;
+        transition: all 0.2s ease-in-out;
+      }
+      #battery.warning:not(.charging) {
+          background: #f53c3c;
+          color: white;
+          animation-name: blink;
+          animation-duration: 0.5s;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+      }
+      #cava {
+          color: #c4a7e7;
+          padding: 0 2 0 2px;
+          margin: 0px 2px 0px 2px;
+          background: rgba(38, 35, 58, 0.5);
+          border-radius: 12px;
+          border: 1px solid rgba(49, 116, 143, 0.7);
+      }
+      #image, #backlight, #cpu, #temperature, #wireplumber, #power-profiles-daemon, #idle_inhibitor {
+          padding: 0 1 0 1px;
+          margin: 0px;
+      }
+    '';
+  };
+}

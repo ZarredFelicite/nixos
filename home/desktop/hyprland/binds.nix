@@ -14,7 +14,7 @@
       bind   =      ,      F, submap, reset
       bind   =      ,      M, togglespecialworkspace, media
       bind   =      ,      M, submap, reset
-      bind   =      ,      C, exec, ~/scripts/hyprland/cctv
+      bind   =      ,      C, togglespecialworkspace, cameras
       bind   =      ,      C, submap, reset
       bind   =      ,      I, submap, browser
       bind   =      , escape, submap, reset
@@ -22,6 +22,8 @@
       submap = browser
       bind   =      ,      T, togglespecialworkspace, browser-tradingview
       bind   =      ,      T, submap, reset
+      bind   =      ,      G, togglespecialworkspace, browser-chatgpt
+      bind   =      ,      G, submap, reset
       bind   =      ,      M, togglespecialworkspace, browser-messages
       bind   =      ,      M, submap, reset
       bind   =      , escape, submap, reset
@@ -41,7 +43,7 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      "$mod, O, overview:toggle, all"
+      #"$mod, O, overview:toggle, all"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -50,7 +52,7 @@
       #"$mod CTRL, U, hy3:changegroup, opposite"
       "$mod, H, togglefloating,"
       "$mod, K, killactive,"
-      "$mod, X, hyprexpo:expo, toggle"
+      #"$mod, X, hyprexpo:expo, toggle"
       "$mod CTRL, P, pseudo,"
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"
@@ -70,9 +72,9 @@
       "$mod, N, exec, makoctl invoke"
       "$mod CTRL, N, exec, makoctl restore"
       "$mod SHIFT, N, exec, makoctl dismiss"
-      "$mod, Q, exec, hyprctl dispatch dpms off & loginctl lock-session"
+      "$mod, Q, exec, loginctl lock-session"
       "$mod, S, exec, ~/scripts/nova/nova_window"
-      "$mod, P, exec, ~/scripts/launcher/rofi_programs "
+      "$mod, P, exec, ~/scripts/launcher/rofi_programs rofi"
       "$mod, F, exec, firefox"
       " , PRINT, exec, ~/scripts/screencapture/screenshot > /dev/null"
 

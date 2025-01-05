@@ -1,4 +1,20 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }:
+let
+  pinentryRofi = pkgs.writeShellApplication {
+    name= "pinentry-rofi-with-env";
+    text = ''
+      set -eu
+      PINENTRY_TERMINAL="${pkgs.pinentry-curses}/bin/pinentry-curses"
+      if [ -n "''${DISPLAY-}" ]; then
+        #exec "$PINENTRY_GNOME" "$@"
+        PATH="$PATH:${pkgs.coreutils}/bin:${pkgs.rofi}/bin"
+        "${pkgs.pinentry-rofi}/bin/pinentry-rofi" "$@"
+      else
+        exec "$PINENTRY_TERMINAL" "$@"
+      fi
+    '';
+  };
+in {
   programs.password-store = {
     package = pkgs.pass.withExtensions (exts: [
       exts.pass-otp
@@ -39,11 +55,15 @@
     maxCacheTtlSsh = 60480000;
     grabKeyboardAndMouse = false;
     verbose = true;
+    extraConfig = ''
+      pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
+      allow-preset-passphrase
+    '';
   };
   services.hypridle = {
     settings.general = {
       lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --no-fade-in --immediate-render";       # avoid starting multiple hyprlock instances.
-      before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
+      #before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
       after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
     };
     settings.listener = [

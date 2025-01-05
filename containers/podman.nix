@@ -21,4 +21,5 @@
       "/var/lib/stirling-pdf/trainingData:/usr/share/tesseract-ocr/4.00/tessdata"
     ];
   };
+  users.users.zarred.extraGroups = [ "podman" ];
 }

@@ -5,6 +5,7 @@
     supportedFilesystems = [ "nfs" ];
     kernelModules = [ "nfs" ];
   };
+  # TODO: set correct permissions
   fileSystems = {
     "/mnt/gargantua" = {
       device = "sankara:/mnt/gargantua";

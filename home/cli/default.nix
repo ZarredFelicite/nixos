@@ -12,7 +12,6 @@
     ./ueberzugpp.nix
   ];
   home.packages = with pkgs; [
-    fd # A simple, fast and user-friendly alternative to find
     inputs.qrrs.packages.x86_64-linux.default
   ];
   xdg.configFile."fd/ignore".text = ''

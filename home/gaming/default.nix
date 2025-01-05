@@ -2,9 +2,9 @@
   home.packages = [
     pkgs.lutris
     pkgs.protonup-qt
-    pkgs.wineWowPackages.waylandFull
+    #pkgs.wineWowPackages.waylandFull
     pkgs.samba
-    pkgs.bottles
+    # TODO: broken pkgs.bottles
     pkgs.mangohud
     # pkgs.darling # Open-source Darwin/macOS emulation layer for Linux
   ];

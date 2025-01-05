@@ -31,7 +31,6 @@
         autocmd DocLoad https://www.tradingview.com/chart* mode ignore
         autocmd DocLoad https://cad.onshape.com* mode ignore
         autocmd DocLoad https://www.youtube.com/watch?v=* mode ignore
-        autocmd DocLoad https://hotcopper.com.au* mode ignore
         autocmd DocLoad https://monkeytype.com mode ignore
         autocmd DocLoad https://web.tabliss.io fillcmdline open
 

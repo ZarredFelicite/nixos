@@ -166,6 +166,11 @@
       rb = "~/scripts/sys/reboot";
       kip = "magick $1 -resize 960x960 /tmp/kip_out; kitty icat /tmp/kip_out";
       ki = "kitty icat";
+      sshk = "kitty +kitten ssh";
+      sure = "systemctl --user restart";
+      sust = "systemctl --user status";
+      sst = "systemctl status";
+      sre = "systemctl restart";
     };
   };
   xdg.configFile."zsh/fzf-tab.conf".text = ''

@@ -3,7 +3,7 @@
     fg2:              #ebbcba;
     bg:               #1f1d2e30;
     bg2:              #31748f40;
-	  border-radius:    6px;
+	  border-radius:    12px;
     border-color:     @bg2;
     spacing:          2px;
     background-color:	@bg;
@@ -11,10 +11,10 @@
 }
 window {
 	transparency:     "real";
-	width:			    	30%;
+	width:			    	500;
 	padding: 			    0px;
 	margin: 			    0px;
-	location: 			  north;
+	location: 			  center;
 }
 
 mainbox {

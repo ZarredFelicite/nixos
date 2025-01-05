@@ -1,8 +1,9 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
   imports = [
     ../sys/nix.nix
     inputs.sops-nix.nixosModules.sops
     ../containers/docker.nix
+    ../containers/podman.nix
   ];
   system.stateVersion = "23.05";
   boot.loader = {
@@ -10,10 +11,11 @@
       enable = true;
       configurationLimit = 20;
     };
-    timeout = 1;
+    timeout = 0;
     #consoleLogLevel = 0;
     efi.canTouchEfiVariables = true;
   };
+  boot.kernel.sysctl."fs.file-max" = 524288;
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=10s
   '';
@@ -39,7 +41,7 @@
   };
   services.tailscale = {
     enable = true;
-    extraSetFlags = [ "--operator=$USER" ];
+    extraSetFlags = [ "--operator=zarred" ];
   };
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
@@ -91,11 +93,45 @@
       };
     };
 	};
+  # Permission modes are in octal representation (same as chmod),
+  # the digits represent: user|group|others
+  # 7 - full (rwx)
+  # 6 - read and write (rw-)
+  # 5 - read and execute (r-x)
+  # 4 - read only (r--)
+  # 3 - write and execute (-wx)
+  # 2 - write only (-w-)
+  # 1 - execute only (--x)
+  # 0 - none (---)
   sops = {
     defaultSopsFile = ../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
     age.sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
     gnupg.sshKeyPaths = [];
+    templates."gotify-cli.json" = {
+      content = ''
+        {
+          "token": "${config.sops.placeholder.gotify-app-web-token}",
+          "url": "https://gotify.zar.red",
+          "defaultPriority": 6
+        }
+      '';
+      owner = "zarred";
+    };
+    templates."gotify-desktop-config.toml" = {
+      content = ''
+        [gotify]
+        url = "wss://gotify.zar.red"
+        token = "${config.sops.placeholder.gotify-client-web-token}"
+        auto_delete = false  # optional, if true, deletes messages that have been handled, defaults to false
+        [notification]
+        min_priority = 1  # optional, ignores messages with priority lower than given value
+        [action]
+        # optional, run the given command for each message, with the following environment variables set: GOTIFY_MSG_PRIORITY, GOTIFY_MSG_TITLE and GOTIFY_MSG_TEXT.
+        #on_msg_command = "/usr/bin/beep"
+      '';
+      owner = "zarred";
+    };
     secrets = lib.mkMerge [
       (lib.mkIf (config.networking.hostName == "sankara") {
         nextcloud-admin = { owner = "nextcloud"; };
@@ -107,6 +143,8 @@
         users-root.neededForUsers = true;
         gmail-personal = { owner = "zarred"; };
         restic-home = { owner = "zarred"; };
+        gotify-client-web-token = { owner = "zarred"; };
+        gotify-app-web-token = { owner = "zarred"; };
         twitch-oauth = {};
         cloudflare-api-token = {};
         twitch-api-token = {
@@ -122,6 +160,8 @@
         #  path = "/home/zarred/.config/gh/hosts.yml";
         #};
         binary-cache-key = {};
+        #nixremote-private = { owner = config.users.users.zarred.name; group = config.users.users.zarred.group; mode = "0440";};
+        nixremote-private = { };
       }
     ];
   };
@@ -165,12 +205,6 @@
       gnupg.noAutostart = true;
     };
   };
-  #virtualisation = {
-  #  docker = {
-  #    enable = false;
-  #    rootless.enable = true;
-  #  };
-  #};
   services = {
     dbus.enable = true;
     fprintd.enable = false;
@@ -182,12 +216,31 @@
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
       };
+      hostKeys = [
+        {
+          bits = 4096;
+          path = "/etc/ssh/ssh_host_rsa_key";
+          type = "rsa";
+        }
+        {
+          path = "/etc/ssh/ssh_host_ed25519_key";
+          type = "ed25519";
+        }
+      ];
     };
     udev.extraRules = ''
     '';
   };
+  programs.ssh = {
+    extraConfig = ''
+      Host nixremote-web
+        HostName web
+        User nixremote
+        IdentityFile ${config.sops.secrets.nixremote-private.path}
+    '';
+  };
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = (with pkgs; [
       git
       jq
       iotop
@@ -200,6 +253,7 @@
       tailscale
       sops
       direnv
+      inotify-tools
       inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
       (python311.withPackages(ps: with ps; [
         pip
@@ -212,7 +266,10 @@
       ]))
       nodejs
       openjpeg
-    ];
+    ]) ++
+    ( with pkgs-unstable; [
+        #
+    ]);
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };
@@ -263,15 +320,15 @@
         terminal = 14;
       };
       sansSerif = {
-        package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
+        package = pkgs.nerd-fonts.iosevka;
         name = "Iosevka Nerd Font";
       };
       serif = {
-        package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
+        package = pkgs.nerd-fonts.iosevka;
         name = "Iosevka Nerd Font";
       };
       monospace = {
-        package = pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; };
+        package = pkgs.nerd-fonts.iosevka;
         name = "Iosevka Nerd Font Mono";
       };
       emoji = {

@@ -8,6 +8,7 @@
       "/root/.ssh"
       "/var/log"
       "/var/lib"
+      "/var/cache"
       "/var/db/sudo/lectured"
       "/etc/NetworkManager/system-connections"
       "/etc/coolercontrol"

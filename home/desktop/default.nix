@@ -18,7 +18,7 @@ in {
     ./hyprland
     ./swaync
     ./notifications.nix
-    ./waybar.nix
+    ./waybar
   ];
     # NOTE: test nixpkgs patch overlay
     #nixpkgs.overlays = [
@@ -62,19 +62,8 @@ in {
       Restart = "always";
     };
   };
-  xdg.configFile."gotify-desktop/config.toml".text = ''
-    [gotify]
-    url = "wss://gotify.zar.red"
-    token = "YOUR_SECRET_TOKEN"
-    auto_delete = false  # optional, if true, deletes messages that have been handled, defaults to false
-
-    [notification]
-    min_priority = 1  # optional, ignores messages with priority lower than given value
-
-    [action]
-    # optional, run the given command for each message, with the following environment variables set: GOTIFY_MSG_PRIORITY, GOTIFY_MSG_TITLE and GOTIFY_MSG_TEXT.
-    on_msg_command = "/usr/bin/beep"
-  '';
+  xdg.configFile."gotify/cli.json".source = osConfig.sops.templates."gotify-cli.json".path;
+  xdg.configFile."gotify-desktop/config.toml".source = osConfig.sops.templates."gotify-desktop-config.toml".path;
   systemd.user.services.gotify-desktop = mkHyprlandService {
     Unit.Description = "Small Gotify daemon to send messages as desktop notifications";
     Service = {

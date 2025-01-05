@@ -14,6 +14,8 @@
       window_padding_width = 3;
       background_opacity = lib.mkForce "0.2";
       background = "#191724";
+      background_image_layout = "cscaled";
+      background_tint = 0.0;
       dynamic_background_opacity = true;
       share_connections = true;
       enabled_layouts = "vertical,tall,grid";

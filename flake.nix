@@ -1,7 +1,8 @@
 {
   description = "Zarred's NixOS flake";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -11,15 +12,17 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?ref=v0.45.2"; submodules = true;};
-    hyprpaper = { url = "github:hyprwm/hyprpaper";};
-    hyprlang = { url = "github:hyprwm/hyprlang";};
-    hyprlock = { url = "github:hyprwm/hyprlock";};
-    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel";};
+    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.46.2"; submodules = true;};
+    # TODO: switch to latest version when available https://github.com/NixOS/nix/issues/11946
+    hyprland-plugins = { url = "github:hyprwm/hyprland-plugins"; inputs.hyprland.follows = "hyprland"; };
+    hyprpaper = { url = "github:hyprwm/hyprpaper"; };
+    hyprlang = { url = "github:hyprwm/hyprlang"; };
+    hyprlock = { url = "github:hyprwm/hyprlock"; };
+    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
     hyprfocus = { url = "github:pyt0xic/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
-    rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
+    rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
     nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
     #ianyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };
@@ -29,17 +32,16 @@
     textfox.url = "github:adriankarlen/textfox";
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ...  }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-      forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
+      system = "x86_64-linux";
+      #systems = [ "x86_64-linux" "aarch64-linux" ];
+      #forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
+      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     in {
       inherit lib;
-      #packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-
-      # use updated wayland packages
-
       nixpkgs.overlays = [
         inputs.nixpkgs-wayland.overlay
         (import ./overlays)
@@ -64,8 +66,11 @@
 
       nixosConfigurations = {
         web = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs ; };
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
@@ -83,8 +88,11 @@
           ];
         };
         nano = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs ; };
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
@@ -101,22 +109,12 @@
             ./sys/syncthing.nix
           ];
         };
-        surface = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit self inputs ; };
-      	  modules = [
-            nixos-hardware.nixosModules.microsoft-surface-common
-            inputs.stylix.nixosModules.stylix
-            ./hosts/surface.nix
-            ./roles/desktop.nix
-            ./sys/impermanence.nix
-            ./sys/nfs.nix
-            ./sys/syncthing.nix
-          ];
-        };
         sankara = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit self inputs ; };
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
       	  modules = [
             inputs.stylix.nixosModules.stylix
             inputs.chaotic.nixosModules.default

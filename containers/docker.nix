@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
   virtualisation.docker = {
-    enable = false;
+    enable = true;
     enableOnBoot = true;
     enableNvidia = false; #TODO
     storageDriver = "btrfs";
@@ -12,7 +12,7 @@
     #  data-root = "/home/zarred/.local/share/docker";
     #};
   };
-  environment.systemPackages = [ pkgs.docker-compose ];
+  environment.systemPackages = [ pkgs.docker-compose pkgs.docker-client ];
   hardware.nvidia-container-toolkit = {
     enable = false; #TODO
   };

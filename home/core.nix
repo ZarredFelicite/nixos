@@ -12,7 +12,7 @@
   home = {
     username = "zarred";
     homeDirectory = "/home/zarred";
-    stateVersion = "23.05";
+    stateVersion = "24.11";
     packages = with pkgs; [
       # system tools
       gtk3
@@ -44,6 +44,7 @@
       unzip
       unrar
       # utils
+      fd # A simple, fast and user-friendly alternative to find
       ripgrep # recursively searches directories for a regex pattern
       jq # A lightweight and flexible command-line JSON processor
       yq-go # yaml processer https://github.com/mikefarah/yq
@@ -103,8 +104,10 @@
       #texlivePackages.enumitem
       #(texlive.combine { inherit (texlivePackages) texliveSmall enumitem; })
 
-      piper-tts
-      upscayl
+      # AI
+      piper-tts # A fast, local neural text to speech system
+      upscayl # Free and Open Source AI Image Upscaler
+      openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
 
       #android-studio
       git-lfs
@@ -115,13 +118,14 @@
       remmina
       wlvncc
       moonlight-qt
-      bottles
+      #TODO: broken bottles
       protonup-qt
 
       # kinect
       #freenect
       #freecad
 
+      uv # Extremely fast Python package installer and resolver, written in Rust
       (python3.withPackages(ps: with ps; [
         pip
         ytmusicapi
@@ -148,28 +152,12 @@
         openai
         jupyter-core
         nbconvert
+        yfinance
+        bleak
         dbus-next
-        (
-          buildPythonPackage rec {
-            pname = "reader";
-            version = "3.13";
-            src = fetchPypi {
-              inherit pname version;
-              hash = "sha256-bmN204LLizc3esR5CuHe4PytqyN24LHUToKU8MSkyYE=";
-            };
-            format = "pyproject";
-            doCheck = false;
-            propagatedBuildInputs = [
-              pkgs.python3Packages.setuptools
-              pkgs.python3Packages.feedparser
-              pkgs.python3Packages.requests
-              pkgs.python3Packages.werkzeug
-              pkgs.python3Packages.iso8601
-              pkgs.python3Packages.typing-extensions
-              pkgs.python3Packages.beautifulsoup4
-            ];
-          }
-        )
+        ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
+        # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
+        ( pkgs.callPackage ../pkgs/python/reader {})
       ]))
     ];
     sessionVariables = {

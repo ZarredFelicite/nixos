@@ -6,7 +6,9 @@
   virtualisation.podman = {
     enable = true;
     #dockerCompat = true;
+    dockerSocket.enable = true;
   };
+  users.extraUsers.zarred.extraGroups = [ "podman" ];
   virtualisation.oci-containers.containers."stirling-pdf" = {
     image = "docker.io/frooodle/s-pdf:latest";
     ports = [ "8088:8080" ];

@@ -2,7 +2,6 @@
 { pkgs, lib, ... }:
 
 {
-  environment.systemPackages = [ pkgs.arion pkgs.docker-client ];
   # Runtime
   virtualisation.podman = {
     enable = true;

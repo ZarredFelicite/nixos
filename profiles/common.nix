@@ -69,7 +69,7 @@
         isNormalUser = true;
         description = "Zarred";
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss"];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp"];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;

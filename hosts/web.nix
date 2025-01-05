@@ -31,7 +31,7 @@
     #  "nvidia-drm.fbdev=1"
     #  "nvidia-drm.modeset=1"
     #];
-    extraModulePackages = [ pkgs.linuxKernel.packages.linux_zen.ddcci-driver];
+    extraModulePackages = [ config.boot.kernelPackages.ddcci-driver];
     #extraModulePackages = [ pkgs.linuxPackages_cachyos.ddcci-driver ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
@@ -148,7 +148,7 @@
     MemorySleepMode=s2idle
   '';
   hardware = {
-    pulseaudio.enable = false;
+    enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     nvidia = {
       open = true;

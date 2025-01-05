@@ -42,6 +42,13 @@ in {
       ipc = "on";
     };
   };
+  systemd.user.services.hyprpolkitagent = mkHyprlandService {
+    Unit.Description = "hyprpolkitagent polkit authentication daemon";
+    Service = {
+      ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+      Restart = "always";
+    };
+  };
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
@@ -94,7 +101,6 @@ in {
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render"
-        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
         "${pkgs.wayvnc}/bin/wayvnc"
         "${pkgs.trayscale}/bin/trayscale --hide-window"

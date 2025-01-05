@@ -1,13 +1,4 @@
-{ self, inputs, outputs, config, pkgs, pkgs-unstable, lib, ... }:
-let
-  pinentryRofi = pkgs.writeShellApplication {
-    name= "pinentry-rofi-with-env";
-    text = ''
-      PATH="$PATH:${pkgs.coreutils}/bin:${pkgs.rofi}/bin"
-      "${pkgs.pinentry-rofi}/bin/pinentry-rofi" "$@"
-    '';
-  };
-in {
+{ self, inputs, outputs, config, pkgs, pkgs-unstable, lib, ... }: {
   imports = [
     ./core.nix
     ./browser
@@ -18,11 +9,6 @@ in {
   programs.hyprlock.enable = true;
   programs.password-store.enable = true;
   services.hypridle.enable = true;
-  services.gpg-agent.extraConfig = ''
-    pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
-    allow-preset-passphrase
-  '';
-  services.gpg-agent.pinentryPackage = null;
   home.packages = ( with pkgs-unstable; [
     ] ) ++
     ( with pkgs; [
@@ -32,7 +18,6 @@ in {
     transmission_4 # A fast, easy and free BitTorrent client
     # notifications
     libnotify # A library that sends desktop notifications to a notification daemon
-    gotify-cli # A command line interface for pushing messages to gotify/server
     # audio
     cava # Console-based Audio Visualizer for Alsa
     songrec # An open-source Shazam client for Linux, written in Rust
@@ -61,8 +46,6 @@ in {
     # themeing
     materia-kde-theme
     libsForQt5.qtstyleplugin-kvantum
-    # security
-    pinentry-rofi
     # image viewer
     swayimg
     gimp

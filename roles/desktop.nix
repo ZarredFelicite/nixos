@@ -24,12 +24,22 @@
     enable = true;
     operation = "boot";
     flake = inputs.self.outPath;
+    #flake = "/home/zarred/dots";
     flags = [
       "--update-input"
       "nixpkgs"
-      "--commit-lock-file"
+      "--update-input"
+      "home-manager"
+      #"--commit-lock-file"
+      "--no-write-lock-file"
+      #"--recreate-lock-file"
       "-L" # print build logs
       "--impure"
+      "--builders"
+      "''"
+      #"--option"
+      #"substituters"
+      #"'https://cache.nixos.org'"
     ];
     dates = "02:00";
     randomizedDelaySec = "45min";

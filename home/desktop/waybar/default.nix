@@ -181,17 +181,17 @@ in {
         };
         "image#airpods-battery-left" = {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods left 100";
-          interval = 2;
+          interval = 1;
           size = 20;
         };
         "image#airpods-battery-right" = {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
-          interval = 2;
+          interval = 1;
           size = 20;
         };
         "image#airpods-battery-case" = {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods case 100";
-          interval = 2;
+          interval = 1;
           size = 20;
         };
         "group/zmk-battery" = {
@@ -224,6 +224,13 @@ in {
         "image" = {
           exec = "/home/zarred/scripts/waybar/playerctl-art.sh";
           interval = 30;
+        };
+        systemd-failed-units = {
+          hide-on-ok = true;
+          format = "✗ {nr_failed}";
+          #format-ok": "✓",
+          system = true;
+          user = true;
         };
         bluetooth = {
           format = " ";
@@ -380,8 +387,8 @@ in {
         "custom/updates" = {
           format = "{}";
           tooltip = true;
-          interval = 3600;
-          exec = "~/scripts/nix/nix-update";
+          interval = 10;
+          exec = "~/scripts/nix/nix-update | sed 's/\\n/\\r/g' | jq --unbuffered --compact-output";
           return-type = "json";
         };
         "custom/weather" = {
@@ -579,7 +586,7 @@ in {
       #mpris, #submap, #custom-news, #custom-mail, #airpods-battery, #zmk-battery,
       #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray, #custom-weather {
           padding: 0 4 0 4px;
-          margin: 0px 4px 0px 4px;
+          margin: 0px 1px 0px 1px;
           border-radius: 12px;
           border: 2px solid rgba(49, 116, 143, 0.6);
           background: rgba(38, 35, 58, 0.4);

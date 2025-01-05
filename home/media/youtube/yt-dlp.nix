@@ -10,5 +10,6 @@
     --embed-metadata
     --downloader ffmpeg # native, aria2c, avconv, axel, curl, ffmpeg, httpie, wget
     --downloader-args aria2c:'-c -x8 -s8 -k1M --continue=true'
+    -N 16
   '';
 }

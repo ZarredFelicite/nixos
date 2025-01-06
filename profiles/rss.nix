@@ -1,6 +1,5 @@
 { pkgs, ... }: {
   services.postgresql = {
-    enable = true;
     ensureDatabases = [ "tt_rss" ];
     identMap = ''
       # ArbitraryMapName systemUser DBUser
@@ -15,7 +14,6 @@
     '';
   };
   services.tt-rss = {
-    enable = true;
     pubSubHubbub.enable = false;
     singleUserMode = true;
     virtualHost = "ttrss.zar.red";

@@ -22,12 +22,14 @@
   #];
   #networking.firewall.allowedTCPPorts = [ 2049 80 443 6600 22 ];
   networking.firewall.allowedTCPPorts = [ 80 443 ];
-  services.postgresql.enable = true;
 
+  # TT-RSS
+  services.postgresql.enable = false; # TODO: failed build #368091
   services.tt-rss.enable = true;
+
   services.gotify.enable = true;
   services.klipper.enable = true;
-  services.mjpg-streamer.enable = false; #TODO enable for 3d printer monitoring
+  services.mjpg-streamer.enable = false; # TODO: enable for 3d printer monitoring
 
   services.mpd.enable = true;
   services.jellyfin.enable = true;

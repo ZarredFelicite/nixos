@@ -5,8 +5,8 @@
   virtualisation.oci-containers.backend = "podman";
   virtualisation.podman = {
     enable = true;
-    #dockerCompat = true;
-    dockerSocket.enable = true;
+    dockerCompat = false;
+    dockerSocket.enable = false;
   };
   users.extraUsers.zarred.extraGroups = [ "podman" ];
   virtualisation.oci-containers.containers."stirling-pdf" = {

@@ -20,6 +20,6 @@
     win-virtio
     win-spice
     adwaita-icon-theme
-    #TODO: failed build quickemu
+    #TODO: failed build (368971) quickemu
   ];
 }

@@ -19,14 +19,15 @@
 .tabbrowser-tab[fadein]:not([style^="max-width"]){ max-width: 100vw !important }
 #urlbar .search-one-offs { display: none !important; }
 
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
+/*
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 .browserContainer > #statuspanel{
   display:none !important
 }
 #statuspanel{
   display:none !important
 }
-/*
+
 :root[lwthemetextcolor="bright"] #statuspanel-label{
 background-color: #26233a !important;
 color: #9ccfd8 !important;

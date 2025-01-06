@@ -43,7 +43,7 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      #"$mod, O, overview:toggle, all"
+      "$mod, O, overview:toggle, all"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"

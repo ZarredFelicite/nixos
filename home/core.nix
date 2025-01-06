@@ -91,6 +91,8 @@
       nix-index # A files database for nixpkgs
       manix # A fast CLI documentation searcher for Nix
       comma # Runs programs without installing them
+      # nixpkgs tools
+      nix-init # Command line tool to generate Nix packages from URLs
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -118,7 +120,7 @@
       remmina
       wlvncc
       moonlight-qt
-      #TODO: broken bottles
+      bottles
       protonup-qt
 
       # kinect
@@ -156,6 +158,7 @@
         bleak
         dbus-next
         ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
+        ( pkgs.callPackage ../pkgs/python/yt-fts {})
         # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
         ( pkgs.callPackage ../pkgs/python/reader {})
       ]))

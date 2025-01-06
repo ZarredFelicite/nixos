@@ -42,6 +42,13 @@ in {
       ipc = "on";
     };
   };
+  systemd.user.services.hyprpolkitagent = mkHyprlandService {
+    Unit.Description = "hyprpolkitagent polkit authentication daemon";
+    Service = {
+      ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+      Restart = "always";
+    };
+  };
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "surface") {
         settings.monitor = [
@@ -85,8 +92,8 @@ in {
     systemd.enable = true;
     plugins = [
         #inputs.hycov.packages.${pkgs.system}.hycov
-        #pkgs.hyprlandPlugins.hyprfocus
-        #pkgs.hyprlandPlugins.hyprspace
+        # TODO: broken build (https://github.com/pyt0xic/hyprfocus/pull/17) inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
+        pkgs.hyprlandPlugins.hyprspace
     ];
     settings = {
       debug.disable_logs = false;
@@ -94,7 +101,6 @@ in {
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render"
-        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
         "${pkgs.wayvnc}/bin/wayvnc"
         "${pkgs.trayscale}/bin/trayscale --hide-window"
@@ -280,53 +286,53 @@ in {
           };
         };
         # TODO: https://github.com/KZDKM/Hyprspace
-          #overview = {
-          #  panelColor = "0xHEXCOLOR"; # Set color for the panel
-          #  panelBorderColor = "0xHEXCOLOR"; # Set border color for the panel
-          #  workspaceActiveBackground = "0xHEXCOLOR"; # Active workspace background color
-          #  workspaceInactiveBackground = "0xHEXCOLOR"; # Inactive workspace background color
-          #  workspaceActiveBorder = "0xHEXCOLOR"; # Border color for active workspace
-          #  workspaceInactiveBorder = "0xHEXCOLOR"; # Border color for inactive workspace
-          #  dragAlpha = 0.7; # Set alpha value for window when dragged in overview (0-1)
+        overview = {
+            #panelColor = "0x26233a"; # Set color for the panel
+            #panelBorderColor = "0xHEXCOLOR"; # Set border color for the panel
+            #workspaceActiveBackground = "0xHEXCOLOR"; # Active workspace background color
+            #workspaceInactiveBackground = "0xHEXCOLOR"; # Inactive workspace background color
+            #workspaceActiveBorder = "0xHEXCOLOR"; # Border color for active workspace
+            #workspaceInactiveBorder = "0xHEXCOLOR"; # Border color for inactive workspace
+          dragAlpha = 0.7; # Set alpha value for window when dragged in overview (0-1)
 
-          #  # Layout
-          #  panelHeight = 30; # Height of the panel in pixels
-          #  panelBorderWidth = 2; # Border width of the panel in pixels
-          #  onBottom = true; # Set to true if the panel should be at the bottom
-          #  workspaceMargin = 10; # Margin between workspaces and the panel edges
-          #  reservedArea = 20; # Padding for camera notch (Macbook)
-          #  workspaceBorderSize = 2; # Border size for workspaces
-          #  centerAligned = true; # True for center alignment, false for left alignment
-          #  hideBackgroundLayers = false; # Hide background layers
-          #  hideTopLayers = false; # Hide top layers
-          #  hideOverlayLayers = false; # Hide overlay layers
-          #  hideRealLayers = false; # Hide layers in actual workspace
-          #  drawActiveWorkspace = true; # Draw active workspace as-is in overview
-          #  overrideGaps = true; # Override layout gaps in overview
-          #  gapsIn = 5; # Gaps inside the workspace
-          #  gapsOut = 10; # Gaps outside the workspace
-          #  affectStrut = true; # Push window aside, disabling also disables overrideGaps
+          # Layout
+          panelHeight = 140; # Height of the panel in pixels
+          panelBorderWidth = 10; # Border width of the panel in pixels
+          onBottom = false; # Set to true if the panel should be at the bottom
+          workspaceMargin = 4; # Margin between workspaces and the panel edges
+          reservedArea = 34; # Padding for camera notch (Macbook)
+          workspaceBorderSize = 2; # Border size for workspaces
+          centerAligned = true; # True for center alignment, false for left alignment
+          hideBackgroundLayers = false; # Hide background layers
+          hideTopLayers = false; # Hide top layers
+          hideOverlayLayers = false; # Hide overlay layers
+          hideRealLayers = false; # Hide layers in actual workspace
+          drawActiveWorkspace = true; # Draw active workspace as-is in overview
+          overrideGaps = false; # Override layout gaps in overview
+          gapsIn = 0; # Gaps inside the workspace
+          gapsOut = 0; # Gaps outside the workspace
+          affectStrut = true; # Push window aside, disabling also disables overrideGaps
 
-          #  # Animation
-          #  overrideAnimSpeed = 1.0; # Speed of slide-in animation
+          # Animation
+          overrideAnimSpeed = 1.2; # Speed of slide-in animation
 
-          #  # Behaviors
-          #  autoDrag = true; # Always drag window when overview is open
-          #  autoScroll = true; # Scroll on active workspace area switches workspace
-          #  exitOnClick = true; # Exits overview on click without dragging
-          #  switchOnDrop = true; # Switch workspace when window is dropped into it
-          #  exitOnSwitch = true; # Exit overview on switch
-          #  showNewWorkspace = true; # Add new empty workspace at the end
-          #  showEmptyWorkspace = true; # Show empty workspaces between non-empty ones
-          #  showSpecialWorkspace = false; # Show special workspace if any
-          #  disableGestures = false; # Disable gestures
-          #  reverseSwipe = false; # Reverse swipe gesture direction (for macOS style)
+          # Behaviors
+          autoDrag = true; # Always drag window when overview is open
+          autoScroll = true; # Scroll on active workspace area switches workspace
+          exitOnClick = true; # Exits overview on click without dragging
+          switchOnDrop = true; # Switch workspace when window is dropped into it
+          exitOnSwitch = true; # Exit overview on switch
+          showNewWorkspace = true; # Add new empty workspace at the end
+          showEmptyWorkspace = true; # Show empty workspaces between non-empty ones
+          showSpecialWorkspace = true; # Show special workspace if any
+          disableGestures = false; # Disable gestures
+          reverseSwipe = false; # Reverse swipe gesture direction (for macOS style)
 
-          #  # Touchpad gesture settings
-          #  gestures.workspace_swipe_fingers = 4; # Number of fingers for swipe
-          #  gestures.workspace_swipe_cancel_ratio = 0.5; # Ratio to cancel swipe
-          #  gestures.workspace_swipe_min_speed_to_force = 1000; # Min speed to force switch
-          #};
+          # Touchpad gesture settings
+          gestures.workspace_swipe_fingers = 4; # Number of fingers for swipe
+          gestures.workspace_swipe_cancel_ratio = 0.5; # Ratio to cancel swipe
+          gestures.workspace_swipe_min_speed_to_force = 1000; # Min speed to force switch
+        };
       };
     };
   }];

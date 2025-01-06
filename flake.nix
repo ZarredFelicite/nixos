@@ -3,6 +3,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -21,7 +22,8 @@
     hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
     #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
     hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
-    hyprfocus = { url = "github:pyt0xic/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
+    hyprfocus = { url = "github:skissue/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
+    #hyprfocus = { url = "github:pyt0xic/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
     nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
@@ -32,7 +34,7 @@
     textfox.url = "github:adriankarlen/textfox";
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, ...  }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, nixos-hardware, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
       system = "x86_64-linux";
@@ -40,6 +42,7 @@
       #forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
       pkgs = nixpkgs.legacyPackages.${system};
       pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
+      pkgs-stable = nixpkgs-stable.legacyPackages.${system};
     in {
       inherit lib;
       nixpkgs.overlays = [
@@ -69,6 +72,7 @@
           inherit system;
           specialArgs = {
             inherit inputs;
+            inherit pkgs-stable;
             inherit pkgs-unstable;
           };
       	  modules = [
@@ -92,6 +96,7 @@
           specialArgs = {
             inherit inputs;
             inherit pkgs-unstable;
+            inherit pkgs-stable;
           };
       	  modules = [
             ({ nixpkgs.overlays = [
@@ -114,6 +119,7 @@
           specialArgs = {
             inherit inputs;
             inherit pkgs-unstable;
+            inherit pkgs-stable;
           };
       	  modules = [
             inputs.stylix.nixosModules.stylix

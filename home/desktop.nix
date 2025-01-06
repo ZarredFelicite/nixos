@@ -1,4 +1,4 @@
-{ self, inputs, outputs, config, pkgs, pkgs-unstable, lib, ... }: {
+{ self, inputs, outputs, config, pkgs, pkgs-stable, pkgs-unstable, lib, ... }: {
   imports = [
     ./core.nix
     ./browser
@@ -10,6 +10,8 @@
   programs.password-store.enable = true;
   services.hypridle.enable = true;
   home.packages = ( with pkgs-unstable; [
+    ] ) ++ ( with pkgs-stable; [
+      orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     ] ) ++
     ( with pkgs; [
     # wayland tools
@@ -27,7 +29,6 @@
     nb # A command line note-taking, bookmarking, archiving, and knowledge base application
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
-    # TODO: broken orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     # prusa-slicer # G-code generator for 3D printer
     # bambu-studio # PC Software for BambuLab's 3D printers
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
@@ -113,18 +114,17 @@
       indicator = true;
     };
   };
-  # TODO: broken
-    #xdg.desktopEntries.OrcaSlicer = {
-    #  name = "OrcaSlicer";
-    #  genericName = "3D Printing Software";
-    #  icon = "OrcaSlicer";
-    #  exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs.orca-slicer}/bin/orca-slicer";
-    #  terminal = false;
-    #  type = "Application";
-    #  mimeType = ["model/stl" "model/3mf" "application/vnd.ms-3mfdocument" "application/prs.wavefront-obj" "application/x-amf" "x-scheme-handler/orcaslicer"];
-    #  categories = ["Graphics" "3DGraphics" "Engineering"];
-    #  startupNotify = false;
-    #};
+  xdg.desktopEntries.OrcaSlicer = {
+    name = "OrcaSlicer";
+    genericName = "3D Printing Software";
+    icon = "OrcaSlicer";
+    exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs-stable.orca-slicer}/bin/orca-slicer";
+    terminal = false;
+    type = "Application";
+    mimeType = ["model/stl" "model/3mf" "application/vnd.ms-3mfdocument" "application/prs.wavefront-obj" "application/x-amf" "x-scheme-handler/orcaslicer"];
+    categories = ["Graphics" "3DGraphics" "Engineering"];
+    startupNotify = false;
+  };
   xdg.configFile."swayimg/config".text = ''
       [general]
       #scale = optimal # Initial scale (optimal/fit/width/height/fill/real)

@@ -170,10 +170,19 @@
     };
     pipewire = {
       enable = true;
+      systemWide = false;
       audio.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      #extraConfig.pipewire-pulse."mpd-connection" = {
+      #  "server.address" = [ {
+      #    address = "tcp:4713";              # address
+      #    max-clients = 64;                  # maximum number of clients
+      #    listen-backlog = 32;               # backlog in the server listen queue
+      #    client.access = "allowed";         # permissions for clients (was restricted)
+      #  } ];
+      #};
       wireplumber = {
         enable = true;
         extraConfig."11-bluetooth-policy" = {"wireplumber.settings" = {"bluetooth.autoswitch-to-headset-profile" = false;};};
@@ -188,41 +197,6 @@
           #["bluez5.headset-roles"] = "[ hsp_hs hsp_ag hfp_hf hfp_ag ]"
         ];
       };
-    };
-    mpd = {
-      user = "zarred";
-      group = "users";
-      enable = false;
-      dataDir = "/mnt/gargantua/media/music/data";
-      musicDirectory = lib.mkMerge [ (lib.mkIf (config.networking.hostName == "sankara") "/mnt/gargantua/media/music") (lib.mkIf (config.networking.hostName == "nano") "nfs://192.168.86.200/mnt/gargantua/media/music") ];
-      #playlistDirectory = /mnt/gargantua/media/music/data/playlists;
-      dbFile = null;
-      network.listenAddress = "any";
-      network.port = 6600;
-      startWhenNeeded = false;
-      extraConfig = (if config.networking.hostName == "sankara"
-        then ''
-          database {
-            plugin  "simple"
-            path    "/mnt/gargantua/media/music/data/mpd.db"
-            cache_directory    "/mnt/gargantua/media/music/data/cache"
-          }
-          audio_output {
-            type    "null"
-            name    "MPD Server"
-          }
-          ''
-        else ''
-          database {
-            plugin  "proxy"
-            host    "sankara"
-            port    "6600"
-          }
-          audio_output {
-            type    "pipewire"
-            name    "Pipewire Sound Server"
-          }
-        '');
     };
     transmission = {
       enable = true;
@@ -295,17 +269,47 @@
       };
     };
   };
-  #TODO:  compilation failed
-  #nixpkgs.overlays = [(final: prev: {
-  #  mpd = prev.mpd.overrideAttrs (old: {
-  #    src = prev.fetchFromGitHub {
-  #      owner = "MusicPlayerDaemon";
-  #      repo = "MPD";
-  #      rev = "9ff8e02e543ede2b1964e5ea3f26f00bf2ff90ec";
-  #      sha256 = "sha256-dlkMUKY8OAC+kwQ6twWgctV/+zxTikhq5MrXBL4+5TQ=";
-  #    };
-  #  });
-  #})];
+  systemd.services.mpd = {
+    serviceConfig.SupplementaryGroups = [ "pipewire" ];
+    environment = {
+      # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
+      XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.
+    };
+  };
+  services.mpd = {
+    user = "zarred";
+    group = "users";
+    enable = true;
+    dataDir = "/mnt/gargantua/media/music/data";
+    musicDirectory = "/mnt/gargantua/media/music";
+    dbFile = null;
+    network.listenAddress = "any";
+    network.port = 6600;
+    startWhenNeeded = false;
+    extraConfig = (if config.networking.hostName == "sankara"
+      then ''
+        database {
+          plugin  "simple"
+          path    "/mnt/gargantua/media/music/data/mpd.db"
+          cache_directory    "/mnt/gargantua/media/music/data/cache"
+        }
+        audio_output {
+          type    "null"
+          name    "MPD Server"
+        }
+        ''
+      else ''
+        database {
+          plugin  "proxy"
+          host    "192.168.86.200"
+          port    "6600"
+        }
+        audio_output {
+          type    "pipewire"
+          name    "Pipewire Sound Server"
+        }
+      '');
+  };
   services.flatpak.enable = false;
   nixpkgs.config.packageOverrides = pkgs: {
     steam = pkgs.steam.override {

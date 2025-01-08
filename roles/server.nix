@@ -24,7 +24,7 @@
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   # TT-RSS
-  services.postgresql.enable = false; # TODO: failed build #368091
+  services.postgresql.enable = true;
   services.tt-rss.enable = true;
 
   services.gotify.enable = true;
@@ -69,5 +69,18 @@
     anonymousUploadEnable = true;
     anonymousUserNoPassword = true;
     anonymousUmask = "002";
+  };
+
+  systemd.user.services.cctv = {
+    description = "Watch CCTV Cameras";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/security/inotify_cctv.sh";
+    serviceConfig.Restart = "always";
+    environment.SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+    path = [
+      pkgs.inotify-tools
+      pkgs.unixtools.ping
+      pkgs.openssh
+    ];
   };
 }

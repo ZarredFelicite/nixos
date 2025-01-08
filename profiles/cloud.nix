@@ -10,6 +10,7 @@
     };
     config = {
       adminpassFile = config.sops.secrets.nextcloud-admin.path;
+      dbtype = "sqlite";
     };
     database.createLocally = true;
   };

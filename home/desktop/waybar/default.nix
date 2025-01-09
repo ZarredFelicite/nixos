@@ -342,20 +342,20 @@ in {
           #format = "{icon}<sup> {}</sup>";
           format = "{icon} {}";
           format-icons = {
-            notification = "";
+            notification = "<span foreground='red'><sup></sup></span>";
             none = "";
-            dnd-notification = "";
+            dnd-notification = "<span foreground='red'><sup></sup></span>";
             dnd-none = "";
-            inhibited-notification = "";
+            inhibited-notification = "<span foreground='red'><sup></sup></span>";
             inhibited-none = "";
-            dnd-inhibited-notification = "";
+            dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>";
             dnd-inhibited-none = "";
           };
           return-type = "json";
-            #exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
-          exec = "${pkgs.mako}/bin/makoctl history | ${pkgs.jq}/bin/jq '.data[] | length'";
-            #on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
-            #on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+          exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+            #exec = "${pkgs.mako}/bin/makoctl history | ${pkgs.jq}/bin/jq '.data[] | length'";
+          on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+          on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
           escape = true;
         };
         "custom/firefox" = {
@@ -584,7 +584,8 @@ in {
           border: 2px solid rgba(49, 116, 143, 0.6);
       }
       #mpris, #submap, #custom-news, #custom-mail, #airpods-battery, #zmk-battery,
-      #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray, #custom-weather {
+      #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray,
+      #custom-weather, #custom-notification {
           padding: 0 4 0 4px;
           margin: 0px 1px 0px 1px;
           border-radius: 12px;

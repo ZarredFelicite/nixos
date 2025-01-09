@@ -38,7 +38,8 @@ in {
     systemd.variables = ["--all"];
   };
   programs.waybar.enable = true;
-  services.mako.enable = true;
+  services.mako.enable = false;
+  services.swaync.enable = true;
   home.packages = with pkgs; [
     #swaynotificationcenter # Simple notification daemon with a GUI built for Sway
     slurp # Select a region in a Wayland compositor

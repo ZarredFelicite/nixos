@@ -71,7 +71,17 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
-      (final: prev: { rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; }; })
+      (final: prev: {
+        rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
+        # NOTE: Patch didn't work
+        #orca-slicer = prev.orca-slicer.overrideAttrs (o: {
+        #  patches = [ ( pkgs.fetchpatch {
+        #    url = "https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/369729.patch";
+        #    hash = "sha256-+Ecwibp6YWM9GhxVvYpVPNLsKi8UJtSnXnqYsdFyN3Y=";
+
+        #  }) ];
+        #});
+      })
     ];
     config = {
       allowUnfree = true;

@@ -63,8 +63,8 @@ in {
       Restart = "always";
     };
   };
-  xdg.configFile."gotify/cli.json".source = osConfig.sops.templates."gotify-cli.json".path;
-  xdg.configFile."gotify-desktop/config.toml".source = osConfig.sops.templates."gotify-desktop-config.toml".path;
+  #xdg.configFile."gotify/cli.json".source = osConfig.sops.templates."gotify-cli.json".path;
+  #xdg.configFile."gotify-desktop/config.toml".source = osConfig.sops.templates."gotify-desktop-config.toml".path;
   systemd.user.services.gotify-desktop = mkHyprlandService {
     Unit.Description = "Small Gotify daemon to send messages as desktop notifications";
     Service = {

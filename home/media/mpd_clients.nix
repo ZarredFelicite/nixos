@@ -7,16 +7,16 @@
     mpdris2 = {
       enable = osConfig.services.mpd.enable;
       mpd = {
-        host = osConfig.services.mpd.network.listenAddress;
-        #musicDirectory = osConfig.services.mpd.musicDirectory;
-        musicDirectory = null;
+        host = "localhost";
         port = osConfig.services.mpd.network.port;
+        musicDirectory = osConfig.services.mpd.musicDirectory;
       };
       multimediaKeys = true;
+      notifications = true;
     };
   };
-  systemd.user.services.mpdris2.Unit.Requires = lib.mkForce "mpd.service";
-  systemd.user.services.mpdris2.Unit.After = lib.mkForce "mpd.service";
+  #systemd.user.services.mpdris2.Unit.Requires = lib.mkForce "mpd.service";
+  #systemd.user.services.mpdris2.Unit.After = lib.mkForce "mpd.service";
   #systemd.user.services.mpd.Service.ExecStartPre = lib.mkForce "";
   #systemd.user.services.mpd.Unit.After = lib.mkForce "mnt-gargantua.automount";
   programs = {
@@ -51,12 +51,12 @@
       ];
       mpdMusicDir = osConfig.services.mpd.musicDirectory;
       settings = {
-        mpd_host = osConfig.services.mpd.network.listenAddress;
+        #mpd_host = osConfig.services.mpd.network.listenAddress;
         mpd_port = osConfig.services.mpd.network.port;
         #lyrics_directory = osConfig.services.mpd.musicDirectory;
         store_lyrics_in_song_dir = "yes";
         lines_scrolled = 1;
-        execute_on_song_change = "~/scripts/music/song_change.py & >/dev/null";
+        #execute_on_song_change = "~/scripts/music/song_change.py & >/dev/null";
         #execute_on_player_state_change = "~/scripts/music/song_change.py & >/dev/null";
         song_columns_list_format = "(33)[]{t} (25f)[]{b} (10)[]{a}";
         song_status_format = "{{%a{ \"%b\"} - }{%t}}|{%f}";

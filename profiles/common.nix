@@ -108,6 +108,7 @@
     defaultSopsFormat = "yaml";
     age.sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
     gnupg.sshKeyPaths = [];
+    # NOTE:Prevents pure eval
     templates."gotify-cli.json" = {
       content = ''
         {
@@ -279,7 +280,6 @@
     mosh.enable = true;
     nh = {
       enable = true;
-      flake = /home/zarred/dots;
       clean.enable = false;
       clean.extraArgs = "--keep 5 --keep-since 3d";
       clean.dates = "weekly";
@@ -294,11 +294,13 @@
   stylix = {
     enable = true;
     autoEnable = true;
-    image = lib.mkMerge [
-      (lib.mkIf (config.networking.hostName == "nano") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-      (lib.mkIf (config.networking.hostName == "web") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-      (lib.mkIf (config.networking.hostName == "sankara") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    ];
+    image = ../wallpaper.jpg;
+    # NOTE: Impure access to paths
+    #image = lib.mkMerge [
+    #  (lib.mkIf (config.networking.hostName == "nano") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
+    #  (lib.mkIf (config.networking.hostName == "web") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
+    #  (lib.mkIf (config.networking.hostName == "sankara") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
+    #];
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {

@@ -1,4 +1,5 @@
 { pkgs, lib, osConfig, inputs, ... }:
+# TODO: backup, recording indicator by grepping ps for wf-recorder, restic
 let
   height = if osConfig.networking.hostName == "web" then "14" else "14";
   cava_config = {
@@ -145,12 +146,16 @@ in {
           spacing = 3;
         };
         mpris = {
-          format = "{dynamic}";
-          dynamic-len = 100;
-            #format-paused = " ";
+          format = "{status_icon} {dynamic}";
+          dynamic-order = ["title" "artist" "album" "position" "length"];
+          dynamic-len = 75;
+          title-len = 35;
+          artist-len = 15;
+          format-stopped = "";
           status-icons = {
-            paused = "⏸";
-            playing = "▶";
+            paused = " ";
+            playing = " ";
+            stopped = "";
           };
           player-icons = {
             default = "▶";

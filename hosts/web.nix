@@ -104,7 +104,7 @@
   };
   swapDevices = [{
     device = "/swap/swapfile";
-    size = 32784;
+    size = 65568;
   }];
   environment.variables = {
     # Necessary to correctly enable va-api (video codec hardware

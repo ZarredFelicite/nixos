@@ -386,7 +386,6 @@ in {
           format = "{}";
           tooltip = false;
           interval = 60;
-          max-length = 100;
           exec = "~/scripts/waybar/last_mail.sh";
         };
         "custom/updates" = {

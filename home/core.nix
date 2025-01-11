@@ -171,7 +171,8 @@
   };
   stylix.targets.kitty.variant256Colors = true;
   programs.kitty.enable = true;
-  programs.foot.enable = true;
+  programs.foot.enable = false;
+  programs.ghostty.enable = true;
   programs.bat = {
     enable = true;
     config = {

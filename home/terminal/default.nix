@@ -45,4 +45,12 @@
       cursor.style = "beam";
     };
   };
+  programs.ghostty = {
+    enableZshIntegration = true;
+    installBatSyntax = true;
+    settings = {
+      font-feature = [ "-calt" "-liga" "-dlig" ];
+      window-decoration = false;
+    };
+  };
 }

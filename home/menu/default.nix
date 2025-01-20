@@ -42,7 +42,7 @@ in {
       "--prompt '  '"
       "--ansi"
       "-m"
-      "--bind=ctrl-f:accept,ctrl-a:toggle-all,ctrl-j:replace-query,ctrl-k:preview-down,ctrl-l:preview-up,change:top"
+      "--bind='ctrl-a:toggle-all,ctrl-j:replace-query,ctrl-p:change-preview-window(right,70%|down,40%|hidden),change:top'"
     ];
     fileWidgetCommand = "fd --type f";
     fileWidgetOptions = [ "--preview 'head {}'" ];

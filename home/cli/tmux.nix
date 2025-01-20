@@ -78,7 +78,7 @@
       { plugin = tmuxPlugins.tilish;
       # https://github.com/jabirali/tmux-tilish
         extraConfig = ''
-          set -g @tilish-default 'main-vertical'
+          set -g @tilish-default 'main-horizontal'
           set -g @tilish-easymode 'on'
         '';}
       #   -------------------------------------------------

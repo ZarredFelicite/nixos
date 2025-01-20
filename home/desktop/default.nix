@@ -63,12 +63,19 @@ in {
       Restart = "always";
     };
   };
-  #xdg.configFile."gotify/cli.json".source = osConfig.sops.templates."gotify-cli.json".path;
-  #xdg.configFile."gotify-desktop/config.toml".source = osConfig.sops.templates."gotify-desktop-config.toml".path;
+  xdg.configFile."gotify/cli.json".source = osConfig.sops.templates."gotify-cli.json".path;
+  xdg.configFile."gotify-desktop/config.toml".source = osConfig.sops.templates."gotify-desktop-config.toml".path;
   systemd.user.services.gotify-desktop = mkHyprlandService {
     Unit.Description = "Small Gotify daemon to send messages as desktop notifications";
     Service = {
       ExecStart = "${pkgs.gotify-desktop}/bin/gotify-desktop";
+      Restart = "always";
+    };
+  };
+  systemd.user.services.nova-cache = mkHyprlandService {
+    Unit.Description = "Cache some cmd outputs for fzf-nova menu";
+    Service = {
+      ExecStart = "/home/zarred/scripts/nova/nova-cmd-cache.sh";
       Restart = "always";
     };
   };

@@ -138,9 +138,9 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "hyprland/submap" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
+        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
+        modules-right = [ "hyprland/submap" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -392,7 +392,7 @@ in {
           format = "{}";
           tooltip = true;
           interval = 10;
-          exec = "~/scripts/nix/nix-update | sed 's/\\n/\\r/g' | jq --unbuffered --compact-output";
+          exec = "~/scripts/nix/nix-update";
           return-type = "json";
         };
         "custom/weather" = {

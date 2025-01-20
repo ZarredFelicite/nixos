@@ -59,6 +59,15 @@
     loginExtra = "";
     logoutExtra = "";
     plugins = [
+      {
+        name = "fzf-tab";
+        src = pkgs.fetchFromGitHub {
+          owner = "Aloxaf";
+          repo = "fzf-tab";
+          rev = "c2b4aa5ad2532cca91f23908ac7f00efb7ff09c9";
+          sha256 = "sha256-gvZp8P3quOtcy1Xtt1LAW1cfZ/zCtnAmnWqcwrKel6w=";
+        };
+      }
       #{
       #  # will source zsh-autosuggestions.plugin.zsh
       #  name = "zsh-autosuggestions";
@@ -71,19 +80,9 @@
       #}
       { name = "functions"; file = "./plugins/functions.sh"; src = ./plugins;}
       { name = "fzf"; file = "./plugins/fzf_zsh.sh"; src = ./plugins;}
-      { name = "completions"; src = ./completions;}
-      #{ name = "_hyprctl"; file = "_hyprctl"; src = ./plugins; }
-      {
-        name = "fzf-tab";
-        src = pkgs.fetchFromGitHub {
-          owner = "Aloxaf";
-          repo = "fzf-tab";
-          rev = "c2b4aa5ad2532cca91f23908ac7f00efb7ff09c9";
-          sha256 = "sha256-gvZp8P3quOtcy1Xtt1LAW1cfZ/zCtnAmnWqcwrKel6w=";
-        };
-      }
       {
         name = "fzf-tab-source";
+        # A collection of fzf-tab completion sources.
         src = pkgs.fetchFromGitHub {
           owner = "Freed-Wu";
           repo = "fzf-tab-source";
@@ -180,23 +179,17 @@
     zstyle ':fzf-tab:*' fzf-min-height 10
     zstyle ':fzf-tab:*' continuous-trigger 'ctrl-I'
     zstyle ':fzf-tab:*' print-query alt-enter
-    # disable sort when completing options of any command
-    zstyle ':completion:complete:*:options' sort false
-    # set descriptions format to enable group support
-    zstyle ':completion:*:descriptions' format '[%d]'
-    # set list-colors to enable filename colorizing
-    zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
-    # preview directory's content with exa when completing cd
-    zstyle ':fzf-tab:complete:cd:*' fzf-preview '~/scripts/previewers/mini_previewer $realpath'
-    zstyle ':fzf-tab:complete:*:*' fzf-preview '~/scripts/previewers/mini_previewer $realpath'
-    # switch group using `,` and `.`
     zstyle ':fzf-tab:*' switch-group ',' '.'
+    zstyle ':fzf-tab:*:options*' fzf-flags --preview-window=hidden
+    # TODO: (see if any negative impacts) zstyle ':fzf-tab:complete:*:*' fzf-preview '~/scripts/previewers/mini_previewer $realpath'
     FZF_TAB_GROUP_COLORS=(
         $'\033[94m' $'\033[32m' $'\033[33m' $'\033[35m' $'\033[31m' $'\033[38;5;27m' $'\033[36m' \
         $'\033[38;5;100m' $'\033[38;5;98m' $'\033[91m' $'\033[38;5;80m' $'\033[92m' \
         $'\033[38;5;214m' $'\033[38;5;165m' $'\033[38;5;124m' $'\033[38;5;120m'
     )
     zstyle ':fzf-tab:*' group-colors $FZF_TAB_GROUP_COLORS
+    ## cd
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview '~/scripts/previewers/mini_previewer $realpath'
     ## git
     zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview \
       'git diff $word | delta'
@@ -215,6 +208,15 @@
       "recent commit object name") git show --color=always $word | delta ;;
       *) git log --color=always $word ;;
       esac'
+
+    # disable sort when completing options of any command
+    zstyle ':completion:complete:*:options' sort false
+    # set descriptions format to enable group support
+    zstyle ':completion:*:descriptions' format '[%d]'
+    # set list-colors to enable filename colorizing
+    zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+    # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+    zstyle ':completion:*' menu no
 
     ## commands
     zstyle ':fzf-tab:complete:-command-:*' fzf-preview \

@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/usr/bin/env zsh
 
 # FROM /usr/share/fzf/key-bindings.zsh
 

@@ -174,9 +174,10 @@ imports = [
         servers = {
           nil_ls.enable = true;
           lua_ls.enable = true;
-          pyright.enable = true;
           texlab.enable = true;
           bashls.enable = true;
+          # python
+          pyright.enable = true;
           ruff.enable = true;
         };
         keymaps = {

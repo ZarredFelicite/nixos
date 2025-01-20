@@ -105,7 +105,7 @@ in {
     };
   };
   textfox = {
-    enable = true;
+    enable = false;
     profile = "textfox";
   };
   home.packages = with pkgs; [

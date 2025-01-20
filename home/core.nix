@@ -54,6 +54,7 @@
       du-dust # du + rust = dust. Like du but more intuitive
       duf # Disk Usage/Free Utility
       ttyplot # A simple general purpose plotting utility for tty with data input from stdin
+      grc # Generic text colouriser
       # backup/recovery
       testdisk # Data recovery utilities
       trash-cli # Command line interface to the freedesktop.org trashcan
@@ -81,7 +82,7 @@
       mdcat
       moreutils
       gnuplot
-      neofetch
+      fastfetch
       rpi-imager # Raspberry Pi Imaging Utility
       ventoy
       exfatprogs
@@ -93,6 +94,8 @@
       comma # Runs programs without installing them
       # nixpkgs tools
       nix-init # Command line tool to generate Nix packages from URLs
+      # dev tools
+      devenv
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -157,6 +160,9 @@
         yfinance
         bleak
         dbus-next
+        onnxruntime
+        #pyfzf
+        requests-futures
         ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         ( pkgs.callPackage ../pkgs/python/yt-fts {})
         # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})

@@ -285,7 +285,7 @@
     dbFile = null;
     network.listenAddress = "any";
     network.port = 6600;
-    startWhenNeeded = false;
+    startWhenNeeded = true;
     extraConfig = (if config.networking.hostName == "sankara"
       then ''
         database {

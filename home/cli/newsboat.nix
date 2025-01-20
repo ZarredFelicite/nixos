@@ -17,6 +17,7 @@
       ai = "tags # \"ai\"";
       shopping = "tags # \"shopping\"";
       linux = "tags # \"linux\"";
+      football = "tags # \"football\"";
     };
     extraConfig = ''
       # -- misc ----------------------------------------------------------------------
@@ -43,30 +44,29 @@
       articlelist-format "%-1n%-1d%-1F %D %?T?%-12T ? %t"
       datetime-format "%d/%m %H:%M"
 
-      color info                color10   color18
-      color listnormal          color6    default
-      color listnormal_unread   color5    default
-      color listfocus           yellow    default   bold
-      color listfocus_unread    yellow    default   bold
-      color article             color2    default
+      color info                green   default
+      color listnormal          green   default
+      color listnormal_unread   cyan    default
+      color listfocus           yellow  default   bold
+      color listfocus_unread    yellow  default   bold
+      color article             cyan    default
 
       # Searches
       highlight all "( ai|machine learning|artifical intelligence)" green default bold
       highlight articlelist \bai green default bold
 
       # Syntax
-      highlight article "(^Link:.*|^Date:.*)" cyan default
-      highlight article "^(Title):.*$" magenta default bold
+      highlight article "^(Title):.*$" blue default bold
       highlight article "^(Feed):.*$" blue default bold
       highlight article "^(Author):.*$" blue default bold
-      #highlight article "https?://[^ ]+" color6 default bold
-      #highlight article "\\[[0-9][0-9]*\\]" color13 default
-      #highlight article "\\[image\\ [0-9]+\\]" green default bold
-      #highlight article "\\[embedded flash: [0-9][0-9]*\\]" green default bold
-      #highlight article ":.*\\(link\\)$" color6 default
-      #highlight article ":.*\\(image\\)$" color6 default
-      #highlight article ":.*\\(embedded flash\\)$" color6 default
-      #highlight feedlist "⢾⣿⡷.*" color9 default bold
+      highlight article "(^Link:.*|^Date:.*)" green default
+      highlight article "https?://[^ ]+" green default bold
+      highlight article "\\[[0-9][0-9]*\\]" magenta default
+      highlight article "\\[image\\ [0-9]+\\]" green default bold
+      highlight article "\\[embedded flash: [0-9][0-9]*\\]" green default bold
+      highlight article ":.*\\(link\\)$" green default
+      highlight article ":.*\\(image\\)$" green default
+      highlight article ":.*\\(embedded flash\\)$" green default
       #highlight-article "flags # \"L\"" yellow default
 
       unbind-key RIGHT
@@ -107,21 +107,17 @@
 
       # -- Feed filters ------------------------
       ignore-mode "download"
-      ignore-article "*" "content =~ \"#shorts\""
-      ignore-article "*" "title =~ \"#shorts\""
-      #ignore-article "https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGx1YlY4U0JXVnVMVWRDR2dKQlZTZ0FQAQ?hl=en-AU&gl=AU&ceid=AU%3Aen" "title !~ \"ABC News|SBS|Jazeera|Financial\""
+      ignore-article "https://news.google.com/rss" "title !~ \"ABC News|SBS|Jazeera|Financial\""
+      ignore-article "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ" "title !~ \"Highlights\""
+      ignore-article "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ" "title !~ \"Highlights\""
+      ignore-article "https://invidious.materialio.us/feed/channel/UCsY7UM8d2sGHhWP_nj7WYjQ" "title !~ \"Highlights\""
       #ignore-article "https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKQlZTZ0FQAQ?hl=en-AU&gl=AU&ceid=AU%3Aen" "title !~ \"ABC News|SBS|Jazeera|Financial\""
-      ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=sec%3A%2F%2Fwww.theverge.com%2Frss%2Findex.xml&max=50&links=preserve&exc=&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
-      ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=feeds.wired.com%2Fwired%2Findex&max=50&links=preserve&exc=&summary=1&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
-      ignore-article "http://www.engadget.com/rss.xml" "title =~ \"Deal|deal|Sale|sale\""
+      #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=sec%3A%2F%2Fwww.theverge.com%2Frss%2Findex.xml&max=50&links=preserve&exc=&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
+      #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=feeds.wired.com%2Fwired%2Findex&max=50&links=preserve&exc=&summary=1&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
     '';
     urls = [
       #{ url = "http://rehoboam:8000/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
       #"exec:/home/zarred/.config/newsboat/parsers/webpage_parse.sh twitter" "~Twitter" stocks no_unread
-
-      #{ url = "http://rehoboam:8000/seek.xml"; tags = [ "!" "~Seek" "jobs" "no_unread" ]; }
-      #{ url = "http://rehoboam:8000/linkedin.xml"; tags = [ "!" "~LinkedIn" "jobs" "no_unread" ]; }
-      #{ url = "#http://rehoboam:8000/indeed.xml"; tags = [ "!" "~Indeed" "jobs" "no_unread" ]; }
       { url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
 
       { url = "https://techcrunch.com/tag/daily-crunch/feed/"; tags = [ "!" "~TechCrunch" "tech" ]; }
@@ -131,19 +127,20 @@
 
       { url = "http://jacobinmag.com/feed/"; tags = [ "!" "~Jacobin" "news" ]; }
       { url = "https://www.sbs.com.au/news/topic/world/feed"; tags = [ "!" "~SBS-W" "news" ]; }
-      { url = "http://www.monash.edu/_webservices/news/rss?num_ranks=5"; tags = [ "!" "~Monash" "news" ]; }
+      # NOTE: broken { url = "http://www.monash.edu/_webservices/news/rss?num_ranks=5"; tags = [ "!" "~Monash" "news" ]; }
       { url = "https://www.propublica.org/feeds/propublica/main"; tags = [ "!" "~ProPublica" "news" ]; }
       { url = "https://theintercept.com/feed/?lang=en"; tags = [ "!" "~TheIntercept" "news" ]; }
       { url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
       { url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
       { url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
+      { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
 
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }
       { url = "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
       { url = "https://towardsdatascience.com/feed/tagged/editors-pick"; tags = [ "!" "~TDS" "ai" ]; }
       { url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; }
-      { url = "https://openai.com/blog/rss"; tags = [ "!" "~OpenAI" "ai" ]; }
-      { url = "https://reddit.com/r/MachineLearning.rss"; tags = [ "!" "~Reddit-ML" "ai" ]; }
+      { url = "https://openai.com/news/rss.xml"; tags = [ "!" "~OpenAI" "ai" ]; }
+      { url = "https://reddit.com/r/MachineLearning/top/.rss?t=month"; tags = [ "!" "~r/ML" "ai" ]; }
       { url = "https://hf.co/blog/feed.xml"; tags = [ "!" "~HuggingFace-Blog" "ai" ]; }
       { url = "https://blog.comma.ai/feed.xml"; tags = [ "!" "~Comma-AI" "ai" ]; }
       #{ url = "#http://rehoboam:8000/thebatch.xml"; tags = [ "!" "~The-Batch" "ai" ]; }
@@ -156,19 +153,14 @@
       { url = "https://practicalai.fm/rss"; tags = [ "!" "~PracticalAI" "ai" ]; }
 
       { url = "http://www.ozbargain.com.au/feed"; tags = [ "!" "~general" "no_unread" "shopping" ]; }
-      { url = "https://www.ozbargain.com.au/product/cocobella-coconut-water/feed"; tags = [ "!" "~cocobella" "no_unread" "shopping" ]; }
-      { url = "https://www.ozbargain.com.au/brand/patagonia/feed"; tags = [ "!" "~patagonia" "no_unread" "shopping" ]; }
       { url = "https://www.ozbargain.com.au/tag/hard-drive/feed"; tags = [ "!" "~hard-drive" "no_unread" "shopping" ]; }
-      { url = "https://www.ozbargain.com.au/product/bose-quietcomfort-earbuds-ii/feed"; tags = [ "!" "~bose-qc-ii" "no_unread" "shopping" ]; }
       { url = "https://www.ozbargain.com.au/product/asus-zenfone-9/feed"; tags = [ "!" "~asus-zenfone-9" "no_unread" "shopping" ]; }
-      { url = "https://www.ozbargain.com.au/product/apple-airpods-pro-2/feed"; tags = [ "!" "~apple-airpods-pro-2" "no_unread" "shopping" ]; }
-      { url = "https://www.ozbargain.com.au/product/intel-arc-a750/feed"; tags = [ "!" "~intel-arc-a750" "no_unread" "shopping" ]; }
-      { url = "https://www.ozbargain.com.au/product/sennheiser-ie-200/feed"; tags = [ "!" "~IE-200" "no_unread" "shopping" ]; }
 
       { url = "https://frame.work/blog.rss"; tags = [ "!" "~Framework" "linux" ]; }
-      { url = "https://reddit.com/r/linux.rss"; tags = [ "!" "~Reddit-linux" "linux" "reddit" ]; }
-      { url = "https://reddit.com/r/unixporn.rss"; tags = [ "!" "~Reddit-unixporn" "linux" "reddit" "unixporn" ]; }
-      { url = "https://reddit.com/r/nixos.rss"; tags = [ "!" "~Reddit-NixOS" "linux" "reddit" ]; }
+      { url = "https://reddit.com/r/linux/top/.rss?t=month"; tags = [ "!" "~r/linux" "linux" "reddit" ]; }
+      { url = "https://reddit.com/r/unixporn/top/.rss?t=month"; tags = [ "!" "~r/unixporn" "linux" "reddit" "unixporn" ]; }
+      { url = "https://reddit.com/r/nixos/top/.rss?t=month"; tags = [ "!" "~r/NixOS" "linux" "reddit" ]; }
+      { url = "https://reddit.com/r/ErgoMechKeyboards/top/.rss?t=month"; tags = [ "!" "~r/ErgoMechKB" "linux" "reddit" ]; }
 
       { url = "https://feeds.megaphone.fm/darknetdiaries"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.buzzsprout.com/1890340.rss"; tags = [ "!" "podcasts" "socialism" ]; }
@@ -181,6 +173,10 @@
       { url = "https://feeds.megaphone.fm/WWO6655869236"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.megaphone.fm/pivot"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.redcircle.com/e30b9f10-8c86-432e-9fa0-ba287fb94e7f"; tags = [ "!" "podcasts" "socialism" ]; }
+
+      { url = "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ"; tags = [ "!" "~OptusSport" "football" ]; }
+      { url = "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ"; tags = [ "!" "~ChampionsTV" "football" ]; }
+      { url = "https://invidious.materialio.us/feed/channel/UCsY7UM8d2sGHhWP_nj7WYjQ"; tags = [ "!" "~beIN SPORTS" "football" ]; }
     ];
   };
 }

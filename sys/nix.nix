@@ -85,6 +85,7 @@
     ];
     config = {
       allowUnfree = true;
+      allowUnfreePredicate = _: true;
       permittedInsecurePackages = [
         "olm-3.2.16"
         "dotnet-sdk-6.0.428" # sonarr

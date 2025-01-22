@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, lib, ... }:
 let
   #selectorScript = pkgs.writeShellScriptBin "selectorMenu" ''
   #  exec ${}
@@ -17,18 +17,18 @@ in {
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
-    #colors = {
-    #  "fg" = "blue";
-    #  "fg+" = "yellow";
+    colors = {
+      "fg" = lib.mkForce "#9ccfd8";
+      "fg+" = lib.mkForce "#ebbcba";
     #  "hl" = "yellow";
     #  "hl+" = "red";
-    #  "bg+" = "-1";
-    #  "gutter" = "-1";
-    #  "pointer" = "yellow";
-    #  "border" = "#31748f";
-    #  "scrollbar" = "black";
-    #  "info" = "magenta";
-    #};
+      "bg+" = lib.mkForce "-1";
+      "gutter" = "-1";
+      "pointer" = lib.mkForce "#ebbcba";
+      "border" = lib.mkForce "#6e6a86";
+      "scrollbar" = lib.mkForce "#6e6a86";
+      "info" = lib.mkForce "#6e6a86";
+    };
     defaultCommand = "fd --type file --hidden --no-ignore";
     defaultOptions = [
       "--layout reverse"

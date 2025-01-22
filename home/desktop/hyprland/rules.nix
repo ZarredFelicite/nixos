@@ -25,6 +25,7 @@
       "noinitialfocus, initialTitle:Picture-in-Picture|cctv"
       "tag +pin, initialTitle:Picture-in-Picture|cctv"
       "size 1200 800, class:^(nova)$"
+      "dimaround, class:^(nova)$"
       #"center, class:^(nova)$"
       #"pin, class:^(nova)$"
       #"stayfocused, class:^(nova)$"

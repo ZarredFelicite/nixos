@@ -5,6 +5,7 @@ imports = [
 ];
   stylix.targets.nixvim.enable = false;
   programs.nixvim = {
+    nixpkgs.config.allowUnfree = true;
     defaultEditor = true;
     globals = {
       mapleader = " ";

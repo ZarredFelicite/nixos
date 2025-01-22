@@ -28,6 +28,7 @@
       scrolloff 10
       show-read-feeds yes
       text-width 200
+      #user-agent "UniversalFeedParser/5.0.1 +http://feedparser.org/"
 
       external-url-viewer "/home/zarred/scripts/file-ops/urlview fzf"
 
@@ -111,29 +112,31 @@
       ignore-article "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ" "title !~ \"Highlights\""
       ignore-article "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ" "title !~ \"Highlights\""
       ignore-article "https://invidious.materialio.us/feed/channel/UCsY7UM8d2sGHhWP_nj7WYjQ" "title !~ \"Highlights\""
-      #ignore-article "https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKQlZTZ0FQAQ?hl=en-AU&gl=AU&ceid=AU%3Aen" "title !~ \"ABC News|SBS|Jazeera|Financial\""
+      #ignore-article "https://news.google.com/rss" "title !~ \"ABC News|SBS|Jazeera|Financial\""
       #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=sec%3A%2F%2Fwww.theverge.com%2Frss%2Findex.xml&max=50&links=preserve&exc=&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
       #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=feeds.wired.com%2Fwired%2Findex&max=50&links=preserve&exc=&summary=1&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
     '';
     urls = [
       #{ url = "http://rehoboam:8000/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
       #"exec:/home/zarred/.config/newsboat/parsers/webpage_parse.sh twitter" "~Twitter" stocks no_unread
-      { url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
+      #{ url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
 
       { url = "https://techcrunch.com/tag/daily-crunch/feed/"; tags = [ "!" "~TechCrunch" "tech" ]; }
       { url = "https://www.startupdaily.net/feed"; tags = [ "!" "~StartupsDaily" "tech" ]; }
       { url = "https://www.ycombinator.com/blog/rss"; tags = [ "!" "~YC" "tech" ]; }
       { url = "https://www.theverge.com/rss/index.xml"; tags = [ "!" "~Verge" "tech" ]; }
 
-      { url = "http://jacobinmag.com/feed/"; tags = [ "!" "~Jacobin" "news" ]; }
-      { url = "https://www.sbs.com.au/news/topic/world/feed"; tags = [ "!" "~SBS-W" "news" ]; }
+      #{ url = "https://www.sbs.com.au/news/topic/world/feed"; tags = [ "!" "~SBS-W" "news" ]; }
       # NOTE: broken { url = "http://www.monash.edu/_webservices/news/rss?num_ranks=5"; tags = [ "!" "~Monash" "news" ]; }
+      { url = "http://jacobinmag.com/feed/"; tags = [ "!" "~Jacobin" "news" ]; }
       { url = "https://www.propublica.org/feeds/propublica/main"; tags = [ "!" "~ProPublica" "news" ]; }
       { url = "https://theintercept.com/feed/?lang=en"; tags = [ "!" "~TheIntercept" "news" ]; }
-      { url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
-      { url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
+      #{ url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
+      #{ url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
       { url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
       { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
+      { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "reddit" "news" ]; }
+      { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "reddit" "news" ]; }
 
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }
       { url = "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
@@ -151,6 +154,7 @@
       { url = "https://feeds.megaphone.fm/MLN2155636147"; tags = [ "!" "~The-TWIML-AI-Podcast" "ai" ]; }
       { url = "#https://feeds.soundcloud.com/users/soundcloud:users:264034133/sounds.rss"; tags = [ "!" "~The-AI-Podcast" "ai" ]; }
       { url = "https://practicalai.fm/rss"; tags = [ "!" "~PracticalAI" "ai" ]; }
+      { url = "https://www.lastweekinai.com/feed.xml"; tags = [ "!" "~LWiAI" "ai" ]; }
 
       { url = "http://www.ozbargain.com.au/feed"; tags = [ "!" "~general" "no_unread" "shopping" ]; }
       { url = "https://www.ozbargain.com.au/tag/hard-drive/feed"; tags = [ "!" "~hard-drive" "no_unread" "shopping" ]; }

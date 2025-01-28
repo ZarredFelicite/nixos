@@ -36,7 +36,7 @@
       ];
       inhibitsSleep = false; # TODO: systemd-inhibit[388820]: Failed to inhibit: Access denied
       backupPrepareCommand = "export SSH_AUTH_SOCK=/run/user/1002/gnupg/S.gpg-agent.ssh; ssh-add -L; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup starting'";
-      backupCleanupCommand = "export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup complete'";
+      backupCleanupCommand = "touch /run/restic-backups-home/includes; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup complete'";
     };
   };
 }

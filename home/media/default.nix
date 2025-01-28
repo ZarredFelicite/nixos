@@ -5,7 +5,7 @@
     ./twitch.nix
     ./youtube/ytfzf.nix
     ./youtube/yt-dlp.nix
-    inputs.spicetify-nix.homeManagerModules.default
+    #inputs.spicetify-nix.homeManagerModules.default
   ];
   #nixpkgs.overlays = [( final: pre
   home.packages = [ (pkgs.callPackage ../../pkgs/lowfi {}) ];
@@ -14,20 +14,21 @@
     enable = false;
     preset = "autoeq" ;
   };
-  programs.spicetify =
-    let
-      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
-    in
-    {
-      enable = true;
-      enabledExtensions = with spicePkgs.extensions; [
-        adblock
-        hidePodcasts
-        shuffle # shuffle+ (special characters are sanitized out of extension names)
-      ];
-      theme = spicePkgs.themes.text;
-      colorScheme = "rosepine";
-    };
+  #programs.spicetify =
+  #  let
+  #    spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+  #  in
+  #  {
+  #    # TODO: broken
+  #    enable = false;
+  #    enabledExtensions = with spicePkgs.extensions; [
+  #      adblock
+  #      hidePodcasts
+  #      shuffle # shuffle+ (special characters are sanitized out of extension names)
+  #    ];
+  #    theme = spicePkgs.themes.text;
+  #    colorScheme = "rosepine";
+  #  };
   stylix.targets.spicetify.enable = false;
   programs.beets = {
     enable = false;

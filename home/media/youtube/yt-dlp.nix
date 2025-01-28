@@ -2,7 +2,7 @@
   xdg.configFile."yt-dlp/config".text = ''
     -o ~/videos/youtube/%(title)s.%(ext)s
     -f bestvideo*+bestaudio/best
-    -S 'res:1080,vcodec:av1'
+    -S 'vcodec:h264,res:1080,acodec:m4a'
     --restrict-filenames
     --no-overwrites
     --embed-thumbnail

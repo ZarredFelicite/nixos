@@ -1,6 +1,6 @@
 { pkgs, lib, osConfig, config, ... }: {
   home.packages = [
-    pkgs.chatterino2
+    # TODO:broken pkgs.chatterino2
     pkgs.streamlink
   ];
   xdg.configFile."wtwitch/config.json".text = builtins.toJSON {

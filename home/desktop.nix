@@ -11,7 +11,7 @@
   services.hypridle.enable = true;
   home.packages = ( with pkgs-unstable; [
     ] ) ++ ( with pkgs-stable; [
-      orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
+    orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     ] ) ++
     ( with pkgs; [
     # wayland tools
@@ -43,7 +43,11 @@
     telegram-desktop # Telegram Desktop messaging app
     caprine-bin # An elegant Facebook Messenger desktop app
     zoom-us # zoom.us video conferencing application
-    #discord # All-in-one cross-platform voice and text chat for gamers
+    (discord.override {
+      # All-in-one cross-platform voice and text chat for gamers
+      withOpenASAR = true;
+      withVencord = true;
+    })
     # themeing
     materia-kde-theme
     libsForQt5.qtstyleplugin-kvantum

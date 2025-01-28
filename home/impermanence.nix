@@ -40,6 +40,8 @@
       ".config/sunshine"
       ".config/spotify"
       ".config/GIMP"
+      ".config/discord"
+      ".config/Vencord"
     ];
     files = [
       ".config/wtwitch/api.json"

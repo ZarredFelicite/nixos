@@ -29,6 +29,7 @@
       speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
       libva-utils
       expect # A tool for automating interactive applications (provides unbuffer)
+      tio # Serial console TTY
       # stress-testing / benchmarking
       stress-ng
       s-tui
@@ -163,7 +164,7 @@
         onnxruntime
         #pyfzf
         requests-futures
-        ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
+        # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         ( pkgs.callPackage ../pkgs/python/yt-fts {})
         # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
         ( pkgs.callPackage ../pkgs/python/reader {})

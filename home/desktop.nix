@@ -53,7 +53,9 @@
     libsForQt5.qtstyleplugin-kvantum
     # image viewer
     swayimg
+    # image editor
     gimp
+    pinta
   ] );
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;

@@ -165,6 +165,8 @@
       { url = "https://reddit.com/r/unixporn/top/.rss?t=month"; tags = [ "!" "~r/unixporn" "linux" "reddit" "unixporn" ]; }
       { url = "https://reddit.com/r/nixos/top/.rss?t=month"; tags = [ "!" "~r/NixOS" "linux" "reddit" ]; }
       { url = "https://reddit.com/r/ErgoMechKeyboards/top/.rss?t=month"; tags = [ "!" "~r/ErgoMechKB" "linux" "reddit" ]; }
+      { url = "https://reddit.com/r/LocalLLaMA/top/.rss?t=month"; tags = [ "!" "~r/LocalLLaMA" "linux" "reddit" ]; }
+      { url = "https://reddit.com/r/selfhosted/top/.rss?t=month"; tags = [ "!" "~r/selfhosted" "linux" "reddit" ]; }
 
       { url = "https://feeds.megaphone.fm/darknetdiaries"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.buzzsprout.com/1890340.rss"; tags = [ "!" "podcasts" "socialism" ]; }

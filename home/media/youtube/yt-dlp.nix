@@ -11,6 +11,7 @@
     --downloader ffmpeg # native, aria2c, avconv, axel, curl, ffmpeg, httpie, wget
     --downloader-args aria2c:'-c -x8 -s8 -k1M --continue=true'
     --extractor-args "youtube:player-client=tv"
+    --cookies-from-browser firefox
     -N 16
   '';
 }

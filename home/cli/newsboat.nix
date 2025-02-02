@@ -144,6 +144,7 @@
       { url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; }
       { url = "https://openai.com/news/rss.xml"; tags = [ "!" "~OpenAI" "ai" ]; }
       { url = "https://reddit.com/r/MachineLearning/top/.rss?t=month"; tags = [ "!" "~r/ML" "ai" ]; }
+      { url = "https://reddit.com/r/LocalLLaMA/top/.rss?t=month"; tags = [ "!" "~r/LocalLLaMA" "ai" "reddit" ]; }
       { url = "https://hf.co/blog/feed.xml"; tags = [ "!" "~HuggingFace-Blog" "ai" ]; }
       { url = "https://blog.comma.ai/feed.xml"; tags = [ "!" "~Comma-AI" "ai" ]; }
       #{ url = "#http://rehoboam:8000/thebatch.xml"; tags = [ "!" "~The-Batch" "ai" ]; }
@@ -165,7 +166,6 @@
       { url = "https://reddit.com/r/unixporn/top/.rss?t=month"; tags = [ "!" "~r/unixporn" "linux" "reddit" "unixporn" ]; }
       { url = "https://reddit.com/r/nixos/top/.rss?t=month"; tags = [ "!" "~r/NixOS" "linux" "reddit" ]; }
       { url = "https://reddit.com/r/ErgoMechKeyboards/top/.rss?t=month"; tags = [ "!" "~r/ErgoMechKB" "linux" "reddit" ]; }
-      { url = "https://reddit.com/r/LocalLLaMA/top/.rss?t=month"; tags = [ "!" "~r/LocalLLaMA" "linux" "reddit" ]; }
       { url = "https://reddit.com/r/selfhosted/top/.rss?t=month"; tags = [ "!" "~r/selfhosted" "linux" "reddit" ]; }
 
       { url = "https://feeds.megaphone.fm/darknetdiaries"; tags = [ "!" "podcasts" ]; }

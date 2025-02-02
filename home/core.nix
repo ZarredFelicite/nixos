@@ -68,7 +68,7 @@
       # productivity
       tidy-viewer # A cross-platform CLI csv pretty printer that uses column styling to maximize viewer enjoyment
       visidata # Interactive terminal multitool for tabular data
-      xsv # A fast CSV toolkit written in Rust
+      # TODO: unmaintained - replace with (xan https://github.com/medialab/xan ); xsv # A fast CSV toolkit written in Rust
       # web tools
       readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
       # misc

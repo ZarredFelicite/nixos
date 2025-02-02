@@ -13,17 +13,7 @@
     stylix.url = "github:danth/stylix";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
-    # TODO: switch to latest version when available https://github.com/NixOS/nix/issues/11946
-    hyprland-plugins = { url = "github:hyprwm/hyprland-plugins"; inputs.hyprland.follows = "hyprland"; };
-    hyprpaper = { url = "github:hyprwm/hyprpaper"; };
-    hyprlang = { url = "github:hyprwm/hyprlang"; };
-    hyprlock = { url = "github:hyprwm/hyprlock"; };
-    hyprpanel = { url = "github:Jas-SinghFSU/HyprPanel"; };
-    #hy3 = { url = "github:outfoxxed/hy3?ref=hl0.38.0"; inputs.hyprland.follows = "hyprland"; };
-    hyprgrass = { url = "github:horriblename/hyprgrass"; inputs.hyprland.follows = "hyprland"; };
-    hyprfocus = { url = "github:skissue/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
-    #hyprfocus = { url = "github:pyt0xic/hyprfocus"; inputs.hyprland.follows = "hyprland"; };
+    #hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
     nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
@@ -78,7 +68,6 @@
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
-              inputs.hyprpanel.overlay
             ]; })
             inputs.stylix.nixosModules.stylix
             inputs.chaotic.nixosModules.default
@@ -101,7 +90,6 @@
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
-              inputs.hyprpanel.overlay
             ]; })
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix

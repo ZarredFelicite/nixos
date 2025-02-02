@@ -8,7 +8,6 @@ let
   monitor = if osConfig.networking.hostName == "web" then "DP-3" else "eDP-1";
 in {
   imports = [
-    #inputs.hyprland.homeManagerModules.default
     ./autoname-workspaces/hyprland-autoname-workspaces.nix
     ./rules.nix
     ./binds.nix
@@ -26,7 +25,7 @@ in {
   services.hyprland-autoname-workspaces.enable = false;
   services.hyprpaper = {
     enable = true;
-    package = inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper;
+    #package = inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper;
     settings = {
       preload = [
         "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
@@ -50,15 +49,6 @@ in {
     };
   };
   wayland.windowManager.hyprland = lib.mkMerge [
-      (lib.mkIf (osConfig.networking.hostName == "surface") {
-        settings.monitor = [
-          "eDP-1,preferred,auto,2"
-          "eDP-1,addreserved,0,0,0,0"
-        ];
-        plugins = [
-          #inputs.hyprgrass.packages.${pkgs.hostPlatform.system}.default
-        ];
-      })
       (lib.mkIf (osConfig.networking.hostName == "nano") {
         settings.monitor = [
           "eDP-1,preferred,auto,1"
@@ -87,13 +77,13 @@ in {
         };
       })
     {
-    package = inputs.hyprland.packages.x86_64-linux.default;
+      #package = inputs.hyprland.packages.x86_64-linux.default;
     xwayland.enable = true;
     systemd.enable = true;
-    plugins = [
-        #inputs.hycov.packages.${pkgs.system}.hycov
-        # TODO: broken build (https://github.com/pyt0xic/hyprfocus/pull/17) inputs.hyprfocus.packages.${pkgs.system}.hyprfocus
-        pkgs.hyprlandPlugins.hyprspace
+    plugins = with pkgs.hyprlandPlugins; [
+        #hyprfocus
+        # TODO: broken hyprspace
+      # hyprgrass - Hyprland plugin for touch gestures
     ];
     settings = {
       debug.disable_logs = false;

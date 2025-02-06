@@ -144,6 +144,7 @@
       { url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; }
       { url = "https://openai.com/news/rss.xml"; tags = [ "!" "~OpenAI" "ai" ]; }
       { url = "https://reddit.com/r/MachineLearning/top/.rss?t=month"; tags = [ "!" "~r/ML" "ai" ]; }
+      { url = "https://reddit.com/r/computervision/top/.rss?t=month"; tags = [ "!" "~r/CV" "ai" ]; }
       { url = "https://reddit.com/r/LocalLLaMA/top/.rss?t=month"; tags = [ "!" "~r/LocalLLaMA" "ai" "reddit" ]; }
       { url = "https://hf.co/blog/feed.xml"; tags = [ "!" "~HuggingFace-Blog" "ai" ]; }
       { url = "https://blog.comma.ai/feed.xml"; tags = [ "!" "~Comma-AI" "ai" ]; }

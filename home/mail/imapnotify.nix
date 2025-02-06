@@ -12,7 +12,8 @@ let
       tags=$(echo $mail | jq -r '.[][0].tags.[]' | sed 's/^/[/;s/$/]/' | tr '\n' ' ')
       from=$(echo $mail | jq -r '.[][0].headers.From')
       date=$(echo $mail | jq -r '.[][0].date_relative')
-      body=$(echo $mail | jq '.[][0].body[].content[0].content' | sed -E 's/https?:\/\/\S+|www\.\S+//g' | sed -e 's/&zwnj;//g' -e 's/\\n \\n \\n//g' -e 's/\\n \\n//g' -e 's/\\n\\n/\\n/g')
+    #body=$(echo $mail | jq '.[][0].body[].content[0].content' | sed -E 's/https?:\/\/\S+|www\.\S+//g' | sed -e 's/&zwnj;//g' -e 's/\\n \\n \\n//g' -e 's/\\n \\n//g' -e 's/\\n\\n/\\n/g')
+      body=$(/home/zarred/scripts/ai/openai-cli "Tightly format the important information from the body of the following email in plain text without bolded text: '$(echo $body | tr -d '"')'" | jq -r '.choices[0].message.content')
       notify-send "$subject" "$date | $tags\n$from\n$body"
     done
     date +%s > ~/.cache/last_mail_check

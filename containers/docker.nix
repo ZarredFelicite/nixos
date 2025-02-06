@@ -2,7 +2,6 @@
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
-    enableNvidia = false; #TODO
     storageDriver = "btrfs";
     #rootless = {
     #  enable = true;
@@ -14,7 +13,7 @@
   };
   environment.systemPackages = [ pkgs.docker-compose pkgs.docker-client ];
   hardware.nvidia-container-toolkit = {
-    enable = false; #TODO
+    enable = true;
   };
   users.users.zarred.extraGroups = [ "docker" ];
   # windows in docker https://github.com/dockur/windows

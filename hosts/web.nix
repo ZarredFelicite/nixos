@@ -224,5 +224,9 @@
       '';
     };
   };
+  virtualisation.oci-containers.containers.kokoro = {
+    image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
+    ports = [ "8880:8880" ];
+  };
 }
 

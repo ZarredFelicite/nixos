@@ -301,7 +301,7 @@
       else ''
         database {
           plugin  "proxy"
-          host    "192.168.86.200"
+          host    "sankara"
           port    "6600"
         }
         audio_output {

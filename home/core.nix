@@ -165,6 +165,8 @@
         #pyfzf
         requests-futures
         pyaudio
+        transformers
+        vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         ( pkgs.callPackage ../pkgs/python/yt-fts {})
         # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})

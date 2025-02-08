@@ -228,5 +228,10 @@
     image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
     ports = [ "8880:8880" ];
   };
+  # TODO: not working
+  #virtualisation.oci-containers.containers.readerlm = {
+  #  image = "rbehzadan/readerlm:latest";
+  #  ports = [ "8083:8080" ];
+  #};
 }
 

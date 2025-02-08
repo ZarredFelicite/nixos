@@ -181,9 +181,9 @@
       { url = "https://feeds.megaphone.fm/pivot"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.redcircle.com/e30b9f10-8c86-432e-9fa0-ba287fb94e7f"; tags = [ "!" "podcasts" "socialism" ]; }
 
-      { url = "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ"; tags = [ "!" "~OptusSport" "football" ]; }
-      { url = "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ"; tags = [ "!" "~ChampionsTV" "football" ]; }
-      { url = "https://invidious.materialio.us/feed/channel/UCsY7UM8d2sGHhWP_nj7WYjQ"; tags = [ "!" "~beIN SPORTS" "football" ]; }
+      #{ url = "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ"; tags = [ "!" "~OptusSport" "football" ]; }
+      #{ url = "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ"; tags = [ "!" "~ChampionsTV" "football" ]; }
+      #{ url = "https://invidious.materialio.us/feed/channel/UCsY7UM8d2sGHhWP_nj7WYjQ"; tags = [ "!" "~beIN SPORTS" "football" ]; }
     ];
   };
 }

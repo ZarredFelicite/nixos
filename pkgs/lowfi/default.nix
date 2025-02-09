@@ -2,7 +2,7 @@
 
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "lowfi";
-  version = "1.5.3";
+  version = "1.5.6";
 
   src = pkgs.fetchFromGitHub {
     owner = "talwat";
@@ -11,7 +11,7 @@ pkgs.rustPlatform.buildRustPackage rec {
     sha256 = "sha256-pfvTOoWsXukZTfev9+Ifcp3YYIqtYZgmEVPHuqD4IsM=";
   };
 
-  cargoHash = "sha256-oRZ44IZRli0PNnQkeplD0ggh1ipDlyehNBTpxrgl/JI=";
+  cargoHash = "sha256-TGj3xH18xanhA25r+gTtLPa7KQKS9WEyGl412pnFZdw=";
 
   nativeBuildInputs = with pkgs; [ pkg-config ];
   buildInputs = with pkgs; [ alsa-lib.dev openssl ];

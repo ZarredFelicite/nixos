@@ -58,11 +58,12 @@
           set -g @catppuccin_window_current_fill "all"
         '' ;}
       #tmuxPlugins.cpu
-      { plugin = tmuxPlugins.resurrect;
-        extraConfig = ''
-          set -g @resurrect-strategy-nvim 'session'
-          set -g @resurrect-save 'S'
-          set -g @resurrect-restore 'R' ''; }
+      # TODO: broken
+      #{ plugin = tmuxPlugins.resurrect;
+      #  extraConfig = ''
+      #    set -g @resurrect-strategy-nvim 'session'
+      #    set -g @resurrect-save 'S'
+      #    set -g @resurrect-restore 'R' ''; }
       { plugin = tmuxPlugins.continuum;
         extraConfig = " set -g @continuum-restore 'on' "; }
       { plugin = tmuxPlugins.yank;

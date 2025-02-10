@@ -108,11 +108,9 @@
 
       # -- Feed filters ------------------------
       ignore-mode "download"
-      ignore-article "https://news.google.com/rss" "title !~ \"ABC News|SBS|Jazeera|Financial\""
       ignore-article "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ" "title !~ \"Highlights\""
       ignore-article "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ" "title !~ \"Highlights\""
       ignore-article "https://invidious.materialio.us/feed/channel/UCsY7UM8d2sGHhWP_nj7WYjQ" "title !~ \"Highlights\""
-      #ignore-article "https://news.google.com/rss" "title !~ \"ABC News|SBS|Jazeera|Financial\""
       #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=sec%3A%2F%2Fwww.theverge.com%2Frss%2Findex.xml&max=50&links=preserve&exc=&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
       #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=feeds.wired.com%2Fwired%2Findex&max=50&links=preserve&exc=&summary=1&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
     '';
@@ -133,7 +131,8 @@
       { url = "https://theintercept.com/feed/?lang=en"; tags = [ "!" "~TheIntercept" "news" ]; }
       #{ url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
       #{ url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
-      { url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
+      #{ url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
+      { url = "https://kill-the-newsletter.com/feeds/kfwpslhaa3o1l0u8l4nz.xml"; tags = [ "!" "~ABC" "news" ]; }
       { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
       { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "reddit" "news" ]; }
       { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "reddit" "news" ]; }

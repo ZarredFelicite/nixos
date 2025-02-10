@@ -163,6 +163,7 @@ in {
             mpv = " ";
             firefox = " ";
           };
+          ignored-players = [ "kdeconnect" ];
         };
         "group/updates-group" = {
           orientation = "horizontal";

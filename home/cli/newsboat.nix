@@ -18,6 +18,7 @@
       shopping = "tags # \"shopping\"";
       linux = "tags # \"linux\"";
       football = "tags # \"football\"";
+      stocks = "tags # \"stocks\"";
     };
     extraConfig = ''
       # -- misc ----------------------------------------------------------------------
@@ -115,28 +116,17 @@
       #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=feeds.wired.com%2Fwired%2Findex&max=50&links=preserve&exc=&summary=1&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
     '';
     urls = [
-      #{ url = "http://rehoboam:8000/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
+      { url = "file:///tmp/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
       #"exec:/home/zarred/.config/newsboat/parsers/webpage_parse.sh twitter" "~Twitter" stocks no_unread
       #{ url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
 
+      # tech
       { url = "https://techcrunch.com/tag/daily-crunch/feed/"; tags = [ "!" "~TechCrunch" "tech" ]; }
       { url = "https://www.startupdaily.net/feed"; tags = [ "!" "~StartupsDaily" "tech" ]; }
       { url = "https://www.ycombinator.com/blog/rss"; tags = [ "!" "~YC" "tech" ]; }
       { url = "https://www.theverge.com/rss/index.xml"; tags = [ "!" "~Verge" "tech" ]; }
 
-      #{ url = "https://www.sbs.com.au/news/topic/world/feed"; tags = [ "!" "~SBS-W" "news" ]; }
-      # NOTE: broken { url = "http://www.monash.edu/_webservices/news/rss?num_ranks=5"; tags = [ "!" "~Monash" "news" ]; }
-      { url = "http://jacobinmag.com/feed/"; tags = [ "!" "~Jacobin" "news" ]; }
-      { url = "https://www.propublica.org/feeds/propublica/main"; tags = [ "!" "~ProPublica" "news" ]; }
-      { url = "https://theintercept.com/feed/?lang=en"; tags = [ "!" "~TheIntercept" "news" ]; }
-      #{ url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
-      #{ url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
-      #{ url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
-      { url = "https://kill-the-newsletter.com/feeds/kfwpslhaa3o1l0u8l4nz.xml"; tags = [ "!" "~ABC" "news" ]; }
-      { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
-      { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "reddit" "news" ]; }
-      { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "reddit" "news" ]; }
-
+      # ai
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }
       { url = "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
       { url = "https://towardsdatascience.com/feed/tagged/editors-pick"; tags = [ "!" "~TDS" "ai" ]; }
@@ -157,10 +147,26 @@
       { url = "https://practicalai.fm/rss"; tags = [ "!" "~PracticalAI" "ai" ]; }
       { url = "https://www.lastweekinai.com/feed.xml"; tags = [ "!" "~LWiAI" "ai" ]; }
 
+      # news
+      #{ url = "https://www.sbs.com.au/news/topic/world/feed"; tags = [ "!" "~SBS-W" "news" ]; }
+      # NOTE: broken { url = "http://www.monash.edu/_webservices/news/rss?num_ranks=5"; tags = [ "!" "~Monash" "news" ]; }
+      { url = "http://jacobinmag.com/feed/"; tags = [ "!" "~Jacobin" "news" ]; }
+      { url = "https://www.propublica.org/feeds/propublica/main"; tags = [ "!" "~ProPublica" "news" ]; }
+      { url = "https://theintercept.com/feed/?lang=en"; tags = [ "!" "~TheIntercept" "news" ]; }
+      #{ url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
+      #{ url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
+      #{ url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
+      { url = "https://kill-the-newsletter.com/feeds/kfwpslhaa3o1l0u8l4nz.xml"; tags = [ "!" "~ABC" "news" ]; }
+      { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
+      { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "reddit" "news" ]; }
+      { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "reddit" "news" ]; }
+
+      # ozbargain
       { url = "http://www.ozbargain.com.au/feed"; tags = [ "!" "~general" "no_unread" "shopping" ]; }
       { url = "https://www.ozbargain.com.au/tag/hard-drive/feed"; tags = [ "!" "~hard-drive" "no_unread" "shopping" ]; }
       { url = "https://www.ozbargain.com.au/product/asus-zenfone-9/feed"; tags = [ "!" "~asus-zenfone-9" "no_unread" "shopping" ]; }
 
+      # linux/homelab
       { url = "https://frame.work/blog.rss"; tags = [ "!" "~Framework" "linux" ]; }
       { url = "https://reddit.com/r/linux/top/.rss?t=month"; tags = [ "!" "~r/linux" "linux" "reddit" ]; }
       { url = "https://reddit.com/r/unixporn/top/.rss?t=month"; tags = [ "!" "~r/unixporn" "linux" "reddit" "unixporn" ]; }
@@ -168,17 +174,21 @@
       { url = "https://reddit.com/r/ErgoMechKeyboards/top/.rss?t=month"; tags = [ "!" "~r/ErgoMechKB" "linux" "reddit" ]; }
       { url = "https://reddit.com/r/selfhosted/top/.rss?t=month"; tags = [ "!" "~r/selfhosted" "linux" "reddit" ]; }
 
+      # podcasts
       { url = "https://feeds.megaphone.fm/darknetdiaries"; tags = [ "!" "podcasts" ]; }
-      { url = "https://feeds.buzzsprout.com/1890340.rss"; tags = [ "!" "podcasts" "socialism" ]; }
-      { url = "https://pod.link/1097417804.rss"; tags = [ "!" "podcasts" "socialism" ]; }
-      { url = "https://feed.podbean.com/redflag/feed.xml"; tags = [ "!" "podcasts" "socialism" ]; }
-      { url = "https://feeds.soundcloud.com/users/soundcloud:users:672423809/sounds.rss"; tags = [ "!" "podcasts" "socialism" ]; }
+      { url = "https://feeds.buzzsprout.com/1890340.rss"; tags = [ "!" "podcasts" "politics" ]; }
+      { url = "https://pod.link/1097417804.rss"; tags = [ "!" "podcasts" "politics" ]; }
+      { url = "https://feed.podbean.com/redflag/feed.xml"; tags = [ "!" "podcasts" "politics" ]; }
+      { url = "https://feeds.soundcloud.com/users/soundcloud:users:672423809/sounds.rss"; tags = [ "!" "podcasts" "politics" ]; }
       { url = "https://rss.art19.com/the-problem-with-jon-stewart"; tags = [ "!" "podcasts" ]; }
       { url = "http://feeds.libsyn.com/102225/rss"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.megaphone.fm/recodedecode"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.megaphone.fm/WWO6655869236"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.megaphone.fm/pivot"; tags = [ "!" "podcasts" ]; }
-      { url = "https://feeds.redcircle.com/e30b9f10-8c86-432e-9fa0-ba287fb94e7f"; tags = [ "!" "podcasts" "socialism" ]; }
+      { url = "https://feeds.redcircle.com/e30b9f10-8c86-432e-9fa0-ba287fb94e7f"; tags = [ "!" "podcasts" "politics" ]; }
+
+      # stocks
+      { url = "https://invidious.materialio.us/feed/channel/UCqPNjv1s8D7P82lH8-jcyOw"; tags = [ "!" "~JustStocks" "stocks" ]; }
 
       #{ url = "https://invidious.materialio.us/feed/channel/UC0jPwNs4B7yJySNewHan5hQ"; tags = [ "!" "~OptusSport" "football" ]; }
       #{ url = "https://invidious.materialio.us/feed/channel/UCcBHr0HW8-Io2BcqaGN8KgQ"; tags = [ "!" "~ChampionsTV" "football" ]; }

@@ -87,6 +87,24 @@ in {
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.services.hotcopper = {
+    Unit.Description = "Scrape HotCopper for user posts";
+    Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper_parse.py -rt 300";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  systemd.user.services.mppv_watcher = {
+    Unit.Description = "Watch for mppv changes";
+    Service.ExecStart = "/home/zarred/scripts/video/mppv -w";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   systemd.user.services.airpods_battery = {
     Unit.Description = "Get AirPods battery";
     Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";

@@ -28,12 +28,9 @@ in {
       ];
       extraPolicies = {
         Extensions = { Install = [
-          #"https://github.com/hensm/fx_cast/releases/download/v0.3.1/fx_cast-0.3.1.xpi"
-          "https://addons.mozilla.org/firefox/downloads/latest/imagus/latest.xpi"
           #"https://addons.mozilla.org/firefox/downloads/latest/roseppuccin/latest.xpi"
           #"https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"
           #"https://tridactyl.cmcaine.co.uk/betas/tridactyl-latest.xpi"
-          "https://addons.mozilla.org/firefox/downloads/latest/stylebot-web/latest.xpi"
         ]; };
       };
     };
@@ -45,22 +42,35 @@ in {
         settings = import ./settings.nix ;
         #bookmarks = import ./bookmarks.nix ;
         userChrome = (onebar-css + builtins.readFile ./firefox_css.css);
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-          #bypass-paywalls-clean
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; let
+          # UPDATE
+          bpc-pkg = bypass-paywalls-clean.override rec {
+            version = "4.0.4.0";
+            url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
+            sha256 = "sha256-V+8faUK+fPKGVAFdpbfT0qyv5+lmkdqrbto00gYJhws=";
+          }; in [
+          bpc-pkg
           ublock-origin
           darkreader
           user-agent-string-switcher
           redirector
           #tampermonkey
-          tridactyl
           firemonkey
+          tridactyl
           consent-o-matic
           decentraleyes
           canvasblocker
           browserpass
           videospeed
-          firefox-translations
           adaptive-tab-bar-colour
+          video-downloadhelper
+          imagus
+          fx_cast
+          rsspreview
+          promnesia
+          steam-database
+          stylus
+          simple-tab-groups
         ];
       };
       private = {

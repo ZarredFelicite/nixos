@@ -158,7 +158,8 @@
         openai
         jupyter-core
         nbconvert
-        yfinance
+        ( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
+        #yfinance
         bleak
         dbus-next
         onnxruntime

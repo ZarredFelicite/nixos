@@ -82,7 +82,7 @@ in {
     systemd.enable = true;
     plugins = with pkgs.hyprlandPlugins; [
         #hyprfocus
-        # TODO: broken hyprspace
+        hyprspace
       # hyprgrass - Hyprland plugin for touch gestures
     ];
     settings = {

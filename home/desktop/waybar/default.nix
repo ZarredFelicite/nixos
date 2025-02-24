@@ -89,7 +89,16 @@ in {
   };
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
-    Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper_parse.py -rt 300";
+    Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  systemd.user.services.stocks = {
+    Unit.Description = "Get stock prices from yfinance";
+    Service.ExecStart = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py";
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "0";

@@ -149,6 +149,7 @@
         gotify-app-web-token = { owner = "zarred"; };
         twitch-oauth = {};
         cloudflare-api-token = {};
+        ib-gateway = {};
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";

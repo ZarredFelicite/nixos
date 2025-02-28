@@ -8,7 +8,10 @@
     inputs.spicetify-nix.homeManagerModules.default
   ];
   #nixpkgs.overlays = [( final: pre
-  home.packages = [ (pkgs.callPackage ../../pkgs/lowfi {}) ];
+  home.packages = [
+    #(pkgs.callPackage ../../pkgs/lowfi {})
+    pkgs.lowfi
+  ];
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {
     enable = false;
@@ -19,7 +22,6 @@
       spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
     in
     {
-      # TODO: broken
       enable = true;
       enabledExtensions = with spicePkgs.extensions; [
         adblock

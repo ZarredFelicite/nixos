@@ -29,7 +29,7 @@
       definedAliases = ["no"];
     };
     "NixOS HM Options" = {
-      urls = [{ template = "https://mipmip.github.io/home-manager-option-search/?query={searchTerms}"; }];
+      urls = [{ template = "https://home-manager-options.extranix.com/?query={searchTerms}&release=master"; }];
       definedAliases = ["nh"];
     };
     "Discogs" = {

@@ -49,7 +49,7 @@ in {
             url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
             sha256 = "sha256-1sUNjR4bwbqQ6W/Vym7dT4QKciF6NhszzkyuKMcaHgg=";
           }; in [
-          bpc-pkg
+          #bpc-pkg
           ublock-origin
           darkreader
           user-agent-string-switcher

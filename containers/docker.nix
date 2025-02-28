@@ -13,7 +13,7 @@
   };
   environment.systemPackages = [ pkgs.docker-compose pkgs.docker-client ];
   hardware.nvidia-container-toolkit = {
-    enable = true;
+    enable = if config.networking.hostName == "nano" then false else true;
   };
   users.users.zarred.extraGroups = [ "docker" ];
   # windows in docker https://github.com/dockur/windows

@@ -261,6 +261,11 @@
     lfs.enable = true;
     userName = "ZarredFelicite";
     userEmail = "zarred.f@gmail.com";
+    signing = {
+      format = "openpgp";
+      key = "0xD276AC444633E146";
+      signByDefault = true;
+    };
     extraConfig = {
       core = {
         editor ="nvim";

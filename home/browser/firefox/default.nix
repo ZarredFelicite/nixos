@@ -42,14 +42,14 @@ in {
         settings = import ./settings.nix ;
         #bookmarks = import ./bookmarks.nix ;
         userChrome = (onebar-css + builtins.readFile ./firefox_css.css);
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; let
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; let
           # UPDATE
           bpc-pkg = bypass-paywalls-clean.override rec {
             version = "4.0.4.0";
             url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
             sha256 = "sha256-1sUNjR4bwbqQ6W/Vym7dT4QKciF6NhszzkyuKMcaHgg=";
           }; in [
-          #bpc-pkg
+          bpc-pkg
           ublock-origin
           darkreader
           user-agent-string-switcher

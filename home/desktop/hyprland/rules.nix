@@ -84,7 +84,7 @@
       "special:server, on-created-empty:~/scripts/hyprland/special_server.sh, gapsout:40, gapsin:40"
       "special:cameras, on-created-empty:~/scripts/hyprland/cctv, gapsout:40"
       "special:browser-tradingview, on-created-empty:firefox --new-window 'https://www.tradingview.com/chart', gapsout:40"
-      "special:browser-chatgpt, on-created-empty:firefox --new-window 'https://chatgpt.com', gapsout:100"
+      "special:browser-chatgpt, on-created-empty:firefox --new-window 'https://chatgpt.com', gapsout:20"
       "special:browser-messages, on-created-empty:firefox --new-window 'https://messages.google.com/web', gapsout:40"
     ];
   };

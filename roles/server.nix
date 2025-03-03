@@ -1,5 +1,6 @@
 { self, pkgs, pkgs-unstable, lib, inputs, outputs, config, ... }: {
   imports = [
+    inputs.home-manager.nixosModules.home-manager
     ../profiles/common.nix
     ../profiles/media-server.nix
     ../profiles/server-management.nix
@@ -7,7 +8,7 @@
     ../profiles/nginx.nix
     ../profiles/cloud.nix
     ../profiles/printer.nix
-    inputs.home-manager.nixosModules.home-manager
+    ../profiles/ib.nix
   ];
   home-manager = {
     useGlobalPkgs = true;

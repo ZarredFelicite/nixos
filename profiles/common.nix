@@ -77,7 +77,7 @@
         createHome = true;
         shell = pkgs.zsh;
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Xu5vJqXmgaWKHIp+4IsorATOO61u5X5ECanN3dn31 openpgp:0xD8C648AB"
         ];
       };
       nixremote = {
@@ -221,11 +221,6 @@
         KbdInteractiveAuthentication = false;
       };
       hostKeys = [
-        {
-          bits = 4096;
-          path = "/etc/ssh/ssh_host_rsa_key";
-          type = "rsa";
-        }
         {
           path = "/etc/ssh/ssh_host_ed25519_key";
           type = "ed25519";

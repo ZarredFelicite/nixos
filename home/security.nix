@@ -29,7 +29,7 @@ in {
   programs.gpg = {
     enable = true;
     settings = {
-      default-key = "1504329BCE4AE308C2218F2CD276AC444633E146";
+      default-key = "BEF3920E6B79FF4A4F817838844F26D1BCAE35C9";
       default-recipient-self = true;
       auto-key-locate = "local,wkd,keyserver";
       keyserver = "hkps://keys.openpgp.org";
@@ -38,12 +38,14 @@ in {
       keyserver-options = "honor-keyserver-url";
     };
   };
-  home.file.".pam-gnupg".text = "1504329BCE4AE308C2218F2CD276AC444633E146";
+  #home.file.".pam-gnupg".text = "1504329BCE4AE308C2218F2CD276AC444633E146";
+  home.file.".pam-gnupg".text = "BEF3920E6B79FF4A4F817838844F26D1BCAE35C9";
   services.gpg-agent = {
     enable = true;
     sshKeys = [
-      "4AFAAA07700925FBEF6260C4862B0A3BC164D71F"
-      "1504329BCE4AE308C2218F2CD276AC444633E146"
+      "BEF3920E6B79FF4A4F817838844F26D1BCAE35C9"
+      #"4AFAAA07700925FBEF6260C4862B0A3BC164D71F"
+      #"1504329BCE4AE308C2218F2CD276AC444633E146"
     ];
     enableSshSupport = true;
     enableScDaemon = false;

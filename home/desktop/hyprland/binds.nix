@@ -2,29 +2,29 @@
   wayland.windowManager.hyprland.extraConfig = ''
       bind   =  $mod,      I,    submap, dropdowns
       submap = dropdowns
-      bind   =      ,      E, togglespecialworkspace, volume
+      bind   =      ,      E, exec, ~/scripts/hyprland/toggle_special.sh volume
       bind   =      ,      E, submap, reset
-      bind   =      ,      S, togglespecialworkspace, scratchpad
+      bind   =      ,      S, exec, ~/scripts/hyprland/toggle_special.sh scratchpad
       bind   =      ,      S, submap, reset
-      bind   =      ,      O, togglespecialworkspace, finance
+      bind   =      ,      O, exec, ~/scripts/hyprland/toggle_special.sh finance
       bind   =      ,      O, submap, reset
-      bind   =      ,      N, togglespecialworkspace, mail
+      bind   =      ,      N, exec, ~/scripts/hyprland/toggle_special.sh mail
       bind   =      ,      N, submap, reset
-      bind   =      ,      F, togglespecialworkspace, server
+      bind   =      ,      F, exec, ~/scripts/hyprland/toggle_special.sh server
       bind   =      ,      F, submap, reset
-      bind   =      ,      M, togglespecialworkspace, media
+      bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh media
       bind   =      ,      M, submap, reset
-      bind   =      ,      C, togglespecialworkspace, cameras
+      bind   =      ,      C, exec, ~/scripts/hyprland/toggle_special.sh cameras
       bind   =      ,      C, submap, reset
       bind   =      ,      I, submap, browser
       bind   =      , escape, submap, reset
       submap = reset
       submap = browser
-      bind   =      ,      T, togglespecialworkspace, browser-tradingview
+      bind   =      ,      T, exec, ~/scripts/hyprland/toggle_special.sh browser-tradingview
       bind   =      ,      T, submap, reset
-      bind   =      ,      G, togglespecialworkspace, browser-chatgpt
+      bind   =      ,      G, exec, ~/scripts/hyprland/toggle_special.sh browser-chatgpt
       bind   =      ,      G, submap, reset
-      bind   =      ,      M, togglespecialworkspace, browser-messages
+      bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh browser-messages
       bind   =      ,      M, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
@@ -60,6 +60,7 @@
       "$mod CTRL, E, fullscreenstate, 2 -1"
       "$mod, D, togglespecialworkspace, stats"
       "$mod, M, togglespecialworkspace, music"
+      "$mod, A, exec, ~/scripts/hyprland/toggle_special.sh reset"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"
       "$mod SHIFT, C, centerwindow"
@@ -108,26 +109,26 @@
       "$mod ALT,  $NAVD, movewindoworgroup, d"
       "$mod ALT,  $NAVU, movewindoworgroup, u"
       "$mod ALT,  $NAVR, movewindoworgroup, r"
-      "$mod,                1, workspace, 1"
-      "$mod,                2, workspace, 2"
-      "$mod,                3, workspace, 3"
-      "$mod,                4, workspace, 4"
-      "$mod,                5, workspace, 5"
-      "$mod,                6, workspace, 6"
-      "$mod,                7, workspace, 7"
-      "$mod,                8, workspace, 8"
-      "$mod,                9, workspace, 9"
-      "$mod,                0, workspace, 10"
-      "$mod SHIFT,          1, movetoworkspace, 1"
-      "$mod SHIFT,          2, movetoworkspace, 2"
-      "$mod SHIFT,          3, movetoworkspace, 3"
-      "$mod SHIFT,          4, movetoworkspace, 4"
-      "$mod SHIFT,          5, movetoworkspace, 5"
-      "$mod SHIFT,          6, movetoworkspace, 6"
-      "$mod SHIFT,          7, movetoworkspace, 7"
-      "$mod SHIFT,          8, movetoworkspace, 8"
-      "$mod SHIFT,          9, movetoworkspace, 9"
-      "$mod SHIFT,          0, movetoworkspace, 10"
+      #"$mod,                1, workspace, 1"
+      #"$mod,                2, workspace, 2"
+      #"$mod,                3, workspace, 3"
+      #"$mod,                4, workspace, 4"
+      #"$mod,                5, workspace, 5"
+      #"$mod,                6, workspace, 6"
+      #"$mod,                7, workspace, 7"
+      #"$mod,                8, workspace, 8"
+      #"$mod,                9, workspace, 9"
+      #"$mod,                0, workspace, 10"
+      #"$mod SHIFT,          1, movetoworkspace, 1"
+      #"$mod SHIFT,          2, movetoworkspace, 2"
+      #"$mod SHIFT,          3, movetoworkspace, 3"
+      #"$mod SHIFT,          4, movetoworkspace, 4"
+      #"$mod SHIFT,          5, movetoworkspace, 5"
+      #"$mod SHIFT,          6, movetoworkspace, 6"
+      #"$mod SHIFT,          7, movetoworkspace, 7"
+      #"$mod SHIFT,          8, movetoworkspace, 8"
+      #"$mod SHIFT,          9, movetoworkspace, 9"
+      #"$mod SHIFT,          0, movetoworkspace, 10"
       " , mouse:275, workspace, r-1"
       " , mouse:276, workspace, r+1"
       # move into submap
@@ -150,11 +151,11 @@
       " , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle"
       " , XF86MonBrightnessUp, exec, brillo -L | xargs -P 0 -I {} brillo -A 5 -q -s {} -u 100000 &"
       " , XF86MonBrightnessDown, exec, brillo -L | xargs -P 0 -I {} brillo -U 5 -q -s {} -u 100000 &"
-      " , XF86AudioRewind, exec, playerctl position 5-"
-      " , XF86AudioPrev, exec, playerctl previous"
-      " , XF86AudioNext, exec, playerctl next"
-      " , XF86AudioForward, exec, playerctl position 5+"
-      " , XF86AudioPlay, exec, playerctl play-pause"
+      " , XF86AudioRewind, exec, playerctl -i kdeconnect position 5-"
+      " , XF86AudioPrev, exec, playerctl -i kdeconnect previous"
+      " , XF86AudioNext, exec, playerctl -i kdeconnect next"
+      " , XF86AudioForward, exec, playerctl -i kdeconnect position 5+"
+      " , XF86AudioPlay, exec, playerctl -i kdeconnect play-pause"
       " $mod CTRL, $NAVL, resizeactive, -20 0"
       " $mod CTRL, $NAVD, resizeactive, 0 20"
       " $mod CTRL, $NAVU, resizeactive, 0 -20"

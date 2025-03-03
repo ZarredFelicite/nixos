@@ -1,13 +1,14 @@
 { lib, pkgs, inputs, config, osConfig, ... }: {
   disabledModules = [
     "programs/himalaya.nix"
+    "services/imapnotify.nix"
     #"programs/neomutt.nix"
   ];
   imports = [
     ./frontends/aerc.nix
     ./frontends/alot.nix
     ./frontends/neomutt.nix
-    ./imapnotify.nix
+    ../../modules/imapnotify.nix
   ];
   accounts.email = {
     maildirBasePath = ".mail";
@@ -41,6 +42,12 @@
           '';
           showSignature = "append";
         };
+        imapnotify = {
+          enable = true;
+          boxes = [ "[Gmail]/All Mail" ];
+          onNotify = "${pkgs.isync}/bin/mbsync --all";
+          onNotifyPost = "/home/zarred/scripts/mail/mail-notify.sh";
+        };
         mbsync = {
           enable = true;
           create = "both";
@@ -58,6 +65,7 @@
       };
     };
   };
+  services.imapnotify.enable = true;
   programs.mbsync = {
     enable = true;
     extraConfig = ''

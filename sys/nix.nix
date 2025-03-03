@@ -36,7 +36,6 @@
       enable = if config.networking.hostName == "web" then true else false;
       protocol = "ssh-ng";
       keys = [
-        #"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEr5Pg9hm9lQDhobHUmn1q5R9XBXIv9iEcGUz9u+Vo9G zarred@web"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root@nano"
       ];
     };

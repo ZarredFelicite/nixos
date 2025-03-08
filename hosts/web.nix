@@ -4,13 +4,18 @@
   networking.hostName = "web";
   boot = {
     #kernelPackages = pkgs.linuxPackages_cachyos;
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
-    #kernelParams = [
+    kernelParams = [
     #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
     #  "initcall_debug"
     #  "log_buf_len=16M"
-    #];
+    #  "nvidia-drm.fbdev=1"
+    #  "nvidia-drm.modeset=1"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      #"nvidia.NVreg_UsePageAttributeTable=1"
+      #''nvidia.NVreg_RegistryDwords="OverrideMaxPerf=0x1"''
+    ];
     #kernelPatches = [ {
     #  name = "sleepdebug-config";
     #  patch = null;
@@ -25,21 +30,14 @@
     #    KPROBES_ON_FTRACE y
     #  '';
     #} ];
-    blacklistedKernelModules = ["nouveau"];
+    #blacklistedKernelModules = ["nouveau"];
     #kernel.sysctl = { "vm.swappiness" = 90;};
-    #kernelParams = [
-    #  "nvidia-drm.fbdev=1"
-    #  "nvidia-drm.modeset=1"
-    #];
     extraModulePackages = [ config.boot.kernelPackages.ddcci-driver];
     #extraModulePackages = [ pkgs.linuxPackages_cachyos.ddcci-driver ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
     initrd.systemd.enable = true;
-    extraModprobeConfig = ''
-      options nvidia NVreg_UsePageAttributeTable=1 NVreg_RegistryDwords="OverrideMaxPerf=0x1" NVreg_PreserveVideoMemoryAllocations=1
-    '';
   };
   services.udev.extraRules = ''
     SUBSYSTEM=="i2c-dev", ACTION=="add",\
@@ -147,16 +145,28 @@
   systemd.sleep.extraConfig = ''
     MemorySleepMode=s2idle
   '';
+  nixpkgs.config.nvidia.acceptLicense = true;
   hardware = {
     enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     nvidia = {
       open = true;
       nvidiaSettings = true;
+      #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      #  version = "570.86.16"; # use new 570 drivers
+      #  sha256_64bit = "sha256-RWPqS7ZUJH9JEAWlfHLGdqrNlavhaR1xMyzs8lJhy9U=";
+      #  openSha256 = "sha256-DuVNA63+pJ8IB7Tw2gM4HbwlOh1bcDg2AN2mbEU9VPE=";
+      #  settingsSha256 = "sha256-9rtqh64TyhDF5fFAYiWl3oDHzKJqyOW3abpcf2iNRT8=";
+      #  usePersistenced = false;
+      #};
       package = config.boot.kernelPackages.nvidiaPackages.stable;
+      # TODO:
+      # flicker on 570.124.04
+      # nixpkgs search linuxKernel.packages.linux_6_13.nvidia_x11
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;
+      videoAcceleration = true;
     };
     graphics = {
       enable = true;

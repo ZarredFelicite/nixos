@@ -107,11 +107,11 @@
     };
   };
   services.fwupd.enable = true;
+  services.pulseaudio.enable = false;
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
   hardware = {
-    pulseaudio.enable = false;
     trackpoint = {
       enable = true;
       device = "tpps/2-elan-trackpoint";

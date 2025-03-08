@@ -167,5 +167,8 @@
       #" , edge:l:u, exec, wpctl set-volume @DEFAULT_SINK@ 0.05+ -l 1.5"
       #" , edge:l:d, exec, wpctl set-volume @DEFAULT_SINK@ 0.05- -l 1.5"
     ];
+    #bindl = [
+    #  " , switch:on:[Lid Switch], exec, systemctl suspend"
+    #];
   };
 }

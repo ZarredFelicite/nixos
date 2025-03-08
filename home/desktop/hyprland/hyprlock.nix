@@ -7,8 +7,9 @@ in {
       hide_cursor = true;
       grace = 5;
       ignore_empty_input = true;
-      immediate_render = false;
+      #screencopy_mode = 1;
     };
+    animations.enabled = true;
     background = [
       {
         monitor = "DP-2";
@@ -34,7 +35,7 @@ in {
         monitor = "eDP-1";
         path = "/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
         color = "rgba(25, 20, 20, 1.0)";
-        blur_passes = 4;
+        blur_passes = 3;
         blur_size = 7;
         brightness = 0.7;
       }
@@ -72,7 +73,6 @@ in {
       check_color = "rgb(9ccfd8)";
       fail_color = "rgb(eb6f92)"; # if authentication failed, changes outer_color and fail message color
       fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>"; # can be set to empty
-      fail_transition = 300; # transition time in ms between normal outer_color and fail_color
       capslock_color = -1;
       numlock_color = -1;
       bothlock_color = -1; # when both locks are active. -1 means don't change outer color (same for above)
@@ -96,66 +96,66 @@ in {
       #  valign = "center";
       #};
     label = [
-        {
-          monitor = monitor;
-          text = "$TIME12";
-          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-          color = "rgba(196, 167, 231, 1.0)";
-          font_size = 100;
-          font_family = "Iosevka";
-          rotate = 0; # degrees, counter-clockwise
-          position = "0, -40";
-          halign = "center";
-          valign = "top";
-        }
-        {
-          monitor = monitor;
-          text = "cmd[update:300000] cat /tmp/tickers";
-          text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
-          color = "rgba(196, 167, 231, 1.0)";
-          font_size = 16;
-          font_family = "Iosevka";
-          rotate = 0; # degrees, counter-clockwise
-          position = "20, -20";
-          halign = "left";
-          valign = "top";
-        }
-        {
-          monitor = monitor;
-          text = "cmd[update:300000] cat /tmp/rss-news | jq -r '.text,.tooltip' | sed '1s/$/\\n----------------------------------------------------------------------/' | head -n20";
-          text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
-          color = "rgba(196, 167, 231, 1.0)";
-          font_size = 14;
-          font_family = "Iosevka";
-          rotate = 0; # degrees, counter-clockwise
-          position = "20, 20";
-          halign = "left";
-          valign = "bottom";
-        }
-        {
-          monitor = monitor;
-          text = "cmd[update:300000] playerctl metadata --format \"{{ title }}|{{ artist }}|{{ album }}\" | tr \"|\" \"\\n\"";
-          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-          color = "rgba(196, 167, 231, 1.0)";
-          font_size = 20;
-          font_family = "Iosevka";
-          rotate = 0; # degrees, counter-clockwise
-          position = "0, -250";
-          halign = "center";
-          valign = "top";
-        }
-        {
-          monitor = monitor;
-          text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
-          text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
-          color = "rgba(196, 167, 231, 1.0)";
-          font_size = 24;
-          font_family = "Iosevka";
-          rotate = 0; # degrees, counter-clockwise
-          position = "0, -200";
-          halign = "center";
-          valign = "top";
-        }
+      {
+        monitor = monitor;
+        text = "$TIME12";
+        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+        color = "rgba(196, 167, 231, 1.0)";
+        font_size = 100;
+        font_family = "Iosevka";
+        rotate = 0; # degrees, counter-clockwise
+        position = "0, -40";
+        halign = "center";
+        valign = "top";
+      }
+      {
+        monitor = monitor;
+        text = "cmd[update:300000] cat /tmp/tickers";
+        text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
+        color = "rgba(196, 167, 231, 1.0)";
+        font_size = 16;
+        font_family = "Iosevka";
+        rotate = 0; # degrees, counter-clockwise
+        position = "20, -20";
+        halign = "left";
+        valign = "top";
+      }
+      {
+        monitor = monitor;
+        text = "cmd[update:300000] cat /tmp/rss-news | jq -r '.text,.tooltip' | sed '1s/$/\\n----------------------------------------------------------------------/' | head -n20";
+        text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
+        color = "rgba(196, 167, 231, 1.0)";
+        font_size = 14;
+        font_family = "Iosevka";
+        rotate = 0; # degrees, counter-clockwise
+        position = "20, 20";
+        halign = "left";
+        valign = "bottom";
+      }
+      {
+        monitor = monitor;
+        text = "cmd[update:300000] playerctl metadata --format \"{{ title }}|{{ artist }}|{{ album }}\" | tr \"|\" \"\\n\"";
+        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+        color = "rgba(196, 167, 231, 1.0)";
+        font_size = 20;
+        font_family = "Iosevka";
+        rotate = 0; # degrees, counter-clockwise
+        position = "0, -250";
+        halign = "center";
+        valign = "top";
+      }
+      {
+        monitor = monitor;
+        text = "cmd[update:300000] curl -s 'https://wttr.in/-37.99116,145.17385?format=1'";
+        text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
+        color = "rgba(196, 167, 231, 1.0)";
+        font_size = 24;
+        font_family = "Iosevka";
+        rotate = 0; # degrees, counter-clockwise
+        position = "0, -200";
+        halign = "center";
+        valign = "top";
+      }
     ];
   };
 }

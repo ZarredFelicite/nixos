@@ -168,6 +168,17 @@
         };
       };
     };
+    logind = {
+      suspendKey = "suspend";
+      suspendKeyLongPress = "reboot";
+      powerKey = "suspend";
+      powerKeyLongPress = "reboot";
+      lidSwitch = "suspend";
+      extraConfig = ''
+        InhibitDelayMaxSec=30
+        HoldoffTimeoutSec=10
+      '';
+    };
     pipewire = {
       enable = true;
       systemWide = false;
@@ -277,9 +288,9 @@
     };
   };
   services.mpd = {
+    enable = true;
     user = "zarred";
     group = "users";
-    enable = true;
     dataDir = "/mnt/gargantua/media/music/data";
     musicDirectory = "/mnt/gargantua/media/music";
     dbFile = null;

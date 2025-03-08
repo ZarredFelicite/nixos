@@ -7,6 +7,7 @@
     ./gaming
   ];
   programs.hyprlock.enable = true;
+  programs.swaylock.enable = true;
   programs.password-store.enable = true;
   services.hypridle.enable = true;
   home.packages = ( with pkgs-unstable; [

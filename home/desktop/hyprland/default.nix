@@ -60,8 +60,8 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            "DP-3,3440x1440@164.90,0x1000,1"
-            "DP-2,3440x1440@144.00,3440x0,1,transform,3"
+            "DP-3,3440x1440@99.98,0x1000,1"
+            "DP-2,3440x1440@100.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
             "Unknown-1,disable"

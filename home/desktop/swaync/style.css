@@ -1,22 +1,23 @@
-/*@import './colors.css';*/
-@define-color foreground rgb(196, 167, 231);
-@define-color background rgb(25, 23, 36);
-@define-color color0 rgb(25, 23, 36);
-@define-color color1 rgb(38, 35, 58);
-@define-color color2 rgb(246, 193, 119);
-@define-color color3 rgb(235, 188, 186);
-@define-color color4 rgb(49, 116, 143);
-@define-color color5 rgb(156, 207, 216);
-@define-color color6 rgb(196, 167, 231);
-@define-color color7 rgb(82, 79, 103);
-@define-color color8 rgb(110, 106, 134);
-@define-color color9 rgb(235, 111, 146);
-@define-color color10 rgb(246, 193, 119);
-@define-color color11 rgb(235, 188, 186);
-@define-color color12 rgb(49, 116, 143);
-@define-color color13 rgb(156, 207, 216);
-@define-color color14 rgb(246, 193, 119);
-@define-color color15 rgb(82, 79, 103);
+@define-color base_ rgb(25, 23, 36);     /*Base*/
+@define-color surface rgb(31, 29, 46);     /*Surface*/
+@define-color gold rgb(246, 193, 119);     /*Gold*/
+@define-color love rgb(235, 188, 186);     /*Love*/
+@define-color pine rgb(49, 116, 143);     /*Pine*/
+@define-color foam rgb(156, 207, 216);     /*Foam*/
+@define-color iris rgb(196, 167, 231);     /*Iris*/
+@define-color rose rgb(235, 188, 186);     /*Rose*/
+@define-color muted rgb(110, 106, 134);     /*Muted*/
+@define-color highlight_high rgb(82, 79, 103);     /*Highlight High*/
+
+@define-color foreground      @iris;
+@define-color background      @base_;
+@define-color text            @foreground;
+@define-color background-alt  alpha(@surface, 0.9);
+@define-color selected        @pine;
+@define-color hover           alpha(@pine, 0.8);
+@define-color buttons         alpha(@pine, 0.4);
+@define-color urgent          @love;
+
 
 @import './notifications.css';
 @import './central_control.css';

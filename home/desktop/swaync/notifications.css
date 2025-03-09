@@ -1,24 +1,9 @@
-@define-color text            @foreground;
-@define-color background-alt  @color1;
-@define-color selected        @color3;
-@define-color hover           @color5;
-@define-color urgent          @color2;
-
 * {
-
-  /*background-alt:        @color1;      Buttons background */
-  /*selected:              @color2;      Button selected */
-  /*hover:                 @color5;      Hover button */
-  /*urgent:                @color6;      Urgency critical */
-  /*text-selected:         @background; */
-
   color: @text;
-
   all: unset;
   font-size: 14px;
-  font-family: "JetBrains Mono Nerd Font 10";
+  font-family: "Iosevka Nerd Font 11";
   transition: 200ms;
-
 }
 
 .notification-row {
@@ -28,9 +13,9 @@
 }
 
 .floating-notifications.background .notification-row .notification-background {
-  background: alpha(@background, .55);
+  background: alpha(@background, .6);
   box-shadow: 0 0 8px 0 rgba(0,0,0,.6);
-  border: 2px solid @color4;
+  border: 2px solid @pine;
   border-radius: 24px;
   margin: 16px;
   padding: 0;
@@ -92,7 +77,7 @@
 }
 
 .floating-notifications.background .notification-row .notification-background .close-button:hover {
-  background-color: @selected;
+  background-color: @hover;
 }
 
 .floating-notifications.background .notification-row .notification-background .close-button:active {

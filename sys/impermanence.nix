@@ -17,8 +17,6 @@
       "/etc/ssh/ssh_host_ed25519_key"
       "/etc/ssh/ssh_host_ed25519_key.pub"
       "/etc/nix/id_rsa"
-      #"/var/lib/cups/printers.conf"
-      #"/var/lib/logrotate.status"
     ];
   };
 }

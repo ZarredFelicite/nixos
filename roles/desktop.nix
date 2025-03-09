@@ -282,6 +282,9 @@
   };
   systemd.services.mpd = {
     serviceConfig.SupplementaryGroups = [ "pipewire" ];
+    serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
+    #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
+    serviceConfig.KillMode = [ "mixed" ];
     environment = {
       # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
       XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.
@@ -296,7 +299,7 @@
     dbFile = null;
     network.listenAddress = "any";
     network.port = 6600;
-    startWhenNeeded = true;
+    startWhenNeeded = false;
     extraConfig = (if config.networking.hostName == "sankara"
       then ''
         database {
@@ -319,6 +322,7 @@
           type    "pipewire"
           name    "Pipewire Sound Server"
         }
+        pid_file "/tmp/mpd-pid"
       '');
   };
   services.flatpak.enable = false;

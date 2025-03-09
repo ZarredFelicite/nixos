@@ -5,13 +5,13 @@
     ../containers/docker.nix
     ../containers/podman.nix
   ];
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.11";
   boot.loader = {
     systemd-boot = {
       enable = true;
       configurationLimit = 20;
     };
-    timeout = 0;
+    timeout = 1;
     #consoleLogLevel = 0;
     efi.canTouchEfiVariables = true;
   };
@@ -243,6 +243,7 @@
       ];
     };
     udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb", ATTR{power/wakeup}="enabled"
     '';
   };
   programs.ssh = {

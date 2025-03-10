@@ -44,6 +44,7 @@
     telegram-desktop # Telegram Desktop messaging app
     caprine-bin # An elegant Facebook Messenger desktop app
     zoom-us # zoom.us video conferencing application
+    v4l-utils # V4L utils and libv4l, provide common image formats regardless of the v4l device
     (discord.override {
       # All-in-one cross-platform voice and text chat for gamers
       withOpenASAR = true;

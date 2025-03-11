@@ -370,7 +370,10 @@
     freetype
     mangohud
     vulkan-tools
-    wine
+    #wine
+    winetricks
+    #wineWowPackages.waylandFull
+    wineWowPackages.staging
     #gamemode
     libva
     libva-utils

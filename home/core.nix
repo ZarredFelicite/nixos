@@ -173,6 +173,7 @@
         ( pkgs.callPackage ../pkgs/python/yt-fts {})
         # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
         ( pkgs.callPackage ../pkgs/python/reader {})
+        ( pkgs.callPackage ../pkgs/python/ibind {})
       ]))
     ];
     sessionVariables = {

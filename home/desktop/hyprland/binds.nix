@@ -56,6 +56,7 @@
       "$mod CTRL, P, pseudo,"
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"
+      "$mod, W, exec, ~/scripts/hyprland/hyprwindow"
       "$mod SHIFT, E, fullscreenstate, -1 2"
       "$mod CTRL, E, fullscreenstate, 2 -1"
       "$mod, D, exec, ~/scripts/hyprland/toggle_special.sh stats"

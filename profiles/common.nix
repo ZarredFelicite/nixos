@@ -281,6 +281,7 @@
       ]))
       nodejs
       openjpeg
+      impala
     ]) ++
     ( with pkgs-unstable; [
         #

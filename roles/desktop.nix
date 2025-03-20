@@ -280,16 +280,6 @@
       };
     };
   };
-  systemd.services.mpd = {
-    serviceConfig.SupplementaryGroups = [ "pipewire" ];
-    serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
-    #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
-    serviceConfig.KillMode = [ "mixed" ];
-    environment = {
-      # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
-      XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.
-    };
-  };
   services.mpd = {
     enable = true;
     user = "zarred";
@@ -324,6 +314,18 @@
         }
         pid_file "/tmp/mpd-pid"
       '');
+  };
+  systemd.services.mpd = {
+    serviceConfig.SupplementaryGroups = [ "pipewire" ];
+    serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
+    #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
+    serviceConfig.KillMode = [ "mixed" ];
+    wantedBy = [ "graphical.target" ];
+    #after = [ "graphical.target" ];
+    environment = {
+      # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
+      XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.
+    };
   };
   services.flatpak.enable = false;
   nixpkgs.config.packageOverrides = pkgs: {

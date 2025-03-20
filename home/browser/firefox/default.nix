@@ -45,9 +45,9 @@ in {
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; let
           # UPDATE
           bpc-pkg = bypass-paywalls-clean.override rec {
-            version = "4.0.4.0";
+            version = "4.0.7.0";
             url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
-            sha256 = "sha256-1sUNjR4bwbqQ6W/Vym7dT4QKciF6NhszzkyuKMcaHgg=";
+            sha256 = "sha256-a2jTrF0Zrf73kzqErA6pUsQq7XOMaHr9fUv/t9G1RXo=";
           }; in [
           bpc-pkg
           ublock-origin

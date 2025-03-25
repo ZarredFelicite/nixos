@@ -7,11 +7,11 @@
     ./gaming
   ];
   programs.hyprlock.enable = true;
+  programs.swaylock.enable = true;
   programs.password-store.enable = true;
   services.hypridle.enable = true;
   home.packages = ( with pkgs-unstable; [
     ] ) ++ ( with pkgs-stable; [
-    orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     ] ) ++
     ( with pkgs; [
     # wayland tools
@@ -29,6 +29,7 @@
     nb # A command line note-taking, bookmarking, archiving, and knowledge base application
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
+    orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     # prusa-slicer # G-code generator for 3D printer
     # bambu-studio # PC Software for BambuLab's 3D printers
     vtk # Open source libraries for 3D computer graphics, image processing and visualization
@@ -43,6 +44,7 @@
     telegram-desktop # Telegram Desktop messaging app
     caprine-bin # An elegant Facebook Messenger desktop app
     zoom-us # zoom.us video conferencing application
+    v4l-utils # V4L utils and libv4l, provide common image formats regardless of the v4l device
     (discord.override {
       # All-in-one cross-platform voice and text chat for gamers
       withOpenASAR = true;

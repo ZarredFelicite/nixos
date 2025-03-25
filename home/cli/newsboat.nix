@@ -129,8 +129,8 @@
       # ai
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }
       { url = "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
-      { url = "https://towardsdatascience.com/feed/tagged/editors-pick"; tags = [ "!" "~TDS" "ai" ]; }
-      { url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; }
+      #{ url = "https://towardsdatascience.com/feed/tagged/editors-pick"; tags = [ "!" "~TDS" "ai" ]; }
+      #{ url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; } NOTE: spammy
       { url = "https://openai.com/news/rss.xml"; tags = [ "!" "~OpenAI" "ai" ]; }
       { url = "https://reddit.com/r/MachineLearning/top/.rss?t=month"; tags = [ "!" "~r/ML" "ai" ]; }
       { url = "https://reddit.com/r/computervision/top/.rss?t=month"; tags = [ "!" "~r/CV" "ai" ]; }
@@ -138,7 +138,7 @@
       { url = "https://hf.co/blog/feed.xml"; tags = [ "!" "~HuggingFace-Blog" "ai" ]; }
       { url = "https://blog.comma.ai/feed.xml"; tags = [ "!" "~Comma-AI" "ai" ]; }
       #{ url = "#http://rehoboam:8000/thebatch.xml"; tags = [ "!" "~The-Batch" "ai" ]; }
-      { url = "https://simonwillison.net/atom/everything"; tags = [ "!" "~Simon-Willison-Blog" "ai" ]; }
+      #{ url = "https://simonwillison.net/atom/everything"; tags = [ "!" "~Simon-Willison-Blog" "ai" ]; }
       { url = "https://feeds.simplecast.com/OB5FkIl8"; tags = [ "!" "~PyTorch-Podcast" "ai" ]; }
       { url = "https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss"; tags = [ "!" "~Spectrum-IEEE-AI" "ai" ]; }
       { url = "https://anchor.fm/s/1e4a0eac/podcast/rss"; tags = [ "!" "~ML-Street-Talk-(MLST)" "ai" ]; }

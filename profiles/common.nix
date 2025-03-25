@@ -5,13 +5,13 @@
     ../containers/docker.nix
     ../containers/podman.nix
   ];
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.11";
   boot.loader = {
     systemd-boot = {
       enable = true;
       configurationLimit = 20;
     };
-    timeout = 0;
+    timeout = 1;
     #consoleLogLevel = 0;
     efi.canTouchEfiVariables = true;
   };
@@ -20,9 +20,24 @@
     DefaultTimeoutStopSec=10s
   '';
 
+  systemd.network = {
+    enable = true;
+  };
   networking = {
     #nameservers = [ "1.1.1.1" "9.9.9.9" ];
-    networkmanager.enable = true;
+    useNetworkd = true;
+    networkmanager = {
+      enable = false;
+      wifi.powersave = false;
+      wifi.backend = "iwd";
+      logLevel = "WARN";
+    };
+    wireless.iwd = {
+      enable = true;
+      settings = {
+        Settings.AutoConnect = true;
+      };
+    };
     firewall = {
       enable = false;
       allowedTCPPorts = [ 111 8080 80 443 8384]; # showmount,
@@ -213,6 +228,7 @@
     dbus.enable = true;
     fprintd.enable = false;
     udisks2.enable = true;
+    systemd-lock-handler.enable = true;
     openssh = {
       enable = true;
       settings = {
@@ -228,6 +244,7 @@
       ];
     };
     udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb", ATTR{power/wakeup}="enabled"
     '';
   };
   programs.ssh = {
@@ -265,6 +282,7 @@
       ]))
       nodejs
       openjpeg
+      impala
     ]) ++
     ( with pkgs-unstable; [
         #

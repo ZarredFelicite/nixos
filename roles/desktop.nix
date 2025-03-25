@@ -168,6 +168,17 @@
         };
       };
     };
+    logind = {
+      suspendKey = "suspend";
+      suspendKeyLongPress = "reboot";
+      powerKey = "suspend";
+      powerKeyLongPress = "reboot";
+      lidSwitch = "suspend";
+      extraConfig = ''
+        InhibitDelayMaxSec=30
+        HoldoffTimeoutSec=10
+      '';
+    };
     pipewire = {
       enable = true;
       systemWide = false;
@@ -269,23 +280,16 @@
       };
     };
   };
-  systemd.services.mpd = {
-    serviceConfig.SupplementaryGroups = [ "pipewire" ];
-    environment = {
-      # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
-      XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.
-    };
-  };
   services.mpd = {
+    enable = true;
     user = "zarred";
     group = "users";
-    enable = true;
     dataDir = "/mnt/gargantua/media/music/data";
     musicDirectory = "/mnt/gargantua/media/music";
     dbFile = null;
     network.listenAddress = "any";
     network.port = 6600;
-    startWhenNeeded = true;
+    startWhenNeeded = false;
     extraConfig = (if config.networking.hostName == "sankara"
       then ''
         database {
@@ -308,7 +312,20 @@
           type    "pipewire"
           name    "Pipewire Sound Server"
         }
+        pid_file "/tmp/mpd-pid"
       '');
+  };
+  systemd.services.mpd = {
+    serviceConfig.SupplementaryGroups = [ "pipewire" ];
+    serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
+    #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
+    serviceConfig.KillMode = [ "mixed" ];
+    wantedBy = [ "graphical.target" ];
+    #after = [ "graphical.target" ];
+    environment = {
+      # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
+      XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.
+    };
   };
   services.flatpak.enable = false;
   nixpkgs.config.packageOverrides = pkgs: {
@@ -355,7 +372,10 @@
     freetype
     mangohud
     vulkan-tools
-    wine
+    #wine
+    winetricks
+    #wineWowPackages.waylandFull
+    wineWowPackages.staging
     #gamemode
     libva
     libva-utils

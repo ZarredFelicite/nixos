@@ -80,13 +80,13 @@ let
 in {
   home.packages = [ pkgs.wttrbar ];
   stylix.targets.waybar.enable = false;
-    #systemd.user.services.zmk_battery = {
-    #  Unit.Description = "Get ZMK Keyboard battery";
-    #  Service.ExecStart = "/home/zarred/scripts/waybar/zmk-battery.py json";
-    #  Service.Restart = "always";
-    #  Install.WantedBy = [ "graphical-session.target" ];
-    #  Unit.After = [ "graphical-session.target" ];
-    #};
+  systemd.user.services.zmk_battery = {
+    Unit.Description = "Get ZMK Keyboard battery";
+    Service.ExecStart = "/home/zarred/scripts/waybar/zmk-battery.py json";
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
     Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300";
@@ -114,18 +114,18 @@ in {
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
-    #systemd.user.services.airpods_battery = {
-    #  Unit.Description = "Get AirPods battery";
-    #  Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";
-    #    #Service.ExecStart = pkgs.writers.writePython3 "airpods_battery_python" {
-    #    #  libraries = with pkgs.python3Packages; [ bleak ];
-    #    #  flakeIgnore = [ "E265" "E225" ];
-    #    #  doCheck = false;
-    #    #  } (builtins.readFile ./scripts/airpods_battery.py);
-    #  Service.Restart = "always";
-    #  Install.WantedBy = [ "graphical-session.target" ];
-    #  Unit.After = [ "graphical-session.target" ];
-    #};
+  systemd.user.services.airpods_battery = {
+    Unit.Description = "Get AirPods battery";
+    Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";
+      #Service.ExecStart = pkgs.writers.writePython3 "airpods_battery_python" {
+      #  libraries = with pkgs.python3Packages; [ bleak ];
+      #  flakeIgnore = [ "E265" "E225" ];
+      #  doCheck = false;
+      #  } (builtins.readFile ./scripts/airpods_battery.py);
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   programs.waybar = {
     systemd.enable = true;
     #package = inputs.waybar.packages.${pkgs.system}.waybar.overrideAttrs (oldAttrs: {

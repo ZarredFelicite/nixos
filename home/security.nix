@@ -62,11 +62,39 @@ in {
       allow-preset-passphrase
     '';
   };
+    #systemd.user.services.lock-target = {
+    #  Unit.Description = "Lock using hyprlock with loginctl lock-session";
+    #  Unit.PartOf = [ "lock.target" ];
+    #  Unit.OnSuccess = [ "unlock.target" ];
+    #  Unit.After = [ "lock.target" ];
+    #  Install.WantedBy = [ "lock.target" ];
+    #  #Service.ExecStart = "${pkgs.hyprlock}/bin/hyprlock --immediate-render --no-fade-in";
+    #  Service.ExecStart = "/home/zarred/scripts/sys/lock.sh";
+    #  Service.Type = "forking";
+    #  Service.Restart = "on-failure";
+    #  Service.RestartSec = "0";
+    #};
+    #systemd.user.services.suspend-target = {
+    #  Unit.Description = "Lock using loginctl before suspend";
+    #  Unit.PartOf = [ "sleep.target" ];
+    #  Install.RequiredBy = [ "sleep.target" ];
+    #  Service.ExecStart = "loginctl lock-session";
+    #  #Service.Type = "forking";
+    #};
+  systemd.user.services.suspend-delay = {
+    Unit.Description = "Wait 1s before suspend";
+    Unit.Before = [ "sleep.target" ];
+    Install.WantedBy = [ "sleep.target" ];
+    Service.ExecStartPre = "/run/current-system/sw/bin/sleep 1";
+    Service.ExecStart = "/run/current-system/sw/bin/true";
+    Service.Type = "simple";
+  };
   services.hypridle = {
     settings.general = {
-      lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --no-fade-in --immediate-render";       # avoid starting multiple hyprlock instances.
-      #before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
-      after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
+      lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render --no-fade-in -q"; # avoid starting multiple hyprlock instances.
+      before_sleep_cmd = "loginctl lock-session"; # lock before suspend.
+      after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"; # to avoid having to press a key twice to turn on the display.
+      inhibit_sleep = 3;
     };
     settings.listener = [
       {
@@ -81,17 +109,17 @@ in {
       }
       {
         timeout = 300;
-        on-timeout = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";            # lock screen when timeout has passed
+        on-timeout = "loginctl lock-session"; # lock screen when timeout has passed
       }
       {
         timeout = 330;
-        on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";        # screen off when timeout has passed
-        on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";          # screen on when activity is detected after timeout has fired.
+        on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off"; # screen off when timeout has passed
+        on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"; # screen on when activity is detected after timeout has fired.
       }
-      #{
-      #  timeout = 900;
-      #  on-timeout = "systemctl suspend";                # suspend pc
-      #}
+      {
+        timeout = 900;
+        on-timeout = "systemctl suspend"; # suspend pc
+      }
     ];
   };
 }

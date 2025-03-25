@@ -41,13 +41,14 @@ in {
         search = (import ./search.nix) ;
         settings = import ./settings.nix ;
         #bookmarks = import ./bookmarks.nix ;
+        bookmarks = {};
         userChrome = (onebar-css + builtins.readFile ./firefox_css.css);
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; let
           # UPDATE
           bpc-pkg = bypass-paywalls-clean.override rec {
-            version = "4.0.4.0";
+            version = "4.0.7.0";
             url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
-            sha256 = "sha256-1sUNjR4bwbqQ6W/Vym7dT4QKciF6NhszzkyuKMcaHgg=";
+            sha256 = "sha256-XiarclBEEmo/Uz9DEY5ExViPe+uUp+3yFmbiPq4ONCo=";
           }; in [
           bpc-pkg
           ublock-origin
@@ -75,6 +76,7 @@ in {
       };
       private = {
         id = 1;
+        bookmarks = {};
         userChrome = onebar-css;
         extraConfig = builtins.readFile(builtins.fetchGit {
           url = "https://codeberg.org/Narsil/user.js";
@@ -83,13 +85,18 @@ in {
       };
       tracking = {
         id = 2;
+        bookmarks = {};
         settings = {
           "privacy.trackingprotection.enabled" = false;
         };
       };
-      textfox.id = 3;
+      textfox = {
+        id = 3;
+        bookmarks = {};
+      };
       alpha = {
         id = 4;
+        bookmarks = {};
         userChrome = alpha-css;
         settings = {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
@@ -103,6 +110,7 @@ in {
       };
       onefox = {
         id = 5;
+        bookmarks = {};
         userChrome = onefox-css;
         settings = {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
@@ -126,4 +134,5 @@ in {
     source = ./firefox_openwith/com.add0n.node.json;
     target = "./.mozilla/native-messaging-hosts/com.add0n.node.json";
   };
+  stylix.targets.firefox.profileNames = [];
 }

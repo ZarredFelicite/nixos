@@ -65,7 +65,7 @@
 	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "dev" = {
-          enable = true;
+          enable = false;
 	        path = "/home/zarred/dev";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];

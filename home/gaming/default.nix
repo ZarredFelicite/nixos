@@ -4,7 +4,7 @@
     pkgs.protonup-qt
     #pkgs.wineWowPackages.waylandFull
     pkgs.samba
-    # TODO: broken pkgs.bottles
+    pkgs.bottles
     pkgs.mangohud
     # pkgs.darling # Open-source Darwin/macOS emulation layer for Linux
   ];

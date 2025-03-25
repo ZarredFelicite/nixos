@@ -1,12 +1,5 @@
-@define-color text            @foreground;
-@define-color background-alt  alpha(@color1, .4);
-@define-color selected        @color6;
-@define-color hover           alpha(@selected, .4);
-@define-color urgent          @color2;
-
 * {
   color:            @text;
-
   all: unset;
   font-size: 14px;
   font-family: "Iosevka Nerd Font 11";
@@ -22,9 +15,9 @@
 /* CONTROL CENTER ------------------------------------------------------------------------ */
 
 .control-center {
-  background: alpha(@background, .30);
+  background: alpha(@background, .3);
   border-radius: 24px;
-  border: 2px solid alpha(@color4, 0.5);
+  border: 2px solid alpha(@pine, 0.5);
   box-shadow: 0 0 10px 0 rgba(0,0,0,.6);
   margin: 18px;
   padding: 12px;
@@ -53,14 +46,14 @@
 }
 
 .control-center .notification-row .notification-background .notification > *:last-child > * .notification-action {
-  background: alpha(@selected, .6);
+  background: @buttons;
   color: @text;
   border-radius: 12px;
   margin: 6px;
 }
 
 .control-center .notification-row .notification-background .notification > *:last-child > * .notification-action:hover {
-  background: @selected;
+  background: @hover;
 }
 
 .control-center .notification-row .notification-background .notification > *:last-child > * .notification-action:active {
@@ -78,7 +71,7 @@
 }
 
 .control-center .notification-row .notification-background .close-button:hover {
-  background-color: @selected;
+  background-color: @hover;
 }
 
 .control-center .notification-row .notification-background .close-button:active {
@@ -210,7 +203,7 @@ progressbar {
 
   /* NOTE: Background need *opacity 1* otherwise will turn into the album art blurred  */
 .widget-mpris-player {
-    background-color: @background-sec;
+    background-color: @background;
     border-radius: 22px;
     padding: 6px 14px;
     margin: 6px;
@@ -245,7 +238,7 @@ progressbar {
 
 /* Volume */
 .widget-volume {
-  background: @background-sec;
+  background: @background;
   color: @background;
   padding: 4px;
   margin: 6px;

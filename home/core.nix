@@ -168,6 +168,7 @@
         requests-futures
         pyaudio
         transformers
+        pyrss2gen
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         ( pkgs.callPackage ../pkgs/python/yt-fts {})

@@ -48,7 +48,7 @@ in {
           bpc-pkg = bypass-paywalls-clean.override rec {
             version = "4.0.7.0";
             url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
-            sha256 = "sha256-XiarclBEEmo/Uz9DEY5ExViPe+uUp+3yFmbiPq4ONCo=";
+            sha256 = "sha256-c9IWMgkpk21nItNpdscs+aCEzmvlrFSNeFr3MepV/c8=";
           }; in [
           bpc-pkg
           ublock-origin

@@ -137,7 +137,7 @@
         pip
         ytmusicapi
         bullet
-        yt-dlp
+        ( pkgs.callPackage ../pkgs/python/yt-dlp {})
         rich
         psutil
         pillow

@@ -70,8 +70,22 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
-      (final: prev: {
+      (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
+        # NOTE: no worky either
+        #python312 = prev.python312.override {
+        #  packageOverrides = final: prev: {
+        #    yt-dlp = prev.yt-dlp.overridePythonAttrs(old: rec {
+        #      pname = "yt-dlp";
+        #      version = "2025.3.25";
+        #      src = prev.fetchPypi {
+        #        inherit version;
+        #        pname = "yt_dlp";
+        #        hash = "sha256-x/QlFvnfMdrvU8yiWQI5QBzzHbfE6spnZnz9gvLgric=";
+        #      };
+        #    });
+        #  };
+        #};
         # NOTE: Patch didn't work
         #orca-slicer = prev.orca-slicer.overrideAttrs (o: {
         #  patches = [ ( pkgs.fetchpatch {

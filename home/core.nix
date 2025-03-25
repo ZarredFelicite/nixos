@@ -171,7 +171,7 @@
         pyrss2gen
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
-        ( pkgs.callPackage ../pkgs/python/yt-fts {})
+        # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})
         # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
         ( pkgs.callPackage ../pkgs/python/reader {})
         ( pkgs.callPackage ../pkgs/python/ibind {})

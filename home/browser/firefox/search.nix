@@ -35,13 +35,13 @@
     "Discogs" = {
       urls = [ { template = "https://www.discogs.com/search/?q={searchTerms}"; }];
       definedAliases = ["disc"];
-      iconUpdateURL = "https://www.discogs.com/favicon.ico";
+      icon = "https://www.discogs.com/favicon.ico";
     };
     "GitHub" = {
       urls = [{ template = "https://github.com/search?utf8=%E2%9C%93&q={searchTerms}"; }];
       definedAliases = ["gh"];
     };
-    "YouTube" = {
+    "youtube" = {
       urls = [{ template = "https://www.youtube.com/results?search_query={searchTerms}"; }];
       definedAliases = ["yt"];
     };
@@ -65,7 +65,7 @@
       urls = [{ template = "https://www.cmcmarketsstockbroking.com.au/net/UI/Chart/AdvancedChart.aspx?asxcode={searchTerms}"; }];
       definedAliases = ["cmc"];
     };
-    "Bing".metaData.hidden = true;
-    "DuckDuckGo".metaData.hidden = true;
+    "bing".metaData.hidden = true;
+    "ddg".metaData.hidden = true;
   };
 }

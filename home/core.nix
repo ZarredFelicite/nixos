@@ -88,6 +88,7 @@
       ventoy
       exfatprogs
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
+      qrrs # CLI QR code generator and reader written in rust
 
       # nix
       nix-index # A files database for nixpkgs
@@ -137,7 +138,7 @@
         pip
         ytmusicapi
         bullet
-        yt-dlp
+        ( pkgs.callPackage ../pkgs/python/yt-dlp {})
         rich
         psutil
         pillow
@@ -168,6 +169,7 @@
         requests-futures
         pyaudio
         transformers
+        pyrss2gen
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})

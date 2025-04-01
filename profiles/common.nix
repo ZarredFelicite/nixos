@@ -1,4 +1,6 @@
-{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
+{ pkgs, config, lib, inputs, ...
+  #pkgs-unstable,
+}: {
   imports = [
     ../sys/nix.nix
     inputs.sops-nix.nixosModules.sops
@@ -164,7 +166,8 @@
         gotify-app-web-token = { owner = "zarred"; };
         twitch-oauth = {};
         cloudflare-api-token = {};
-        ib-gateway = {};
+        ib-gateway = { owner = "zarred"; };
+        ib-gateway-vnc = { owner = "zarred"; };
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";
@@ -282,10 +285,9 @@
       nodejs
       openjpeg
       impala
-    ]) ++
-    ( with pkgs-unstable; [
-        #
-    ]);
+    ])
+    # ++ ( with pkgs-unstable; [ ])
+    ;
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };

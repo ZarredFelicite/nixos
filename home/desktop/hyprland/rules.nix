@@ -1,10 +1,6 @@
 { ... }: {
   wayland.windowManager.hyprland.settings = {
     windowrule = [
-      #"tile, ^(Vtk)$"
-      "workspace special, (special)$"
-    ];
-    windowrulev2 = [
       "float, class:^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$"
       #"float, tag:pin"
       #"move 100%-w-10 40, tag:pin"

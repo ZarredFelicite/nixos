@@ -70,8 +70,23 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
-      (final: prev: {
+      (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
+        yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp {};
+        # NOTE: no worky either
+        #python312 = prev.python312.override {
+        #  packageOverrides = final: prev: {
+        #    yt-dlp = prev.yt-dlp.overridePythonAttrs(old: rec {
+        #      pname = "yt-dlp";
+        #      version = "2025.3.25";
+        #      src = prev.fetchPypi {
+        #        inherit version;
+        #        pname = "yt_dlp";
+        #        hash = "sha256-x/QlFvnfMdrvU8yiWQI5QBzzHbfE6spnZnz9gvLgric=";
+        #      };
+        #    });
+        #  };
+        #};
         # NOTE: Patch didn't work
         #orca-slicer = prev.orca-slicer.overrideAttrs (o: {
         #  patches = [ ( pkgs.fetchpatch {
@@ -84,7 +99,10 @@
     ];
     config = {
       allowUnfree = true;
-      allowUnfreePredicate = _: true;
+      #allowUnfreePredicate = _: true;
+      #allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      #  "copilot.vim"
+      #];
       permittedInsecurePackages = [
         "olm-3.2.16"
         "dotnet-sdk-6.0.428" # sonarr

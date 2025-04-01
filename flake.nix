@@ -2,11 +2,10 @@
   description = "Zarred's NixOS flake";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-stable.url = "github:liberodark/nixpkgs/orca-fix";
+    #nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    #nixpkgs-stable.url = "github:liberodark/nixpkgs/orca-fix";
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
@@ -16,23 +15,22 @@
     #hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
-    nixvim = { url = "github:nix-community/nixvim"; inputs.nixpkgs.follows = "nixpkgs"; };
-    #ianyrun = { url = "github:Kirottu/anyrun"; inputs.nixpkgs.follows = "nixpkgs"; };
-    #waybar = { url = "github:Alexays/Waybar"; inputs.nixpkgs.follows = "nixpkgs"; };
-    himalaya.url = "github:soywod/himalaya";
-    qrrs.url = "github:Lenivaya/qrrs";
-    textfox.url = "github:adriankarlen/textfox";
+    nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, nixos-hardware, ...  }@inputs:
+  outputs = {
+    self, nixpkgs,
+    #nixpkgs-stable,
+    #nixpkgs-unstable,
+    home-manager, nixos-hardware, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
       system = "x86_64-linux";
       #systems = [ "x86_64-linux" "aarch64-linux" ];
       #forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
       pkgs = nixpkgs.legacyPackages.${system};
-      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
-      pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+      #pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
+      #pkgs-stable = nixpkgs-stable.legacyPackages.${system};
     in {
       inherit lib;
       nixpkgs.overlays = [
@@ -62,15 +60,14 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit pkgs-stable;
-            inherit pkgs-unstable;
+            #inherit pkgs-stable;
+            #inherit pkgs-unstable;
           };
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
             ]; })
             inputs.stylix.nixosModules.stylix
-            inputs.chaotic.nixosModules.default
             ./hosts/web.nix
             ./roles/desktop.nix
             ./sys/impermanence.nix
@@ -84,8 +81,8 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit pkgs-unstable;
-            inherit pkgs-stable;
+            #inherit pkgs-unstable;
+            #inherit pkgs-stable;
           };
       	  modules = [
             ({ nixpkgs.overlays = [
@@ -93,7 +90,6 @@
             ]; })
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
-            inputs.chaotic.nixosModules.default
             ./hosts/nano.nix
             ./roles/desktop.nix
             ./sys/impermanence.nix
@@ -106,12 +102,11 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit pkgs-unstable;
-            inherit pkgs-stable;
+            #inherit pkgs-unstable;
+            #inherit pkgs-stable;
           };
       	  modules = [
             inputs.stylix.nixosModules.stylix
-            inputs.chaotic.nixosModules.default
             ./hosts/sankara.nix
             ./roles/server.nix
             ./sys/impermanence.nix

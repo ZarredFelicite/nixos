@@ -1,4 +1,6 @@
-{ self, pkgs, pkgs-unstable, lib, inputs, outputs, config, ... }: {
+{ self, pkgs,
+#pkgs-unstable,
+  inputs, outputs, ... }: {
   imports = [
     inputs.home-manager.nixosModules.home-manager
     ../profiles/common.nix
@@ -13,7 +15,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
+    extraSpecialArgs = { inherit
+      self inputs outputs
+      #pkgs-unstable
+    ;};
     users.zarred = import ../home/core.nix;
   };
   #environment.systemPackages = [

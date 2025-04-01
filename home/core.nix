@@ -88,6 +88,7 @@
       ventoy
       exfatprogs
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
+      qrrs # CLI QR code generator and reader written in rust
 
       # nix
       nix-index # A files database for nixpkgs

@@ -1,4 +1,6 @@
-{ self, config, pkgs, pkgs-unstable, pkgs-stable, lib, inputs, outputs, ... }: {
+{ self, config, pkgs, lib, inputs, outputs,
+  #pkgs-unstable, pkgs-stable,
+  ... }: {
   imports = [
     ../profiles/common.nix
     ../sys/keyd.nix
@@ -10,7 +12,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-stable; };
+    extraSpecialArgs = { inherit
+      self inputs outputs
+      #pkgs-unstable pkgs-stable
+    ;};
     users.zarred = import ../home/desktop.nix;
   };
   hardware = {

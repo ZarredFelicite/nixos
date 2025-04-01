@@ -172,8 +172,10 @@ in {
         groupbar = {
           enabled = true;
           height = 6;
+          indicator_height = 6;
           render_titles = false;
           gradients = false;
+          rounding = 4;
           "col.active" = lib.mkForce "rgba(9ccfd899)";
           "col.inactive" = lib.mkForce "rgba(31748f99)";
         };

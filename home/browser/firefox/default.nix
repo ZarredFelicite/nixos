@@ -16,7 +16,6 @@ let
 in {
   imports = [
     ./tridactyl.nix
-    inputs.textfox.homeManagerModules.default
   ];
   programs.firefox = {
     enable = true;
@@ -90,12 +89,8 @@ in {
           "privacy.trackingprotection.enabled" = false;
         };
       };
-      textfox = {
-        id = 3;
-        bookmarks = {};
-      };
       alpha = {
-        id = 4;
+        id = 3;
         bookmarks = {};
         userChrome = alpha-css;
         settings = {
@@ -109,7 +104,7 @@ in {
           #  + "/desktop/user.js") ;
       };
       onefox = {
-        id = 5;
+        id = 4;
         bookmarks = {};
         userChrome = onefox-css;
         settings = {
@@ -122,10 +117,6 @@ in {
       };
     };
   };
-  textfox = {
-    enable = false;
-    profile = "textfox";
-  };
   home.packages = with pkgs; [
     buku # Private cmdline bookmark manager
     #(callPackage ./firefox_openwith/derivation.nix {})
@@ -134,5 +125,5 @@ in {
     source = ./firefox_openwith/com.add0n.node.json;
     target = "./.mozilla/native-messaging-hosts/com.add0n.node.json";
   };
-  stylix.targets.firefox.profileNames = [];
+  stylix.targets.firefox.profileNames = [ "tracking" ];
 }

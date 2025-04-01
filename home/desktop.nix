@@ -1,4 +1,6 @@
-{ self, inputs, outputs, config, pkgs, pkgs-stable, pkgs-unstable, lib, ... }: {
+{ pkgs, ...
+  #pkgs-stable, pkgs-unstable,
+}: {
   imports = [
     ./core.nix
     ./browser
@@ -10,9 +12,9 @@
   programs.swaylock.enable = true;
   programs.password-store.enable = true;
   services.hypridle.enable = true;
-  home.packages = ( with pkgs-unstable; [
-    ] ) ++ ( with pkgs-stable; [
-    ] ) ++
+  home.packages =
+    #( with pkgs-unstable; [] )
+    #++ ( with pkgs-stable; [] )
     ( with pkgs; [
     # wayland tools
     wev # Wayland event viewer
@@ -58,7 +60,7 @@
     # image editor
     gimp
     pinta
-  ] );
+  ]);
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;
     XDG_CURRENT_DESKTOP = "hyprland";
@@ -126,7 +128,7 @@
     name = "OrcaSlicer";
     genericName = "3D Printing Software";
     icon = "OrcaSlicer";
-    exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs-stable.orca-slicer}/bin/orca-slicer";
+    exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs.orca-slicer}/bin/orca-slicer";
     terminal = false;
     type = "Application";
     mimeType = ["model/stl" "model/3mf" "application/vnd.ms-3mfdocument" "application/prs.wavefront-obj" "application/x-amf" "x-scheme-handler/orcaslicer"];

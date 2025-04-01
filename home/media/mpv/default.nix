@@ -70,6 +70,7 @@
       demuxer-max-bytes = "512MiB";
       demuxer-readahead-secs = 60;
       demuxer-max-back-bytes = "512MiB";
+      demuxer-lavf-o = "extension_picky=0";
       slang = "eng,en";
       vlang = "eng,en";
       screenshot-template = "%X{~~desktop/}%F [%wH.%wM.%wS.%wT]";
@@ -78,7 +79,7 @@
       screenshot-png-compression = 5;
       msg-color = true;
       msg-module = true;
-      script-opts = "ytdl_hook-try_ytdl_first=yes,ytdl_hook-exclude='%.webm$|%.ts$|%.mp3$|%.m3u8$|%.m3u$|%.mkv$|%.mp4$|%.VOB$'";
+      script-opts = "ytdl_hook-try_ytdl_first=yes,ytdl_hook-exclude='%.webm$|%.ts$|%.mp3$|%.m3u8$|%.m3u$|%.mkv$|%.mp4$|%.VOB$',ytdl_hook-ytdl_path=/etc/profiles/per-user/zarred/bin/yt-dlp";
       #ytdl-format = "bestvideo[height<=?1080]+bestaudio";
     };
     profiles = {

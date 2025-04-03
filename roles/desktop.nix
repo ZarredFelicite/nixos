@@ -322,10 +322,12 @@
   };
   systemd.services.mpd = {
     serviceConfig.SupplementaryGroups = [ "pipewire" ];
-    serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
+    serviceConfig.ExecStartPre = [ "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.netcat}/bin/nc -z 100.64.1.200 6600; do sleep 5; done'" ];
+    #serviceConfig.ExecStart = [ "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
     #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
     serviceConfig.KillMode = [ "mixed" ];
     wantedBy = [ "graphical.target" ];
+    before = [ "umount.target" "shutdown.target" ];
     #after = [ "graphical.target" ];
     environment = {
       # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609

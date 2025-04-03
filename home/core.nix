@@ -99,6 +99,7 @@
       # dev tools
       devenv
       # programming
+      aider-chat
       claude-code
 
       # latex

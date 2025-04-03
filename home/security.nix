@@ -21,7 +21,7 @@ in {
       exts.pass-import
     ]);
     settings = {
-      PASSWORD_STORE_DIR = "sync/password-store";
+      PASSWORD_STORE_DIR = "/home/zarred/sync/password-store";
       PASSWORD_STORE_CLIP_TIME = "60";
       PASSWORD_STORE_GENERATED_LENGTH = "20";
     };

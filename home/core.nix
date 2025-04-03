@@ -98,6 +98,8 @@
       nix-init # Command line tool to generate Nix packages from URLs
       # dev tools
       devenv
+      # programming
+      claude-code
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [

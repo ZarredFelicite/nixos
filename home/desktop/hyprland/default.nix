@@ -81,9 +81,33 @@ in {
     xwayland.enable = true;
     systemd.enable = true;
     plugins = with pkgs.hyprlandPlugins; [
-        #hyprfocus
         hyprspace
       # hyprgrass - Hyprland plugin for touch gestures
+        #hyprfocus
+        (pkgs.hyprlandPlugins.mkHyprlandPlugin pkgs.hyprland {
+          pluginName = "hyprfocus";
+          version = "0-unstable-2025-04-05";
+          src = pkgs.fetchFromGitHub {
+            owner = "daxisunder";
+            repo = "hyprfocus";
+            rev = "8061b05a04432da5331110e0ffaa8c81e1035725";
+            hash = "sha256-n8lCf4zQehWEK6UJWcLuGUausXuRgqggGuidc85g20I=";
+          };
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/lib
+            mv hyprfocus.so $out/lib/libhyprfocus.so
+            runHook postInstall
+          '';
+          passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
+          meta = {
+            homepage = "https://github.com/pyt0xic/hyprfocus";
+            description = "Focus animation plugin for Hyprland inspired by Flashfocus";
+            license = lib.licenses.bsd3;
+            maintainers = with lib.maintainers; [ donovanglover ];
+            platforms = lib.platforms.linux;
+          };
+        })
     ];
     settings = {
       debug.disable_logs = false;
@@ -229,18 +253,24 @@ in {
         };
         hyprfocus = {
           enabled = true;
-          keyboard_focus_animation = "flash";
-          mouse_focus_animation = "flash";
-          bezier = [
-            "bezIn, 0.5,0.0,1.0,0.5"
-            "bezOut, 0.0,0.5,0.5,1.0"
-          ];
+          focus_animation = "flash";
+          animate_floating = true;
+          animate_workspacechange = true;
+            #bezier = [
+            #  "bezIn, 0.5,0.0,1.0,0.5"
+            #  "bezOut, 0.0,0.5,0.5,1.0"
+            #  "overshot, 0.05, 0.9, 0.1, 1.05"
+            #  "smoothOut, 0.36, 0, 0.66, -0.56"
+            #  "smoothIn, 0.25, 1, 0.5, 1"
+            #  "realsmooth, 0.28, 0.29, 0.69, 1.08"
+            #  "easeInOutBack, 0.68, -0.6, 0.32, 1.6"
+            #];
           flash = {
-            flash_opacity = 0.7;
+            flash_opacity = 0.85;
             in_bezier = "bezIn";
             in_speed = 0.5;
             out_bezier = "bezOut";
-            out_speed = 3;
+            out_speed = 1;
           };
         };
         hycov = {

@@ -2,7 +2,9 @@
   #pkgs-unstable,
 }: {
   imports = [
-    ../sys/nix.nix
+    ../profiles/nix.nix
+    ../profiles/impermanence.nix
+    ../profiles/syncthing.nix
     inputs.sops-nix.nixosModules.sops
     ../containers/docker.nix
     ../containers/podman.nix

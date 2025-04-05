@@ -27,7 +27,7 @@
       #"stayfocused, class:^(nova)$"
       #"animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
-      "center, class:^(xdg-desktop-portal-gtk|zenity)$"
+      "center, class:^(xdg-desktop-portal-gtk|zenity|Rofi)$"
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"

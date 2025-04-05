@@ -14,9 +14,10 @@
       control-center-margin-left = 0;
 
       notification-window-width = 500;
+      notification-window-height = 1500;
       notification-icon-size = 48;
-      notification-body-image-height = 160;
-      notification-body-image-width = 200;
+      notification-body-image-height = 320;
+      notification-body-image-width = 360;
 
       timeout = 4;
       timeout-low = 2;

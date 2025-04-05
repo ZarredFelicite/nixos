@@ -136,6 +136,7 @@
       #freecad
 
       uv # Extremely fast Python package installer and resolver, written in Rust
+      ruff # Extremely fast Python linter
       (python3.withPackages(ps: with ps; [
         jwt
         pip
@@ -425,4 +426,24 @@
         pad_right($len; " ")
         ;
   '';
+  xdg.configFile."/home/zarred/.config/aider.env".text = ''
+    AIDER_MODEL=o3-mini
+    AIDER_REASONING_EFFORT=medium
+    AIDER_AUTO_ACCEPT_ARCHITECT=false
+    AIDER_CACHE_PROMPTS=true
+    AIDER_DARK_MODE=true
+    AIDER_USER_INPUT_COLOR=#c4a7e7
+    AIDER_TOOL_OUTPUT_COLOR=#31748f
+    AIDER_TOOL_ERROR_COLOR=#eb6f92
+    AIDER_TOOL_WARNING_COLOR=#f6c177
+    AIDER_ASSISTANT_OUTPUT_COLOR=#ebbcba
+    AIDER_COMPLETION_MENU_COLOR=#6e6a86
+    AIDER_COMPLETION_MENU_CURRENT_COLOR=#9ccfd8
+    AIDER_CODE_THEME=dracula
+    AIDER_WATCH_FILES=true
+    AIDER_LINT=false
+    AIDER_LINT_CMD="python: ruff check"
+    AIDER_EDITOR=nvim
+  '';
+  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --api-key openai=$(pass ml_tools/openai-api)";
 }

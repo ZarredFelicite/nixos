@@ -3,10 +3,12 @@
   ... }: {
   imports = [
     ../profiles/common.nix
-    ../sys/keyd.nix
+    ../profiles/keyd.nix
     ../profiles/remote-access.nix
     ../profiles/qemu.nix
     ../profiles/ai.nix
+    ../profiles/backups.nix
+    ../profiles/nfs.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {

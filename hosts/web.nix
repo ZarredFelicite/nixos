@@ -1,5 +1,8 @@
 { config, lib, pkgs, modulesPath, ... }: {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ../profiles/fans/fans.nix
+  ];
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
   boot = {

@@ -70,11 +70,6 @@
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix
             ./roles/desktop.nix
-            ./sys/impermanence.nix
-            ./sys/backups.nix
-            ./sys/nfs.nix
-            ./sys/syncthing.nix
-            ./profiles/fans/fans.nix
           ];
         };
         nano = lib.nixosSystem {
@@ -92,10 +87,6 @@
             inputs.stylix.nixosModules.stylix
             ./hosts/nano.nix
             ./roles/desktop.nix
-            ./sys/impermanence.nix
-            ./sys/backups.nix
-            ./sys/nfs.nix
-            ./sys/syncthing.nix
           ];
         };
         sankara = lib.nixosSystem {
@@ -109,8 +100,6 @@
             inputs.stylix.nixosModules.stylix
             ./hosts/sankara.nix
             ./roles/server.nix
-            ./sys/impermanence.nix
-            ./sys/syncthing.nix
           ];
         };
         liveIso = lib.nixosSystem {

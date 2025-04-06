@@ -12,10 +12,12 @@
     theme = ./theme.rasi;
     plugins = [
       pkgs.rofi-calc # overlay for rofi-wayland
-      pkgs.rofi-mpd
-      pkgs.rofi-pass
       pkgs.rofi-emoji
-      pkgs.rofi-bluetooth
     ];
   };
+  home.packages = [
+    pkgs.rofi-bluetooth
+    pkgs.rofi-mpd
+    pkgs.rofi-pass
+  ];
 }

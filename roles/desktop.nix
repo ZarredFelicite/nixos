@@ -287,6 +287,7 @@
       };
     };
   };
+  # NOTE: Disable all mpd settings below if disabling the service
   services.mpd = {
     enable = true;
     user = "zarred";

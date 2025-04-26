@@ -72,7 +72,7 @@
       inputs.nur.overlays.default
       (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
-        yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp {};
+        #yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp {};
         # NOTE: no worky either
         #python312 = prev.python312.override {
         #  packageOverrides = final: prev: {

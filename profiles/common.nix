@@ -61,7 +61,12 @@
   };
   services.tailscale = {
     enable = true;
-    extraSetFlags = [ "--operator=zarred" ];
+    extraSetFlags = [
+      "--operator=zarred"
+      "--advertise-exit-node"
+    ];
+    useRoutingFeatures = "both";
+    openFirewall = true;
   };
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";

@@ -23,7 +23,7 @@ in {
       nativeMessagingHosts = [
         pkgs.tridactyl-native
         pkgs.browserpass
-        #pkgs.fx-cast-bridge
+        pkgs.fx-cast-bridge
       ];
       extraPolicies = {
         Extensions = { Install = [
@@ -42,14 +42,14 @@ in {
         #bookmarks = import ./bookmarks.nix ;
         bookmarks = {};
         userChrome = (onebar-css + builtins.readFile ./firefox_css.css);
-        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; let
-          # UPDATE
-          bpc-pkg = bypass-paywalls-clean.override rec {
-            version = "4.0.7.0";
-            url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
-            sha256 = "sha256-c9IWMgkpk21nItNpdscs+aCEzmvlrFSNeFr3MepV/c8=";
-          }; in [
-          bpc-pkg
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
+          # INFO: bypass-paywalls-clean removed?
+          #bpc-pkg = bypass-paywalls-clean.override rec {
+          #  version = "4.0.7.0";
+          #  url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
+          #  sha256 = "sha256-c9IWMgkpk21nItNpdscs+aCEzmvlrFSNeFr3MepV/c8=";
+          #}; in [
+          #bpc-pkg
           ublock-origin
           darkreader
           user-agent-string-switcher
@@ -63,7 +63,7 @@ in {
           browserpass
           videospeed
           adaptive-tab-bar-colour
-          video-downloadhelper
+          # TODO: unavailable - video-downloadhelper
           imagus
           fx_cast
           rsspreview

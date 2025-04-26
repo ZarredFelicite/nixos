@@ -89,6 +89,7 @@
       exfatprogs
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
       qrrs # CLI QR code generator and reader written in rust
+      catt
 
       # nix
       nix-index # A files database for nixpkgs
@@ -142,7 +143,7 @@
         pip
         ytmusicapi
         bullet
-        ( pkgs.callPackage ../pkgs/python/yt-dlp {})
+        #( pkgs.callPackage ../pkgs/python/yt-dlp {})
         rich
         psutil
         pillow

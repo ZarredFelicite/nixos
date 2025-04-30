@@ -102,6 +102,7 @@
       # programming
       aider-chat
       claude-code
+      codex
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -144,6 +145,7 @@
         ytmusicapi
         bullet
         #( pkgs.callPackage ../pkgs/python/yt-dlp {})
+        yt-dlp
         rich
         psutil
         pillow

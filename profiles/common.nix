@@ -26,10 +26,39 @@
 
   systemd.network = {
     enable = true;
+    wait-online = {
+      anyInterface = true;
+      timeout = 0;
+    };
+    networks = {
+      "10-eth" = {
+        matchConfig.Type = "ether";
+        networkConfig.DHCP = "yes";
+        networkConfig.IPv6AcceptRA = true;
+        linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 5; } ];
+      };
+      "20-wifi" = {
+        matchConfig.Type = "wlan";
+        networkConfig.DHCP = "yes";
+        networkConfig.IPv6AcceptRA = true;
+        linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 10; } ];
+      };
+    };
+  };
+  services.resolved = {
+    enable = true;
+    dnssec = "true";
+    domains = [ "~." ];
+    fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+    dnsovertls = "true";
   };
   networking = {
-    #nameservers = [ "1.1.1.1" "9.9.9.9" ];
-    useNetworkd = true;
+    nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+    #useNetworkd = true;
+    useDHCP = false;
+    dhcpcd.enable = false;
     networkmanager = {
       enable = false;
       wifi.powersave = false;
@@ -40,6 +69,7 @@
       enable = true;
       settings = {
         Settings.AutoConnect = true;
+        General.EnableNetworkConfiguration = false;
       };
     };
     firewall = {

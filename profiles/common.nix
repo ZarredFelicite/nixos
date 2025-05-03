@@ -25,7 +25,7 @@
   '';
 
   systemd.network = {
-    enable = true;
+    enable = false;
     wait-online = {
       anyInterface = true;
       timeout = 0;
@@ -48,7 +48,7 @@
     };
   };
   services.resolved = {
-    enable = true;
+    enable = false;
     dnssec = "true";
     domains = [ "~." ];
     fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
@@ -57,8 +57,8 @@
   networking = {
     nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
     #useNetworkd = true;
-    useDHCP = false;
-    dhcpcd.enable = false;
+    #useDHCP = false;
+    #dhcpcd.enable = false;
     networkmanager = {
       enable = false;
       wifi.powersave = false;
@@ -68,8 +68,9 @@
     wireless.iwd = {
       enable = true;
       settings = {
+        IPv6.Enabled = true;
         Settings.AutoConnect = true;
-        General.EnableNetworkConfiguration = false;
+        General.EnableNetworkConfiguration = true;
       };
     };
     firewall = {

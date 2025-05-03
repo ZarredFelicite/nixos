@@ -85,7 +85,7 @@ in {
     Unit.Description = "Wait 1s before suspend";
     Unit.Before = [ "sleep.target" ];
     Install.WantedBy = [ "sleep.target" ];
-    Service.ExecStartPre = "/run/current-system/sw/bin/sleep 1";
+    Service.ExecStartPre = "/run/current-system/sw/bin/sleep 5";
     Service.ExecStart = "/run/current-system/sw/bin/true";
     Service.Type = "simple";
   };

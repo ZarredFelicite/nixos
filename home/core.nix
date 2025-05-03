@@ -179,6 +179,7 @@
         pyrss2gen
         networkx
         pygraphviz
+        pdf2image
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})

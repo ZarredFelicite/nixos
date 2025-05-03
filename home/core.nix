@@ -137,23 +137,35 @@
       #freenect
       #freecad
 
+      # text conversion
+      lynx # Text-mode web browser
+      ( pkgs.callPackage ../pkgs/html-to-markdown {} ) # Convert HTML to Markdown
+
+      # PYTHON
+      ## tools
       uv # Extremely fast Python package installer and resolver, written in Rust
       ruff # Extremely fast Python linter
       (python3.withPackages(ps: with ps; [
-        jwt
-        pip
-        ytmusicapi
-        bullet
+        pip # PyPA recommended tool for installing Python packages
+        jwt # JSON Web Token library for Python 3
+        ytmusicapi # Python API for YouTube Music
+        bullet # NOTE: not in nixpkgs??
         #( pkgs.callPackage ../pkgs/python/yt-dlp {})
-        yt-dlp
-        rich
-        psutil
-        pillow
-        colorthief
-        pixcat
-        mutagen
+        yt-dlp # Command-line tool to download videos from YouTube.com and other sites (youtube-dl fork)
+        rich # Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
+        psutil # Process and system utilization information interface
+        pillow # Friendly PIL fork (Python Imaging Library)
+        colorthief # Python module for grabbing the color palette from an image
+        pixcat # Display images on a kitty terminal with optional resizing
+        mutagen # Python module for handling audio metadata
+
+        # parsing
         beautifulsoup4
-        html2text
+
+        # text conversion
+        html2text # Convert HTML to plain text
+        markitdown # Python tool for converting files and office documents to Markdown
+
         python-mpv-jsonipc
         playsound
         gtts
@@ -162,20 +174,23 @@
         matplotlib
         pybluez
         libtmux
-        tensorboard
         cloudscraper
-        openai
         jupyter-core
         nbconvert
         ( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
         #yfinance
         bleak
         dbus-next
-        onnxruntime
         #pyfzf
         requests-futures
         pyaudio
+
+        # ai
+        openai
         transformers
+        onnxruntime
+        tensorboard
+
         pyrss2gen
         networkx
         pygraphviz

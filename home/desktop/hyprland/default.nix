@@ -64,6 +64,7 @@ in {
             "DP-2,3440x1440@100.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
+            "HDMI-A-2,1920x1280@60.00,1520x2440,1.25,transform,2"
             "Unknown-1,disable"
           ];
           env = [
@@ -153,14 +154,15 @@ in {
       };
       animations = {
        enabled = true;
-       bezier = "overshot,0.05,0.9,0.1,1.1";
+       bezier = "overshot,0.1,0.95,0.2,1.05";
        animation = [
-          "windowsIn, 1, 6, overshot, slide"
-          "windowsOut, 1, 6, overshot, slide"
-          "border, 1, 10, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
-          "specialWorkspace, 1, 6, overshot"
+          # animation = NAME, ONOFF, SPEED, CURVE [,STYLE]
+          "windows, 1, 4, default, slide"
+          "layers, 1, 2, default, slide"
+          "fade, 1, 5, default"
+          "border, 1, 6, default"
+          "workspaces, 1, 4, default, slide"
+          "specialWorkspace, 1, 4, default, slidevert"
         ];
       };
       dwindle = {

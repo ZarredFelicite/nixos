@@ -64,6 +64,7 @@ in {
             "DP-2,3440x1440@100.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
+            "HDMI-A-2,1920x1280@60.00,1520x2440,1.25,transform,2"
             "Unknown-1,disable"
           ];
           env = [

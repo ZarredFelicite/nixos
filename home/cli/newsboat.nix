@@ -158,8 +158,8 @@
       #{ url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
       { url = "https://kill-the-newsletter.com/feeds/kfwpslhaa3o1l0u8l4nz.xml"; tags = [ "!" "~ABC" "news" ]; }
       { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
-      { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "reddit" "news" ]; }
-      { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "reddit" "news" ]; }
+      { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "news" "reddit" ]; }
+      { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "news" "reddit" ]; }
 
       # ozbargain
       { url = "http://www.ozbargain.com.au/feed"; tags = [ "!" "~general" "no_unread" "shopping" ]; }

@@ -24,41 +24,41 @@
     DefaultTimeoutStopSec=10s
   '';
 
-  systemd.network = {
-    enable = false;
-    wait-online = {
-      anyInterface = true;
-      timeout = 0;
-    };
-    networks = {
-      "10-eth" = {
-        matchConfig.Type = "ether";
-        networkConfig.DHCP = "yes";
-        networkConfig.IPv6AcceptRA = true;
-        linkConfig.RequiredForOnline = "routable";
-        routes = [ { Metric = 5; } ];
-      };
-      "20-wifi" = {
-        matchConfig.Type = "wlan";
-        networkConfig.DHCP = "yes";
-        networkConfig.IPv6AcceptRA = true;
-        linkConfig.RequiredForOnline = "routable";
-        routes = [ { Metric = 10; } ];
-      };
-    };
-  };
-  services.resolved = {
-    enable = false;
-    dnssec = "true";
-    domains = [ "~." ];
-    fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
-    dnsovertls = "true";
-    extraConfig = ''
-      MulticastDNS=true
-    '';
-  };
+  #systemd.network = {
+  #  enable = false;
+  #  wait-online = {
+  #    anyInterface = true;
+  #    timeout = 0;
+  #  };
+  #  networks = {
+  #    "10-eth" = {
+  #      matchConfig.Type = "ether";
+  #      networkConfig.DHCP = "yes";
+  #      networkConfig.IPv6AcceptRA = true;
+  #      linkConfig.RequiredForOnline = "routable";
+  #      routes = [ { Metric = 5; } ];
+  #    };
+  #    "20-wifi" = {
+  #      matchConfig.Type = "wlan";
+  #      networkConfig.DHCP = "yes";
+  #      networkConfig.IPv6AcceptRA = true;
+  #      linkConfig.RequiredForOnline = "routable";
+  #      routes = [ { Metric = 10; } ];
+  #    };
+  #  };
+  #};
+  #services.resolved = {
+  #  enable = false;
+  #  dnssec = "true";
+  #  domains = [ "~." ];
+  #  fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+  #  dnsovertls = "true";
+  #  extraConfig = ''
+  #    MulticastDNS=true
+  #  '';
+  #};
   networking = {
-    nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
+    #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
     #useNetworkd = true;
     #useDHCP = false;
     #dhcpcd.enable = false;
@@ -228,6 +228,7 @@
     ];
   };
   security = {
+    doas.enable = true;
     # TODO: enable lanzaboote for secureboot on nixos
     tpm2 = {
       enable = true;
@@ -326,6 +327,7 @@
       nodejs
       openjpeg
       impala
+      iwgtk
     ])
     # ++ ( with pkgs-unstable; [ ])
     ;
@@ -336,6 +338,7 @@
     dconf.enable = true;
     zsh.enable = true;
     mosh.enable = true;
+    droidcam.enable = true;
     nh = {
       enable = true;
       clean.enable = false;

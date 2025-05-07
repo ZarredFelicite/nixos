@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: {
   home.packages = with pkgs; [
     #zsh-completions
     zsh-autosuggestions
@@ -28,7 +28,8 @@
       share = true;
     };
     historySubstringSearch.enable = true;
-    initExtra = ''
+    initContent = lib.mkBefore ''
+      zmodload zsh/zprof
       for d in ~/scripts/*/; do
         for dd in $d*; do
           if [ -d "$dd" ]; then
@@ -55,7 +56,6 @@
       #source <(cod init $$ zsh)
     '';
     initExtraBeforeCompInit = "";
-    initExtraFirst = "zmodload zsh/zprof";
     loginExtra = "";
     logoutExtra = "";
     plugins = [

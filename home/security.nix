@@ -50,7 +50,7 @@ in {
     enableSshSupport = true;
     enableScDaemon = false;
     enableZshIntegration = true;
-    pinentryPackage = null;
+    pinentry.package = null;
     defaultCacheTtl = 60480000;
     defaultCacheTtlSsh = 60480000;
     maxCacheTtl = 60480000;

@@ -85,12 +85,12 @@
     };
     extraHosts =
       "
-      100.64.1.200 sankara
-      100.64.1.125 nano
-      100.64.1.150 web
-      192.168.86.224 rprinter
-      192.168.86.240 rpizero
-      192.168.86.246 oneplus
+      169.254.91.114 web
+      #  100.64.1.200 sankara
+      #  100.64.1.125 nano
+      #  192.168.86.224 rprinter
+      #  192.168.86.240 rpizero
+      #  192.168.86.246 oneplus
       ";
   };
   services.tailscale = {

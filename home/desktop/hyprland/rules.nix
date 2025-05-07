@@ -1,10 +1,6 @@
 { ... }: {
   wayland.windowManager.hyprland.settings = {
     windowrule = [
-      #"tile, ^(Vtk)$"
-      "workspace special, (special)$"
-    ];
-    windowrulev2 = [
       "float, class:^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$"
       #"float, tag:pin"
       #"move 100%-w-10 40, tag:pin"
@@ -31,7 +27,7 @@
       #"stayfocused, class:^(nova)$"
       #"animation slidefadevert, class:^(waybar|nova)$"
       "rounding 6, class:^(waybar)$"
-      "center, class:^(xdg-desktop-portal-gtk|zenity)$"
+      "center, class:^(xdg-desktop-portal-gtk|zenity|Rofi)$"
       "stayfocused, class:^(Pinentry)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"

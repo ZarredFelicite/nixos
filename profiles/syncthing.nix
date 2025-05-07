@@ -29,18 +29,25 @@
         "phone" = { id = "BEXXXN5-G6LNX4L-YLKH6TF-CIKE5V4-TIHJYAS-QBKIQTI-AFENRGH-PJ7GFA6"; };
       };
       folders = {
-        "scripts" = {
-          enable = true;
-          path = "/home/zarred/scripts";
-          type = "sendreceive"; # "sendreceive", "sendonly", "receiveonly", "receiveencrypted"
-	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "10"; }; };
-	      };
         "sync" = {
           enable = true;
 	        path = "/home/zarred/sync";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "phone" ];
+	        versioning = { type = "simple"; params = { keep = "10"; }; };
+	      };
+        "nb" = {
+          enable = true;
+	        path = "/home/zarred/nb";
+          type = "sendreceive";
+	        devices = [ "web" "phone" ];
+	        versioning = { type = "simple"; params = { keep = "10"; }; };
+	      };
+        "scripts" = {
+          enable = true;
+          path = "/home/zarred/scripts";
+          type = "sendreceive"; # "sendreceive", "sendonly", "receiveonly", "receiveencrypted"
+	        devices = [ "web" "sankara" "nano" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };
 	      };
         "documents" = {

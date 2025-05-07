@@ -1,5 +1,8 @@
 { config, lib, pkgs, modulesPath, ... }: {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ../profiles/fans/fans.nix
+  ];
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
   boot = {
@@ -12,7 +15,7 @@
     #  "log_buf_len=16M"
     #  "nvidia-drm.fbdev=1"
     #  "nvidia-drm.modeset=1"
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+    #  "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       #"nvidia.NVreg_UsePageAttributeTable=1"
       #''nvidia.NVreg_RegistryDwords="OverrideMaxPerf=0x1"''
     ];
@@ -127,7 +130,7 @@
     # Required for firefox 98+, see:
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
-    #__EGL_VENDOR_LIBRARY_FILENAMES = "${pkgs.mesa.drivers.outPath}/share/glvnd/egl_vendor.d/50_mesa.json";
+    #__EGL_VENDOR_LIBRARY_FILENAMES = "${pkgs.mesa.outPath}/share/glvnd/egl_vendor.d/50_mesa.json";
     VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
     NIXOS_OZONE_WL = "1";
   };
@@ -179,7 +182,7 @@
       extraPackages32 = with pkgs.pkgsi686Linux; [nvidia-vaapi-driver];
     };
     openrazer = {
-      enable = true;
+      enable = false; # TODO: broken pr:384992
       users = [ "zarred" ];
       devicesOffOnScreensaver = true;
     };

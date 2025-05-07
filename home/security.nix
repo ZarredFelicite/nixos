@@ -21,7 +21,7 @@ in {
       exts.pass-import
     ]);
     settings = {
-      PASSWORD_STORE_DIR = "sync/password-store";
+      PASSWORD_STORE_DIR = "/home/zarred/sync/password-store";
       PASSWORD_STORE_CLIP_TIME = "60";
       PASSWORD_STORE_GENERATED_LENGTH = "20";
     };
@@ -50,7 +50,7 @@ in {
     enableSshSupport = true;
     enableScDaemon = false;
     enableZshIntegration = true;
-    pinentryPackage = null;
+    pinentry.package = null;
     defaultCacheTtl = 60480000;
     defaultCacheTtlSsh = 60480000;
     maxCacheTtl = 60480000;
@@ -85,7 +85,7 @@ in {
     Unit.Description = "Wait 1s before suspend";
     Unit.Before = [ "sleep.target" ];
     Install.WantedBy = [ "sleep.target" ];
-    Service.ExecStartPre = "/run/current-system/sw/bin/sleep 1";
+    Service.ExecStartPre = "/run/current-system/sw/bin/sleep 5";
     Service.ExecStart = "/run/current-system/sw/bin/true";
     Service.Type = "simple";
   };

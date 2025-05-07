@@ -72,7 +72,7 @@
       # web tools
       readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
       # misc
-      ffmpeg_7 # A complete, cross-platform solution to record, convert and stream audio and video
+      ffmpeg # A complete, cross-platform solution to record, convert and stream audio and video
       android-tools # Android SDK platform tools
       imagemagick # A software suite to create, edit, compose, or convert bitmap images
       gotify-cli # A command line interface for pushing messages to gotify/server
@@ -88,6 +88,8 @@
       ventoy
       exfatprogs
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
+      qrrs # CLI QR code generator and reader written in rust
+      catt
 
       # nix
       nix-index # A files database for nixpkgs
@@ -97,6 +99,10 @@
       nix-init # Command line tool to generate Nix packages from URLs
       # dev tools
       devenv
+      # programming
+      aider-chat
+      claude-code
+      codex
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -131,21 +137,35 @@
       #freenect
       #freecad
 
+      # text conversion
+      lynx # Text-mode web browser
+      ( pkgs.callPackage ../pkgs/html-to-markdown {} ) # Convert HTML to Markdown
+
+      # PYTHON
+      ## tools
       uv # Extremely fast Python package installer and resolver, written in Rust
+      ruff # Extremely fast Python linter
       (python3.withPackages(ps: with ps; [
-        jwt
-        pip
-        ytmusicapi
-        bullet
-        ( pkgs.callPackage ../pkgs/python/yt-dlp {})
-        rich
-        psutil
-        pillow
-        colorthief
-        pixcat
-        mutagen
+        pip # PyPA recommended tool for installing Python packages
+        jwt # JSON Web Token library for Python 3
+        ytmusicapi # Python API for YouTube Music
+        bullet # NOTE: not in nixpkgs??
+        #( pkgs.callPackage ../pkgs/python/yt-dlp {})
+        yt-dlp # Command-line tool to download videos from YouTube.com and other sites (youtube-dl fork)
+        rich # Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
+        psutil # Process and system utilization information interface
+        pillow # Friendly PIL fork (Python Imaging Library)
+        colorthief # Python module for grabbing the color palette from an image
+        pixcat # Display images on a kitty terminal with optional resizing
+        mutagen # Python module for handling audio metadata
+
+        # parsing
         beautifulsoup4
-        html2text
+
+        # text conversion
+        html2text # Convert HTML to plain text
+        markitdown # Python tool for converting files and office documents to Markdown
+
         python-mpv-jsonipc
         playsound
         gtts
@@ -154,21 +174,27 @@
         matplotlib
         pybluez
         libtmux
-        tensorboard
         cloudscraper
-        openai
         jupyter-core
         nbconvert
         ( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
         #yfinance
         bleak
         dbus-next
-        onnxruntime
         #pyfzf
         requests-futures
         pyaudio
+
+        # ai
+        openai
         transformers
+        onnxruntime
+        tensorboard
+
         pyrss2gen
+        networkx
+        pygraphviz
+        pdf2image
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})
@@ -421,4 +447,24 @@
         pad_right($len; " ")
         ;
   '';
+  xdg.configFile."/home/zarred/.config/aider.env".text = ''
+    AIDER_MODEL=o3-mini
+    AIDER_REASONING_EFFORT=medium
+    AIDER_AUTO_ACCEPT_ARCHITECT=false
+    AIDER_CACHE_PROMPTS=true
+    AIDER_DARK_MODE=true
+    AIDER_USER_INPUT_COLOR=#c4a7e7
+    AIDER_TOOL_OUTPUT_COLOR=#31748f
+    AIDER_TOOL_ERROR_COLOR=#eb6f92
+    AIDER_TOOL_WARNING_COLOR=#f6c177
+    AIDER_ASSISTANT_OUTPUT_COLOR=#ebbcba
+    AIDER_COMPLETION_MENU_COLOR=#6e6a86
+    AIDER_COMPLETION_MENU_CURRENT_COLOR=#9ccfd8
+    AIDER_CODE_THEME=dracula
+    AIDER_WATCH_FILES=true
+    AIDER_LINT=false
+    AIDER_LINT_CMD="python: ruff check"
+    AIDER_EDITOR=nvim
+  '';
+  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --api-key openai=$(pass ml_tools/openai-api)";
 }

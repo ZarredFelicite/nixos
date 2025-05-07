@@ -11,9 +11,8 @@
     ./glow.nix
     ./ueberzugpp.nix
   ];
-  home.packages = with pkgs; [
-    inputs.qrrs.packages.x86_64-linux.default
-  ];
+  #home.packages = with pkgs; [
+  #];
   xdg.configFile."fd/ignore".text = ''
     /mnt
   '';

@@ -5,7 +5,7 @@
     ./twitch.nix
     ./youtube/ytfzf.nix
     ./youtube/yt-dlp.nix
-    inputs.spicetify-nix.homeManagerModules.default
+    inputs.spicetify-nix.homeManagerModules.spicetify
   ];
   #nixpkgs.overlays = [( final: pre
   home.packages = [
@@ -19,17 +19,18 @@
   };
   programs.spicetify =
     let
-      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.system};
     in
     {
       enable = true;
       enabledExtensions = with spicePkgs.extensions; [
-        adblock
+        adblockify
         hidePodcasts
         shuffle # shuffle+ (special characters are sanitized out of extension names)
       ];
+      #theme = spicePkgs.themes.hazy;
       theme = spicePkgs.themes.text;
-      colorScheme = "rosepine";
+      colorScheme = "RosePine";
   };
   stylix.targets.spicetify.enable = false;
   programs.beets = {

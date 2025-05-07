@@ -64,6 +64,7 @@ in {
             "DP-2,3440x1440@100.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
+            "HDMI-A-2,1920x1280@60.00,1520x2440,1.25,transform,2"
             "Unknown-1,disable"
           ];
           env = [
@@ -81,9 +82,33 @@ in {
     xwayland.enable = true;
     systemd.enable = true;
     plugins = with pkgs.hyprlandPlugins; [
-        #hyprfocus
         hyprspace
       # hyprgrass - Hyprland plugin for touch gestures
+        #hyprfocus
+        (pkgs.hyprlandPlugins.mkHyprlandPlugin pkgs.hyprland {
+          pluginName = "hyprfocus";
+          version = "0-unstable-2025-04-05";
+          src = pkgs.fetchFromGitHub {
+            owner = "daxisunder";
+            repo = "hyprfocus";
+            rev = "8061b05a04432da5331110e0ffaa8c81e1035725";
+            hash = "sha256-n8lCf4zQehWEK6UJWcLuGUausXuRgqggGuidc85g20I=";
+          };
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/lib
+            mv hyprfocus.so $out/lib/libhyprfocus.so
+            runHook postInstall
+          '';
+          passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
+          meta = {
+            homepage = "https://github.com/pyt0xic/hyprfocus";
+            description = "Focus animation plugin for Hyprland inspired by Flashfocus";
+            license = lib.licenses.bsd3;
+            maintainers = with lib.maintainers; [ donovanglover ];
+            platforms = lib.platforms.linux;
+          };
+        })
     ];
     settings = {
       debug.disable_logs = false;
@@ -129,14 +154,15 @@ in {
       };
       animations = {
        enabled = true;
-       bezier = "overshot,0.05,0.9,0.1,1.1";
+       bezier = "overshot,0.1,0.95,0.2,1.05";
        animation = [
-          "windowsIn, 1, 6, overshot, slide"
-          "windowsOut, 1, 6, overshot, slide"
-          "border, 1, 10, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
-          "specialWorkspace, 1, 6, overshot"
+          # animation = NAME, ONOFF, SPEED, CURVE [,STYLE]
+          "windows, 1, 4, default, slide"
+          "layers, 1, 2, default, slide"
+          "fade, 1, 5, default"
+          "border, 1, 6, default"
+          "workspaces, 1, 4, default, slide"
+          "specialWorkspace, 1, 4, default, slidevert"
         ];
       };
       dwindle = {
@@ -172,8 +198,10 @@ in {
         groupbar = {
           enabled = true;
           height = 6;
+          indicator_height = 6;
           render_titles = false;
           gradients = false;
+          rounding = 4;
           "col.active" = lib.mkForce "rgba(9ccfd899)";
           "col.inactive" = lib.mkForce "rgba(31748f99)";
         };
@@ -227,18 +255,24 @@ in {
         };
         hyprfocus = {
           enabled = true;
-          keyboard_focus_animation = "flash";
-          mouse_focus_animation = "flash";
-          bezier = [
-            "bezIn, 0.5,0.0,1.0,0.5"
-            "bezOut, 0.0,0.5,0.5,1.0"
-          ];
+          focus_animation = "flash";
+          animate_floating = true;
+          animate_workspacechange = true;
+            #bezier = [
+            #  "bezIn, 0.5,0.0,1.0,0.5"
+            #  "bezOut, 0.0,0.5,0.5,1.0"
+            #  "overshot, 0.05, 0.9, 0.1, 1.05"
+            #  "smoothOut, 0.36, 0, 0.66, -0.56"
+            #  "smoothIn, 0.25, 1, 0.5, 1"
+            #  "realsmooth, 0.28, 0.29, 0.69, 1.08"
+            #  "easeInOutBack, 0.68, -0.6, 0.32, 1.6"
+            #];
           flash = {
-            flash_opacity = 0.7;
+            flash_opacity = 0.85;
             in_bezier = "bezIn";
             in_speed = 0.5;
             out_bezier = "bezOut";
-            out_speed = 3;
+            out_speed = 1;
           };
         };
         hycov = {

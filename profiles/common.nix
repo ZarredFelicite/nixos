@@ -1,6 +1,10 @@
-{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
+{ pkgs, config, lib, inputs, ...
+  #pkgs-unstable,
+}: {
   imports = [
-    ../sys/nix.nix
+    ../profiles/nix.nix
+    ../profiles/impermanence.nix
+    ../profiles/syncthing.nix
     inputs.sops-nix.nixosModules.sops
     ../containers/docker.nix
     ../containers/podman.nix
@@ -20,12 +24,44 @@
     DefaultTimeoutStopSec=10s
   '';
 
-  systemd.network = {
-    enable = true;
-  };
+  #systemd.network = {
+  #  enable = false;
+  #  wait-online = {
+  #    anyInterface = true;
+  #    timeout = 0;
+  #  };
+  #  networks = {
+  #    "10-eth" = {
+  #      matchConfig.Type = "ether";
+  #      networkConfig.DHCP = "yes";
+  #      networkConfig.IPv6AcceptRA = true;
+  #      linkConfig.RequiredForOnline = "routable";
+  #      routes = [ { Metric = 5; } ];
+  #    };
+  #    "20-wifi" = {
+  #      matchConfig.Type = "wlan";
+  #      networkConfig.DHCP = "yes";
+  #      networkConfig.IPv6AcceptRA = true;
+  #      linkConfig.RequiredForOnline = "routable";
+  #      routes = [ { Metric = 10; } ];
+  #    };
+  #  };
+  #};
+  #services.resolved = {
+  #  enable = false;
+  #  dnssec = "true";
+  #  domains = [ "~." ];
+  #  fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+  #  dnsovertls = "true";
+  #  extraConfig = ''
+  #    MulticastDNS=true
+  #  '';
+  #};
   networking = {
-    #nameservers = [ "1.1.1.1" "9.9.9.9" ];
-    useNetworkd = true;
+    #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
+    #useNetworkd = true;
+    #useDHCP = false;
+    #dhcpcd.enable = false;
     networkmanager = {
       enable = false;
       wifi.powersave = false;
@@ -35,7 +71,9 @@
     wireless.iwd = {
       enable = true;
       settings = {
+        IPv6.Enabled = true;
         Settings.AutoConnect = true;
+        General.EnableNetworkConfiguration = true;
       };
     };
     firewall = {
@@ -47,17 +85,22 @@
     };
     extraHosts =
       "
-      100.64.1.200 sankara
-      100.64.1.125 nano
-      100.64.1.150 web
-      192.168.86.224 rprinter
-      192.168.86.240 rpizero
-      192.168.86.246 oneplus
+      169.254.91.114 web
+      #  100.64.1.200 sankara
+      #  100.64.1.125 nano
+      #  192.168.86.224 rprinter
+      #  192.168.86.240 rpizero
+      #  192.168.86.246 oneplus
       ";
   };
   services.tailscale = {
     enable = true;
-    extraSetFlags = [ "--operator=zarred" ];
+    extraSetFlags = [
+      "--operator=zarred"
+      "--advertise-exit-node"
+    ];
+    useRoutingFeatures = "both";
+    openFirewall = true;
   };
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
@@ -185,6 +228,7 @@
     ];
   };
   security = {
+    doas.enable = true;
     # TODO: enable lanzaboote for secureboot on nixos
     tpm2 = {
       enable = true;
@@ -283,10 +327,10 @@
       nodejs
       openjpeg
       impala
-    ]) ++
-    ( with pkgs-unstable; [
-        #
-    ]);
+      iwgtk
+    ])
+    # ++ ( with pkgs-unstable; [ ])
+    ;
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };
@@ -294,6 +338,7 @@
     dconf.enable = true;
     zsh.enable = true;
     mosh.enable = true;
+    droidcam.enable = true;
     nh = {
       enable = true;
       clean.enable = false;

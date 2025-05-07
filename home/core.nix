@@ -72,7 +72,7 @@
       # web tools
       readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
       # misc
-      ffmpeg_7 # A complete, cross-platform solution to record, convert and stream audio and video
+      ffmpeg # A complete, cross-platform solution to record, convert and stream audio and video
       android-tools # Android SDK platform tools
       imagemagick # A software suite to create, edit, compose, or convert bitmap images
       gotify-cli # A command line interface for pushing messages to gotify/server

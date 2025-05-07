@@ -8,10 +8,10 @@
     --embed-thumbnail
     --embed-subs
     --embed-metadata
-    --downloader ffmpeg # native, aria2c, avconv, axel, curl, ffmpeg, httpie, wget
+    #--downloader ffmpeg # native, aria2c, avconv, axel, curl, ffmpeg, httpie, wget
     --downloader-args aria2c:'-c -x8 -s8 -k1M --continue=true'
-    #--downloader-arg "ffmpeg_i1:-extension_picky 0"
-    #--downloader-arg "ffmpeg_i2:-extension_picky 0"
+    --downloader-arg "ffmpeg_i1:-extension_picky 0"
+    --downloader-arg "ffmpeg_i2:-extension_picky 0"
     --extractor-args "youtube:player-client=ios"
     #--cookies-from-browser firefox
     -N 16

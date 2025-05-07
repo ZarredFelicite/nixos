@@ -84,4 +84,25 @@
       pkgs.openssh
     ];
   };
+  systemd.services.cctv-cleanup = {
+    description = "CCTV footage cleanup service";
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/security/cleanup_cctv.sh";
+      User = "root";
+      Group = "root";
+    };
+  };
+
+  # Define the timer to run every Sunday at 2 AM
+  systemd.timers.cctv-cleanup = {
+    description = "Run CCTV cleanup every Sunday at 2 AM";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "Sun *-*-* 02:00:00";
+      Persistent = true;
+      AccuracySec = "1h";
+    };
+  };
 }

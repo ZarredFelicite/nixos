@@ -26,9 +26,12 @@
     cava # Console-based Audio Visualizer for Alsa
     songrec # An open-source Shazam client for Linux, written in Rust
     sox # Sample Rate Converter for audio
+    decibels # Gnome audio player
+    amberol # Small and simple sound and music player
     # productivity
     glow # Render markdown on the CLI, with pizzazz!
     nb # A command line note-taking, bookmarking, archiving, and knowledge base application
+    obsidian # Powerful knowledge base that works on top of a local folder of plain text Markdown files
     # 3d printing
     f3d # Fast and minimalist 3D viewer using VTK
     orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc

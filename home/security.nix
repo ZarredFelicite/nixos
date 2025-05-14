@@ -29,7 +29,7 @@ in {
   programs.gpg = {
     enable = true;
     settings = {
-      default-key = "BEF3920E6B79FF4A4F817838844F26D1BCAE35C9";
+      #default-key = "BEF3920E6B79FF4A4F817838844F26D1BCAE35C9";
       default-recipient-self = true;
       auto-key-locate = "local,wkd,keyserver";
       keyserver = "hkps://keys.openpgp.org";

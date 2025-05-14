@@ -85,7 +85,7 @@
       gnuplot
       fastfetch
       rpi-imager # Raspberry Pi Imaging Utility
-      ventoy
+      #ventoy # NOTE: marked insecure - binary blobs
       exfatprogs
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
       qrrs # CLI QR code generator and reader written in rust

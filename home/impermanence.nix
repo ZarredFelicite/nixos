@@ -42,6 +42,7 @@
       ".config/GIMP"
       ".config/discord"
       ".config/Vencord"
+      ".config/obsidian"
     ];
     files = [
       ".config/wtwitch/api.json"

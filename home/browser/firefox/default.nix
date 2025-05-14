@@ -1,8 +1,9 @@
 { pkgs, inputs, ... }:
 let
   onebar-css = builtins.readFile( builtins.fetchGit {
+      # NOTE: UPDATE
       url = "https://git.gay/freeplay/Firefox-Onebar";
-      rev = "8237638270551b254a823c47bd9fa4d8b0b69fa9";
+      rev = "78789cadd56cdf0d273ace47e3ac8b6f7db94eef";
     } + "/onebar.css" );
   # Touch focused css (outdated)
   alpha-css = builtins.readFile( builtins.fetchGit {

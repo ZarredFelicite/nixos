@@ -5,6 +5,22 @@
     cycle = false;
     location = "center";
     font = lib.mkDefault "Iosevka Nerd Font 16";
+    modes = [
+      "drun"
+      "run"
+      "emoji"
+      "ssh"
+      "window"
+      "combi"
+      "keys"
+      "filebrowser"
+      "recursivebrowser"
+      "calc"
+      {
+        name = "obsidian";
+        path = lib.getExe pkgs.rofi-obsidian;
+      }
+    ];
     extraConfig = {
       auto-select = true;
       fixed-num-lines = false;
@@ -17,7 +33,7 @@
   };
   home.packages = [
     pkgs.rofi-bluetooth
-    pkgs.rofi-mpd
-    pkgs.rofi-pass
+    #pkgs.rofi-mpd # NOTE: runtime error
+    pkgs.rofi-obsidian
   ];
 }

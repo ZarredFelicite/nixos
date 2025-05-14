@@ -29,7 +29,7 @@ in {
       "scrollbar" = lib.mkForce "#6e6a86";
       "info" = lib.mkForce "#6e6a86";
     };
-    defaultCommand = "fd --type file --hidden --no-ignore";
+    defaultCommand = "fd --type file --no-ignore";
     defaultOptions = [
       "--layout reverse"
       #"--border"

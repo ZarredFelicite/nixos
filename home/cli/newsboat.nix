@@ -54,7 +54,8 @@
       color article             cyan    default
 
       # Searches
-      highlight all "( ai|machine learning|artifical intelligence)" green default bold
+      highlight all "( ai |machine learning|artifical intelligence)" green default bold
+      highlight all "(Steam)" blue default bold
       highlight articlelist \bai green default bold
 
       # Syntax

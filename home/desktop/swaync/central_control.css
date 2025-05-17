@@ -2,7 +2,7 @@
   color:            @text;
   all: unset;
   font-size: 14px;
-  font-family: "Iosevka Nerd Font 11";
+  font-family: "IosevkaTerm NFM 11";
   transition: 200ms;
 
 }

@@ -178,8 +178,8 @@
         --muted: #6e6a86;
 
         /* Generic */
-        --tridactyl-font-family: Iosevka Nerd Font;
-        --tridactyl-font-family-sans: Iosevka Nerd Font;
+        --tridactyl-font-family: IosevkaTerm NFM;
+        --tridactyl-font-family-sans: IosevkaTerm NFM;
         --tridactyl-font-size: 20;
         --tridactyl-small-font-size: 14;
         --tridactyl-logo: url("moz-extension://__MSG_@@extension_id__/static/logo/Tridactyl_64px.png");

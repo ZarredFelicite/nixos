@@ -4,7 +4,7 @@
     package = pkgs.rofi-wayland;
     cycle = false;
     location = "center";
-    font = lib.mkDefault "Iosevka Nerd Font 16";
+    font = lib.mkDefault "IosevkaTerm NFM 16";
     modes = [
       "drun"
       "run"

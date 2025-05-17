@@ -36,7 +36,8 @@ let
     "hyprland/workspaces#number" = {
       format = " <span color='#1f1d2e'>{name} {windows}</span> ";
       all-outputs = false;
-      show-special = false;
+      show-special = true;
+      special-visible-only = true;
       window-rewrite-default = "";
       window-rewrite = {
         "class<Caprine>" = "󰈎";
@@ -563,7 +564,7 @@ in {
     }];
     style = ''
       * {
-          font-family: Iosevka Nerd Font;
+          font-family: IosevkaTerm NF;
           font-size: ${height}px;
           min-height: 0px;
           /*color: #B0C6F4;*/

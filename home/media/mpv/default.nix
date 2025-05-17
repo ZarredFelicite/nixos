@@ -20,7 +20,7 @@
       osd-bar = false;
       border = false;
       #video-sync= "display-resample"; # fix slow UI - more CPU/GPU
-      osd-font = "Iosevka Nerd Font";
+      osd-font = "IosevkaTerm NFM";
       osd-font-size = 16;
       osd-color = "#ebbcba";
       term-osd-bar = true;
@@ -61,7 +61,7 @@
       embeddedfonts = false;
       sub-visibility = false;
       subs-with-matching-audio = false;
-      sub-font = "Iosevka Nerd Font";
+      sub-font = "IosevkaTerm NFM";
       sub-font-size = 24;
       sub-auto = "fuzzy";
       demuxer-mkv-subtitle-preroll = true;
@@ -117,7 +117,7 @@
         select_binding = "RIGHT ENTER MBTN_LEFT";
         close_menu_binding = "ESC LEFT";
         scale_playlist_by_window = true;
-        style_ass_tags = "{\\fnIosevka NF\\fs20}";
+        style_ass_tags = "{\\fnIosevkaTerm NFM\\fs20}";
         text_padding_x = 30;
         text_padding_y = 30;
         curtain_opacity = 0.7;

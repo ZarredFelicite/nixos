@@ -58,7 +58,7 @@
       grc # Generic text colouriser
       # backup/recovery
       testdisk # Data recovery utilities
-      trash-cli # Command line interface to the freedesktop.org trashcan
+      gtrash # Command line interface to the freedesktop.org trashcan https://github.com/umlx5h/gtrash
       # networking
       aria2 # A lightweight multi-protocol & multi-source command-line download utility
       socat # replacement of openbsd-netcat
@@ -195,6 +195,7 @@
         networkx
         pygraphviz
         pdf2image
+        fontforge
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})

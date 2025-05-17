@@ -426,8 +426,7 @@
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
-      nerd-fonts.iosevka
-      nerd-fonts.hack
+      nerd-fonts.iosevka-term
       font-awesome
       noto-fonts
       noto-fonts-emoji

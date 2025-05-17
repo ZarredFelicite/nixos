@@ -102,7 +102,7 @@ in {
         text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 100;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "0, -40";
         halign = "center";
@@ -114,7 +114,7 @@ in {
         text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 16;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "20, -20";
         halign = "left";
@@ -126,7 +126,7 @@ in {
         text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 14;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "20, 20";
         halign = "left";
@@ -138,7 +138,7 @@ in {
         text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 20;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "0, -250";
         halign = "center";
@@ -150,7 +150,7 @@ in {
         text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 24;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "0, -200";
         halign = "center";

@@ -47,7 +47,9 @@
     ];
     layerrule = [
       "blur, notifications"
+      "abovelock true, notifications"
       "blur, waybar"
+      "abovelock true, waybar"
       "blur, rofi"
       "animation slidefadevert, rofi"
       "blur, wlroots"
@@ -61,6 +63,8 @@
       "ignorezero, anyrun"
       "blur, swaync-control-center"
       "blur, swaync-notification-window"
+      "abovelock true, swaync-notification-window"
+      "abovelock true, swaync-control-center"
       "ignorezero, swaync-control-center"
       "ignorezero, swaync-notification-window"
       "ignorealpha 0.25, swaync-control-center"

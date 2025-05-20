@@ -1,4 +1,4 @@
-{ pkgs, ...
+{ pkgs, inputs, ...
   #pkgs-stable, pkgs-unstable,
 }: {
   imports = [
@@ -66,6 +66,8 @@
     # image editor
     gimp
     pinta
+    # ai
+    inputs.claude-desktop.packages.${system}.claude-desktop
   ]);
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;
@@ -99,6 +101,11 @@
     };
     obs-studio = {
       enable = true;
+    };
+    vscode = {
+      enable = true;
+      package = pkgs.vscodium;
+      mutableExtensionsDir = true;
     };
   };
   services = {

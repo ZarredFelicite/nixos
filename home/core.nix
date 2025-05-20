@@ -99,10 +99,11 @@
       nix-init # Command line tool to generate Nix packages from URLs
       # dev tools
       devenv
-      # programming
-      aider-chat
-      claude-code
-      codex
+      # ai
+      aider-chat # AI pair programming in your terminal
+      claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
+      codex # Lightweight coding agent that runs in your terminal
+      oterm # Text-based terminal client for Ollama
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -467,5 +468,5 @@
     AIDER_LINT_CMD="python: ruff check"
     AIDER_EDITOR=nvim
   '';
-  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --api-key openai=$(pass ml_tools/openai-api)";
+  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --openai-api-key $(pass ml_tools/openai-api) --api-key gemini=$(pass google/gemini_api)";
 }

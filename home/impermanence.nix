@@ -43,6 +43,8 @@
       ".config/discord"
       ".config/Vencord"
       ".config/obsidian"
+      ".config/VSCodium"
+      ".config/Claude"
     ];
     files = [
       ".config/wtwitch/api.json"

@@ -6,6 +6,7 @@
     #nixpkgs-stable.url = "github:liberodark/nixpkgs/orca-fix";
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
+    flake-utils.url = "github:numtide/flake-utils";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
@@ -17,6 +18,8 @@
 
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
+
+    claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
   };
   outputs = {
     self, nixpkgs,

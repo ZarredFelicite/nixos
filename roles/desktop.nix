@@ -427,7 +427,7 @@
     fontDir.enable = true;
     packages = with pkgs; [
       nerd-fonts.iosevka-term
-      font-awesome
+      # font-awesome already in nerd-fonts
       noto-fonts
       noto-fonts-emoji
     ];

@@ -22,6 +22,8 @@
       ".mozilla"
       ".android"
       ".java"
+      ".vscode-oss"
+      ".claude"
       ".config/kdeconnect"
       ".config/BraveSoftware"
       ".config/PrusaSlicer"

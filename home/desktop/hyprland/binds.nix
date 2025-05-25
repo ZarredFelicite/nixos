@@ -70,7 +70,7 @@
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"
-      "$mod, R, exec, ~/scripts/stt/record.sh"
+      "$mod, R, exec, ~/scripts/stt/record2.sh --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
 
       "$mod, Return, exec, kitty -1"

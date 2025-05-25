@@ -373,7 +373,7 @@
       size = 24;
     };
     opacity = {
-      terminal = 0.4;
+      terminal = 0.2;
     };
     fonts = {
       sizes = {

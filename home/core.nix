@@ -90,6 +90,7 @@
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
       qrrs # CLI QR code generator and reader written in rust
       catt
+      wiki-tui # Simple and easy to use Wikipedia Text User Interface
 
       # nix
       nix-index # A files database for nixpkgs
@@ -141,6 +142,7 @@
       # text conversion
       lynx # Text-mode web browser
       ( pkgs.callPackage ../pkgs/html-to-markdown {} ) # Convert HTML to Markdown
+      presenterm # Terminal based slideshow tool https://github.com/mfontanini/presenterm
 
       # PYTHON
       ## tools
@@ -193,6 +195,7 @@
         tensorboard
 
         pyrss2gen
+        feedgen # newer rss generator
         networkx
         pygraphviz
         pdf2image

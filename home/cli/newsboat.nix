@@ -117,7 +117,7 @@
       #ignore-article "http://192.168.86.200:85/makefulltextfeed.php?url=feeds.wired.com%2Fwired%2Findex&max=50&links=preserve&exc=&summary=1&submit=Create+Feed" "title =~ \"Deal|deal|Sale|sale\""
     '';
     urls = [
-      { url = "file:///tmp/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
+      { url = "file:///home/zarred/sync/rss/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
       #"exec:/home/zarred/.config/newsboat/parsers/webpage_parse.sh twitter" "~Twitter" stocks no_unread
       #{ url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
 
@@ -157,7 +157,7 @@
       #{ url = "http://feeds.bbci.co.uk/news/world/rss.xml"; tags = [ "!" "~BBC" "news" ]; }
       #{ url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
       #{ url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
-      { url = "https://kill-the-newsletter.com/feeds/kfwpslhaa3o1l0u8l4nz.xml"; tags = [ "!" "~ABC" "news" ]; }
+      { url = "file:///home/zarred/sync/rss/abc.xml"; tags = [ "!" "~ABC" "news" ]; }
       { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
       { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "news" "reddit" ]; }
       { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "news" "reddit" ]; }

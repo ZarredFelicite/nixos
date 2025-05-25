@@ -98,6 +98,15 @@ in {
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.services.abc-news = {
+    Unit.Description = "Summarize abc news rss feed";
+    Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   systemd.user.services.stocks = {
     Unit.Description = "Get stock prices from yfinance";
     Service.ExecStart = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py";
@@ -261,7 +270,8 @@ in {
           interval = 30;
         };
         "image#recording" = {
-          exec = "/home/zarred/scripts/waybar/process-icon.sh 'ffmpeg -nostdin -loglevel error -y -f pulse -i default -ac 1 -ar 16000 -c:a pcm_s16le /tmp/audio_recording.wav' '/home/zarred/pictures/icons/waybar/recording.png'";
+            #exec = "/home/zarred/scripts/waybar/process-icon.sh 'ffmpeg -nostdin -loglevel error -y -f pulse -i default -ac 1 -ar 16000 -c:a pcm_s16le /tmp/audio_recording.wav' '/home/zarred/pictures/icons/waybar/recording.png'";
+          exec = "/home/zarred/scripts/waybar/process-icon.sh 'sox -t raw' '/home/zarred/pictures/icons/waybar/recording.png'";
           signal = 3;
           interval = 30;
           size = 20;

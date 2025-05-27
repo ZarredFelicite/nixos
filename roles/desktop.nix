@@ -330,7 +330,7 @@
     #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
     serviceConfig.KillMode = [ "mixed" ];
     wantedBy = [ "graphical.target" ];
-    before = [ "umount.target" "shutdown.target" ];
+    before = [ "umount.target" ];
     #after = [ "graphical.target" ];
     environment = {
       # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609

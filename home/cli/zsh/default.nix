@@ -125,6 +125,8 @@
       PURPLE = "\\033[0;35m";
       CYAN = "\\033[0;36m";
       NC = "\\033[0m";
+
+      GTRASH_HOME_TRASH_FALLBACK_COPY = "true";
     };
     shellAliases = {
       tw = "wtwitch";
@@ -136,7 +138,8 @@
       tv = "tidy-viewer";
       skl = "lychee - --dump | sk";
       b = "buku --suggest";
-      d = "trash";
+      d = "gtrash put";
+      gt = "gtrash";
       c = "cp-p";
       mm = "micromamba";
       mmact = "eval '$(micromamba shell hook --shell=zsh)'; micromamba activate";

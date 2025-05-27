@@ -34,13 +34,14 @@ let
       on-scroll-down = "hyprctl dispatch workspace -1";
     };
     "hyprland/workspaces#number" = {
-      format = " <span color='#1f1d2e'>{name} {windows}</span> ";
+      format = " <span color='#1f1d2e'>{windows}</span> ";
+      #format = " <span color='#1f1d2e'>{name} {windows}</span> ";
       all-outputs = false;
-      show-special = false;
+      show-special = true;
+      special-visible-only = true;
       window-rewrite-default = "";
       window-rewrite = {
         "class<Caprine>" = "󰈎";
-        "class<Godot>" = "";
         "class<Slack>" = "󰒱";
         "class<code>" = "󰨞";
         "class<discord>" = "󰙯";
@@ -48,6 +49,7 @@ let
         "class<firefox> title<.*github.*>" = "";
         "class<firefox> title<.*twitch|youtube.*>" = "";
         "class<kitty>" = "󰅬";
+        "title<tmux.*>" = "";
         "class<org.telegram.desktop>" = "";
         "class<steam>" = "";
         "class<thunderbird>" = "";
@@ -56,10 +58,10 @@ let
         "class<mpv>" = "";
         "class<imv>" = " ";
         "class<stats>" = "󱕍";
+        "class<obsidian>" = "";
         "class<org.pwmt.zathura>" = "󰈦";
         "class<brave-browser>" = "";
         "class<.*Slicer>" = "";
-        "nheko" = "<span color='#ABE9B3'>󰊌</span>";
         "newsboat" = "";
       };
     };
@@ -90,6 +92,15 @@ in {
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
     Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  systemd.user.services.abc-news = {
+    Unit.Description = "Summarize abc news rss feed";
+    Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "0";
@@ -167,7 +178,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "hyprland/submap" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
+        modules-right = [ "hyprland/submap" "image#recording" "privacy" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -257,6 +268,13 @@ in {
         "image" = {
           exec = "/home/zarred/scripts/waybar/playerctl-art.sh";
           interval = 30;
+        };
+        "image#recording" = {
+            #exec = "/home/zarred/scripts/waybar/process-icon.sh 'ffmpeg -nostdin -loglevel error -y -f pulse -i default -ac 1 -ar 16000 -c:a pcm_s16le /tmp/audio_recording.wav' '/home/zarred/pictures/icons/waybar/recording.png'";
+          exec = "/home/zarred/scripts/waybar/process-icon.sh 'sox -t raw' '/home/zarred/pictures/icons/waybar/recording.png'";
+          signal = 3;
+          interval = 30;
+          size = 20;
         };
         systemd-failed-units = {
           hide-on-ok = true;
@@ -351,6 +369,16 @@ in {
             on-scroll-up = "shift_up";
             on-scroll-down = "shift_down";
           };
+        };
+        privacy = {
+          icon-spacing = 4;
+          icon-size = 18;
+          transition-duration = 250;
+          modules = [
+            { type = "screenshare"; tooltip = true; tooltip-icon-size = 24; }
+            { type = "audio-out"; tooltip = true; tooltip-icon-size = 24; }
+            { type = "audio-in"; tooltip = true; tooltip-icon-size = 24; }
+          ];
         };
         "custom/timer" = {
           exec = "/home/zarred/scripts/waybar/timer.sh updateandprint";
@@ -563,7 +591,7 @@ in {
     }];
     style = ''
       * {
-          font-family: Iosevka Nerd Font;
+          font-family: IosevkaTerm NF;
           font-size: ${height}px;
           min-height: 0px;
           /*color: #B0C6F4;*/
@@ -617,7 +645,7 @@ in {
       }
       #mpris, #submap, #custom-news, #custom-mail, #airpods-battery, #zmk-battery,
       #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray,
-      #custom-weather, #custom-notification {
+      #custom-weather, #custom-notification, #privacy {
           padding: 0 4 0 4px;
           margin: 0px 1px 0px 1px;
           border-radius: 12px;

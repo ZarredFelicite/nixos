@@ -44,6 +44,7 @@
     ];
     bind = [
       "$mod, O, overview:toggle, all"
+      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian special"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -62,12 +63,14 @@
       "$mod, D, exec, ~/scripts/hyprland/toggle_special.sh stats"
       "$mod, M, exec, ~/scripts/hyprland/toggle_special.sh music"
       "$mod, A, exec, ~/scripts/hyprland/toggle_special.sh reset"
+      "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox browser-chatgpt"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"
       "$mod SHIFT, C, centerwindow"
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"
+      "$mod, R, exec, ~/scripts/stt/record2.sh --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
 
       "$mod, Return, exec, kitty -1"

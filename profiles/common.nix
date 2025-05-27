@@ -373,7 +373,7 @@
       size = 24;
     };
     opacity = {
-      terminal = 0.4;
+      terminal = 0.2;
     };
     fonts = {
       sizes = {
@@ -383,16 +383,16 @@
         terminal = 14;
       };
       sansSerif = {
-        package = pkgs.nerd-fonts.iosevka;
-        name = "Iosevka Nerd Font";
+        package = pkgs.nerd-fonts.iosevka-term;
+        name = "IosevkaTerm NFM";
       };
       serif = {
-        package = pkgs.nerd-fonts.iosevka;
-        name = "Iosevka Nerd Font";
+        package = pkgs.nerd-fonts.iosevka-term;
+        name = "IosevkaTerm NFM";
       };
       monospace = {
-        package = pkgs.nerd-fonts.iosevka;
-        name = "Iosevka Nerd Font Mono";
+        package = pkgs.nerd-fonts.iosevka-term;
+        name = "IosevkaTerm NFM";
       };
       emoji = {
         package = pkgs.noto-fonts-emoji;

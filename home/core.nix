@@ -58,7 +58,7 @@
       grc # Generic text colouriser
       # backup/recovery
       testdisk # Data recovery utilities
-      trash-cli # Command line interface to the freedesktop.org trashcan
+      gtrash # Command line interface to the freedesktop.org trashcan https://github.com/umlx5h/gtrash
       # networking
       aria2 # A lightweight multi-protocol & multi-source command-line download utility
       socat # replacement of openbsd-netcat
@@ -85,11 +85,12 @@
       gnuplot
       fastfetch
       rpi-imager # Raspberry Pi Imaging Utility
-      ventoy
+      #ventoy # NOTE: marked insecure - binary blobs
       exfatprogs
       psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
       qrrs # CLI QR code generator and reader written in rust
       catt
+      wiki-tui # Simple and easy to use Wikipedia Text User Interface
 
       # nix
       nix-index # A files database for nixpkgs
@@ -99,10 +100,11 @@
       nix-init # Command line tool to generate Nix packages from URLs
       # dev tools
       devenv
-      # programming
-      aider-chat
-      claude-code
-      codex
+      # ai
+      aider-chat # AI pair programming in your terminal
+      claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
+      codex # Lightweight coding agent that runs in your terminal
+      oterm # Text-based terminal client for Ollama
 
       # latex
       (texliveBasic.withPackages(ps: with ps; [
@@ -140,6 +142,7 @@
       # text conversion
       lynx # Text-mode web browser
       ( pkgs.callPackage ../pkgs/html-to-markdown {} ) # Convert HTML to Markdown
+      presenterm # Terminal based slideshow tool https://github.com/mfontanini/presenterm
 
       # PYTHON
       ## tools
@@ -192,9 +195,11 @@
         tensorboard
 
         pyrss2gen
+        feedgen # newer rss generator
         networkx
         pygraphviz
         pdf2image
+        fontforge
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
         # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})
@@ -466,5 +471,5 @@
     AIDER_LINT_CMD="python: ruff check"
     AIDER_EDITOR=nvim
   '';
-  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --api-key openai=$(pass ml_tools/openai-api)";
+  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --openai-api-key $(pass ml_tools/openai-api) --api-key gemini=$(pass google/gemini_api)";
 }

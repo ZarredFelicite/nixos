@@ -1,19 +1,12 @@
 { lib, ... }: {
   programs.kitty = {
-    font.name = lib.mkDefault "Iosevka Nerd Font Mono";
-    #font.size = lib.mkDefault 10;
     shellIntegration.enableZshIntegration = true;
-    #theme = lib.mkDefault "Tomorrow Night Bright";
-    #theme = "Tokyo Night";
-    #theme = "Rosé Pine";
     settings = {
       enable_audio_bell = false;
       close_on_child_death = true;
       allow_remote_control = "socket";
       listen_on = "unix:/tmp/kitty";
       window_padding_width = 3;
-      background_opacity = lib.mkForce "0.2";
-      background = "#191724";
       background_image_layout = "cscaled";
       background_tint = 0.0;
       dynamic_background_opacity = true;
@@ -32,6 +25,9 @@
       "ctrl+shift+p>f" = "kitten hints --type path --program -";
       "ctrl+shift+p>shift+f" = "kitten hints --type path";
     };
+    extraConfig = ''
+      color8 #555169
+    '';
   };
   programs.foot = {
     server.enable = true;

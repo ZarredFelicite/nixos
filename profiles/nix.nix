@@ -114,4 +114,5 @@
     environment.TMPDIR = "/var/cache/nix";
     serviceConfig.CacheDirectory = "nix";
   };
+  programs.nix-ld.enable = true;
 }

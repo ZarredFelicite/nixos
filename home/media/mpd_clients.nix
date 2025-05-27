@@ -20,6 +20,7 @@
   #systemd.user.services.mpd.Service.ExecStartPre = lib.mkForce "";
   #systemd.user.services.mpd.Unit.After = lib.mkForce "mnt-gargantua.automount";
   programs = {
+    rmpc.enable = true;
     ncmpcpp = {
       enable = osConfig.services.mpd.enable;
       bindings = [

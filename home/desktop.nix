@@ -1,4 +1,4 @@
-{ pkgs, ...
+{ pkgs, inputs, ...
   #pkgs-stable, pkgs-unstable,
 }: {
   imports = [
@@ -26,11 +26,14 @@
     cava # Console-based Audio Visualizer for Alsa
     songrec # An open-source Shazam client for Linux, written in Rust
     sox # Sample Rate Converter for audio
+    decibels # Gnome audio player
+    amberol # Small and simple sound and music player
     # productivity
     glow # Render markdown on the CLI, with pizzazz!
     nb # A command line note-taking, bookmarking, archiving, and knowledge base application
+    obsidian # Powerful knowledge base that works on top of a local folder of plain text Markdown files
     # 3d printing
-    f3d # Fast and minimalist 3D viewer using VTK
+      # TODO: broken: f3d # Fast and minimalist 3D viewer using VTK
     orca-slicer # G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc
     # prusa-slicer # G-code generator for 3D printer
     # bambu-studio # PC Software for BambuLab's 3D printers
@@ -46,7 +49,10 @@
     telegram-desktop # Telegram Desktop messaging app
     caprine-bin # An elegant Facebook Messenger desktop app
     zoom-us # zoom.us video conferencing application
+
+    # other
     v4l-utils # V4L utils and libv4l, provide common image formats regardless of the v4l device
+
     (discord.override {
       # All-in-one cross-platform voice and text chat for gamers
       withOpenASAR = true;
@@ -60,6 +66,8 @@
     # image editor
     gimp
     pinta
+    # ai
+    inputs.claude-desktop.packages.${system}.claude-desktop
   ]);
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;
@@ -93,6 +101,11 @@
     };
     obs-studio = {
       enable = true;
+    };
+    vscode = {
+      enable = true;
+      package = pkgs.vscodium.fhs;
+      mutableExtensionsDir = true;
     };
   };
   services = {

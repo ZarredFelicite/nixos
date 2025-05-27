@@ -4,13 +4,21 @@ let
 in {
   programs.hyprlock.settings = {
     general = {
-      hide_cursor = true;
+      hide_cursor = false;
       grace = 5;
       ignore_empty_input = true;
       #screencopy_mode = 1;
     };
     animations.enabled = true;
     background = [
+      {
+        monitor = "";
+        path = "/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
+        color = "rgba(25, 20, 20, 1.0)";
+        blur_passes = 3;
+        blur_size = 7;
+        brightness = 0.7;
+      }
       {
         monitor = "DP-2";
         path = "/home/zarred/pictures/wallpapers/tarantula_nebula_web_right.png";
@@ -28,14 +36,6 @@ in {
         path = "/home/zarred/pictures/wallpapers/tarantula_nebula_web_left.png";
         color = "rgba(25, 20, 20, 1.0)";
         blur_passes = 4;
-        blur_size = 7;
-        brightness = 0.7;
-      }
-      {
-        monitor = "eDP-1";
-        path = "/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
-        color = "rgba(25, 20, 20, 1.0)";
-        blur_passes = 3;
         blur_size = 7;
         brightness = 0.7;
       }
@@ -102,9 +102,9 @@ in {
         text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 100;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
-        position = "0, -40";
+        position = "0, -80";
         halign = "center";
         valign = "top";
       }
@@ -114,7 +114,7 @@ in {
         text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 16;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "20, -20";
         halign = "left";
@@ -126,7 +126,7 @@ in {
         text_align = "left"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 14;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
         position = "20, 20";
         halign = "left";
@@ -134,13 +134,13 @@ in {
       }
       {
         monitor = monitor;
-        text = "cmd[update:300000] playerctl metadata --format \"{{ title }}|{{ artist }}|{{ album }}\" | tr \"|\" \"\\n\"";
+        text = "cmd[update:300000] playerctl metadata title; playerctl metadata artist";
         text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 20;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
-        position = "0, -250";
+        position = "0, -300";
         halign = "center";
         valign = "top";
       }
@@ -150,9 +150,9 @@ in {
         text_align = "center"; # center/right or any value for default left. multi-line text alignment inside label container
         color = "rgba(196, 167, 231, 1.0)";
         font_size = 24;
-        font_family = "Iosevka";
+        font_family = "IosevkaTerm NFM";
         rotate = 0; # degrees, counter-clockwise
-        position = "0, -200";
+        position = "0, -250";
         halign = "center";
         valign = "top";
       }

@@ -22,6 +22,8 @@
       ".mozilla"
       ".android"
       ".java"
+      ".vscode-oss"
+      ".claude"
       ".config/kdeconnect"
       ".config/BraveSoftware"
       ".config/PrusaSlicer"
@@ -42,6 +44,9 @@
       ".config/GIMP"
       ".config/discord"
       ".config/Vencord"
+      ".config/obsidian"
+      ".config/VSCodium"
+      ".config/Claude"
     ];
     files = [
       ".config/wtwitch/api.json"

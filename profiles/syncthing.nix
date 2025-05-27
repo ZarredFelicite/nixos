@@ -40,7 +40,7 @@
           enable = true;
 	        path = "/home/zarred/nb";
           type = "sendreceive";
-	        devices = [ "web" "phone" ];
+	        devices = [ "web" "sankara" "nano" "phone" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };
 	      };
         "scripts" = {

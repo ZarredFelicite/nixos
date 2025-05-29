@@ -320,7 +320,7 @@
           type    "pipewire"
           name    "Pipewire Sound Server"
         }
-        pid_file "/tmp/mpd-pid"
+        #pid_file "/tmp/mpd-pid"
       '');
   };
   systemd.services.mpd = {
@@ -331,6 +331,7 @@
     serviceConfig.KillMode = [ "mixed" ];
     wantedBy = [ "graphical.target" ];
     before = [ "umount.target" ];
+    after = [ "multi-user.target" ];
     #after = [ "graphical.target" ];
     environment = {
       # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609

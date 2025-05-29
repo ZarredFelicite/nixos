@@ -199,6 +199,7 @@
         networkx
         pygraphviz
         pdf2image
+        reportlab
         fontforge
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})

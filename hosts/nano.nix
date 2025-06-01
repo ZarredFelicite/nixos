@@ -1,5 +1,14 @@
-{ config, lib, pkgs, modulesPath, ... }: {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+{ config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    inputs.home-manager.nixosModules.home-manager
+  ];
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = { inherit self inputs outputs; };
+    users.zarred = import ../home/hosts/nano.nix;
+  };
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "nano";
   services.syncthing.enable = true;

@@ -1,8 +1,15 @@
-{ config, lib, pkgs, modulesPath, ... }: {
+{ config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
+    inputs.home-manager.nixosModules.home-manager
   ];
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = { inherit self inputs outputs; };
+    users.zarred = import ../home/hosts/web.nix;
+  };
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
   boot = {
@@ -247,4 +254,3 @@
   #  ports = [ "8083:8080" ];
   #};
 }
-

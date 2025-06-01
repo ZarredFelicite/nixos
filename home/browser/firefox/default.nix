@@ -18,6 +18,7 @@ in {
   imports = [
     ./tridactyl.nix
   ];
+  stylix.targets.firefox.enable = false;
   programs.firefox = {
     enable = true;
     package = pkgs.firefox.override {
@@ -126,5 +127,4 @@ in {
     source = ./firefox_openwith/com.add0n.node.json;
     target = "./.mozilla/native-messaging-hosts/com.add0n.node.json";
   };
-  stylix.targets.firefox.profileNames = [ "tracking" ];
 }

@@ -358,12 +358,6 @@
     enable = true;
     autoEnable = true;
     image = ../wallpaper.jpg;
-    # NOTE: Impure access to paths
-    #image = lib.mkMerge [
-    #  (lib.mkIf (config.networking.hostName == "nano") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    #  (lib.mkIf (config.networking.hostName == "web") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    #  (lib.mkIf (config.networking.hostName == "sankara") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    #];
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {
@@ -400,9 +394,6 @@
         package = pkgs.noto-fonts-emoji;
         name = "Noto Color Emoji";
       };
-    };
-    targets = {
-      #waybar.enable = false;
     };
   };
 

@@ -62,7 +62,7 @@
         web = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs self;
             #inherit pkgs-stable;
             #inherit pkgs-unstable;
           };
@@ -78,7 +78,7 @@
         nano = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs self;
             #inherit pkgs-unstable;
             #inherit pkgs-stable;
           };
@@ -95,7 +95,7 @@
         sankara = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs self;
             #inherit pkgs-unstable;
             #inherit pkgs-stable;
           };

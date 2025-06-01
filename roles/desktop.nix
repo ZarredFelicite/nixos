@@ -9,17 +9,9 @@
     ../profiles/ai.nix
     ../profiles/backups.nix
     ../profiles/nfs.nix
-    inputs.home-manager.nixosModules.home-manager
+    # inputs.home-manager.nixosModules.home-manager # Removed: Handled by individual host configs
   ];
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = { inherit
-      self inputs outputs
-      #pkgs-unstable pkgs-stable
-    ;};
-    users.zarred = import ../home/desktop.nix;
-  };
+  # home-manager block removed: Handled by individual host configs
   hardware = {
     bluetooth = {
       enable = true;

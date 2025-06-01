@@ -1,7 +1,7 @@
 { pkgs, config, ... }: {
   #systemd.services.syncthing.unitConfig.After = lib.mkForce "graphical-session.target";
   #systemd.services.syncthing.serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 120";
-  environment.variables.SYNCTHING_CTL_URL = "http://localhost:8382";
+  environment.variables.SYNCTHING_CTL_URL = "http://localhost:8384";
   environment.systemPackages = [
     pkgs.syncthing
     pkgs.stc-cli

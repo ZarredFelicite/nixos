@@ -119,7 +119,6 @@ in {
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
         "${pkgs.wayvnc}/bin/wayvnc"
         "${pkgs.trayscale}/bin/trayscale --hide-window"
-        "${pkgs.syncthingtray}/bin/syncthingtray"
       ];
       monitor = [",preferred,auto,1,transform,1"];
       xwayland.force_zero_scaling = true;

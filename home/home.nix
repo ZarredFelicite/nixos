@@ -1,10 +1,14 @@
-{ pkgs, lib, osConfig, ... }: {
-  # imports array removed - these are now handled by home/hosts/*.nix files
+{ pkgs, lib, osConfig, ... }:
+  let
+    mkGraphicalService = lib.recursiveUpdate {
+      Unit.PartOf = [ "graphical-session.target" ];
+      Unit.After = [ "graphical-session.target" ];
+      Install.WantedBy = [ "graphical-session.target" ];
+      Service.Restart = "always";
+    };
+  in {
   home = {
-    # username, homeDirectory, stateVersion moved to home/core-settings.nix
     packages = with pkgs; [
-      # Packages moved to home/cli-apps.nix have been removed along with their comments.
-      # Remaining packages (mostly GUI or broadly used libraries):
       # system tools
       gtk3
       helvum # A GTK patchbay for pipewire
@@ -43,27 +47,15 @@
       # kinect
       #freenect
       #freecad
-
-      # PYTHON packages moved to home/python.nix
     ];
-    # sessionVariables moved to home/core-settings.nix
   };
   programs.kitty.enable = true;
   programs.foot.enable = false;
   programs.ghostty.enable = true;
-  # programs.bat moved to home/core-settings.nix
-  services.ssh-agent.enable = false; # TODO: vs GPG-agent
-  # programs.ssh moved to home/core-settings.nix
-  # programs.git moved to home/core-settings.nix
-  #xdg.configFile."gh/hosts.yml".source = osConfig.sops.secrets.github-api-token.path; # This should go with gh config if sops is used
-  # programs.gh moved to home/core-settings.nix
-  # programs.tealdeer moved to home/core-settings.nix
-  # programs.starship moved to home/core-settings.nix
-  # programs.pandoc.enable = true; # Moved to home/cli-apps.nix
-  #programs.home-manager.enable = true;
-  # services.udiskie moved to home/cli-apps.nix
-  # xdg.mimeApps and xdg.userDirs moved to home/xdg-settings.nix
-  # editorconfig moved to home/core-settings.nix
-  # xdg.configFile."/home/zarred/.jq".text moved to home/core-settings.nix
-  # Aider config and alias moved to home/cli-apps.nix
+  services.ssh-agent.enable = false;
+
+  systemd.user.services.syncthingtray = mkGraphicalService {
+    Unit.Description = "Syncthing monitoring tray";
+    Service.ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray";
+  };
 }

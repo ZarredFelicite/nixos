@@ -24,6 +24,8 @@
     ../impermanence.nix
   ];
 
+  systemd.user.services.airpods_battery.Install.WantedBy = lib.mkForce [];
+  systemd.user.services.zmk_battery.Install.WantedBy = lib.mkForce [];
   # Placeholder for any home-manager settings absolutely specific to zarred on nano
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-nano-specific-tool ];

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, osConfig, pkgs, lib, ... }:
 let
   pinentryRofi = pkgs.writeShellApplication {
     name= "pinentry-rofi-with-env";
@@ -85,7 +85,8 @@ in {
     Unit.Description = "Wait 1s before suspend";
     Unit.Before = [ "sleep.target" ];
     Install.WantedBy = [ "sleep.target" ];
-    Service.ExecStartPre = "/run/current-system/sw/bin/sleep 5";
+    #Service.ExecStartPre = "/run/current-system/sw/bin/sleep 1";
+    Service.ExecStartPre = "/home/zarred/scripts/sys/pre-suspend.sh";
     Service.ExecStart = "/run/current-system/sw/bin/true";
     Service.Type = "simple";
   };
@@ -93,8 +94,8 @@ in {
     settings.general = {
       lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render --no-fade-in -q"; # avoid starting multiple hyprlock instances.
       before_sleep_cmd = "loginctl lock-session"; # lock before suspend.
-      after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"; # to avoid having to press a key twice to turn on the display.
-      inhibit_sleep = 3;
+      #after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"; # to avoid having to press a key twice to turn on the display.
+      after_sleep_cmd = "/home/zarred/scripts/sys/post-suspend.sh"; # to avoid having to press a key twice to turn on the display.
     };
     settings.listener = [
       {

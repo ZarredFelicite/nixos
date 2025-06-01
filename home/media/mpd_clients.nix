@@ -15,10 +15,6 @@
       notifications = true;
     };
   };
-  #systemd.user.services.mpdris2.Unit.Requires = lib.mkForce "mpd.service";
-  #systemd.user.services.mpdris2.Unit.After = lib.mkForce "mpd.service";
-  #systemd.user.services.mpd.Service.ExecStartPre = lib.mkForce "";
-  #systemd.user.services.mpd.Unit.After = lib.mkForce "mnt-gargantua.automount";
   programs = {
     rmpc.enable = true;
     ncmpcpp = {

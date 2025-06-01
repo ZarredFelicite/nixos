@@ -2,6 +2,7 @@
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "nano";
+  services.syncthing.enable = true;
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-intel" ];

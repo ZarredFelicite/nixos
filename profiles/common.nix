@@ -102,6 +102,7 @@
     useRoutingFeatures = "both";
     openFirewall = true;
   };
+  systemd.services.tailscaled.after = [ "network.target" "network-online.target" ];
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   i18n.extraLocaleSettings = {
@@ -209,6 +210,7 @@
         cloudflare-api-token = {};
         ib-gateway = { owner = "zarred"; };
         ib-gateway-vnc = { owner = "zarred"; };
+        syncthing-api = { owner = "zarred"; };
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";

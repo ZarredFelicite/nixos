@@ -58,4 +58,10 @@
     Unit.Description = "Syncthing monitoring tray";
     Service.ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray";
   };
+  systemd.user.services.mppv_watcher = mkGraphicalService {
+    Unit.Description = "Watch for mppv changes";
+    Service.ExecStart = "/home/zarred/scripts/video/mppv -w";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+  };
 }

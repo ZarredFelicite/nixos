@@ -10,6 +10,7 @@
     extraSpecialArgs = { inherit self inputs outputs; };
     users.zarred = import ../home/hosts/web.nix;
   };
+  services.syncthing.enable = true;
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
   boot = {
@@ -189,7 +190,7 @@
       extraPackages32 = with pkgs.pkgsi686Linux; [nvidia-vaapi-driver];
     };
     openrazer = {
-      enable = false; # TODO: broken pr:384992
+      enable = false;
       users = [ "zarred" ];
       devicesOffOnScreensaver = true;
     };

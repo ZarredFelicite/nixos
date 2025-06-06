@@ -75,7 +75,7 @@ in {
     swayimg
     gimp
     pinta
-    inputs.claude-desktop.packages.${pkgs.system}.claude-desktop # Corrected system reference
+    #inputs.claude-desktop.packages.${pkgs.system}.claude-desktop # Corrected system reference
   ];
 
   home.sessionVariables = { # From home/desktop.nix

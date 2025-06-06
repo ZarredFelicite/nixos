@@ -22,8 +22,8 @@
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   # TT-RSS
-  services.postgresql.enable = true;
-  services.tt-rss.enable = true;
+  #services.postgresql.enable = true;
+  services.tt-rss.enable = false;
 
   services.gotify.enable = true;
   services.klipper.enable = true;

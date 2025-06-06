@@ -191,6 +191,7 @@ in {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods left 100";
           interval = 1;
           size = 20;
+          on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
         };
         "image#airpods-battery-right" = {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
@@ -674,6 +675,10 @@ in {
       #image, #backlight, #cpu, #temperature, #wireplumber, #power-profiles-daemon, #idle_inhibitor {
           padding: 0 1 0 1px;
           margin: 0px;
+      }
+      button {
+        min-width: 14px;
+        min-height: 14px;
       }
     '';
   };

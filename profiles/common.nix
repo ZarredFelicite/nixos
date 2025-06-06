@@ -24,29 +24,28 @@
     DefaultTimeoutStopSec=10s
   '';
 
-  #systemd.network = {
-  #  enable = false;
-  #  wait-online = {
-  #    anyInterface = true;
-  #    timeout = 0;
-  #  };
-  #  networks = {
-  #    "10-eth" = {
-  #      matchConfig.Type = "ether";
-  #      networkConfig.DHCP = "yes";
-  #      networkConfig.IPv6AcceptRA = true;
-  #      linkConfig.RequiredForOnline = "routable";
-  #      routes = [ { Metric = 5; } ];
-  #    };
-  #    "20-wifi" = {
-  #      matchConfig.Type = "wlan";
-  #      networkConfig.DHCP = "yes";
-  #      networkConfig.IPv6AcceptRA = true;
-  #      linkConfig.RequiredForOnline = "routable";
-  #      routes = [ { Metric = 10; } ];
-  #    };
-  #  };
-  #};
+  systemd.network = {
+    #wait-online = {
+    #  anyInterface = true;
+    #  timeout = 0;
+    #};
+    networks = {
+      "10-wired" = {
+        matchConfig.Name = "enp38s0";
+        #networkConfig.IPv6AcceptRA = true;
+        address = [ "10.20.30.1/30" ];
+        #linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 10; } ];
+      };
+      "20-wifi" = {
+        matchConfig.Name = "wlan0";
+        networkConfig.DHCP = "yes";
+        #networkConfig.IPv6AcceptRA = true;
+        #linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 600; } ];
+      };
+    };
+  };
   #services.resolved = {
   #  enable = false;
   #  dnssec = "true";
@@ -59,8 +58,8 @@
   #};
   networking = {
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
-    #useNetworkd = true;
-    #useDHCP = false;
+    useNetworkd = true;
+    useDHCP = false;
     #dhcpcd.enable = false;
     networkmanager = {
       enable = false;

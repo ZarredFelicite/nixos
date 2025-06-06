@@ -52,6 +52,7 @@
       ".config/wtwitch/api.json"
       ".sops.yaml"
       ".config/syncthingtray.ini"
+      ".claude.json"
     ];
     allowOther = true;
   };

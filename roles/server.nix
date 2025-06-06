@@ -2,7 +2,7 @@
 #pkgs-unstable,
   inputs, outputs, ... }: {
   imports = [
-    inputs.home-manager.nixosModules.home-manager
+    # inputs.home-manager.nixosModules.home-manager # Removed: Handled by individual host configs
     ../profiles/common.nix
     ../profiles/media-server.nix
     ../profiles/server-management.nix
@@ -12,15 +12,7 @@
     ../profiles/printer.nix
     ../profiles/ib.nix
   ];
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = { inherit
-      self inputs outputs
-      #pkgs-unstable
-    ;};
-    users.zarred = import ../home/core.nix;
-  };
+  # home-manager block removed: Handled by individual host configs
   #environment.systemPackages = [
   #  pkgs.mergerfs
   #  pkgs.mergerfs-tools

@@ -19,7 +19,7 @@
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
 
-    claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
+    #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
   };
   outputs = {
     self, nixpkgs,
@@ -62,7 +62,7 @@
         web = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs self;
             #inherit pkgs-stable;
             #inherit pkgs-unstable;
           };
@@ -78,7 +78,7 @@
         nano = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs self;
             #inherit pkgs-unstable;
             #inherit pkgs-stable;
           };
@@ -95,7 +95,7 @@
         sankara = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs self;
             #inherit pkgs-unstable;
             #inherit pkgs-stable;
           };

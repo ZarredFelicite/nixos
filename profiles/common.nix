@@ -24,29 +24,35 @@
     DefaultTimeoutStopSec=10s
   '';
 
-  #systemd.network = {
-  #  enable = false;
-  #  wait-online = {
-  #    anyInterface = true;
-  #    timeout = 0;
-  #  };
-  #  networks = {
-  #    "10-eth" = {
-  #      matchConfig.Type = "ether";
-  #      networkConfig.DHCP = "yes";
-  #      networkConfig.IPv6AcceptRA = true;
-  #      linkConfig.RequiredForOnline = "routable";
-  #      routes = [ { Metric = 5; } ];
-  #    };
-  #    "20-wifi" = {
-  #      matchConfig.Type = "wlan";
-  #      networkConfig.DHCP = "yes";
-  #      networkConfig.IPv6AcceptRA = true;
-  #      linkConfig.RequiredForOnline = "routable";
-  #      routes = [ { Metric = 10; } ];
-  #    };
-  #  };
-  #};
+  systemd.network = {
+    #wait-online = {
+    #  anyInterface = true;
+    #  timeout = 0;
+    #};
+    networks = {
+      "10-wired" = {
+        matchConfig.Name = "enp38s0";
+        #networkConfig.IPv6AcceptRA = true;
+        address = [ "10.20.30.1/30" ];
+        #linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 10; } ];
+      };
+      "20-wired" = {
+        matchConfig.Name = "enp0s13f0u3u4u5";
+        #networkConfig.IPv6AcceptRA = true;
+        address = [ "10.20.30.2/30" ];
+        #linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 10; } ];
+      };
+      "60-wifi" = {
+        matchConfig.Name = "wlan0";
+        networkConfig.DHCP = "yes";
+        #networkConfig.IPv6AcceptRA = true;
+        #linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 600; } ];
+      };
+    };
+  };
   #services.resolved = {
   #  enable = false;
   #  dnssec = "true";
@@ -59,8 +65,8 @@
   #};
   networking = {
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
-    #useNetworkd = true;
-    #useDHCP = false;
+    useNetworkd = true;
+    useDHCP = false;
     #dhcpcd.enable = false;
     networkmanager = {
       enable = false;
@@ -83,15 +89,6 @@
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
     };
-    extraHosts =
-      "
-      169.254.91.114 web
-      #  100.64.1.200 sankara
-      #  100.64.1.125 nano
-      #  192.168.86.224 rprinter
-      #  192.168.86.240 rpizero
-      #  192.168.86.246 oneplus
-      ";
   };
   services.tailscale = {
     enable = true;
@@ -102,6 +99,7 @@
     useRoutingFeatures = "both";
     openFirewall = true;
   };
+  systemd.services.tailscaled.after = [ "network.target" "network-online.target" ];
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   i18n.extraLocaleSettings = {
@@ -209,6 +207,7 @@
         cloudflare-api-token = {};
         ib-gateway = { owner = "zarred"; };
         ib-gateway-vnc = { owner = "zarred"; };
+        syncthing-api = { owner = "zarred"; };
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";
@@ -361,12 +360,6 @@
     enable = true;
     autoEnable = true;
     image = ../wallpaper.jpg;
-    # NOTE: Impure access to paths
-    #image = lib.mkMerge [
-    #  (lib.mkIf (config.networking.hostName == "nano") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    #  (lib.mkIf (config.networking.hostName == "web") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    #  (lib.mkIf (config.networking.hostName == "sankara") /persist/home/zarred/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg)
-    #];
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
     # https://github.com/tinted-theming/base16-schemes
     #override = {
@@ -403,9 +396,6 @@
         package = pkgs.noto-fonts-emoji;
         name = "Noto Color Emoji";
       };
-    };
-    targets = {
-      #waybar.enable = false;
     };
   };
 

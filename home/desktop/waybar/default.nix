@@ -89,42 +89,6 @@ in {
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
-  systemd.user.services.hotcopper = {
-    Unit.Description = "Scrape HotCopper for user posts";
-    Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
-  systemd.user.services.abc-news = {
-    Unit.Description = "Summarize abc news rss feed";
-    Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
-  systemd.user.services.stocks = {
-    Unit.Description = "Get stock prices from yfinance";
-    Service.ExecStart = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
-  systemd.user.services.mppv_watcher = {
-    Unit.Description = "Watch for mppv changes";
-    Service.ExecStart = "/home/zarred/scripts/video/mppv -w";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
   systemd.user.services.airpods_battery = {
     Unit.Description = "Get AirPods battery";
     Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";
@@ -227,6 +191,7 @@ in {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods left 100";
           interval = 1;
           size = 20;
+          on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
         };
         "image#airpods-battery-right" = {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
@@ -710,6 +675,10 @@ in {
       #image, #backlight, #cpu, #temperature, #wireplumber, #power-profiles-daemon, #idle_inhibitor {
           padding: 0 1 0 1px;
           margin: 0px;
+      }
+      button {
+        min-width: 14px;
+        min-height: 14px;
       }
     '';
   };

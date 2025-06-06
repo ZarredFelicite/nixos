@@ -161,6 +161,8 @@
       { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
       { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "news" "reddit" ]; }
       { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "news" "reddit" ]; }
+      { url = "https://chrishedges.substack.com/feed"; tags = [ "!" "~r/ChrisHedges" "news" ]; }
+      { url = "https://seymourhersh.substack.com/feed"; tags = [ "!" "~r/SeymourH" "news" ]; }
 
       # ozbargain
       { url = "http://www.ozbargain.com.au/feed"; tags = [ "!" "~general" "no_unread" "shopping" ]; }

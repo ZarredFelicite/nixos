@@ -10,22 +10,22 @@
     "/mnt/gargantua" = {
       device = "sankara:/mnt/gargantua";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600"];
+      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
     };
     "/mnt/ceres" = {
       device = "sankara:/mnt/ceres";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600"];
+      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
     };
     "/mnt/eros" = {
       device = "sankara:/mnt/eros";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600"];
+      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
     };
     "/mnt/turing" = {
       device = "sankara:/mnt/turing";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600"];
+      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
     };
   };
 }

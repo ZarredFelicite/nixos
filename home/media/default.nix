@@ -7,7 +7,6 @@
     ./youtube/yt-dlp.nix
     inputs.spicetify-nix.homeManagerModules.spicetify
   ];
-  #nixpkgs.overlays = [( final: pre
   home.packages = [
     #(pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.lowfi
@@ -17,6 +16,7 @@
     enable = false;
     preset = "autoeq" ;
   };
+  stylix.targets.spicetify.enable = false;
   programs.spicetify =
     let
       spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.system};
@@ -32,7 +32,6 @@
       theme = spicePkgs.themes.text;
       colorScheme = "RosePine";
   };
-  stylix.targets.spicetify.enable = false;
   programs.beets = {
     enable = false;
     mpdIntegration = {

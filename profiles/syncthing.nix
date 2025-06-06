@@ -1,9 +1,13 @@
-{ pkgs, lib, ... }: {
+{ pkgs, config, ... }: {
   #systemd.services.syncthing.unitConfig.After = lib.mkForce "graphical-session.target";
   #systemd.services.syncthing.serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 120";
-  environment.systemPackages = [ pkgs.syncthing ];
+  environment.variables.SYNCTHING_CTL_URL = "http://localhost:8384";
+  environment.systemPackages = [
+    pkgs.syncthing
+    pkgs.stc-cli
+    pkgs.syncthingtray
+  ];
   services.syncthing = {
-    enable = true;
     user = "zarred";
     group = "users";
     guiAddress = "127.0.0.1:8384";
@@ -13,6 +17,7 @@
     overrideFolders = true;
     relay.enable = false;
     openDefaultPorts = true;
+    extraFlags = [ "-gui-apikey=${builtins.readFile config.sops.secrets.syncthing-api.path}" ];
     settings = {
       options.urAccepted = -1;
       options.relaysEnabled = false;

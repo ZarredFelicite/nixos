@@ -155,6 +155,7 @@
         bullet # NOTE: not in nixpkgs??
         #( pkgs.callPackage ../pkgs/python/yt-dlp {})
         yt-dlp # Command-line tool to download videos from YouTube.com and other sites (youtube-dl fork)
+        youtube-transcript-api # Python API which allows you to get the transcripts/subtitles for a given YouTube video
         rich # Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
         psutil # Process and system utilization information interface
         pillow # Friendly PIL fork (Python Imaging Library)
@@ -199,6 +200,7 @@
         networkx
         pygraphviz
         pdf2image
+        reportlab
         fontforge
         # TODO: broken vllm
         # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})

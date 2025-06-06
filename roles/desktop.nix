@@ -9,17 +9,9 @@
     ../profiles/ai.nix
     ../profiles/backups.nix
     ../profiles/nfs.nix
-    inputs.home-manager.nixosModules.home-manager
+    # inputs.home-manager.nixosModules.home-manager # Removed: Handled by individual host configs
   ];
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = { inherit
-      self inputs outputs
-      #pkgs-unstable pkgs-stable
-    ;};
-    users.zarred = import ../home/desktop.nix;
-  };
+  # home-manager block removed: Handled by individual host configs
   hardware = {
     bluetooth = {
       enable = true;
@@ -289,9 +281,10 @@
   };
   # NOTE: Disable all mpd settings below if disabling the service
   services.mpd = {
-    enable = true;
+    enable = false;
     user = "zarred";
     group = "users";
+    #playlistDirectory = "/mnt/gargantua/media/music/data/playlists";
     dataDir = "/mnt/gargantua/media/music/data";
     musicDirectory = "/mnt/gargantua/media/music";
     dbFile = null;
@@ -320,18 +313,17 @@
           type    "pipewire"
           name    "Pipewire Sound Server"
         }
-        pid_file "/tmp/mpd-pid"
+        pid_file "/var/run/mpd/mpd-pid"
       '');
   };
   systemd.services.mpd = {
     serviceConfig.SupplementaryGroups = [ "pipewire" ];
-    serviceConfig.ExecStartPre = [ "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.netcat}/bin/nc -z 100.64.1.200 6600; do sleep 5; done'" ];
-    #serviceConfig.ExecStart = [ "${pkgs.mpd}/bin/mpd --systemd --stderr /run/mpd/mpd.conf" ];
-    #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf" ];
-    serviceConfig.KillMode = [ "mixed" ];
-    wantedBy = [ "graphical.target" ];
-    before = [ "umount.target" "shutdown.target" ];
-    #after = [ "graphical.target" ];
+    #serviceConfig.ExecStartPre = [ "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.netcat}/bin/nc -z 100.64.1.200 6600; do sleep 5; done'" ];
+    serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --no-daemon /run/mpd/mpd.conf" ];
+    serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf; ${pkgs.bash}/bin/bash -c 'sleep 5'" ];
+    #serviceConfig.KillMode = [ "mixed" ];
+    after = [ "mnt-gargantua.mount" ];
+    requires = [ "mnt-gargantua.mount" ];
     environment = {
       # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609
       XDG_RUNTIME_DIR = "/run/user/1002"; # User-id 1000 must match above user. MPD will look inside this directory for the PipeWire socket.

@@ -249,18 +249,6 @@
     image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
     ports = [ "8880:8880" ];
   };
-  systemd.services.parakeet-devenv = {
-    description = "Devenv service parakeet";
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      User = "zarred";
-      Group = "users";
-      WorkingDirectory = "/home/zarred/dev/asr2";
-      ExecStart = "${pkgs.nix}/bin/nix develop --command 'start'";
-      Restart = "on-failure";
-    };
-  };
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {
   #  image = "rbehzadan/readerlm:latest";

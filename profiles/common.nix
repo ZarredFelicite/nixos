@@ -37,7 +37,14 @@
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };
-      "20-wifi" = {
+      "20-wired" = {
+        matchConfig.Name = "enp0s13f0u3u4u5";
+        #networkConfig.IPv6AcceptRA = true;
+        address = [ "10.20.30.2/30" ];
+        #linkConfig.RequiredForOnline = "routable";
+        routes = [ { Metric = 10; } ];
+      };
+      "60-wifi" = {
         matchConfig.Name = "wlan0";
         networkConfig.DHCP = "yes";
         #networkConfig.IPv6AcceptRA = true;
@@ -82,15 +89,6 @@
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
     };
-    extraHosts =
-      "
-      169.254.91.114 web
-      #  100.64.1.200 sankara
-      #  100.64.1.125 nano
-      #  192.168.86.224 rprinter
-      #  192.168.86.240 rpizero
-      #  192.168.86.246 oneplus
-      ";
   };
   services.tailscale = {
     enable = true;

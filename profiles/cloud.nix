@@ -26,4 +26,12 @@
       "/var/lib/stirling-pdf/trainingData:/usr/share/tesseract-ocr/4.00/tessdata"
     ];
   };
+  services.immich = {
+    enable = true;
+    secretsFile = config.sops.secrets.immich-secrets.path;
+    host = "0.0.0.0";
+    port = 2283;
+    openFirewall = true;
+    mediaLocation = "/mnt/gargantua/immich";
+  };
 }

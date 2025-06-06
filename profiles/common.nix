@@ -215,6 +215,11 @@
           owner = "zarred";
           #path = "/home/zarred/.config/wtwitch/api.json";
         };
+        immich-secrets = {
+          sopsFile = ../secrets/immich.enc.env;
+          format = "dotenv";
+          owner = "immich";
+        };
         #github-api-token = {
         #  sopsFile = ../secrets/github-hosts.yaml;
         #  format = "binary";

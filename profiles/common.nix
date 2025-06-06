@@ -44,6 +44,11 @@
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };
+      "30-wired" = {
+        matchConfig.Name = "enp4s0";
+        networkConfig.DHCP = "yes";
+        routes = [ { Metric = 10; } ];
+      };
       "60-wifi" = {
         matchConfig.Name = "wlan0";
         networkConfig.DHCP = "yes";

@@ -70,31 +70,10 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
+      inputs.nix-vscode-extensions.overlays.default
       (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
         #yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp {};
-        # NOTE: no worky either
-        #python312 = prev.python312.override {
-        #  packageOverrides = final: prev: {
-        #    yt-dlp = prev.yt-dlp.overridePythonAttrs(old: rec {
-        #      pname = "yt-dlp";
-        #      version = "2025.3.25";
-        #      src = prev.fetchPypi {
-        #        inherit version;
-        #        pname = "yt_dlp";
-        #        hash = "sha256-x/QlFvnfMdrvU8yiWQI5QBzzHbfE6spnZnz9gvLgric=";
-        #      };
-        #    });
-        #  };
-        #};
-        # NOTE: Patch didn't work
-        #orca-slicer = prev.orca-slicer.overrideAttrs (o: {
-        #  patches = [ ( pkgs.fetchpatch {
-        #    url = "https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/369729.patch";
-        #    hash = "sha256-+Ecwibp6YWM9GhxVvYpVPNLsKi8UJtSnXnqYsdFyN3Y=";
-
-        #  }) ];
-        #});
       })
     ];
     config = {

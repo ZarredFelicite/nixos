@@ -127,20 +127,16 @@
       greetd = defaults;
   };
   services = {
+    xserver.enable = true;
     ollama.enable = true;
     printing.enable = true;
     avahi.enable = true;
     avahi.nssmdns4 = true;
     avahi.openFirewall = true;
-    xserver = {
-      enable = true;
-      desktopManager.gnome = {
-        enable = false;
-      };
-      #displayManager.session = [
-      #  { name = "Desktop"; manage = "desktop"; start = "Hyprland"; }
-      #];
-    };
+    desktopManager.gnome.enable = false;
+    #displayManager.session = [
+    #   { name = "Desktop"; manage = "desktop"; start = "Hyprland"; }
+    #];
     greetd = {
       enable = true;
       vt = 1; # clean login screen, no startup logs

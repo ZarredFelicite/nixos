@@ -19,6 +19,7 @@ in {
     ./swaync
     ./notifications.nix
     ./waybar
+    ./vscode.nix
   ];
 
   # Content merged from home/desktop.nix (the file)
@@ -75,6 +76,7 @@ in {
     swayimg
     gimp
     pinta
+    code-cursor
     #inputs.claude-desktop.packages.${pkgs.system}.claude-desktop # Corrected system reference
   ];
 
@@ -107,11 +109,11 @@ in {
     };
   };
   programs.obs-studio = { enable = true; }; # From home/desktop.nix
-  programs.vscode = { # From home/desktop.nix
-    enable = true;
-    package = pkgs.vscodium.fhs;
-    mutableExtensionsDir = true;
-  };
+    #programs.vscode = { # From home/desktop.nix
+    #  enable = true;
+    #  package = pkgs.vscodium.fhs;
+    #  mutableExtensionsDir = true;
+    #};
 
   # Original services from home/desktop/default.nix
   systemd.user.services.cliphist = mkHyprlandService {

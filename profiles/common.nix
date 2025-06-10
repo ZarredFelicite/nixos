@@ -104,7 +104,7 @@
     useRoutingFeatures = "both";
     openFirewall = true;
   };
-  systemd.services.tailscaled.after = [ "network.target" "network-online.target" ];
+  #systemd.services.tailscaled.after = [ "network.target" "network-online.target" ];
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   i18n.extraLocaleSettings = {
@@ -200,6 +200,11 @@
         nextcloud-admin = { owner = "nextcloud"; };
         authelia-jwtSecret = { owner = "zarred"; };
         authelia-storageEncryptionKey = { owner = "zarred"; };
+        immich-secrets = {
+          sopsFile = ../secrets/immich.enc.env;
+          format = "dotenv";
+          owner = "immich";
+        };
       })
       {
         users-zarred.neededForUsers = true;
@@ -218,11 +223,6 @@
           format = "binary";
           owner = "zarred";
           #path = "/home/zarred/.config/wtwitch/api.json";
-        };
-        immich-secrets = {
-          sopsFile = ../secrets/immich.enc.env;
-          format = "dotenv";
-          owner = "immich";
         };
         #github-api-token = {
         #  sopsFile = ../secrets/github-hosts.yaml;

@@ -216,7 +216,7 @@
     AIDER_EDITOR=nvim
   '';
 
-  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --openai-api-key $(pass ml_tools/openai-api) --api-key gemini=$(pass google/gemini_api)";
+  programs.zsh.shellAliases.aider = "aider --env-file ~/.config/aider.env --openai-api-key $(pass dev/openai-api) --api-key gemini=$(pass google/gemini_api)";
 
   services.udiskie = { # From home/cli-apps.nix
     enable = true;

@@ -59,7 +59,7 @@
     "/nix" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "noatime" "ssd" "subvol=nix" ];
+      options = [ "defaults" "compress-force=zstd:5" "noatime" "ssd" "subvol=nix" ];
       neededForBoot = true;
     };
     "/home/zarred" = {
@@ -71,13 +71,13 @@
     "/persist" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
+      options = [ "defaults" "compress=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
       neededForBoot = true;
     };
     "/swap" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "noatime" "ssd" "subvol=swap" ];
+      options = [ "compress=no" "noatime" "ssd" "subvol=swap" ];
     };
   };
 

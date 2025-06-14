@@ -133,7 +133,7 @@
         isNormalUser = true;
         description = "Zarred";
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp"];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp" "keyd" "input"];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;
@@ -360,6 +360,15 @@
     man-db.enable = false;
     mandoc.enable = true;
     generateCaches = true;
+  };
+  fonts = {
+    fontDir.enable = true;
+    packages = with pkgs; [
+      nerd-fonts.iosevka-term
+      # font-awesome already in nerd-fonts
+      noto-fonts
+      noto-fonts-emoji
+    ];
   };
   stylix = {
     enable = true;

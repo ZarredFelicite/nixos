@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, config, ... }: {
   nixpkgs.overlays = [(
     final: prev:
     {
@@ -25,7 +25,6 @@
       });
     }
   )];
-  users.users.zarred.extraGroups = [ "keyd" "input" ];
   systemd.services.keyd.serviceConfig = {
     CapabilityBoundingSet = lib.mkForce [ "CAP_SYS_NICE" ];
     PrivateUsers = lib.mkForce false;

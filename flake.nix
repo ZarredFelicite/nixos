@@ -106,6 +106,18 @@
             ./roles/server.nix
           ];
         };
+        nano_minimal = lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs self;
+          };
+      	  modules = [
+            nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
+            inputs.stylix.nixosModules.stylix
+            ./hosts/nano_minimal.nix
+            ./profiles/common.nix
+          ];
+        };
         liveIso = lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = { inherit self inputs ; };

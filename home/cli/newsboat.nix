@@ -147,6 +147,7 @@
       { url = "#https://feeds.soundcloud.com/users/soundcloud:users:264034133/sounds.rss"; tags = [ "!" "~The-AI-Podcast" "ai" ]; }
       { url = "https://practicalai.fm/rss"; tags = [ "!" "~PracticalAI" "ai" ]; }
       { url = "https://www.lastweekinai.com/feed.xml"; tags = [ "!" "~LWiAI" "ai" ]; }
+      { url = "https://www.latent.space/feed"; tags = [ "!" "~LatentSpace" "ai" ]; }
 
       # news
       #{ url = "https://www.sbs.com.au/news/topic/world/feed"; tags = [ "!" "~SBS-W" "news" ]; }

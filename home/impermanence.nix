@@ -9,7 +9,7 @@
       "audio" # syncthing
       "sync" # syncthing
       "scripts" # syncthing
-      "nb" # syncthing
+      "notes" # syncthing
       "downloads"
       "misc"
       "dev"

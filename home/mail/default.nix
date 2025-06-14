@@ -78,6 +78,11 @@
     frequency = "*:0/30";
     verbose = true;
   };
+  programs.thunderbird = {
+    enable = true;
+    package = pkgs.thunderbird-bin;
+    profiles.primary.isDefault = true;
+  };
   programs.notmuch = {
     enable = true;
     #hooks = {

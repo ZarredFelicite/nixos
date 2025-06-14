@@ -41,9 +41,9 @@
 	        devices = [ "web" "sankara" "nano" "p8p" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };
 	      };
-        "nb" = {
+        "notes" = {
           enable = true;
-	        path = "/home/zarred/nb";
+	        path = "/home/zarred/notes";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };

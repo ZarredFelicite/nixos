@@ -4,7 +4,7 @@
     "nb/nbrc".text = ''
       #!/usr/bin/env bash
 
-      export NB_DIR="/home/zarred/nb"
+      export NB_DIR="/home/zarred/notes"
       export NB_HEADER=0
       export NB_SYNTAX_THEME=Dracula
       export NBRC_PATH="$HOME/.config/nb/nbrc"

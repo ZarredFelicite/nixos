@@ -42,7 +42,7 @@
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];
-    initrd.luks.devices."root".device = "/dev/disk/by-uuid/923d48e9-065c-4608-b797-d995fd6c4283";
+    initrd.luks.devices."root".device = "/dev/nvme0n1p2";
     initrd.systemd.enable = true;
   };
   fileSystems = {
@@ -53,7 +53,7 @@
       neededForBoot = true;
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/2E70-D7E1";
+      device = "/dev/nvme0n1p1";
       fsType = "vfat";
     };
     "/nix" = {

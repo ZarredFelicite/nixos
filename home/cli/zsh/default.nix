@@ -30,14 +30,8 @@
     historySubstringSearch.enable = true;
     initContent = lib.mkBefore ''
       zmodload zsh/zprof
-      for d in ~/scripts/*/; do
-        for dd in $d*; do
-          if [ -d "$dd" ]; then
-            PATH+=":$dd"
-          fi
-        done
-        PATH+=":$d"
-      done
+      typeset -U path
+      path+=(~/scripts(/N) ~/scripts/**/*(/N))
 
       bindkey '^H' backward-kill-word
       bindkey '5~' kill-word

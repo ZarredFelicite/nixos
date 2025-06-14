@@ -197,11 +197,13 @@ in {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
           interval = 1;
           size = 20;
+          on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
         };
         "image#airpods-battery-case" = {
           exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods case 100";
           interval = 1;
           size = 20;
+          on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
         };
         "group/zmk-battery" = {
           orientation = "inherit";

@@ -125,4 +125,16 @@
       ];
     };
   };
+  systemd.services.parakeet-devenv = {
+    description = "Devenv service parakeet";
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
+      ExecStart = "${pkgs.nix}/bin/nix develop --command 'start'";
+      Restart = "on-failure";
+    };
+  };
 }

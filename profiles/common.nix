@@ -44,6 +44,11 @@
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };
+      "30-wired" = {
+        matchConfig.Name = "enp4s0";
+        networkConfig.DHCP = "yes";
+        routes = [ { Metric = 10; } ];
+      };
       "60-wifi" = {
         matchConfig.Name = "wlan0";
         networkConfig.DHCP = "yes";
@@ -99,7 +104,7 @@
     useRoutingFeatures = "both";
     openFirewall = true;
   };
-  systemd.services.tailscaled.after = [ "network.target" "network-online.target" ];
+  #systemd.services.tailscaled.after = [ "network.target" "network-online.target" ];
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   i18n.extraLocaleSettings = {
@@ -128,7 +133,7 @@
         isNormalUser = true;
         description = "Zarred";
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp"];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp" "keyd" "input"];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;
@@ -195,6 +200,11 @@
         nextcloud-admin = { owner = "nextcloud"; };
         authelia-jwtSecret = { owner = "zarred"; };
         authelia-storageEncryptionKey = { owner = "zarred"; };
+        immich-secrets = {
+          sopsFile = ../secrets/immich.enc.env;
+          format = "dotenv";
+          owner = "immich";
+        };
       })
       {
         users-zarred.neededForUsers = true;
@@ -297,6 +307,13 @@
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
     '';
+    knownHosts = {
+      #web = {
+      #  extraHostNames = [ "myhost.mydomain.com" "10.10.1.4" ];
+      #  publicKeyFile = ./pubkeys/myhost_ssh_host_dsa_key.pub;
+      #};
+      "web".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJXK45mP2pGkokOWxJN0RXGIt4lkruzfwpbDJe1Y+GGP";
+    };
   };
   environment = {
     systemPackages = (with pkgs; [
@@ -350,6 +367,15 @@
     man-db.enable = false;
     mandoc.enable = true;
     generateCaches = true;
+  };
+  fonts = {
+    fontDir.enable = true;
+    packages = with pkgs; [
+      nerd-fonts.iosevka-term
+      # font-awesome already in nerd-fonts
+      noto-fonts
+      noto-fonts-emoji
+    ];
   };
   stylix = {
     enable = true;

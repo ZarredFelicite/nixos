@@ -2,18 +2,21 @@
   imports = [ inputs.impermanence.nixosModules.home-manager.impermanence ];
   home.persistence."/persist/home/zarred" = {
     directories = [
-      # userDirs
-      "downloads"
+      # VISIBLE
       "documents" # syncthing
       "pictures" # syncthing
       "videos" # syncthing
+      "audio" # syncthing
       "sync" # syncthing
       "scripts" # syncthing
-      "nb"
-      ".mail"
+      "nb" # syncthing
+      "downloads"
+      "misc"
+      "dev"
       "games"
       "dots"
-      "dev" # syncthing
+      # HIDDEN
+      ".mail"
       ".gnupg"
       ".ssh"
       ".nixops"
@@ -24,6 +27,7 @@
       ".java"
       ".vscode-oss"
       ".claude"
+      # PERSISTENT .CONF
       ".config/kdeconnect"
       ".config/BraveSoftware"
       ".config/PrusaSlicer"

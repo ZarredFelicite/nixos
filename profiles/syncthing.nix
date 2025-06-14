@@ -12,7 +12,7 @@
     group = "users";
     guiAddress = "127.0.0.1:8384";
     #dataDir = "/home/zarred";
-    configDir = "/var/lib/syncthing";
+    configDir = "/home/zarred/.config/syncthing";
     overrideDevices = true;
     overrideFolders = true;
     relay.enable = false;
@@ -32,20 +32,21 @@
         "sankara" = { id = "HWHGCRQ-HYCPKIP-M62FMS6-GQGZDWH-GCNJMJA-QIBXEXY-FVT2COA-KJ3W6QT"; };
         "nano" = { id = "YTLUJQP-TJR7PTR-5SWYZRK-7K7WLLS-VDPEK6V-UU7DQX3-CKUCWYX-P3EJ2QF"; };
         "phone" = { id = "BEXXXN5-G6LNX4L-YLKH6TF-CIKE5V4-TIHJYAS-QBKIQTI-AFENRGH-PJ7GFA6"; };
+        "p8p" = { id = "WJSCFJY-M5SXBE4-ZXUM2BX-PUQ3IYD-76KTVMQ-EVWD53T-OGVT3FG-A4W5MQR"; };
       };
       folders = {
         "sync" = {
           enable = true;
 	        path = "/home/zarred/sync";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" "phone" ];
+	        devices = [ "web" "sankara" "nano" "p8p" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };
 	      };
         "nb" = {
           enable = true;
 	        path = "/home/zarred/nb";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" "phone" ];
+	        devices = [ "web" "sankara" "nano" "p8p" ];
 	        versioning = { type = "simple"; params = { keep = "10"; }; };
 	      };
         "scripts" = {
@@ -74,6 +75,13 @@
 	        path = "/home/zarred/pictures";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
+	        versioning = { type = "simple"; params = { keep = "5"; }; };
+	      };
+        "audio" = {
+          enable = true;
+	        path = "/home/zarred/audio";
+          type = "sendreceive";
+	        devices = [ "web" "sankara" "nano" "p8p" ];
 	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "dev" = {

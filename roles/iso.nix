@@ -1,33 +1,25 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, modulesPath, ... }: {
   imports = [
-    <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix>
-    # Provide an initial copy of the NixOS channel so that the user
-    # doesn't need to run "nix-channel --update" first.
-    <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
+    "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
+    ../profiles/keyd.nix
   ];
-  systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
+  nixpkgs.hostPlatform = "x86_64-linux";
+  users.users.nixos.extraGroups = [ "keyd" "input" ];
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = true;
     settings.KbdInteractiveAuthentication = true;
     settings.PermitRootLogin = "yes";
+    hostKeys = [ { path = "/etc/ssh/ssh_host_ed25519_key"; type = "ed25519"; } ];
   };
   users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID2kS4ceJ24y6rLbPakB5b38Q46K2jZ/gABaYwfZx1GC zarred@archdesktop"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII0cpNhpg5cr0WAQXlPkOjoSu7iyeC5+pIIR2bGnNHqU zarred.f@gmail.com"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Xu5vJqXmgaWKHIp+4IsorATOO61u5X5ECanN3dn31 openpgp:0xD8C648AB"
   ];
   networking = {
     networkmanager.enable = true;
+    networkmanager.wifi.backend = "iwd";
     firewall.enable = false;
-    useDHCP = false;
     wireless.enable = false;
-    #usePredictableInterfaceNames = false;
-    #interfaces.eth0.ip4 = [{
-    #  address = "192.168.86.110";
-    #  prefixLength = 24;
-    #}];
-    #defaultGateway = "192.168.86.110";
-    #nameservers = [ "8.8.8.8" ];
     hostName = "nixos-iso";
   };
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -38,6 +30,7 @@
       git
       jq
       iotop
+      btop
       wget
       curl
       neovim
@@ -47,10 +40,36 @@
       direnv
       memtest86plus
       btrfs-progs
+      ghostty
+      kitty
+      tmux
+      firefox
+      mpv
     ];
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
   };
+  boot.plymouth.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+  environment.gnome.excludePackages = (with pkgs; [
+    gnome-photos
+    gnome-tour
+    gedit # text editor
+    cheese # webcam tool
+    gnome-music
+    gnome-terminal
+    epiphany # web browser
+    geary # email reader
+    evince # document viewer
+    gnome-characters
+    totem # video player
+    tali # poker game
+    iagno # go game
+    hitori # sudoku game
+    atomix # puzzle game
+  ]) ++ (with pkgs.gnome; [
+  ]);
   programs = {
     dconf.enable = true;
     zsh.enable = true;
@@ -63,12 +82,7 @@
   };
   stylix = {
     autoEnable = true;
-    image = /persist/home/zarred/pictures/wallpapers/tarantula_nebula.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
-    # https://github.com/tinted-theming/base16-schemes
-    #override = {
-    #  base00 = "#191724";
-    #};
     cursor = {
       package = pkgs.catppuccin-cursors.mochaDark;
       name = "Catppuccin-Mocha-Dark-Cursors";
@@ -97,9 +111,6 @@
         package = pkgs.noto-fonts-emoji;
         name = "Noto Color Emoji";
       };
-    };
-    targets = {
-      #waybar.enable = false;
     };
   };
 }

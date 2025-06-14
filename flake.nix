@@ -16,6 +16,7 @@
     #hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
+    nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs"; };
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
 
@@ -103,6 +104,18 @@
             inputs.stylix.nixosModules.stylix
             ./hosts/sankara.nix
             ./roles/server.nix
+          ];
+        };
+        nano_minimal = lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs self;
+          };
+      	  modules = [
+            nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
+            inputs.stylix.nixosModules.stylix
+            ./hosts/nano_minimal.nix
+            ./profiles/common.nix
           ];
         };
         liveIso = lib.nixosSystem {

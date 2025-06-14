@@ -1,44 +1,13 @@
 { config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    inputs.home-manager.nixosModules.home-manager
   ];
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs; };
-    users.zarred = import ../home/hosts/nano.nix;
-  };
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "nano";
-  services.syncthing.enable = true;
+  services.syncthing.enable = false;
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-intel" ];
-    #kernelParams = [
-    #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
-    #  "initcall_debug"
-    #  "log_buf_len=16M"
-    #  "i915.force_probe=!9a40"
-    #  #"i915.enable_dc=0"
-    #  "xe.force_probe=9a40"
-    #  #"intel_idle.max_cstate=1"
-    #  #"ahci.mobile_lpm_policy=1"
-    #];
-    #kernelPatches = [ {
-    #  name = "sleepdebug-config";
-    #  patch = null;
-    #  extraConfig = ''
-    #    PM y
-    #    PM_DEBUG y
-    #    PM_SLEEP_DEBUG y
-    #    FTRACE y
-    #    FUNCTION_TRACER y
-    #    FUNCTION_GRAPH_TRACER y
-    #    KPROBES y
-    #    KPROBES_ON_FTRACE y
-    #  '';
-    #} ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];

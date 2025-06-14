@@ -51,6 +51,7 @@
       ".config/obsidian"
       ".config/VSCodium"
       ".config/Claude"
+      ".config/syncthing"
     ];
     files = [
       ".config/wtwitch/api.json"

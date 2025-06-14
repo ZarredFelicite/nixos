@@ -14,6 +14,7 @@
       "/etc/coolercontrol"
       "/nixos" # for nixos github repo
       "/home"
+      "/home/zarred"
     ];
     files = [
       "/etc/ssh/ssh_host_ed25519_key"

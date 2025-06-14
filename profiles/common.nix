@@ -307,6 +307,13 @@
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
     '';
+    knownHosts = {
+      #web = {
+      #  extraHostNames = [ "myhost.mydomain.com" "10.10.1.4" ];
+      #  publicKeyFile = ./pubkeys/myhost_ssh_host_dsa_key.pub;
+      #};
+      "web".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJXK45mP2pGkokOWxJN0RXGIt4lkruzfwpbDJe1Y+GGP";
+    };
   };
   environment = {
     systemPackages = (with pkgs; [

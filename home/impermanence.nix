@@ -23,6 +23,7 @@
       ".local/share"
       ".cache"
       ".mozilla"
+      ".thunderbird"
       ".android"
       ".java"
       ".vscode-oss"

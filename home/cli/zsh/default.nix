@@ -167,6 +167,8 @@
       sust = "systemctl --user status";
       sst = "systemctl status";
       sre = "systemctl restart";
+      fifd = "fif --dir ~/dots";
+      fifs = "fif --dir ~/scripts";
     };
   };
   xdg.configFile."zsh/fzf-tab.conf".text = ''

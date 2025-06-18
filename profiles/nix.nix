@@ -37,6 +37,7 @@
       protocol = "ssh-ng";
       keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root@nano"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJXK45mP2pGkokOWxJN0RXGIt4lkruzfwpbDJe1Y+GGP web"
       ];
     };
     distributedBuilds = if config.networking.hostName == "web" then false else true;

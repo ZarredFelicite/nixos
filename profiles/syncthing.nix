@@ -39,14 +39,14 @@
 	        path = "/home/zarred/sync";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ];
-	        versioning = { type = "simple"; params = { keep = "10"; }; };
+	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "notes" = {
           enable = true;
 	        path = "/home/zarred/notes";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ];
-	        versioning = { type = "simple"; params = { keep = "10"; }; };
+	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "scripts" = {
           enable = true;
@@ -95,6 +95,12 @@
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
 	        versioning = { type = "simple"; params = { keep = "5"; }; };
+	      };
+        "databases" = {
+	        path = "/home/zarred/.local/share/databases";
+          type = "sendreceive";
+	        devices = [ "web" "sankara" "nano" ];
+	        versioning = { type = "simple"; params = { keep = "3"; }; };
 	      };
       };
     };

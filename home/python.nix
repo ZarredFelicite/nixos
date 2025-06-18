@@ -52,6 +52,7 @@
       yfinance
       bleak # Bluetooth Low Energy
       pyaudio # PortAudio bindings
+      webrtcvad # Interface to the Google WebRTC Voice Activity Detector (VAD)
 
       # Ensure all custom python packages from ../pkgs/python are included if not already listed
       # ( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp

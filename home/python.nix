@@ -22,6 +22,7 @@
       nbconvert # notebook conversion (CLI aspects)
       dbus-next # dbus lib for python (can be CLI related)
       requests-futures # async requests
+      pysocks # SOCKS module for Python
       openai # For CLI AI tools
       transformers # Often used by CLI AI tools
       onnxruntime # Often used by CLI AI tools
@@ -35,6 +36,7 @@
       fontforge # font editor (CLI/scriptable)
       ( pkgs.callPackage ../pkgs/python/reader {}) # feed reader (CLI)
       ( pkgs.callPackage ../pkgs/python/ibind {}) # Interactive Brokers (CLI/API)
+      #( pkgs.callPackage ../pkgs/python/youtube-transcript-api {}) # Python API which allows you to get the transcripts/subtitles for a given YouTube video
 
       # PYTHON from home/home.nix (GUI related or specific app backends)
       ytmusicapi # Python API for YouTube Music

@@ -77,12 +77,22 @@
       })
       # Override upstream youtube-transcript-api to use our local version
       (final: prev: rec {
-        python3Packages = prev.python3Packages.override {
-          # replace the default package with our local one
-          overrides = pythonSelf: pythonSuper: {
-            "youtube-transcript-api" = pythonSelf.callPackage ../pkgs/python/youtube-transcript-api {};
+        python3 = prev.python3.override {
+          packageOverrides = pyfinal: pyprev: {
+            #"youtube-transcript-api" = pyprev.callPackage ../pkgs/python/youtube-transcript-api {};
+            youtube-transcript-api = pyprev.youtube-transcript-api.overridePythonAttrs ( oldAttrs: {
+              version = "1.1.0";
+              src = pkgs.fetchFromGitHub {
+                owner = "jdepoix";
+                repo = "youtube-transcript-api";
+                tag = "v1.1.0";
+                hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA=";
+              };
+              doCheck = false;
+            });
           };
         };
+        python3Packages = python3.pkgs;
       })
     ];
     config = {

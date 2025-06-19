@@ -74,7 +74,15 @@
       inputs.nix-vscode-extensions.overlays.default
       (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
-        #yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp {};
+      })
+      # Override upstream youtube-transcript-api to use our local version
+      (final: prev: rec {
+        python3Packages = prev.python3Packages.override {
+          # replace the default package with our local one
+          overrides = pythonSelf: pythonSuper: {
+            "youtube-transcript-api" = pythonSelf.callPackage ../pkgs/python/youtube-transcript-api {};
+          };
+        };
       })
     ];
     config = {

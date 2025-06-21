@@ -39,13 +39,22 @@
       # https://dandavison.github.io/delta/introduction.html
       enable = true;
       options = {
+        dark = true;
+        hyperlinks = true; # makes file paths clickable in the terminal
+        hyperlinks-file-link-format = "vscode://file/{path}:{line}"; # opens links in vscode
+        features = "decorations interactive";
+        #interactive = {
+        #  keep-plus-minus-markers = false;
+        #};
+        minus-style = "red bold ul \"#ffeeee\"";
         decorations = {
           commit-decoration-style = "bold yellow box ul";
-          file-decoration-style = "none";
           file-style = "bold yellow ul";
+          file-decoration-style = "none";
         };
-        features = "decorations";
         whitespace-error-style = "22 reverse";
+        #side-by-side = true;
+        line-numbers = true;
       };
     };
   };

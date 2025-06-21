@@ -28,6 +28,7 @@
       ".java"
       ".vscode-oss"
       ".claude"
+      ".cursor"
       # PERSISTENT .CONF
       ".config/kdeconnect"
       ".config/BraveSoftware"

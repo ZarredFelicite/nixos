@@ -37,6 +37,7 @@
       protocol = "ssh-ng";
       keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdeXfQX7Ql7RRrv4GGtwfet2q6p0dxUJac3dNLnU+BY root@nano"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJXK45mP2pGkokOWxJN0RXGIt4lkruzfwpbDJe1Y+GGP web"
       ];
     };
     distributedBuilds = if config.networking.hostName == "web" then false else true;
@@ -73,7 +74,25 @@
       inputs.nix-vscode-extensions.overlays.default
       (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
-        #yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp {};
+      })
+      # Override upstream youtube-transcript-api to use our local version
+      (final: prev: rec {
+        python3 = prev.python3.override {
+          packageOverrides = pyfinal: pyprev: {
+            #"youtube-transcript-api" = pyprev.callPackage ../pkgs/python/youtube-transcript-api {};
+            youtube-transcript-api = pyprev.youtube-transcript-api.overridePythonAttrs ( oldAttrs: {
+              version = "1.1.0";
+              src = pkgs.fetchFromGitHub {
+                owner = "jdepoix";
+                repo = "youtube-transcript-api";
+                tag = "v1.1.0";
+                hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA=";
+              };
+              doCheck = false;
+            });
+          };
+        };
+        python3Packages = python3.pkgs;
       })
     ];
     config = {

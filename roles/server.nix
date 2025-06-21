@@ -74,6 +74,8 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig.ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/security/inotify_cctv.sh";
     serviceConfig.Restart = "always";
+    serviceConfig.RuntimeMaxSec = "1d";
+    serviceConfig.RestartSec = "1min";
     environment.SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
     path = [
       pkgs.inotify-tools

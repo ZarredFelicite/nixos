@@ -13,7 +13,6 @@
       "/etc/NetworkManager/system-connections"
       "/etc/coolercontrol"
       "/nixos" # for nixos github repo
-      "/home"
     ];
     files = [
       "/etc/ssh/ssh_host_ed25519_key"

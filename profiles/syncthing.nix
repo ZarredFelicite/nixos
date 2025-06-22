@@ -12,7 +12,7 @@
     group = "users";
     guiAddress = "0.0.0.0:8384";
     #dataDir = "/home/zarred";
-    configDir = "/home/zarred/.config/syncthing";
+    configDir = "/persist/home/zarred/.config/syncthing";
     overrideDevices = true;
     overrideFolders = true;
     relay.enable = false;

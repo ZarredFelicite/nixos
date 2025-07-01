@@ -22,6 +22,7 @@ in {
       "fg+" = lib.mkForce "#ebbcba";
     #  "hl" = "yellow";
     #  "hl+" = "red";
+      "bg" = lib.mkForce "-1";
       "bg+" = lib.mkForce "-1";
       "gutter" = "-1";
       "pointer" = lib.mkForce "#ebbcba";

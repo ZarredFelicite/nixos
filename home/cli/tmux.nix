@@ -1,4 +1,4 @@
-{ pkgs, fetchFromGithub, ... }: {
+{ pkgs, ... }: {
   stylix.targets.tmux.enable = false;
   xdg.configFile."tmuxinator/home.yml".text = builtins.toJSON {
     name = "home";

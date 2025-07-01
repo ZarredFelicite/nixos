@@ -51,14 +51,14 @@
       numpy # Often with matplotlib
       matplotlib # Plotting library
       pybluez # Bluetooth
-      yfinance
+      #yfinance
       bleak # Bluetooth Low Energy
       pyaudio # PortAudio bindings
       webrtcvad # Interface to the Google WebRTC Voice Activity Detector (VAD)
 
       # Ensure all custom python packages from ../pkgs/python are included if not already listed
       # ( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp
-      # ( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {}) # Will be in finance.nix
+      #( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
       # TODO: broken vllm
       # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})

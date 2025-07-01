@@ -1,14 +1,14 @@
 { lib, pkgs, inputs, config, osConfig, ... }: {
   disabledModules = [
     "programs/himalaya.nix"
-    "services/imapnotify.nix"
+    #"services/imapnotify.nix"
     #"programs/neomutt.nix"
   ];
   imports = [
     ./frontends/aerc.nix
     ./frontends/alot.nix
     ./frontends/neomutt.nix
-    ../../modules/imapnotify.nix
+    #../../modules/imapnotify.nix
   ];
   accounts.email = {
     maildirBasePath = ".mail";
@@ -65,7 +65,12 @@
       };
     };
   };
-  services.imapnotify.enable = true;
+  services.imapnotify = {
+    enable = true;
+    path = [
+      pkgs.bash
+    ];
+  };
   programs.mbsync = {
     enable = true;
     extraConfig = ''

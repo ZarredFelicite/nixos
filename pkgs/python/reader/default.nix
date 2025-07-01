@@ -3,11 +3,11 @@
 pkgs.python3.pkgs.buildPythonPackage rec {
   # TODO: yt_feed database needs to be migrated if reader is updated
   pname = "reader";
-  version = "3.13";
+  version = "3.18";
   format = "pyproject";
   src = pkgs.python3.pkgs.fetchPypi {
     inherit pname version;
-    sha256 = "sha256-bmN204LLizc3esR5CuHe4PytqyN24LHUToKU8MSkyYE=";
+    sha256 = "sha256-tt9vqGrsHP/3UgEHzmnjNW8UMdYm6fyR3LSGxcyhkdg=";
   };
   propagatedBuildInputs = with pkgs; [
     python3Packages.setuptools

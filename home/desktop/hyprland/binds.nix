@@ -44,7 +44,7 @@
     ];
     bind = [
       "$mod, O, overview:toggle, all"
-      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian special"
+      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -63,7 +63,7 @@
       "$mod, D, exec, ~/scripts/hyprland/toggle_special.sh stats"
       "$mod, M, exec, ~/scripts/hyprland/toggle_special.sh music"
       "$mod, A, exec, ~/scripts/hyprland/toggle_special.sh reset"
-      "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox browser-chatgpt"
+      "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox ChatGPT browser-chatgpt"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"
       "$mod SHIFT, C, centerwindow"
@@ -73,7 +73,8 @@
       "$mod, R, exec, ~/scripts/stt/record2.sh --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
 
-      "$mod, Return, exec, kitty -1"
+      "$mod, Return, exec, ghostty"
+      "$mod CTRL, Return, exec, kitty -1"
       #"$mod, N, exec, makoctl invoke"
       "$mod, N, exec, swaync-client --toggle-panel"
       #"$mod CTRL, N, exec, makoctl restore"

@@ -97,7 +97,7 @@
     nix-init # Command line tool to generate Nix packages from URLs
 
     # dev tools (general CLI)
-    devenv
+    # TODO: broken devenv
     git-lfs # Git Large File Storage extension
 
     # ai (CLI focus)
@@ -105,6 +105,9 @@
     claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
     codex # Lightweight coding agent that runs in your terminal
     oterm # Text-based terminal client for Ollama
+    #gemini-cli
+    ( pkgs.callPackage ../../pkgs/gemini-cli {} ) # Path relative to home/cli/default.nix
+    opencode
 
     # latex (CLI toolchain)
     (texliveBasic.withPackages(ps: with ps; [

@@ -74,6 +74,7 @@
       inputs.nix-vscode-extensions.overlays.default
       (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
+        bindfs = pkgs.callPackage ../pkgs/bindfs {} ;
       })
       # Override upstream youtube-transcript-api to use our local version
       (final: prev: rec {

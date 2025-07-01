@@ -41,12 +41,22 @@
       cursor.style = "beam";
     };
   };
+  #stylix.targets.ghostty.enable = false;
   programs.ghostty = {
     enableZshIntegration = true;
     installBatSyntax = true;
     settings = {
-      font-feature = [ "-calt" "-liga" "-dlig" ];
+      gtk-single-instance = true;
+      #font-feature = [ "-calt" "-liga" "-dlig" ];
+      adjust-cell-width = "-15%";
+      adjust-cell-height = "-10%";
+      background-opacity = 0;
       window-decoration = false;
+      #keybind = [
+      #  "ctrl+h=goto_split:left"
+      #  "ctrl+l=goto_split:right"
+      #];
+      clipboard-trim-trailing-spaces = true;
     };
   };
 }

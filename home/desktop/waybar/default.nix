@@ -49,6 +49,7 @@ let
         "class<firefox> title<.*github.*>" = "";
         "class<firefox> title<.*twitch|youtube.*>" = "";
         "class<kitty>" = "󰅬";
+        "class<ghostty>" = "";
         "title<tmux.*>" = "";
         "class<org.telegram.desktop>" = "";
         "class<steam>" = "";

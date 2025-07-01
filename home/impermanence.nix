@@ -53,6 +53,7 @@
       ".config/obsidian"
       ".config/VSCodium"
       ".config/Claude"
+      ".config/Cursor"
       ".config/syncthing"
     ];
     files = [

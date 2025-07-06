@@ -6,7 +6,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
     users.zarred = import ../home/hosts/nano.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -46,15 +46,15 @@
     initrd.systemd.enable = true;
   };
   fileSystems = {
+    "/boot" = {
+      device = "/dev/nvme0n1p1";
+      fsType = "vfat";
+    };
     "/" = {
       device = "none";
       fsType = "tmpfs";
       options = [ "mode=755" ]; # mode=755 so only root can write to those files
       neededForBoot = true;
-    };
-    "/boot" = {
-      device = "/dev/nvme0n1p1";
-      fsType = "vfat";
     };
     "/nix" = {
       device = "/dev/mapper/root";

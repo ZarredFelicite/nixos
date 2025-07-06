@@ -73,8 +73,8 @@
       "$mod, R, exec, ~/scripts/stt/record2.sh --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
 
-      "$mod, Return, exec, ghostty"
-      "$mod CTRL, Return, exec, kitty -1"
+      "$mod CTRL, Return, exec, ghostty"
+      "$mod, Return, exec, kitty -1"
       #"$mod, N, exec, makoctl invoke"
       "$mod, N, exec, swaync-client --toggle-panel"
       #"$mod CTRL, N, exec, makoctl restore"
@@ -131,9 +131,9 @@
       #" , edge:u:d, exec, pkill -RTMIN wvkbd-mobintl"
     ];
     binde = [
-      " , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 0.05+ -l 1"
-      " , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 0.05- -l 1"
-      " , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle"
+      " , XF86AudioRaiseVolume, exec, /home/zarred/scripts/sys/volume.sh +"
+      " , XF86AudioLowerVolume, exec, /home/zarred/scripts/sys/volume.sh -"
+      " , XF86AudioMute, exec, /home/zarred/scripts/sys/volume.sh mute"
       " , XF86MonBrightnessUp, exec, brillo -L | xargs -P 0 -I {} brillo -A 5 -q -s {} -u 100000 &"
       " , XF86MonBrightnessDown, exec, brillo -L | xargs -P 0 -I {} brillo -U 5 -q -s {} -u 100000 &"
       " , XF86AudioRewind, exec, playerctl -i kdeconnect position 5-"

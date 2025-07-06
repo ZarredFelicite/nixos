@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, pkgs-unstable, inputs, ... }:
 let
   onebar-css = builtins.readFile( builtins.fetchGit {
       # NOTE: UPDATE
@@ -21,11 +21,11 @@ in {
   stylix.targets.firefox.enable = false;
   programs.firefox = {
     enable = true;
-    package = pkgs.firefox.override {
+    package = pkgs-unstable.firefox.override {
       nativeMessagingHosts = [
-        pkgs.tridactyl-native
-        pkgs.browserpass
-        pkgs.fx-cast-bridge
+        pkgs-unstable.tridactyl-native
+        pkgs-unstable.browserpass
+        pkgs-unstable.fx-cast-bridge
       ];
       extraPolicies = {
         Extensions = { Install = [
@@ -119,7 +119,7 @@ in {
       };
     };
   };
-  home.packages = with pkgs; [
+  home.packages = with pkgs-unstable; [
     buku # Private cmdline bookmark manager
     #(callPackage ./firefox_openwith/derivation.nix {})
   ];

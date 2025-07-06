@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }:
 
 {
-  home.packages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     # PYTHON Tools from home/cli-apps.nix
     uv # Extremely fast Python package installer and resolver, written in Rust
     ruff # Extremely fast Python linter

@@ -1,4 +1,4 @@
-{ self, config, pkgs, lib, inputs, outputs,
+{ self, config, pkgs, pkgs-unstable, lib, inputs, outputs,
   #pkgs-unstable, pkgs-stable,
   ... }: {
   imports = [
@@ -129,12 +129,15 @@
   };
   services = {
     xserver.enable = true;
-    ollama.enable = true;
+    ollama = {
+      enable = true;
+      package = pkgs-unstable.ollama;
+    };
     printing.enable = true;
     avahi.enable = true;
     avahi.nssmdns4 = true;
     avahi.openFirewall = true;
-    desktopManager.gnome.enable = false;
+    xserver.desktopManager.gnome.enable = false;
     #displayManager.session = [
     #   { name = "Desktop"; manage = "desktop"; start = "Hyprland"; }
     #];
@@ -331,18 +334,18 @@
     gnome-photos
     gnome-tour
     gedit # text editor
-  ]) ++ (with pkgs.gnome; [
-    cheese # webcam tool
     gnome-music
     gnome-terminal
-    epiphany # web browser
-    geary # email reader
-    evince # document viewer
     gnome-characters
-    totem # video player
-    tali # poker game
-    iagno # go game
-    hitori # sudoku game
-    atomix # puzzle game
+  ]) ++ (with pkgs; [
+    gnome-cheese # webcam tool
+    gnome-epiphany # web browser
+    gnome-geary # email reader
+    gnome-evince # document viewer
+    gnome-totem # video player
+    gnome-tali # poker game
+    gnome-iagno # go game
+    gnome-hitori # sudoku game
+    gnome-atomix # puzzle game
   ]);
 }

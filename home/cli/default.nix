@@ -1,4 +1,4 @@
-{ self, inputs, config, pkgs, lib, osConfig, ... }: # Added osConfig from cli-apps.nix
+{ self, inputs, config, pkgs, pkgs-unstable, lib, osConfig, ... }: # Added osConfig from cli-apps.nix
 {
   imports = [
     ./zsh
@@ -12,105 +12,105 @@
     ./ueberzugpp.nix
   ];
 
-  home.packages = with pkgs; [
+  home.packages = [
     # Packages from home/cli-apps.nix (originally from home/home.nix)
     # System tools (CLI focus)
-    sysstat # A collection of performance monitoring tools for Linux (such as sar, iostat and pidstat)
-    lm_sensors # for `sensors` command
-    pciutils # lspci
-    usbutils # lsusb
-    ddcutil # Query and change Linux monitor settings using DDC/CI and USB
-    file # A program that shows the type of files
-    iperf # Tool to measure IP bandwidth using UDP or TCP
-    lychee # A fast, async, resource-friendly link checker written in Rust.
-    speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
+    pkgs.sysstat # A collection of performance monitoring tools for Linux (such as sar, iostat and pidstat)
+    pkgs.lm_sensors # for `sensors` command
+    pkgs.pciutils # lspci
+    pkgs.usbutils # lsusb
+    pkgs.ddcutil # Query and change Linux monitor settings using DDC/CI and USB
+    pkgs.file # A program that shows the type of files
+    pkgs.iperf # Tool to measure IP bandwidth using UDP or TCP
+    pkgs.lychee # A fast, async, resource-friendly link checker written in Rust.
+    pkgs.speedtest-cli # Command line interface for testing internet bandwidth using speedtest.net
     # libva-utils (kept in home.nix as it's often a dep for GUI media players too)
-    expect # A tool for automating interactive applications (provides unbuffer)
-    tio # Serial console TTY
+    pkgs.expect # A tool for automating interactive applications (provides unbuffer)
+    pkgs.tio # Serial console TTY
 
     # stress-testing / benchmarking (CLI)
-    stress-ng
-    s-tui
-    sysbench
+    pkgs.stress-ng
+    pkgs.s-tui
+    pkgs.sysbench
 
     # system call monitoring
-    strace # system call monitoring
-    ltrace # library call monitoring
-    lsof # list open files
+    pkgs.strace # system call monitoring
+    pkgs.ltrace # library call monitoring
+    pkgs.lsof # list open files
 
     # archives
-    atool
-    unzip
-    unrar
+    pkgs.atool
+    pkgs.unzip
+    pkgs.unrar
 
     # utils (CLI focus)
-    yq-go # yaml processer https://github.com/mikefarah/yq
-    yj # Convert YAML <=> TOML <=> JSON <=> HCL
-    bc # GNU software calculator
-    ripdrag # An application that lets you drag and drop files from and to the terminal
-    du-dust # du + rust = dust. Like du but more intuitive
-    duf # Disk Usage/Free Utility
-    ttyplot # A simple general purpose plotting utility for tty with data input from stdin
-    grc # Generic text colouriser
+    pkgs.yq-go # yaml processer https://github.com/mikefarah/yq
+    pkgs.yj # Convert YAML <=> TOML <=> JSON <=> HCL
+    pkgs.bc # GNU software calculator
+    pkgs.ripdrag # An application that lets you drag and drop files from and to the terminal
+    pkgs.du-dust # du + rust = dust. Like du but more intuitive
+    pkgs.duf # Disk Usage/Free Utility
+    pkgs.ttyplot # A simple general purpose plotting utility for tty with data input from stdin
+    pkgs.grc # Generic text colouriser
 
     # backup/recovery (CLI)
-    testdisk # Data recovery utilities
-    gtrash # Command line interface to the freedesktop.org trashcan https://github.com/umlx5h/gtrash
+    pkgs.testdisk # Data recovery utilities
+    pkgs.gtrash # Command line interface to the freedesktop.org trashcan https://github.com/umlx5h/gtrash
 
     # networking (CLI focus)
-    aria2 # A lightweight multi-protocol & multi-source command-line download utility
-    socat # replacement of openbsd-netcat
-    nmap # A utility for network discovery and security auditing
-    dig # Domain name server
+    pkgs.aria2 # A lightweight multi-protocol & multi-source command-line download utility
+    pkgs.socat # replacement of openbsd-netcat
+    pkgs.nmap # A utility for network discovery and security auditing
+    pkgs.dig # Domain name server
 
     # productivity (CLI focus)
-    tidy-viewer # A cross-platform CLI csv pretty printer that uses column styling to maximize viewer enjoyment
-    visidata # Interactive terminal multitool for tabular data
-    # TODO: unmaintained - replace with (xan https://github.com/medialab/xan ); xsv # A fast CSV toolkit written in Rust
+    pkgs.tidy-viewer # A cross-platform CLI csv pretty printer that uses column styling to maximize viewer enjoyment
+    pkgs.visidata # Interactive terminal multitool for tabular data
+    pkgs.xan # Command line tool to process CSV files directly from the shell
 
     # web tools (CLI)
-    readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
+    pkgs.readability-cli # Firefox Reader Mode in your terminal - get useful text from a web page using Mozilla's Readability library
 
     # misc (CLI focus)
-    # ffmpeg (kept in home.nix, general media tool)
-    android-tools # Android SDK platform tools (contains adb, fastboot - CLI)
-    # imagemagick (kept in home.nix, often used by GUI too)
-    gotify-cli # A command line interface for pushing messages to gotify/server
-    gnumake
-    cmake
-    pkg-config
-    sqlite # CLI and library
-    mdcat
-    moreutils
-    gnuplot # Can be used from CLI, but also by GUI tools
-    fastfetch
-    exfatprogs
-    psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
-    qrrs # CLI QR code generator and reader written in rust
-    catt # CLI Chromecast tool
-    wiki-tui # Simple and easy to use Wikipedia Text User Interface
+    pkgs.ffmpeg # A complete, cross-platform solution to record, convert and stream audio and video
+    pkgs.android-tools # Android SDK platform tools (contains adb, fastboot - CLI)
+    pkgs.imagemagick # A software suite to create, edit, compose, or convert bitmap images
+    pkgs.gotify-cli # A command line interface for pushing messages to gotify/server
+    pkgs.gnumake
+    pkgs.cmake
+    pkgs.pkg-config
+    pkgs.sqlite # CLI and library
+    pkgs.mdcat
+    pkgs.moreutils
+    pkgs.gnuplot # Can be used from CLI, but also by GUI tools
+    pkgs.fastfetch
+    pkgs.exfatprogs
+    pkgs.psmisc # A set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
+    pkgs.qrrs # CLI QR code generator and reader written in rust
+    pkgs.catt # CLI Chromecast tool
+    pkgs.wiki-tui # Simple and easy to use Wikipedia Text User Interface
 
     # nix (CLI tools)
-    nix-index # A files database for nixpkgs
-    manix # A fast CLI documentation searcher for Nix
-    comma # Runs programs without installing them
-    nix-init # Command line tool to generate Nix packages from URLs
+    pkgs.nix-index # A files database for nixpkgs
+    pkgs.manix # A fast CLI documentation searcher for Nix
+    pkgs.comma # Runs programs without installing them
+    pkgs.nix-init # Command line tool to generate Nix packages from URLs
 
     # dev tools (general CLI)
-    # TODO: broken devenv
-    git-lfs # Git Large File Storage extension
+    pkgs.devenv
+    pkgs.git-lfs # Git Large File Storage extension
 
     # ai (CLI focus)
-    aider-chat # AI pair programming in your terminal
-    claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
-    codex # Lightweight coding agent that runs in your terminal
-    oterm # Text-based terminal client for Ollama
-    #gemini-cli
-    ( pkgs.callPackage ../../pkgs/gemini-cli {} ) # Path relative to home/cli/default.nix
-    opencode
+    pkgs-unstable.aider-chat # AI pair programming in your terminal
+    pkgs-unstable.claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
+    pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
+    pkgs-unstable.oterm # Text-based terminal client for Ollama
+    #pkgs.gemini-cli
+    ( pkgs-unstable.callPackage ../../pkgs/gemini-cli {} ) # Path relative to home/cli/default.nix
+    pkgs-unstable.opencode
 
     # latex (CLI toolchain)
-    (texliveBasic.withPackages(ps: with ps; [
+    (pkgs.texliveBasic.withPackages(ps: with ps; [
       enumitem
       enumitem-zref
       parskip
@@ -120,11 +120,9 @@
     ]))
 
     # text conversion (CLI)
-    lynx # Text-mode web browser
+    pkgs.lynx # Text-mode web browser
     ( pkgs.callPackage ../../pkgs/html-to-markdown {} ) # Path relative to home/cli/default.nix
-    presenterm # Terminal based slideshow tool https://github.com/mfontanini/presenterm
-
-    # PYTHON Tools moved to home/python.nix
+    pkgs.presenterm # Terminal based slideshow tool https://github.com/mfontanini/presenterm
   ];
 
   xdg.configFile."fd/ignore".text = '' # Original from home/cli/default.nix

@@ -22,8 +22,6 @@
       trayscale # An unofficial GUI wrapper around the Tailscale CLI client
 
       # misc
-      ffmpeg # A complete, cross-platform solution to record, convert and stream audio and video
-      imagemagick # A software suite to create, edit, compose, or convert bitmap images
       rpi-imager # Raspberry Pi Imaging Utility
       #ventoy # NOTE: marked insecure - binary blobs
 
@@ -32,7 +30,7 @@
       upscayl # Free and Open Source AI Image Upscaler
       openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
 
-      #android-studio
+      android-studio
 
       # Desktop/Wayland specific tools
       waypipe
@@ -50,7 +48,7 @@
     ];
   };
   programs.kitty.enable = true;
-  programs.foot.enable = false;
+  programs.foot.enable = true;
   programs.ghostty.enable = true;
   services.ssh-agent.enable = false;
 

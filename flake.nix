@@ -1,22 +1,21 @@
 {
   description = "Zarred's NixOS flake";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    #nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    #nixpkgs-stable.url = "github:liberodark/nixpkgs/orca-fix";
-    home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = { url = "github:nix-community/home-manager/release-25.05"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     flake-utils.url = "github:numtide/flake-utils";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:danth/stylix/release-25.05";
     sops-nix.url = "github:Mic92/sops-nix";
 
     #hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
 
-    nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
 
@@ -24,17 +23,17 @@
   };
   outputs = {
     self, nixpkgs,
-    #nixpkgs-stable,
-    #nixpkgs-unstable,
+    nixpkgs-unstable,
     home-manager, nixos-hardware, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
       system = "x86_64-linux";
-      #systems = [ "x86_64-linux" "aarch64-linux" ];
-      #forEachSystem = f: lib.genAttrs systems (sys: f nixpkgs.legacyPackages.${sys});
       pkgs = nixpkgs.legacyPackages.${system};
-      #pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
-      #pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+      pkgs-unstable = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [ inputs.nix-vscode-extensions.overlays.default ];
+      };
     in {
       inherit lib;
       nixpkgs.overlays = [
@@ -64,8 +63,8 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
+            inherit pkgs-unstable;
             #inherit pkgs-stable;
-            #inherit pkgs-unstable;
           };
       	  modules = [
             ({ nixpkgs.overlays = [
@@ -80,7 +79,7 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            #inherit pkgs-unstable;
+            inherit pkgs-unstable;
             #inherit pkgs-stable;
           };
       	  modules = [
@@ -97,7 +96,7 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            #inherit pkgs-unstable;
+            inherit pkgs-unstable;
             #inherit pkgs-stable;
           };
       	  modules = [

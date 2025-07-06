@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
@@ -7,7 +7,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
     users.zarred = import ../home/hosts/web.nix;
   };
   services.syncthing.enable = true;

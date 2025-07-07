@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
@@ -7,15 +7,14 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
     users.zarred = import ../home/hosts/web.nix;
   };
-  services.syncthing.enable = true;
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "web";
+  services.syncthing.enable = true;
   boot = {
-    #kernelPackages = pkgs.linuxPackages_cachyos;
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     kernelParams = [
     #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
@@ -87,28 +86,28 @@
       options = [ "mode=755" ];
       neededForBoot = true;
     };
-    "/home/zarred" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "mode=777" ];
-      neededForBoot = true;
-    };
     "/nix" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
       options = [ "defaults" "compress-force=zstd" "noatime" "ssd" "subvol=nix" ];
       neededForBoot = true;
     };
+    "/home/zarred" = {
+      device = "none";
+      fsType = "tmpfs";
+      neededForBoot = true;
+      options = [ "mode=777" ];
+    };
     "/persist" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "defaults" "compress-force=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
+      options = [ "defaults" "compress=zstd" "relatime" "lazytime" "ssd" "subvol=persist" ];
       neededForBoot = true;
     };
     "/swap" = {
       device = "/dev/mapper/root";
       fsType = "btrfs";
-      options = [ "noatime" "ssd" "subvol=swap" ];
+      options = [ "compress=no" "noatime" "ssd" "subvol=swap" ];
     };
   };
   swapDevices = [{

@@ -44,7 +44,7 @@
     ];
     bind = [
       "$mod, O, overview:toggle, all"
-      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian special"
+      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -63,7 +63,7 @@
       "$mod, D, exec, ~/scripts/hyprland/toggle_special.sh stats"
       "$mod, M, exec, ~/scripts/hyprland/toggle_special.sh music"
       "$mod, A, exec, ~/scripts/hyprland/toggle_special.sh reset"
-      "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox browser-chatgpt"
+      "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox ChatGPT browser-chatgpt"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"
       "$mod SHIFT, C, centerwindow"
@@ -73,6 +73,7 @@
       "$mod, R, exec, ~/scripts/stt/record2.sh --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
 
+      "$mod CTRL, Return, exec, ghostty"
       "$mod, Return, exec, kitty -1"
       #"$mod, N, exec, makoctl invoke"
       "$mod, N, exec, swaync-client --toggle-panel"
@@ -130,9 +131,9 @@
       #" , edge:u:d, exec, pkill -RTMIN wvkbd-mobintl"
     ];
     binde = [
-      " , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 0.05+ -l 1"
-      " , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 0.05- -l 1"
-      " , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle"
+      " , XF86AudioRaiseVolume, exec, /home/zarred/scripts/sys/volume.sh +"
+      " , XF86AudioLowerVolume, exec, /home/zarred/scripts/sys/volume.sh -"
+      " , XF86AudioMute, exec, /home/zarred/scripts/sys/volume.sh mute"
       " , XF86MonBrightnessUp, exec, brillo -L | xargs -P 0 -I {} brillo -A 5 -q -s {} -u 100000 &"
       " , XF86MonBrightnessDown, exec, brillo -L | xargs -P 0 -I {} brillo -U 5 -q -s {} -u 100000 &"
       " , XF86AudioRewind, exec, playerctl -i kdeconnect position 5-"

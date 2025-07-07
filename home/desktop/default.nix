@@ -1,4 +1,4 @@
-{ pkgs, inputs, lib, osConfig, config, ... }:
+{ pkgs, pkgs-unstable, inputs, lib, osConfig, config, ... }:
 with lib; let
   mkHyprlandService = lib.recursiveUpdate {
     Unit.PartOf = ["hyprland-session.target"];
@@ -109,11 +109,6 @@ in {
     };
   };
   programs.obs-studio = { enable = true; }; # From home/desktop.nix
-    #programs.vscode = { # From home/desktop.nix
-    #  enable = true;
-    #  package = pkgs.vscodium.fhs;
-    #  mutableExtensionsDir = true;
-    #};
 
   # Original services from home/desktop/default.nix
   systemd.user.services.cliphist = mkHyprlandService {

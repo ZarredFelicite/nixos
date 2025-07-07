@@ -1,4 +1,4 @@
-{ pkgs, inputs, lib, osConfig, config, ... }:
+{ pkgs, pkgs-unstable, inputs, lib, osConfig, config, ... }:
 let
   mkHyprlandService = lib.recursiveUpdate {
     Unit.PartOf = ["hyprland-session.target"];
@@ -78,7 +78,7 @@ in {
         };
       })
     {
-      #package = inputs.hyprland.packages.x86_64-linux.default;
+    package = pkgs-unstable.hyprland;
     xwayland.enable = true;
     systemd.enable = true;
     plugins = with pkgs.hyprlandPlugins; [

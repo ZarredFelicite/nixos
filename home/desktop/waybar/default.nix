@@ -49,6 +49,7 @@ let
         "class<firefox> title<.*github.*>" = "";
         "class<firefox> title<.*twitch|youtube.*>" = "";
         "class<kitty>" = "󰅬";
+        "class<ghostty>" = "";
         "title<tmux.*>" = "";
         "class<org.telegram.desktop>" = "";
         "class<steam>" = "";
@@ -101,6 +102,13 @@ in {
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.services.airpods_battery_icons = {
+    Unit.Description = "Get AirPods battery icons";
+    Service.ExecStart = "/home/zarred/scripts/waybar/battery_icons.sh";
+    Service.Restart = "always";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   programs.waybar = {
     systemd.enable = true;
     #package = inputs.waybar.packages.${pkgs.system}.waybar.overrideAttrs (oldAttrs: {
@@ -142,7 +150,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "hyprland/submap" "image#recording" "privacy" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/updates-group" "group/network-group" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
+        modules-right = [ "hyprland/submap" "image#recording" "privacy" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/volume-custom" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -181,26 +189,50 @@ in {
         };
         "group/stats-group" = {
           orientation = "inherit";
-          modules = [ "idle_inhibitor" "power-profiles-daemon" "cpu" "temperature" "wireplumber" "backlight" ];
+          modules = [ "systemd-failed-units" "custom/updates"  "network" "bluetooth" "idle_inhibitor" "power-profiles-daemon" "cpu" "temperature" "backlight" ];
+        };
+        "group/volume-custom" = {
+          orientation = "inherit";
+          modules = [ "image#volume-sink" "image#volume-source" ];
+        };
+        "image#volume-sink" = {
+          exec = "/home/zarred/scripts/waybar/volume_device_switcher.sh --sink";
+          interval = 1;
+          size = 20;
+          on-click = "/home/zarred/scripts/waybar/volume_device_switcher.sh --next-sink";
+          on-click-right = "/home/zarred/scripts/waybar/volume_device_switcher.sh --sink --mute";
+          on-scroll-up = "/home/zarred/scripts/waybar/volume_device_switcher.sh --sink --increase";
+          on-scroll-down = "/home/zarred/scripts/waybar/volume_device_switcher.sh --sink --decrease";
+          signal = 4;
+        };
+        "image#volume-source" = {
+          exec = "/home/zarred/scripts/waybar/volume_device_switcher.sh --source";
+          interval = 1;
+          size = 20;
+          on-click = "/home/zarred/scripts/waybar/volume_device_switcher.sh --next-source";
+          on-click-right = "/home/zarred/scripts/waybar/volume_device_switcher.sh --source --mute";
+          on-scroll-up = "/home/zarred/scripts/waybar/volume_device_switcher.sh --source --increase";
+          on-scroll-down = "/home/zarred/scripts/waybar/volume_device_switcher.sh --source --decrease";
+          signal = 4;
         };
         "group/airpods-battery" = {
           orientation = "inherit";
           modules = [ "image#airpods-battery-left" "image#airpods-battery-case" "image#airpods-battery-right" ];
         };
         "image#airpods-battery-left" = {
-          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods left 100";
+          exec = "cat /tmp/airpods_battery_left";
           interval = 1;
           size = 20;
           on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
         };
         "image#airpods-battery-right" = {
-          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods right 100";
+          exec = "cat /tmp/airpods_battery_right";
           interval = 1;
           size = 20;
           on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
         };
         "image#airpods-battery-case" = {
-          exec = "/home/zarred/scripts/waybar/battery_icons.sh airpods case 100";
+          exec = "cat /tmp/airpods_battery_case";
           interval = 1;
           size = 20;
           on-click = "bluetoothctl disconnect 14:28:76:9E:F5:60; bluetoothctl connect 14:28:76:9E:F5:60";
@@ -210,17 +242,17 @@ in {
           modules = [ "image#zmk-battery-left" "image#zmk-battery-central" "image#zmk-battery-right" ];
         };
         "image#zmk-battery-left" = {
-          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk left 70";
+          exec = "cat /tmp/zmk_battery_left";
           interval = 2;
           size = 20;
         };
         "image#zmk-battery-right" = {
-          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk right 70";
+          exec = "cat /tmp/zmk_battery_right";
           interval = 2;
           size = 20;
         };
         "image#zmk-battery-central" = {
-          exec = "/home/zarred/scripts/waybar/battery_icons.sh zmk central 70";
+          exec = "cat /tmp/zmk_battery_central";
           interval = 2;
           size = 20;
         };
@@ -484,76 +516,76 @@ in {
           tooltip = false;
           on-click = "shutdown now";
         };
-        "group/group-stocks" = {
-          orientation = "inherit";
-          drawer = {
-            transition-duration = 500;
-            children-class = "stocks-ticker";
-            transition-left-to-right = true;
-          };
-          modules = [
-            "custom/stock-ticker0"
-            "custom/stock-ticker1"
-            "custom/stock-ticker2"
-            "custom/stock-ticker3"
-            "custom/stock-ticker4"
-            "custom/stock-ticker5"
-            "custom/stock-ticker6"
-            "custom/stock-ticker7"
-            "custom/stock-ticker8"
-            "custom/stock-ticker9"
-          ];
-        };
-        "custom/stock-ticker0" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 0";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker1" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 1";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker2" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 2";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker3" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 3";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker4" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 4";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker5" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 5";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker6" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 6";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker7" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 7";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker8" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 8";
-          tooltip = false;
-          restart-interval = 300;
-        };
-        "custom/stock-ticker9" = {
-          exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 9";
-          tooltip = false;
-          restart-interval = 300;
-        };
+          #"group/group-stocks" = {
+          #  orientation = "inherit";
+          #  drawer = {
+          #    transition-duration = 500;
+          #    children-class = "stocks-ticker";
+          #    transition-left-to-right = true;
+          #  };
+          #  modules = [
+          #    "custom/stock-ticker0"
+          #    "custom/stock-ticker1"
+          #    "custom/stock-ticker2"
+          #    "custom/stock-ticker3"
+          #    "custom/stock-ticker4"
+          #    "custom/stock-ticker5"
+          #    "custom/stock-ticker6"
+          #    "custom/stock-ticker7"
+          #    "custom/stock-ticker8"
+          #    "custom/stock-ticker9"
+          #  ];
+          #};
+          #"custom/stock-ticker0" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 0";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker1" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 1";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker2" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 2";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker3" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 3";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker4" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 4";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker5" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 5";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker6" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 6";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker7" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 7";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker8" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 8";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
+          #"custom/stock-ticker9" = {
+          #  exec = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py 9";
+          #  tooltip = false;
+          #  restart-interval = 300;
+          #};
       };
     }];
     style = ''
@@ -612,7 +644,7 @@ in {
       }
       #mpris, #submap, #custom-news, #custom-mail, #airpods-battery, #zmk-battery,
       #clock-group, #stats-group, #updates-group, #network-group, #battery, #tray,
-      #custom-weather, #custom-notification, #privacy {
+      #custom-weather, #custom-notification, #privacy, #volume-custom {
           padding: 0 4 0 4px;
           margin: 0px 1px 0px 1px;
           border-radius: 12px;

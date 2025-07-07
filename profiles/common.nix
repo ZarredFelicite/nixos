@@ -5,6 +5,7 @@
     ../profiles/nix.nix
     ../profiles/impermanence.nix
     ../profiles/syncthing.nix
+    ../profiles/python.nix
     inputs.sops-nix.nixosModules.sops
     ../containers/docker.nix
     ../containers/podman.nix
@@ -218,6 +219,7 @@
         ib-gateway = { owner = "zarred"; };
         ib-gateway-vnc = { owner = "zarred"; };
         syncthing-api = { owner = "zarred"; };
+        jellyfin-zarred = { owner = "zarred"; };
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";
@@ -331,15 +333,6 @@
       direnv
       inotify-tools
       inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
-      (python311.withPackages(ps: with ps; [
-        pip
-        pandas
-        requests
-        psutil
-        pillow
-        libtmux
-        shtab
-      ]))
       nodejs
       openjpeg
       impala

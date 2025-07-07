@@ -1,14 +1,14 @@
-{pkgs, ...}: {
+{pkgs-unstable, pkgs, ...}: {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium.fhs;
+    package = pkgs-unstable.vscodium.fhs;
 
     mutableExtensionsDir = false;
 
     profiles.default = {
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
-      extensions = with pkgs.open-vsx;
+      extensions = with pkgs-unstable.open-vsx;
         [
           # https://raw.githubusercontent.com/nix-community/nix-vscode-extensions/master/data/cache/open-vsx-latest.json
 
@@ -58,7 +58,7 @@
           mtxr.sqltools
           mtxr.sqltools-driver-pg
         ]
-        ++ (with pkgs.vscode-marketplace; [
+        ++ (with pkgs-unstable.vscode-marketplace; [
           # https://raw.githubusercontent.com/nix-community/nix-vscode-extensions/master/data/cache/vscode-marketplace-latest.json
           #dbaeumer.vscode-eslint
           mtxr.sqltools-driver-sqlite
@@ -69,7 +69,7 @@
           #codeforge.remix-forge
           #amodio.toggle-excluded-files
         ])
-        ++ (with pkgs.vscode-marketplace-release; [
+        ++ (with pkgs-unstable.vscode-marketplace-release; [
           github.copilot
           github.copilot-chat
         ])
@@ -107,12 +107,12 @@
         "[typescriptreact]"."editor.defaultFormatter" = "esbenp.prettier-vscode";
 
         "nix.enableLanguageServer" = true;
-        "nix.formatterPath" = "${pkgs.alejandra}/bin/alejandra";
-        "nix.serverPath" = "${pkgs.nil}/bin/nil";
-        "nix.serverSettings"."nil"."formatting"."command" = ["${pkgs.alejandra}/bin/alejandra"];
+        "nix.formatterPath" = "${pkgs-unstable.alejandra}/bin/alejandra";
+        "nix.serverPath" = "${pkgs-unstable.nil}/bin/nil";
+        "nix.serverSettings"."nil"."formatting"."command" = ["${pkgs-unstable.alejandra}/bin/alejandra"];
 
-        "bashIde.shellcheckPath" = "${pkgs.shellcheck}/bin/shellcheck";
-        "shfmt.executablePath" = "${pkgs.shfmt}/bin/shfmt";
+        "bashIde.shellcheckPath" = "${pkgs-unstable.shellcheck}/bin/shellcheck";
+        "shfmt.executablePath" = "${pkgs-unstable.shfmt}/bin/shfmt";
 
         "errorLens.gutterIconsEnabled" = true;
         "errorLens.messageMaxChars" = 0;

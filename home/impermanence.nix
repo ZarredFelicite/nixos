@@ -29,6 +29,9 @@
       ".vscode-oss"
       ".claude"
       ".cursor"
+      ".opencode"
+      ".gemini"
+      ".codex"
       # PERSISTENT .CONF
       ".config/kdeconnect"
       ".config/BraveSoftware"
@@ -53,13 +56,17 @@
       ".config/obsidian"
       ".config/VSCodium"
       ".config/Claude"
+      ".config/Cursor"
       ".config/syncthing"
+      # PERSISTENT .CACHE
+      ".cache/thunderbird"
     ];
     files = [
       ".config/wtwitch/api.json"
       ".sops.yaml"
       ".config/syncthingtray.ini"
       ".claude.json"
+      ".opencode.json"
     ];
     allowOther = true;
   };

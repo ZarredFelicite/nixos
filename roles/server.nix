@@ -40,6 +40,7 @@
   services.nzbget.enable = true;
 
   services.nextcloud.enable = true;
+  services.syncthing.enable = true;
 
   services.authelia.instances.primary.enable = true;
   services.nginx.enable = true;

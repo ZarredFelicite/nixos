@@ -189,7 +189,21 @@ in {
         };
         "group/stats-group" = {
           orientation = "inherit";
-          modules = [ "systemd-failed-units" "custom/updates"  "network" "bluetooth" "idle_inhibitor" "power-profiles-daemon" "cpu" "temperature" "backlight" ];
+          modules = [ "systemd-failed-units" "custom/updates"  "network" "bluetooth" "image#cpu" "image#brightness" ];
+        };
+        "image#cpu" = {
+          exec = "/home/zarred/scripts/waybar/create_cpu_icon.sh";
+          on-click = "/home/zarred/scripts/waybar/create_cpu_icon.sh --switch-mode";
+          interval = 3;
+          size = 20;
+          signal = 5;
+        };
+        "image#brightness" = {
+          exec = "/home/zarred/scripts/waybar/brightness.sh";
+          on-click = "/home/zarred/scripts/waybar/brightness.sh --idle";
+          interval = 5;
+          size = 20;
+          signal = 6;
         };
         "group/volume-custom" = {
           orientation = "inherit";
@@ -197,7 +211,7 @@ in {
         };
         "image#volume-sink" = {
           exec = "/home/zarred/scripts/waybar/volume_device_switcher.sh --sink";
-          interval = 1;
+          interval = 2;
           size = 20;
           on-click = "/home/zarred/scripts/waybar/volume_device_switcher.sh --next-sink";
           on-click-right = "/home/zarred/scripts/waybar/volume_device_switcher.sh --sink --mute";
@@ -207,7 +221,7 @@ in {
         };
         "image#volume-source" = {
           exec = "/home/zarred/scripts/waybar/volume_device_switcher.sh --source";
-          interval = 1;
+          interval = 2;
           size = 20;
           on-click = "/home/zarred/scripts/waybar/volume_device_switcher.sh --next-source";
           on-click-right = "/home/zarred/scripts/waybar/volume_device_switcher.sh --source --mute";

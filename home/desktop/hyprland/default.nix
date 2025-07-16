@@ -19,6 +19,7 @@ in {
     #inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
     pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
+    inputs.vigiland.packages.${pkgs.system}.vigiland
     #pkgs.hyprpanel
     #pkgs.ags
   ];

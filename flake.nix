@@ -2,7 +2,7 @@
   description = "Zarred's NixOS flake";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = { url = "github:nix-community/home-manager/release-25.05"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     flake-utils.url = "github:numtide/flake-utils";
@@ -14,6 +14,7 @@
 
     #hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
+    vigiland.url = "github:jappie3/vigiland";
 
     nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs

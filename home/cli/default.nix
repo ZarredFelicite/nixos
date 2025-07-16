@@ -105,8 +105,7 @@
     pkgs-unstable.claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
     pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
     pkgs-unstable.oterm # Text-based terminal client for Ollama
-    #pkgs.gemini-cli
-    ( pkgs-unstable.callPackage ../../pkgs/gemini-cli {} ) # Path relative to home/cli/default.nix
+    pkgs-unstable.gemini-cli
     pkgs-unstable.opencode
 
     # latex (CLI toolchain)

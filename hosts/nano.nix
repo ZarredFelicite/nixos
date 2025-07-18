@@ -14,7 +14,7 @@
   services.syncthing.enable = true;
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-intel" "acpi_call" ];
     #kernelParams = [
     #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
     #  "initcall_debug"
@@ -39,7 +39,7 @@
     #    KPROBES_ON_FTRACE y
     #  '';
     #} ];
-    extraModulePackages = [ ];
+    extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/nvme0n1p2";
@@ -90,25 +90,25 @@
     enable = true;
     #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
   };
-  services.power-profiles-daemon.enable = false; # not optimal
+  services.power-profiles-daemon.enable = false; # dumb conflict with tlp refusing to evaluate
   services.tlp = {
     enable = true;
     settings = {
       # CPU
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
       CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
       PLATFORM_PROFILE_ON_AC = "performance";
       PLATFORM_PROFILE_ON_BAT = "low-power";
-      CPU_BOOST_ON_AC = 1;
-      CPU_BOOST_ON_BAT = 0;
-      CPU_HWP_DYN_BOOST_ON_AC = 1;
-      CPU_HWP_DYN_BOOST_ON_BAT = 1;
-      CPU_SCALING_MIN_FREQ_ON_AC = 0;
-      CPU_SCALING_MAX_FREQ_ON_AC = 9999999;
-      CPU_SCALING_MIN_FREQ_ON_BAT = 0;
-      CPU_SCALING_MAX_FREQ_ON_BAT = 1600000;
+      #CPU_BOOST_ON_AC = 1;
+      #CPU_BOOST_ON_BAT = 0;
+      #CPU_HWP_DYN_BOOST_ON_AC = 1;
+      #CPU_HWP_DYN_BOOST_ON_BAT = 1;
+      #CPU_SCALING_MIN_FREQ_ON_AC = 0;
+      #CPU_SCALING_MAX_FREQ_ON_AC = 9999999;
+      #CPU_SCALING_MIN_FREQ_ON_BAT = 0;
+      #CPU_SCALING_MAX_FREQ_ON_BAT = 1600000;
       # iGPU
       #INTEL_GPU_MIN_FREQ_ON_AC = 0;
       #INTEL_GPU_MIN_FREQ_ON_BAT = 0;
@@ -134,7 +134,7 @@
       CPU_MAX_PERF_ON_BAT = 75;
 
       #Optional helps save long term battery health
-      START_CHARGE_THRESH_BAT0 = 60; # 60 and bellow it starts to charge
+      START_CHARGE_THRESH_BAT0 = 80; # 60 and bellow it starts to charge
       STOP_CHARGE_THRESH_BAT0 = 90; # 90 and above it stops charging
     };
   };

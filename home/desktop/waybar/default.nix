@@ -150,7 +150,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "hyprland/submap" "image#recording" "privacy" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/volume-custom" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
+        modules-right = [ "hyprland/submap" "image#recording" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/volume-custom" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;

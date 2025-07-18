@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -104,7 +104,11 @@
       CPU_BOOST_ON_AC = 1;
       CPU_BOOST_ON_BAT = 0;
       CPU_HWP_DYN_BOOST_ON_AC = 1;
-      CPU_HWP_DYN_BOOST_ON_BAT = 0;
+      CPU_HWP_DYN_BOOST_ON_BAT = 1;
+      CPU_SCALING_MIN_FREQ_ON_AC = 0;
+      CPU_SCALING_MAX_FREQ_ON_AC = 9999999;
+      CPU_SCALING_MIN_FREQ_ON_BAT = 0;
+      CPU_SCALING_MAX_FREQ_ON_BAT = 1600000;
       # iGPU
       #INTEL_GPU_MIN_FREQ_ON_AC = 0;
       #INTEL_GPU_MIN_FREQ_ON_BAT = 0;

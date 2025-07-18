@@ -1,8 +1,14 @@
-{ pkgs, osConfig, ... }:
+{ pkgs, pkgs-unstable, osConfig, ... }:
 #let
   #mpv-quality-menu = pkgs.callPackage ./plugins/mpv-quality-menu.nix { };
 #in {
 {
+  disabledModules = [
+    "programs/mpv.nix"
+  ];
+  imports = [
+    ../../../modules/mpv.nix
+  ];
   home.packages = [
     pkgs.mpvc # A mpc-like control interface for mpv
     pkgs.playerctl # Command-line utility and library for controlling media players that implement MPRIS
@@ -96,7 +102,7 @@
         profile-restore = "copy";
       };
     };
-    scripts = with pkgs.mpvScripts; [
+    scripts = with pkgs-unstable.mpvScripts; [
       uosc
       mpris
       #mpv-playlistmanager

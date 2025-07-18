@@ -34,7 +34,7 @@ let
       on-scroll-down = "hyprctl dispatch workspace -1";
     };
     "hyprland/workspaces#number" = {
-      format = " <span color='#1f1d2e'>{windows}</span> ";
+      format = "<span color='#1f1d2e'>{windows}</span> ";
       #format = " <span color='#1f1d2e'>{name} {windows}</span> ";
       all-outputs = false;
       show-special = true;
@@ -150,7 +150,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "hyprland/submap" "image#recording" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/volume-custom" "group/stats-group" "battery" "group/clock-group" "group/group-power" ];
+        modules-right = [ "hyprland/submap" "image#recording" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/stats-group" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -189,7 +189,12 @@ in {
         };
         "group/stats-group" = {
           orientation = "inherit";
-          modules = [ "systemd-failed-units" "custom/updates"  "network" "bluetooth" "image#cpu" "image#brightness" ];
+          modules = [ "systemd-failed-units" "custom/updates"  "network" "bluetooth" "image#volume-sink" "image#volume-source" "image#cpu" "image#brightness" "image#battery" ];
+        };
+        "image#battery" = {
+          exec = "/home/zarred/scripts/waybar/battery_icon.sh";
+          interval = 1;
+          size = 20;
         };
         "image#cpu" = {
           exec = "/home/zarred/scripts/waybar/create_cpu_icon.sh";
@@ -689,7 +694,7 @@ in {
         color: #31748f;
         border-radius: 8px;
         margin: 1px 2px;
-        padding: 0px 6px;
+        padding: 0px 2px;
         background-color: #31748f;
         transition: all 0.2s ease-in-out;
       }
@@ -699,7 +704,7 @@ in {
       }
       #workspaces button.active {
         color: #c4a7e7;
-        padding: 0px 10px;
+        padding: 0px 4px;
         background-color: #c4a7e7;
         transition: all 0.2s ease-in-out;
       }

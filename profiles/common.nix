@@ -74,7 +74,7 @@
     useNetworkd = true;
     useDHCP = false;
     #dhcpcd.enable = false;
-    interfaces.wlan0.wakeOnLan.enable = true;
+    #interfaces.wlan0.wakeOnLan.enable = true;
     networkmanager = {
       enable = false;
       wifi.powersave = false;

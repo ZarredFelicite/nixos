@@ -150,7 +150,7 @@ in {
         gtk-layer-shell = true;
         modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
-        modules-right = [ "hyprland/submap" "image#recording" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "custom/notification" "tray" "group/stats-group" "group/clock-group" "group/group-power" ];
+        modules-right = [ "hyprland/submap" "image#recording" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "tray" "group/stats-group" "group/clock-group" "group/group-power" ];
         tray = {
           icon-size = 14;
           spacing = 3;
@@ -189,7 +189,17 @@ in {
         };
         "group/stats-group" = {
           orientation = "inherit";
-          modules = [ "systemd-failed-units" "custom/updates"  "network" "bluetooth" "image#volume-sink" "image#volume-source" "image#cpu" "image#brightness" "image#battery" ];
+          modules = [ "systemd-failed-units" "custom/updates" "image#notifications" "image#wifi" "image#bluetooth" "image#volume-sink" "image#volume-source" "image#cpu" "image#brightness" "image#battery" ];
+        };
+        "image#wifi" = {
+          exec = "/home/zarred/scripts/waybar/wifi_icon.sh";
+          interval = 1;
+          size = 20;
+        };
+        "image#bluetooth" = {
+          exec = "/home/zarred/scripts/waybar/bluetooth_icon.sh";
+          interval = 1;
+          size = 20;
         };
         "image#battery" = {
           exec = "/home/zarred/scripts/waybar/battery_icon.sh";
@@ -416,6 +426,13 @@ in {
           on-scroll-up = "/home/zarred/scripts/waybar/timer.sh increase 60 || /home/zarred/scripts/waybar/timer.sh new 1 'notify-send -u critical \"Timer expired.\"; mpv --force-window=no /home/zarred/scripts/notifications/audio/soft-4.mp3'";
           on-scroll-down = "/home/zarred/scripts/waybar/timer.sh increase -60";
         };
+        "image#notifications" = {
+          exec = "/home/zarred/scripts/waybar/notification_icon.sh";
+          on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+          on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+          interval = 1;
+          size = 20;
+        };
         "custom/notification" = {
           tooltip = false;
           #format = "{icon}<sup> {}</sup>";
@@ -442,13 +459,13 @@ in {
           format = "";
           #exec = "echo 'hello'";
         };
-        "custom/zmk-battery" = {
-          format = "{}";
-          tooltip = false;
-          interval = 3600;
-          exec = "~/scripts/waybar/zmk-battery.py icons";
-            #return-type = "json";
-        };
+          #"custom/zmk-battery" = {
+          #  format = "{}";
+          #  tooltip = false;
+          #  interval = 3600;
+          #  exec = "~/scripts/waybar/zmk-battery.py icons";
+          #    #return-type = "json";
+          #};
           #"custom/airpods-battery" = {
           #  format = "{}";
           #  tooltip = true;

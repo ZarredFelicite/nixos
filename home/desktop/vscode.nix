@@ -1,7 +1,7 @@
 {pkgs-unstable, pkgs, ...}: {
   programs.vscode = {
     enable = true;
-    package = pkgs-unstable.vscodium.fhs;
+    package = pkgs.vscodium.fhs;
 
     mutableExtensionsDir = false;
 

@@ -57,6 +57,7 @@
       ".config/VSCodium"
       ".config/Claude"
       ".config/Cursor"
+      ".config/opencode"
       ".config/syncthing"
       # PERSISTENT .CACHE
       ".cache/thunderbird"

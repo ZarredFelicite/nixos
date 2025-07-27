@@ -60,6 +60,7 @@ in {
     extraConfig = ''
       pinentry-program ${pinentryRofi}/bin/pinentry-rofi-with-env
       allow-preset-passphrase
+      no-allow-external-cache
     '';
   };
     #systemd.user.services.lock-target = {

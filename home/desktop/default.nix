@@ -20,6 +20,7 @@ in {
     ./notifications.nix
     ./waybar
     ./vscode.nix
+    inputs.ags.homeManagerModules.default
   ];
 
   # Content merged from home/desktop.nix (the file)
@@ -28,58 +29,61 @@ in {
   programs.password-store.enable = true; # From home/desktop.nix
   services.hypridle.enable = true; # From home/desktop.nix
 
-  home.packages = with pkgs; [
-    # Packages from original home/desktop/default.nix
-    slurp
-    tesseract
-    swappy
-    satty
-    wayshot
-    wf-recorder
-    wl-screenrec
-    grim
-    wl-clipboard
-    cliphist
-    hyprpicker
-    wl-mirror
-    pipectl
+  programs.ags = {
+    enable = true;
+    extraPackages = with pkgs; [
+      inputs.astal.packages.${pkgs.system}.battery
+      inputs.astal.packages.${pkgs.system}.hyprland
+      fzf
+    ];
+  };
 
-    # Packages from home/desktop.nix (the file)
-    wev
-    transmission_4
-    libnotify
-    cava
-    songrec
-    sox
-    decibels
-    amberol
-    glow
-    nb
-    obsidian
-    orca-slicer
-    vtk
-    xdg-utils
-    glib
-    dracula-theme
-    wtype
-    signal-desktop
-    telegram-desktop
-    caprine-bin
-    zoom-us
-    v4l-utils
-    (discord.override {
-      withOpenASAR = true;
-      withVencord = true;
-    })
-    materia-kde-theme
-    libsForQt5.qtstyleplugin-kvantum
-    swayimg
-    gimp
-    pinta
-    code-cursor
+  home.packages = [
+    pkgs.slurp
+    pkgs.tesseract
+    pkgs.swappy
+    pkgs.satty
+    pkgs.wayshot
+    pkgs.wf-recorder
+    pkgs.wl-screenrec
+    pkgs.grim
+    pkgs.wl-clipboard
+    pkgs.cliphist
+    pkgs.hyprpicker
+    pkgs.wl-mirror
+    pkgs.pipectl
+
+    pkgs.wev
+    pkgs.transmission_4
+    pkgs.libnotify
+    pkgs.cava
+    pkgs.songrec
+    pkgs.sox
+    pkgs.decibels
+    pkgs.amberol
+    pkgs.glow
+    pkgs.nb
+    pkgs-unstable.obsidian
+    pkgs.orca-slicer
+    pkgs.vtk
+    pkgs.xdg-utils
+    pkgs.glib
+    pkgs.dracula-theme
+    pkgs.wtype
+    pkgs.signal-desktop
+    pkgs.telegram-desktop
+    pkgs.zoom-us
+    pkgs.v4l-utils
+    (pkgs.discord.override { withOpenASAR = true; withVencord = true; })
+    pkgs.materia-kde-theme
+    pkgs.libsForQt5.qtstyleplugin-kvantum
+    pkgs.gimp
+    pkgs.pinta
+    pkgs.code-cursor
+    #pkgs-unstable.libsForQt5.qt5.qtgraphicaleffects
     #inputs.claude-desktop.packages.${pkgs.system}.claude-desktop # Corrected system reference
+    inputs.ignis.packages.x86_64-linux.ignis
   ];
-
   home.sessionVariables = { # From home/desktop.nix
     MOZ_ENABLE_WAYLAND = 1;
     XDG_CURRENT_DESKTOP = "hyprland";
@@ -96,9 +100,44 @@ in {
     # TERM = "xterm-kitty"; # This might be better set in a terminal-specific profile
   };
 
-  programs.imv = { enable = true; }; # From home/desktop.nix
-  programs.feh.enable = true; # From home/desktop.nix
-  programs.zathura = { # From home/desktop.nix
+  programs.pqiv = {
+    enable = true;
+    settings = {
+      options = {
+        lazy-load = true;
+        hide-info-box = true;
+        background-pattern = "black";
+        thumbnail-size = "256x256";
+        command-1 = "thunar";
+      };
+    };
+    extraConfig = ''
+      [actions]
+      set_cursor_auto_hide(1)
+
+      [keybindings]
+      t { montage_mode_enter() }
+      @MONTAGE {
+        t { montage_mode_return_cancel() }
+      }
+    '';
+  };
+  programs.swayimg = {
+    enable = true;
+    settings = {
+      viewer = {
+        window = "#10000010";
+        scale = "fill";
+      };
+      "info.viewer" = {
+        top_left = "+name,+format";
+      };
+      "keys.viewer" = {
+        "Shift+r" = "rand_file";
+      };
+    };
+  };
+  programs.zathura = {
     enable = true;
     options = {
       guioptions = "v";
@@ -168,20 +207,20 @@ in {
     categories = ["Graphics" "3DGraphics" "Engineering"];
     startupNotify = false;
   };
-  xdg.configFile."swayimg/config".text = '' # From home/desktop.nix
-      [general]
-      #scale = optimal
-      size = image
-      [keys]
-      # Add any custom keybinds if necessary, defaults are usually fine
-  ''; # Simplified swayimg config for brevity, original was mostly comments
 
   # Original wayland/mako settings from home/desktop/default.nix
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.variables = ["--all"];
   };
-  programs.waybar.enable = true;
+  programs.quickshell = {
+    enable = true;
+    package = pkgs-unstable.quickshell;
+    activeConfig = "primary";
+    systemd.enable = true;
+    systemd.target = "hyprland-session.target";
+  };
+  programs.waybar.enable = false;
   services.mako.enable = false; # This was in original home/desktop/default.nix
   services.swaync.enable = true; # This was in original home/desktop/default.nix
 

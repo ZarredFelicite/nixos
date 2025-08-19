@@ -106,7 +106,9 @@
     pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
-    pkgs-unstable.opencode
+    #pkgs.opencode
+    #pkgs-unstable.opencode
+    (pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 
     # latex (CLI toolchain)
     (pkgs.texliveBasic.withPackages(ps: with ps; [

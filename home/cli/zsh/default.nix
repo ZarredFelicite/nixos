@@ -28,30 +28,40 @@
       share = true;
     };
     historySubstringSearch.enable = true;
-    initContent = lib.mkBefore ''
-      zmodload zsh/zprof
-      typeset -U path
-      path+=(~/scripts(/N) ~/scripts/**/*(/N))
+    initContent = let
+      zshConfigEarlyInit = lib.mkOrder 500 ''
+        zmodload zsh/zprof
+        typeset -U path
+        path+=(~/scripts(/N) ~/scripts/**/*(/N))
 
-      bindkey '^H' backward-kill-word
-      bindkey '5~' kill-word
+        bindkey '^H' backward-kill-word
+        bindkey '5~' kill-word
 
-      source ~/.config/zsh/fzf-tab.conf
+        source ~/.config/zsh/fzf-tab.conf
 
-      bindkey -s '^a' 'buku_fzf\n'
-      bindkey -s '^e' 'n\n'
-      bindkey -s '^k' '~/scripts/nova/fzf-nova\n'
-      bindkey -s '^f' 'fzf | xargs -I {} wtype linkhandler.sh "$(pwd)/{}"\n'
-      # Calculator
-      calc() { printf "%s\n" "$@" | bc -l; }
-      batdiff() { git diff --name-only --relative --diff-filter=d | xargs bat --diff; }
-      video() { nohup mpv $@ >/dev/null 2>&1 &; }
-      # auto completion generation from --help page
-      #source <(cod init $$ zsh)
+        bindkey -s '^a' 'buku_fzf\n'
+        bindkey -s '^e' 'n\n'
+        bindkey -s '^k' '~/scripts/nova/fzf-nova\n'
+        bindkey -s '^f' 'fzf | xargs -I {} wtype linkhandler.sh "$(pwd)/{}"\n'
+        # Calculator
+        calc() { printf "%s\n" "$@" | bc -l; }
+        batdiff() { git diff --name-only --relative --diff-filter=d | xargs bat --diff; }
+        video() { nohup mpv $@ >/dev/null 2>&1 &; }
+        # auto completion generation from --help page
+        #source <(cod init $$ zsh)
+      '';
+      zshConfig = lib.mkOrder 1000 ''
+        export OPENAI_API_KEY="$(pass dev/openai-api)"
+        export OPENROUTER_API_KEY="$(pass dev/openrouter-api)"
+        export GEMINI_API_KEY="$(pass google/gemini_api)"
+      '';
+    in
+      lib.mkMerge [ zshConfigEarlyInit ];
+    profileExtra = ''
+      export OPENAI_API_KEY="$(pass dev/openai-api)"
+      export OPENROUTER_API_KEY="$(pass dev/openrouter-api)"
+      export GEMINI_API_KEY="$(pass google/gemini_api)"
     '';
-    initExtraBeforeCompInit = "";
-    loginExtra = "";
-    logoutExtra = "";
     plugins = [
       {
         name = "fzf-tab";

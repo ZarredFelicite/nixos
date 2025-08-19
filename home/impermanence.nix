@@ -21,7 +21,6 @@
       ".ssh"
       ".nixops"
       ".local/share"
-      ".cache"
       ".mozilla"
       ".thunderbird"
       ".android"
@@ -59,7 +58,11 @@
       ".config/Cursor"
       ".config/opencode"
       ".config/syncthing"
+      ".config/ignis"
+      ".config/ags"
+      ".config/quickshell"
       # PERSISTENT .CACHE
+      ".cache"
       ".cache/thunderbird"
     ];
     files = [

@@ -22,6 +22,7 @@
         ];
         "x-scheme-handler/https" = "firefox.desktop";
         "text/html" = "firefox.desktop";
+        "image/png" = "firefox.desktop;swappy.desktop;satty.desktop,swayimg.desktop,pqiv.desktop";
       };
     };
     userDirs = {

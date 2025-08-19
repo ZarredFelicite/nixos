@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, inputs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -14,6 +14,11 @@
       psutil # Process and system utilization information interface
       mutagen # Python module for handling audio metadata (often CLI)
       beautifulsoup4 # Useful for CLI scripting
+      aiofiles
+      playwright
+      faker
+      backoff
+      sqlalchemy
       html2text # Convert HTML to plain text
       markitdown # Python tool for converting files and office documents to Markdown
       libtmux # for tmux scripting
@@ -29,6 +34,7 @@
       tensorboard # Can be CLI for viewing logs
       pyrss2gen # rss generation
       feedgen # newer rss generator
+      feedparser # Universal feed parser
       networkx # graph lib (can be CLI related)
       pygraphviz # graphviz python (can be CLI related)
       pdf2image # pdf utility (CLI usage)
@@ -64,6 +70,12 @@
       # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})
       # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
+
+      #(inputs.ignis.packages.${pkgs.stdenv.hostPlatform.system}.ignis.override {
+      #  extraPackages = [
+      #    # Add extra packages if needed
+      #  ];
+      #})
     ]))
   ];
 }

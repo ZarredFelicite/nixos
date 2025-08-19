@@ -118,6 +118,7 @@
     '';
     urls = [
       { url = "file:///home/zarred/sync/rss/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
+      { url = "https://kill-the-newsletter.com/feeds/08gvjf2woenkq96hac1j.xml"; tags = [ "!" "~ASX-ANN" "no_unread" "stocks" ]; }
       #"exec:/home/zarred/.config/newsboat/parsers/webpage_parse.sh twitter" "~Twitter" stocks no_unread
       #{ url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
 
@@ -129,7 +130,7 @@
 
       # ai
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }
-      { url = "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
+      { url = "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
       #{ url = "https://towardsdatascience.com/feed/tagged/editors-pick"; tags = [ "!" "~TDS" "ai" ]; }
       #{ url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; } NOTE: spammy
       { url = "https://openai.com/news/rss.xml"; tags = [ "!" "~OpenAI" "ai" ]; }
@@ -159,6 +160,8 @@
       #{ url = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"; tags = [ "!" "~NYTimes" "news" ]; }
       #{ url = "https://news.google.com/rss"; tags = [ "!" "~GoogleNews" "news" ]; }
       { url = "file:///home/zarred/sync/rss/abc.xml"; tags = [ "!" "~ABC" "news" ]; }
+      { url = "https://www.crikey.com.au/feed/"; tags = [ "!" "~Crikey" "news" ]; }
+      { url = "https://michaelwest.com.au/feed/"; tags = [ "!" "~MichaelW" "news" ]; }
       { url = "https://www.dropsitenews.com/feed"; tags = [ "!" "~DropSite" "news" ]; }
       { url = "https://reddit.com/r/worldnews/top/.rss?t=week"; tags = [ "!" "~r/world-news" "news" "reddit" ]; }
       { url = "https://reddit.com/r/news/top/.rss?t=week"; tags = [ "!" "~r/us-news" "news" "reddit" ]; }

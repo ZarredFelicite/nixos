@@ -99,7 +99,7 @@
       #  };
       #};
       extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
+        pkgs-unstable.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-gtk
       ];
     };
@@ -131,7 +131,8 @@
     xserver.enable = true;
     ollama = {
       enable = true;
-      package = pkgs-unstable.ollama;
+      package = pkgs-unstable.ollama.overrideAttrs { doCheck = false; };
+      #package = pkgs.ollama;
     };
     printing.enable = true;
     avahi.enable = true;

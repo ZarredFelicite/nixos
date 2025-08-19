@@ -14,7 +14,8 @@
   networking.hostName = "web";
   services.syncthing.enable = true;
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_6_15;
+    # TODO: switch back to latest soon
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     kernelParams = [
     #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
@@ -169,10 +170,7 @@
       #  settingsSha256 = "sha256-9rtqh64TyhDF5fFAYiWl3oDHzKJqyOW3abpcf2iNRT8=";
       #  usePersistenced = false;
       #};
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      # TODO:
-      # flicker on 570.124.04
-      # nixpkgs search linuxKernel.packages.linux_6_13.nvidia_x11
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;

@@ -6,6 +6,7 @@
     ../profiles/impermanence.nix
     ../profiles/syncthing.nix
     ../profiles/python.nix
+    ../profiles/theme.nix
     inputs.sops-nix.nixosModules.sops
     ../containers/docker.nix
     ../containers/podman.nix
@@ -362,56 +363,4 @@
     mandoc.enable = true;
     generateCaches = true;
   };
-  fonts = {
-    fontDir.enable = true;
-    packages = with pkgs; [
-      nerd-fonts.iosevka-term
-      # font-awesome already in nerd-fonts
-      noto-fonts
-      noto-fonts-emoji
-    ];
-  };
-  stylix = {
-    enable = true;
-    autoEnable = true;
-    image = ../wallpaper.jpg;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
-    # https://github.com/tinted-theming/base16-schemes
-    #override = {
-    #  base00 = "#191724";
-    #};
-    cursor = {
-      package = pkgs.rose-pine-cursor;
-      name = "BreezeX-RosePine-Linux";
-      size = 24;
-    };
-    opacity = {
-      terminal = 0.2;
-    };
-    fonts = {
-      sizes = {
-        applications = 14;
-        desktop = 14;
-        popups = 14;
-        terminal = 14;
-      };
-      sansSerif = {
-        package = pkgs.nerd-fonts.iosevka-term;
-        name = "IosevkaTerm NFM";
-      };
-      serif = {
-        package = pkgs.nerd-fonts.iosevka-term;
-        name = "IosevkaTerm NFM";
-      };
-      monospace = {
-        package = pkgs.nerd-fonts.iosevka-term;
-        name = "IosevkaTerm NFM";
-      };
-      emoji = {
-        package = pkgs.noto-fonts-emoji;
-        name = "Noto Color Emoji";
-      };
-    };
-  };
-
 }

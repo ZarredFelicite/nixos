@@ -61,11 +61,12 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            "DP-3,3440x1440@99.98,0x1000,1"
+            "DP-3,3440x1440@99.98,0x853,1"
             "DP-2,3440x1440@100.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
-            "HDMI-A-2,1920x1280@60.00,1520x2440,1.25,transform,2"
+            "HDMI-A-1,1920x1280@60.00,880x0,1.5,transform,2"
+            "HDMI-A-2,1920x1280@60.00,2160x0,1.5,transform,2"
             "Unknown-1,disable"
           ];
           env = [
@@ -82,37 +83,39 @@ in {
     package = pkgs-unstable.hyprland;
     xwayland.enable = true;
     systemd.enable = true;
-    plugins = with pkgs.hyprlandPlugins; [
+    plugins = with pkgs-unstable.hyprlandPlugins; [
         hyprspace
       # hyprgrass - Hyprland plugin for touch gestures
-        #hyprfocus
-        (pkgs.hyprlandPlugins.mkHyprlandPlugin pkgs.hyprland {
-          pluginName = "hyprfocus";
-          version = "0-unstable-2025-05-19";
-          src = pkgs.fetchFromGitHub {
-            owner = "daxisunder";
-            repo = "hyprfocus";
-            rev = "516e36572f50cca631e7e572249b3716c3602176";
-            hash = "sha256-TnsdJxxBFbc54T43UP+7mmZkErc7NrZ31C0QNePdDrE=";
-          };
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/lib
-            mv hyprfocus.so $out/lib/libhyprfocus.so
-            runHook postInstall
-          '';
-          passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
-          meta = {
-            homepage = "https://github.com/pyt0xic/hyprfocus";
-            description = "Focus animation plugin for Hyprland inspired by Flashfocus";
-            license = lib.licenses.bsd3;
-            maintainers = with lib.maintainers; [ donovanglover ];
-            platforms = lib.platforms.linux;
-          };
-        })
+        hyprfocus
+        #(pkgs.hyprlandPlugins.mkHyprlandPlugin pkgs.hyprland {
+        #  pluginName = "hyprfocus";
+        #  version = "0-unstable-2025-05-19";
+        #  src = pkgs.fetchFromGitHub {
+        #    owner = "daxisunder";
+        #    repo = "hyprfocus";
+        #    rev = "516e36572f50cca631e7e572249b3716c3602176";
+        #    hash = "sha256-TnsdJxxBFbc54T43UP+7mmZkErc7NrZ31C0QNePdDrE=";
+        #  };
+        #  installPhase = ''
+        #    runHook preInstall
+        #    mkdir -p $out/lib
+        #    mv hyprfocus.so $out/lib/libhyprfocus.so
+        #    runHook postInstall
+        #  '';
+        #  passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
+        #  meta = {
+        #    homepage = "https://github.com/pyt0xic/hyprfocus";
+        #    description = "Focus animation plugin for Hyprland inspired by Flashfocus";
+        #    license = lib.licenses.bsd3;
+        #    maintainers = with lib.maintainers; [ donovanglover ];
+        #    platforms = lib.platforms.linux;
+        #  };
+        #})
     ];
     settings = {
       debug.disable_logs = false;
+      debug.disable_scale_checks = true;
+      debug.suppress_errors = true;
       exec-once = [
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
@@ -130,29 +133,37 @@ in {
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
         "col.inactive_border" = lib.mkForce "rgba(31748f99)";
         layout = "dwindle";
-        no_focus_fallback = true;
+        no_focus_fallback = false;
         resize_on_border = true;
+        snap = {
+          enabled = true;
+          window_gap = 100;
+          monitor_gap = 100;
+          respect_gaps = true;
+        };
+      };
+      decoration = {
+        rounding = 20;
+        dim_around = 0.5;
+        dim_special = 0;
+        blur = {
+          enabled = true;
+          size = 10;
+          passes = 3;
+          brightness = 0.7;
+          special = false;
+          popups = true;
+          popups_ignorealpha = 0.1;
+          new_optimizations = true;
+          ignore_opacity = true;
+        };
+        shadow.enabled = false;
       };
       binds = {
         movefocus_cycles_fullscreen = false;
         hide_special_on_workspace_change = true;
         workspace_center_on = 1;
         scroll_event_delay = 100;
-      };
-      decoration = {
-        rounding = 20;
-        blur = {
-          enabled = true;
-          size = 10;
-          passes = 3;
-          brightness = 0.7;
-          special = true;
-          popups = true;
-          popups_ignorealpha = 0.1;
-          new_optimizations = true;
-          ignore_opacity = true;
-        };
-        dim_special = 0.5;
       };
       animations = {
        enabled = true;
@@ -167,68 +178,21 @@ in {
           "specialWorkspace, 1, 4, default, slidevert"
         ];
       };
-      dwindle = {
-        pseudotile = true;
-        force_split = 2;
-        #smart_split = true;
-        #smart_resizing = true;
-        preserve_split = false;
-        split_width_multiplier = 1.6;
-          #special_scale_factor = 0.90;
-        use_active_for_splits = true;
-        default_split_ratio = 1.2;
-      };
-      misc = {
-        disable_hyprland_logo = true;
-        animate_manual_resizes = true;
-        animate_mouse_windowdragging = true;
-        focus_on_activate = true;
-        layers_hog_keyboard_focus = true;
-        mouse_move_enables_dpms = false;
-        key_press_enables_dpms = true;
-        enable_swallow = false;
-        swallow_regex = "^(kitty)$";
-        swallow_exception_regex = "^(cava|wev)$";
-        vfr = true;
-        vrr = true;
-        new_window_takes_over_fullscreen = 2;
-      };
-      group = {
-        insert_after_current = true;
-        "col.border_active" = lib.mkForce "rgba(9ccfd899)";
-        "col.border_inactive" = lib.mkForce "rgba(31748f99)";
-        groupbar = {
-          enabled = true;
-          height = 6;
-          indicator_height = 6;
-          render_titles = false;
-          gradients = false;
-          rounding = 4;
-          "col.active" = lib.mkForce "rgba(9ccfd899)";
-          "col.inactive" = lib.mkForce "rgba(31748f99)";
-        };
-      };
-      cursor = {
-        enable_hyprcursor = true;
-        sync_gsettings_theme = true;
-          #no_hardware_cursors = true;
-        persistent_warps = true;
-        warp_on_change_workspace = true;
-          #allow_dumb_copy = true;
-      };
       input = {
         kb_layout = "us";
         repeat_rate = 60;
         repeat_delay = 250;
-        follow_mouse = 1;
+        follow_mouse = 2;
         mouse_refocus = true;
         float_switch_override_focus = 0;
+        special_fallthrough = true;
         touchpad = {
           disable_while_typing = true;
           scroll_factor = 0.5;
           drag_lock = true;
           tap-and-drag = true;
           natural_scroll = true;
+          #TODO: not implemented yet drag_3fg = 1;
         };
         sensitivity = 0;
       };
@@ -249,6 +213,60 @@ in {
         workspace_swipe_min_speed_to_force = 3;
         workspace_swipe_cancel_ratio = 0.2;
         workspace_swipe_forever = true;
+      };
+      group = {
+        insert_after_current = true;
+        "col.border_active" = lib.mkForce "rgba(9ccfd899)";
+        "col.border_inactive" = lib.mkForce "rgba(31748f99)";
+        groupbar = {
+          enabled = true;
+          height = 6;
+          indicator_height = 6;
+          render_titles = false;
+          gradients = false;
+          rounding = 4;
+          keep_upper_gap = false;
+          "col.active" = lib.mkForce "rgba(9ccfd899)";
+          "col.inactive" = lib.mkForce "rgba(31748f99)";
+        };
+      };
+      misc = {
+        disable_hyprland_logo = true;
+        animate_manual_resizes = true;
+        animate_mouse_windowdragging = true;
+        focus_on_activate = true;
+        layers_hog_keyboard_focus = true;
+        mouse_move_enables_dpms = false;
+        key_press_enables_dpms = true;
+        enable_swallow = false;
+        swallow_regex = "^(kitty)$";
+        swallow_exception_regex = "^(cava|wev)$";
+        vfr = true;
+        vrr = true;
+        new_window_takes_over_fullscreen = 2;
+        initial_workspace_tracking = 0; # NOTE: 2 causing new windows to be created on previous workspaces
+      };
+      opengl.nvidia_anti_flicker = true;
+      cursor = {
+        enable_hyprcursor = true;
+        sync_gsettings_theme = true;
+          #no_hardware_cursors = true;
+        persistent_warps = true;
+        warp_on_change_workspace = true;
+          #allow_dumb_copy = true;
+      };
+      experimental.xx_color_management_v4 = true;
+      dwindle = {
+        pseudotile = true;
+        force_split = 2;
+        #smart_split = true;
+        #smart_resizing = true;
+        preserve_split = false;
+        split_width_multiplier = 1.6;
+        single_window_aspect_ratio = "16 9";
+          #special_scale_factor = 0.90;
+        use_active_for_splits = true;
+        default_split_ratio = 1.2;
       };
       plugin = {
         touch_gestures = {

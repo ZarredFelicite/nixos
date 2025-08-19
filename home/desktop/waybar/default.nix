@@ -148,7 +148,7 @@ in {
         spacing = 4;
         margin = "4 4 0 4";
         gtk-layer-shell = true;
-        modules-left = [ "image#logo-hyprland" "hyprland/workspaces#number" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
+        modules-left = [ "image#logo-hyprland" "cava" "mpris" "group/group-stocks" "custom/news" "custom/mail" ];
         modules-center = [  ];
         modules-right = [ "hyprland/submap" "image#recording" "group/zmk-battery" "group/airpods-battery"  "custom/weather" "tray" "group/stats-group" "group/clock-group" "group/group-power" ];
         tray = {

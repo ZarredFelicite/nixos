@@ -1,4 +1,4 @@
-{ pkgs, lib, osConfig, ... }:
+{ pkgs, pkgs-unstable, lib, osConfig, ... }:
   let
     mkGraphicalService = lib.recursiveUpdate {
       Unit.PartOf = [ "graphical-session.target" ];
@@ -8,39 +8,39 @@
     };
   in {
   home = {
-    packages = with pkgs; [
+    packages = [
       # system tools
-      gtk3
-      helvum # A GTK patchbay for pipewire
-      pavucontrol
-      libva-utils # Often a dependency for GUI media players too
+      pkgs.gtk3
+      pkgs.helvum # A GTK patchbay for pipewire
+      pkgs.pavucontrol
+      pkgs.libva-utils # Often a dependency for GUI media players too
 
       # media
-      mediainfo # Supplies technical and tag information about a video or audio file
+      pkgs.mediainfo # Supplies technical and tag information about a video or audio file
 
       # networking
-      trayscale # An unofficial GUI wrapper around the Tailscale CLI client
+      pkgs.trayscale # An unofficial GUI wrapper around the Tailscale CLI client
 
       # misc
-      rpi-imager # Raspberry Pi Imaging Utility
+      pkgs-unstable.rpi-imager # Raspberry Pi Imaging Utility
       #ventoy # NOTE: marked insecure - binary blobs
 
       # AI (GUI or mixed usage)
-      piper-tts # A fast, local neural text to speech system
-      upscayl # Free and Open Source AI Image Upscaler
-      openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
+      pkgs.piper-tts # A fast, local neural text to speech system
+      pkgs.upscayl # Free and Open Source AI Image Upscaler
+      pkgs.openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
 
-      android-studio
+      pkgs.android-studio
 
       # Desktop/Wayland specific tools
-      waypipe
-      wayvnc
-      tigervnc
-      remmina
-      wlvncc
-      moonlight-qt
-      bottles
-      protonup-qt
+      pkgs.waypipe
+      pkgs.wayvnc
+      pkgs.tigervnc
+      pkgs.remmina
+      pkgs.wlvncc
+      pkgs.moonlight-qt
+      pkgs.bottles
+      pkgs.protonup-qt
 
       # kinect
       #freenect

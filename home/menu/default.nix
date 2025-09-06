@@ -7,7 +7,7 @@ let
 in {
   imports = [
     ./rofi/rofi.nix
-    #inputs.anyrun.homeManagerModules.default
+    #inputs.anyrun.homeModules.default
   ];
   home.packages = [
     #selectorScript

@@ -76,6 +76,18 @@
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
         bindfs = pkgs.callPackage ../pkgs/bindfs {} ;
       })
+      (_: prev: {
+        tailscale = prev.tailscale.overrideAttrs (old: {
+          checkFlags =
+            builtins.map (
+              flag:
+                if prev.lib.hasPrefix "-skip=" flag
+                then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
+                else flag
+            )
+            old.checkFlags;
+        });
+      })
       # Override upstream youtube-transcript-api to use our local version
       (final: prev: rec {
         python3 = prev.python3.override {

@@ -127,10 +127,10 @@
       { url = "https://www.startupdaily.net/feed"; tags = [ "!" "~StartupsDaily" "tech" ]; }
       { url = "https://www.ycombinator.com/blog/rss"; tags = [ "!" "~YC" "tech" ]; }
       { url = "https://www.theverge.com/rss/index.xml"; tags = [ "!" "~Verge" "tech" ]; }
+      { url = "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"; tags = [ "!" "~Verge-AI" "tech" ]; }
 
       # ai
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }
-      { url = "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"; tags = [ "!" "~Verge-AI" "ai" ]; }
       #{ url = "https://towardsdatascience.com/feed/tagged/editors-pick"; tags = [ "!" "~TDS" "ai" ]; }
       #{ url = "https://medium.com/feed/towards-artificial-intelligence"; tags = [ "!" "~TAI" "ai" ]; } NOTE: spammy
       { url = "https://openai.com/news/rss.xml"; tags = [ "!" "~OpenAI" "ai" ]; }
@@ -184,7 +184,7 @@
       # podcasts
       { url = "https://feeds.megaphone.fm/darknetdiaries"; tags = [ "!" "podcasts" ]; }
       { url = "https://feeds.buzzsprout.com/1890340.rss"; tags = [ "!" "podcasts" "politics" ]; }
-      { url = "https://pod.link/1097417804.rss"; tags = [ "!" "podcasts" "politics" ]; }
+      #{ url = "https://pod.link/1097417804.rss"; tags = [ "!" "podcasts" "politics" ]; } # chapo
       { url = "https://feed.podbean.com/redflag/feed.xml"; tags = [ "!" "podcasts" "politics" ]; }
       { url = "https://feeds.soundcloud.com/users/soundcloud:users:672423809/sounds.rss"; tags = [ "!" "podcasts" "politics" ]; }
       { url = "https://rss.art19.com/the-problem-with-jon-stewart"; tags = [ "!" "podcasts" ]; }

@@ -16,8 +16,11 @@
         polarity = "dark";
         icons = {
           enable = true;
-          dark = "Suru++-Asprómauros";
-          package = ( pkgs.callPackage ../pkgs/suru-plus-aspromauros {} );
+          #dark = "Suru++-Asprómauros";
+          #package = ( pkgs.callPackage ../pkgs/suru-plus-aspromauros {} );
+          #dark = "ubuntu-mono-light";
+          dark = "Papirus-Dark";
+          package = pkgs.papirus-icon-theme;
         };
       };
     }

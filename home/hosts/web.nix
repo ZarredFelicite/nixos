@@ -51,6 +51,22 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.timers.ibkr = {
+    Unit.Description = "Timer for ibkr stocks service";
+    Unit.Requires = "ibkr.service";
+    Install.WantedBy = [ "timers.target" ];
+    Timer.OnCalendar = "*:0/15";
+    Timer.Persistent = true;
+  };
+  systemd.user.services.ibkr = {
+    Unit.Description = "Get stocks data from ibkr and yfinance";
+    Service.ExecStart = "/run/current-system/sw/bin/nix develop /home/zarred/scripts/finances/ibkr --command python /home/zarred/scripts/finances/ibkr/ibkr.py -psyv --flex-period 1";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   # Placeholder for any home-manager settings absolutely specific to zarred on web
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-web-specific-tool ];

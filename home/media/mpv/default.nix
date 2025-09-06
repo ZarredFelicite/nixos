@@ -39,6 +39,7 @@
       watch-later-directory = "~/sync/mpv/watch-state";
       write-filename-in-watch-later-config = true;
 
+      force-window = "yes";
       msg-level = "cplayer=warn,ffmpeg/demuxer=warn,display-tags=warn,autoload=warn,auto_save_state=warn,osd/libass=warn";
       keep-open = true;
       keepaspect = true;
@@ -86,7 +87,7 @@
       screenshot-png-compression = 5;
       msg-color = true;
       msg-module = true;
-      script-opts = "ytdl_hook-try_ytdl_first=yes,ytdl_hook-exclude='%.webm$|%.ts$|%.mp3$|%.m3u8$|%.m3u$|%.mkv$|%.mp4$|%.VOB$',ytdl_hook-ytdl_path=/etc/profiles/per-user/zarred/bin/yt-dlp";
+      script-opts = "ytdl_hook-try_ytdl_first=yes,ytdl_hook-exclude='%.webm$|%.ts$|%.mp3$|%.m3u8$|%.m3u$|%.mkv$|%.mp4$|%.VOB$',ytdl_hook-ytdl_path=/run/current-system/sw/bin/yt-dlp";
       #ytdl-format = "bestvideo[height<=?1080]+bestaudio";
     };
     profiles = {
@@ -129,9 +130,7 @@
         text_padding_y = 30;
         curtain_opacity = 0.7;
         menu_timeout = 5;
-        ytdl_ver = "yt-dlp";
         fetch_formats = false;
-        fetch_on_start = false;
         #quality_strings_video = ''
         #  [ {"Best" : "best"}, {"1080p" : "bestvideo[height<=?1080]+bestaudio/best"}, {"2160p" : "bestvideo[height<=?2160]"}, {"1440p" : "bestvideo[height<=?1440]"}, {"1080p" : "bestvideo[height<=?1080]"}, {"720p" : "bestvideo[height<=?720]+ba"}]
         #'';

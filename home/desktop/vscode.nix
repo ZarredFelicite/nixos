@@ -1,7 +1,7 @@
 {pkgs-unstable, pkgs, ...}: {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium.fhs;
+    package = pkgs-unstable.vscodium.fhs;
 
     mutableExtensionsDir = false;
 
@@ -65,7 +65,7 @@
           ms-vscode-remote.vscode-remote-extensionpack
           ms-vscode.remote-explorer
           ms-vsliveshare.vsliveshare
-          ms-python.python
+          # TODO: broken ms-python.python
           #codeforge.remix-forge
           #amodio.toggle-excluded-files
         ])

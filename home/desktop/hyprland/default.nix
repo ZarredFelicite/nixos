@@ -133,7 +133,7 @@ in {
         "col.active_border" = lib.mkForce "rgba(9ccfd899)";
         "col.inactive_border" = lib.mkForce "rgba(31748f99)";
         layout = "dwindle";
-        no_focus_fallback = false;
+        no_focus_fallback = true;
         resize_on_border = true;
         snap = {
           enabled = true;

@@ -1,6 +1,4 @@
-{ pkgs, config, lib, inputs, ...
-  #pkgs-unstable,
-}: {
+{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
   imports = [
     ../profiles/nix.nix
     ../profiles/impermanence.nix
@@ -99,6 +97,7 @@
     };
   };
   services.tailscale = {
+    package = pkgs-unstable.tailscale;
     enable = true;
     extraSetFlags = [
       "--operator=zarred"

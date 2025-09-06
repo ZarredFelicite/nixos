@@ -101,7 +101,7 @@
     pkgs.git-lfs # Git Large File Storage extension
 
     # ai (CLI focus)
-    pkgs-unstable.aider-chat # AI pair programming in your terminal
+    # TODO: broken - pkgs-unstable.aider-chat # AI pair programming in your terminal
     pkgs-unstable.claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
     pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama

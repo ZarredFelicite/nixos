@@ -1,6 +1,6 @@
 { pkgs, inputs, ... }: {
 imports = [
-  inputs.nixvim.homeManagerModules.nixvim
+  inputs.nixvim.homeModules.nixvim
   ./conform.nix
 ];
   stylix.targets.nixvim.enable = false;

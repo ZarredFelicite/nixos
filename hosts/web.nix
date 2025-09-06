@@ -14,7 +14,7 @@
   networking.hostName = "web";
   services.syncthing.enable = true;
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_15;
+    kernelPackages = pkgs.linuxPackages_latest;
     # TODO: switch back to latest soon
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     kernelParams = [
@@ -27,6 +27,18 @@
       #"nvidia.NVreg_UsePageAttributeTable=1"
       #''nvidia.NVreg_RegistryDwords="OverrideMaxPerf=0x1"''
     ];
+    #kernelPatches = [
+    #  # Fix the /proc/net/tcp seek issue
+    #  # Impacts tailscale: https://github.com/tailscale/tailscale/issues/16966
+    #  {
+    #  name = "proc: fix missing pde_set_flags() for net proc files";
+    #  patch = pkgs.fetchurl {
+    #    name = "fix-missing-pde_set_flags-for-net-proc-files.patch";
+    #    url = "https://patchwork.kernel.org/project/linux-fsdevel/patch/20250821105806.1453833-1-wangzijie1@honor.com/raw/";
+    #    hash = "sha256-DbQ8FiRj65B28zP0xxg6LvW5ocEH8AHOqaRbYZOTDXg=";
+    #  };
+    #  }
+    #];
     #kernelPatches = [ {
     #  name = "sleepdebug-config";
     #  patch = null;
@@ -170,7 +182,7 @@
       #  settingsSha256 = "sha256-9rtqh64TyhDF5fFAYiWl3oDHzKJqyOW3abpcf2iNRT8=";
       #  usePersistenced = false;
       #};
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;

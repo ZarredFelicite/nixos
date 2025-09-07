@@ -23,7 +23,7 @@
 
   # TT-RSS
   #services.postgresql.enable = true;
-  services.tt-rss.enable = false;
+  services.tt-rss.enable = true;
 
   services.gotify.enable = true;
   services.klipper.enable = true;

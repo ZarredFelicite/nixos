@@ -1,5 +1,23 @@
-{ self, inputs, config, pkgs, pkgs-unstable, lib, osConfig, ... }: # Added osConfig from cli-apps.nix
-{
+{ self, inputs, config, pkgs, pkgs-unstable, lib, osConfig, ... }: let
+  yazi-plugins = pkgs.fetchFromGitHub {
+    owner = "yazi-rs";
+    repo = "plugins";
+    rev = "d7588f6d29b5998733d5a71ec312c7248ba14555";
+    hash = "sha256-...";
+  };
+  yazi-flavors = pkgs.fetchFromGitHub {
+    owner = "yazi-rs";
+    repo = "flavors";
+    rev = "4296a380570399e3c36aec054f37aa48f35cf6b1";
+    hash = "sha256-KNpr7eYHm2dPky1L6EixoD956bsYZZO3bCyKIyAlIEw=";
+  };
+  yazi-augment-command = pkgs.fetchFromGitHub {
+    owner = "hankertrix";
+    repo = "augment-command.yazi";
+    rev = "v25.5.28-or-lower";
+    hash = "sha256-nhu02TSVcyPxjgUjz/hOvjgE78tJ1KVqXktyLWiWxgQ=";
+  };
+in {
   imports = [
     ./zsh
     ./nixvim
@@ -130,11 +148,93 @@
     /mnt
   '';
 
+  stylix.targets.yazi.enable = false;
   programs = {
     # Original programs from home/cli/default.nix
     zsh.enable = true;
     nixvim.enable = true;
     nnn.enable = true;
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+      flavors = {
+        catppuccin-mocha = "${yazi-flavors}/catppuccin-mocha.yazi";
+      };
+      plugins = {
+        yatline = pkgs.yaziPlugins.yatline;
+        yatline-catppuccin = pkgs.yaziPlugins.yatline-catppuccin;
+        mediainfo = pkgs.yaziPlugins.mediainfo;
+        augment-command = "${yazi-augment-command}";
+        full-border = pkgs.yaziPlugins.full-border;
+      };
+      settings = {
+        mgr = {
+          show_hidden = true;
+          show_symlink = true;
+          scrolloff = 4;
+        };
+        preview = {
+          tab_size = 2;
+        };
+        plugin = {
+          prepend_preloaders = [
+            {
+              mime = "{audio,video,image}/*";
+              run = "mediainfo";
+            }
+            {
+              mime = "application/subrip";
+              run = "$mediainfo";
+            }
+          ];
+          prepend_previewers = [
+            {
+              mime = "{audio,video,image}/*";
+              run = "mediainfo";
+            }
+            {
+              mime = "application/subrip";
+              run = "mediainfo";
+            }
+          ];
+        };
+      };
+      keymap = {
+        mgr.prepend_keymap = [
+          {
+            on = [ "T" ];
+            run = "plugin --sync max-preview";
+            desc = "Maximize or restore the preview pane";
+          }
+          {
+            on = [ "c" "m" ];
+            run = "plugin chmod";
+            desc = "Chmod on selected files";
+          }
+        ];
+      };
+      initLua = ''
+        local catppuccin_theme = require("yatline-catppuccin"):setup("mocha")
+        require("yatline"):setup({
+          show_background = false,
+          display_header_line = true,
+          display_status_line = true,
+          component_positions = { "header", "tab", "status" },
+          theme = catppuccin_theme,
+        })
+        require("full-border"):setup()
+        -- Custom configuration for augment-command
+        require("augment-command"):setup({
+          smart_paste = true,
+          smart_tab_create = true,
+        })
+        -- Makes yazi update the zoxide database on navigation
+        require("zoxide"):setup
+        {
+          update_db = true,
+        }
+      '';
+    };
     tmux.enable = true;
     direnv = {
       enable = true;

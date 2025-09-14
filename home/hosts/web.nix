@@ -60,7 +60,7 @@
   };
   systemd.user.services.ibkr = {
     Unit.Description = "Get stocks data from ibkr and yfinance";
-    Service.ExecStart = "/run/current-system/sw/bin/nix develop /home/zarred/scripts/finances/ibkr --command python /home/zarred/scripts/finances/ibkr/ibkr.py -psyv --flex-period 1";
+    Service.ExecStart = "/run/current-system/sw/bin/nix develop /home/zarred/scripts/finances/ibkr --command python /home/zarred/scripts/finances/ibkr/ibkr.py -psyvc --flex-period 1";
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "0";

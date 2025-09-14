@@ -173,7 +173,7 @@
     enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     nvidia = {
-      open = true;
+      open = false;
       nvidiaSettings = true;
       #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
       #  version = "570.86.16"; # use new 570 drivers
@@ -182,7 +182,7 @@
       #  settingsSha256 = "sha256-9rtqh64TyhDF5fFAYiWl3oDHzKJqyOW3abpcf2iNRT8=";
       #  usePersistenced = false;
       #};
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;

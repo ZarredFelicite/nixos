@@ -97,7 +97,7 @@
     };
   };
   services.tailscale = {
-    package = pkgs-unstable.tailscale;
+    package = pkgs.tailscale;
     enable = true;
     extraSetFlags = [
       "--operator=zarred"

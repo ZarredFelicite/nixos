@@ -32,6 +32,7 @@
       "rounding 6, class:^(waybar)$"
       "center, class:^(xdg-desktop-portal-gtk|zenity|Rofi)$"
       "stayfocused, class:^(Pinentry)$"
+      "stayfocused, title:^(Hyprland Polkit Agent)$"
       #"keepaspectratio, class:^(mpv)$"
       "noblur, class:^(mpv)$,floating:1,fullscreen:0"
       "suppressevent maximize, class:^(firefox)$"

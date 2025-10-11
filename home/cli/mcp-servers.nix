@@ -25,11 +25,6 @@ let
         enable = true;
       };
       
-      github = {
-        enable = true;
-        envFile = "${config.home.homeDirectory}/.config/gh/token";
-      };
-      
       memory = {
         enable = true;
       };
@@ -38,14 +33,6 @@ let
       
       playwright = {
         enable = true;
-      };
-      
-      nixos = {
-        enable = true;
-        args = [
-          "--flake-path"
-          "/home/zarred/dots"
-        ];
       };
     };
     
@@ -84,11 +71,6 @@ let
         enable = true;
       };
       
-      github = {
-        enable = true;
-        envFile = "${config.home.homeDirectory}/.config/gh/token";
-      };
-      
       memory = {
         enable = true;
       };
@@ -97,14 +79,6 @@ let
       
       playwright = {
         enable = true;
-      };
-      
-      nixos = {
-        enable = true;
-        args = [
-          "--flake-path"
-          "/home/zarred/dots"
-        ];
       };
     };
     
@@ -137,10 +111,8 @@ in
     mcp-server-fetch
     mcp-server-filesystem
     mcp-server-git
-    mcp-server-github
     mcp-server-memory
     mcp-server-time
-    mcp-server-playwright
-    mcp-server-nixos
+    playwright-mcp
   ]);
 }

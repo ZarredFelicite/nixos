@@ -1,6 +1,6 @@
 {pkgs-unstable, pkgs, ...}: {
   programs.vscode = {
-    enable = true;
+    enable = false; # TODO: broken
     package = pkgs-unstable.vscodium.fhs;
 
     mutableExtensionsDir = false;

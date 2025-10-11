@@ -7,9 +7,9 @@
     stateVersion = "24.11";
 
     sessionVariables = {
-      EDITOR = "nvim";
-      MANPAGER = "bat -l man -p'";
-      PAGER = "bat";
+      #EDITOR = "nvim";
+      #MANPAGER = "bat -l man -p'";
+      #PAGER = "bat";
     };
 
     # A few truly core packages. Most packages will be in other profiles.

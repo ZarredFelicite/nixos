@@ -50,17 +50,14 @@
         # auto completion generation from --help page
         #source <(cod init $$ zsh)
       '';
-      zshConfig = lib.mkOrder 1000 ''
-        export OPENAI_API_KEY="$(pass dev/openai-api)"
-        export OPENROUTER_API_KEY="$(pass dev/openrouter-api)"
-        export GEMINI_API_KEY="$(pass google/gemini_api)"
-      '';
+      #zshConfig = lib.mkOrder 1000 ''
+      #  export OPENAI_API_KEY="$(pass dev/openai-api)"
+      #  export OPENROUTER_API_KEY="$(pass dev/openrouter-api)"
+      #  export GEMINI_API_KEY="$(pass google/gemini_api)"
+      #'';
     in
       lib.mkMerge [ zshConfigEarlyInit ];
     profileExtra = ''
-      export OPENAI_API_KEY="$(pass dev/openai-api)"
-      export OPENROUTER_API_KEY="$(pass dev/openrouter-api)"
-      export GEMINI_API_KEY="$(pass google/gemini_api)"
     '';
     plugins = [
       {
@@ -118,7 +115,7 @@
       BG = "\\033[48;2;";
       PINE_FG = "$\\{FG}49;116;143m";
       PINE_BG = "$\\{BG}49;116;143m";
-      BASE_FG = "$\\{FG}25;23;36m";
+      BASE_FG = "$\\{FG}26;23;36m";
       BASE_BG = "$\\{BG}25;23;36m";
       ROSE_FG = "$\\{FG}235;188;186m";
       ROSE_BG = "$\\{BG}235;188;186m";
@@ -131,6 +128,12 @@
       NC = "\\033[0m";
 
       GTRASH_HOME_TRASH_FALLBACK_COPY = "true";
+      OPENAI_API_KEY = "$(pass dev/openai-api)";
+      OPENROUTER_API_KEY = "$(pass dev/openrouter-api)";
+      GEMINI_API_KEY = "$(pass google/gemini_api)";
+      EDITOR = "nvim";
+      MANPAGER = "bat -l man -p'";
+      PAGER = "bat";
     };
     shellAliases = {
       tw = "wtwitch";

@@ -5,6 +5,8 @@
     # PYTHON Tools from home/cli-apps.nix
     uv # Extremely fast Python package installer and resolver, written in Rust
     ruff # Extremely fast Python linter
+    geckodriver # Proxy for using W3C WebDriver-compatible clients to interact with Gecko-based browsers
+    #( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp
     (python3.withPackages(ps: with ps; [
       # CLI related or general purpose from cli-apps.nix
       pip # PyPA recommended tool for installing Python packages
@@ -35,6 +37,7 @@
       pyrss2gen # rss generation
       feedgen # newer rss generator
       feedparser # Universal feed parser
+      selenium # Bindings for Selenium WebDriver
       networkx # graph lib (can be CLI related)
       pygraphviz # graphviz python (can be CLI related)
       pdf2image # pdf utility (CLI usage)
@@ -64,7 +67,6 @@
       webrtcvad # Interface to the Google WebRTC Voice Activity Detector (VAD)
 
       # Ensure all custom python packages from ../pkgs/python are included if not already listed
-      # ( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp
       #( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
       # TODO: broken vllm
       # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})

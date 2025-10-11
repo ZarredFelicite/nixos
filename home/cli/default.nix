@@ -125,8 +125,8 @@ in {
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
     #pkgs.opencode
-    #pkgs-unstable.opencode
-    (pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
+    pkgs-unstable.opencode
+    #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 
     # latex (CLI toolchain)
     (pkgs.texliveBasic.withPackages(ps: with ps; [

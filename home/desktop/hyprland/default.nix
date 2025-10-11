@@ -84,7 +84,7 @@ in {
     xwayland.enable = true;
     systemd.enable = true;
     plugins = with pkgs-unstable.hyprlandPlugins; [
-        hyprspace
+        # TODO: broken - hyprspace
       # hyprgrass - Hyprland plugin for touch gestures
         hyprfocus
         #(pkgs.hyprlandPlugins.mkHyprlandPlugin pkgs.hyprland {

@@ -7,7 +7,9 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
+    extraSpecialArgs = { 
+      inherit self inputs outputs pkgs-unstable;
+    };
     users.zarred = import ../home/hosts/web.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";

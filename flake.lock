@@ -419,6 +419,26 @@
         "type": "github"
       }
     },
+    "mcp-servers-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1760185597,
+        "narHash": "sha256-MV6fqVQKEPaXKZb/nNNbQhhmgsyihZ7FiZtYJDihF6Q=",
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "rev": "401af8fc7fd1db6a2c642fca58ad67cba7e17a3e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "type": "github"
+      }
+    },
     "nix-vscode-extensions": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -713,6 +733,7 @@
         "home-manager": "home-manager",
         "ignis": "ignis",
         "impermanence": "impermanence",
+        "mcp-servers-nix": "mcp-servers-nix",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",

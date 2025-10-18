@@ -19,7 +19,7 @@
       pkgs.mediainfo # Supplies technical and tag information about a video or audio file
 
       # networking
-      pkgs.trayscale # An unofficial GUI wrapper around the Tailscale CLI client
+      # TODO: broken pkgs.trayscale # An unofficial GUI wrapper around the Tailscale CLI client
 
       # misc
       pkgs-unstable.rpi-imager # Raspberry Pi Imaging Utility
@@ -39,7 +39,7 @@
       pkgs.remmina
       pkgs.wlvncc
       pkgs.moonlight-qt
-      pkgs.bottles
+      #TODO: broken pkgs.bottles
       pkgs.protonup-qt
 
       # kinect

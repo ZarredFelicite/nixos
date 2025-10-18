@@ -127,7 +127,7 @@ in {
     pkgs-unstable.gemini-cli
     #pkgs.opencode
     pkgs-unstable.opencode
-    pkgs-unstable.playwright-mcp
+    #pkgs-unstable.playwright-mcp
     #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 
     # latex (CLI toolchain)

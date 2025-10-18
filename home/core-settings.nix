@@ -7,6 +7,9 @@
     stateVersion = "24.11";
 
     sessionVariables = {
+      OPENAI_API_KEY = "$(${pkgs.pass}/bin/pass dev/openai-api)";
+      OPENROUTER_API_KEY = "$(${pkgs.pass}/bin/pass dev/openrouter-api)";
+      GEMINI_API_KEY = "$(${pkgs.pass}/bin/pass google/gemini_api)";
       #EDITOR = "nvim";
       #MANPAGER = "bat -l man -p'";
       #PAGER = "bat";

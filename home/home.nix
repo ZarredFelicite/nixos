@@ -44,7 +44,7 @@
 
       # kinect
       #freenect
-      #freecad
+      pkgs.freecad-wayland
     ];
   };
   programs.kitty.enable = true;

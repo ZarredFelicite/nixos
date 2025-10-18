@@ -32,7 +32,8 @@
       zshConfigEarlyInit = lib.mkOrder 500 ''
         zmodload zsh/zprof
         typeset -U path
-        path+=(~/scripts(/N) ~/scripts/**/*(/N))
+        #path+=(~/scripts(/N) ~/scripts/**/*(/N))
+        path+=(~/scripts(/N) "$\{(@f)$(fd -t d . ~/scripts/)}") # faster to add scripts to path
 
         bindkey '^H' backward-kill-word
         bindkey '5~' kill-word
@@ -50,11 +51,6 @@
         # auto completion generation from --help page
         #source <(cod init $$ zsh)
       '';
-      #zshConfig = lib.mkOrder 1000 ''
-      #  export OPENAI_API_KEY="$(pass dev/openai-api)"
-      #  export OPENROUTER_API_KEY="$(pass dev/openrouter-api)"
-      #  export GEMINI_API_KEY="$(pass google/gemini_api)"
-      #'';
     in
       lib.mkMerge [ zshConfigEarlyInit ];
     profileExtra = ''
@@ -128,9 +124,9 @@
       NC = "\\033[0m";
 
       GTRASH_HOME_TRASH_FALLBACK_COPY = "true";
-      OPENAI_API_KEY = "$(pass dev/openai-api)";
-      OPENROUTER_API_KEY = "$(pass dev/openrouter-api)";
-      GEMINI_API_KEY = "$(pass google/gemini_api)";
+      #OPENAI_API_KEY = "$(${pkgs.pass}/bin/pass dev/openai-api)";
+      #OPENROUTER_API_KEY = "$(${pkgs.pass}/bin/pass dev/openrouter-api)";
+      #GEMINI_API_KEY = "$(${pkgs.pass}/bin/pass google/gemini_api)";
       EDITOR = "nvim";
       MANPAGER = "bat -l man -p'";
       PAGER = "bat";

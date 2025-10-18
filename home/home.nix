@@ -45,6 +45,9 @@
       # kinect
       #freenect
       pkgs.freecad-wayland
+
+      # Offic
+      pkgs.libreoffice-qt6-fresh
     ];
   };
   programs.kitty.enable = true;

@@ -236,6 +236,9 @@
         binary-cache-key = {};
         #nixremote-private = { owner = config.users.users.zarred.name; group = config.users.users.zarred.group; mode = "0440";};
         nixremote-private = { };
+        openai-api = { owner = "zarred"; };
+        gemini-api = { owner = "zarred"; };
+        openrouter-api = { owner = "zarred"; };
       }
     ];
   };

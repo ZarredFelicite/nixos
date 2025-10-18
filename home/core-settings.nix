@@ -7,12 +7,13 @@
     stateVersion = "24.11";
 
     sessionVariables = {
-      OPENAI_API_KEY = "$(${pkgs.pass}/bin/pass dev/openai-api)";
-      OPENROUTER_API_KEY = "$(${pkgs.pass}/bin/pass dev/openrouter-api)";
-      GEMINI_API_KEY = "$(${pkgs.pass}/bin/pass google/gemini_api)";
       #EDITOR = "nvim";
       #MANPAGER = "bat -l man -p'";
       #PAGER = "bat";
+      # API keys from sops - available to GUI apps and graphical sessions
+      OPENAI_API_KEY = "$(cat /run/secrets/openai-api)";
+      GEMINI_API_KEY = "$(cat /run/secrets/gemini-api)";
+      OPENROUTER_API_KEY = "$(cat /run/secrets/openrouter-api)";
     };
 
     # A few truly core packages. Most packages will be in other profiles.
@@ -21,6 +22,27 @@
       ripgrep # recursively searches directories for a regex pattern
       jq # A lightweight and flexible command-line JSON processor
     ];
+  };
+
+  # Load API keys into systemd environment for user services
+  systemd.user.services.load-api-keys = {
+    Unit = {
+      Description = "Load API keys from sops into systemd environment";
+      After = [ "graphical-session-pre.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.writeShellScript "load-api-keys" ''
+        ${pkgs.systemd}/bin/systemctl --user set-environment \
+          OPENAI_API_KEY="$(cat /run/secrets/openai-api)" \
+          GEMINI_API_KEY="$(cat /run/secrets/gemini-api)" \
+          OPENROUTER_API_KEY="$(cat /run/secrets/openrouter-api)"
+      ''}";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
   };
 
   programs.git = {

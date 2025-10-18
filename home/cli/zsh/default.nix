@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ config, osConfig, pkgs, lib, ... }: {
   home.packages = with pkgs; [
     #zsh-completions
     zsh-autosuggestions
@@ -33,7 +33,7 @@
         zmodload zsh/zprof
         typeset -U path
         #path+=(~/scripts(/N) ~/scripts/**/*(/N))
-        path+=(~/scripts(/N) "$\{(@f)$(fd -t d . ~/scripts/)}") # faster to add scripts to path
+        path+=(~/scripts(/N) "''${(@f)$(fd -t d . ~/scripts/)}") # faster to add scripts to path
 
         bindkey '^H' backward-kill-word
         bindkey '5~' kill-word
@@ -50,10 +50,16 @@
         video() { nohup mpv $@ >/dev/null 2>&1 &; }
         # auto completion generation from --help page
         #source <(cod init $$ zsh)
+
+        export OPENAI_API_KEY=$(cat ${osConfig.sops.secrets.openai-api.path})
+        export GEMINI_API_KEY=$(cat ${osConfig.sops.secrets.gemini-api.path})
+        export OPENROUTER_API_KEY=$(cat ${osConfig.sops.secrets.openrouter-api.path})
       '';
     in
       lib.mkMerge [ zshConfigEarlyInit ];
     profileExtra = ''
+    '';
+    initExtra = ''
     '';
     plugins = [
       {
@@ -124,9 +130,6 @@
       NC = "\\033[0m";
 
       GTRASH_HOME_TRASH_FALLBACK_COPY = "true";
-      #OPENAI_API_KEY = "$(${pkgs.pass}/bin/pass dev/openai-api)";
-      #OPENROUTER_API_KEY = "$(${pkgs.pass}/bin/pass dev/openrouter-api)";
-      #GEMINI_API_KEY = "$(${pkgs.pass}/bin/pass google/gemini_api)";
       EDITOR = "nvim";
       MANPAGER = "bat -l man -p'";
       PAGER = "bat";

@@ -5,8 +5,8 @@
 
 local settings = {
   umpv = false,
-  history_file = '/home/zarred/sync/mpv/video_history',
-  playlist_file = "/home/zarred/sync/mpv/mpv_playlist.m3u",
+  history_file = '/home/zarred/.local/share/databases/mpv/video_history',
+  playlist_file = "/home/zarred/.local/share/databases/mpv/mpv_playlist.m3u",
 }
 
 

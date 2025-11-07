@@ -70,7 +70,6 @@
       ".sops.yaml"
       ".config/syncthingtray.ini"
       ".claude.json"
-      ".opencode.json"
     ];
     allowOther = true;
   };

@@ -10,7 +10,7 @@
       # CLI related or general purpose from cli-apps.nix
       pip # PyPA recommended tool for installing Python packages
       jwt # JSON Web Token library for Python 3
-      #yt-dlp # Command-line tool to download videos from YouTube.com and other sites (youtube-dl fork)
+      yt-dlp # Command-line tool to download videos from YouTube.com and other sites (youtube-dl fork)
       rich # Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
       psutil # Process and system utilization information interface
       mutagen # Python module for handling audio metadata (often CLI)
@@ -60,7 +60,7 @@
       webrtcvad # Interface to the Google WebRTC Voice Activity Detector (VAD)
 
       # Ensure all custom python packages from ../pkgs/python are included if not already listed
-      ( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp
+      # ( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp
       #( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
       # TODO: broken vllm
       # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})

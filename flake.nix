@@ -12,7 +12,6 @@
     stylix.url = "github:danth/stylix/release-25.05";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    #hyprland = { type = "git"; url = "https://github.com/hyprwm/Hyprland?rev=v0.47.0"; submodules = true;};
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
     vigiland.url = "github:jappie3/vigiland";
     ignis = { url = "github:ignis-sh/ignis"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
@@ -38,7 +37,10 @@
       pkgs-unstable = import nixpkgs-unstable {
         inherit system;
         config.allowUnfree = true;
-        overlays = [ inputs.nix-vscode-extensions.overlays.default ];
+        overlays = [
+          inputs.nix-vscode-extensions.overlays.default
+          #(import ./overlays/hyprland-qtutils.nix)
+        ];
       };
     in {
       inherit lib;
@@ -75,6 +77,7 @@
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
+              #(import ./overlays/hyprland-qtutils.nix )
             ]; })
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix

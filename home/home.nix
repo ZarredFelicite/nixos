@@ -22,7 +22,7 @@
       pkgs.trayscale # An unofficial GUI wrapper around the Tailscale CLI client
 
       # misc
-      pkgs-unstable.rpi-imager # Raspberry Pi Imaging Utility
+      # TODO: broken pkgs-unstable.rpi-imager # Raspberry Pi Imaging Utility
       #ventoy # NOTE: marked insecure - binary blobs
 
       # AI (GUI or mixed usage)

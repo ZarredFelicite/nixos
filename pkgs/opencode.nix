@@ -1,150 +1,56 @@
 {
   lib,
   stdenvNoCC,
-  stdenv,
-  makeWrapper,
-  buildGoModule,
-  bun,
-  fetchFromGitHub,
-  models-dev,
-  nix-update-script,
+  fetchurl,
+  autoPatchelfHook,
+  installShellFiles,
+  unzip,
   testers,
-  writableTmpDirAsHomeHook,
 }:
 
 let
-  opencode-node-modules-hash = {
-    "aarch64-darwin" = "sha256-LNp9sLhNUUC4ujLYPvfPx423GlXuIS0Z2H512H5oY8s=";
-    "aarch64-linux" = "sha256-xeKZwNV4ScF9p1vAcVR+vk4BiEpUH+AOGb7DQ2vLl1I=";
-    "x86_64-darwin" = "sha256-4NaHXeWf57dGVV+KP3mBSIUkbIApT19BuADT0E4X+rg=";
-    "x86_64-linux" = "sha256-7Hc3FJcg2dA8AvGQlS082fO1ehGBMPXWPF8N+sAHh2I=";
+  version = "0.15.31";
+
+  sources = {
+    "aarch64-darwin" = {
+      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-darwin-arm64.zip";
+      hash = "sha256-Oizu4QKISBSDeBDXXSfUPPz3cS4MrapG+IezhkoInGU=";
+    };
+    "aarch64-linux" = {
+      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-linux-arm64.zip";
+      hash = "sha256-+V1RwzvgAXKqK57ZujjDg3BlE0rxqxCywsMghVDrX2M=";
+    };
+    "x86_64-darwin" = {
+      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-darwin-x64.zip";
+      hash = "sha256-0s9sqlmuk3Nnn7XnI5W7MS22VbcTvmwj4LsxJ1j2AWs=";
+    };
+    "x86_64-linux" = {
+      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-linux-x64.zip";
+      hash = "sha256-nozyFG92eJSsw6dznyugMTnVzf7yQCRlFTiQGdRL54c=";
+    };
   };
-  bun-target = {
-    "aarch64-darwin" = "bun-darwin-arm64";
-    "aarch64-linux" = "bun-linux-arm64";
-    "x86_64-darwin" = "bun-darwin-x64";
-    "x86_64-linux" = "bun-linux-x64";
-  };
+
+  source = sources.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "0.4.1";
-  src = fetchFromGitHub {
-    owner = "sst";
-    repo = "opencode";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-LEFmfsqhCuGcRK7CEPZb6EZfjOHAyYpUHptXu04fjpQ=";
-  };
+  inherit version;
 
-  tui = buildGoModule {
-    pname = "opencode-tui";
-    inherit (finalAttrs) version src;
-
-    modRoot = "packages/tui";
-
-    vendorHash = "sha256-jGaTgKyAvBMt8Js5JrPFUayhVt3QhgyclFoNatoHac4=";
-
-    subPackages = [ "cmd/opencode" ];
-
-    env.CGO_ENABLED = 0;
-
-    ldflags = [
-      "-s"
-      "-X=main.Version=${finalAttrs.version}"
-    ];
-
-    installPhase = ''
-      runHook preInstall
-
-      install -Dm755 $GOPATH/bin/opencode $out/bin/tui
-
-      runHook postInstall
-    '';
-  };
-
-  node_modules = stdenvNoCC.mkDerivation {
-    pname = "opencode-node_modules";
-    inherit (finalAttrs) version src;
-
-    impureEnvVars = lib.fetchers.proxyImpureEnvVars ++ [
-      "GIT_PROXY_COMMAND"
-      "SOCKS_SERVER"
-    ];
-
-    nativeBuildInputs = [
-      bun
-      writableTmpDirAsHomeHook
-    ];
-
-    dontConfigure = true;
-
-    buildPhase = ''
-      runHook preBuild
-
-       export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
-
-       bun install \
-         --filter=opencode \
-         --force \
-         --frozen-lockfile \
-         --no-progress
-
-      runHook postBuild
-    '';
-
-    installPhase = ''
-      runHook preInstall
-
-      mkdir -p $out/node_modules
-      cp -R ./node_modules $out
-
-      runHook postInstall
-    '';
-
-    # Required else we get errors that our fixed-output derivation references store paths
-    dontFixup = true;
-
-    outputHash = opencode-node-modules-hash.${stdenvNoCC.hostPlatform.system};
-    outputHashAlgo = "sha256";
-    outputHashMode = "recursive";
+  src = fetchurl {
+    inherit (source) url hash;
   };
 
   nativeBuildInputs = [
-    bun
-    models-dev
-    makeWrapper
+    unzip
+    installShellFiles
+  ] ++ lib.optionals stdenvNoCC.hostPlatform.isLinux [
+    autoPatchelfHook
   ];
 
-  patches = [
-    # Patch `packages/opencode/src/provider/models-macro.ts` to get contents of
-    # `_api.json` from the file bundled with `bun build`.
-    ./local-models-dev.patch
-  ];
+  sourceRoot = ".";
 
-  configurePhase = ''
-    runHook preConfigure
-
-    cp -R ${finalAttrs.node_modules}/node_modules .
-
-    runHook postConfigure
-  '';
-
-  env.MODELS_DEV_API_JSON = "${models-dev}/dist/_api.json";
-
-  buildPhase = ''
-    runHook preBuild
-
-    bun build \
-      --define OPENCODE_TUI_PATH="'${finalAttrs.tui}/bin/tui'" \
-      --define OPENCODE_VERSION="'${finalAttrs.version}'" \
-      --compile \
-      --target=${bun-target.${stdenvNoCC.hostPlatform.system}} \
-      --outfile=opencode \
-      ./packages/opencode/src/index.ts \
-
-    runHook postBuild
-  '';
-
+  dontConfigure = true;
+  dontBuild = true;
   dontStrip = true;
 
   installPhase = ''
@@ -155,24 +61,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  postFixup = ''
-    wrapProgram $out/bin/opencode \
-      --set LD_LIBRARY_PATH "${stdenv.cc.cc.lib}/lib"
-  '';
-
   passthru = {
     tests.version = testers.testVersion {
       package = finalAttrs.finalPackage;
       command = "HOME=$(mktemp -d) opencode --version";
-      inherit (finalAttrs) version;
-    };
-    updateScript = nix-update-script {
-      extraArgs = [
-        "--subpackage"
-        "tui"
-        "--subpackage"
-        "node_modules"
-      ];
     };
   };
 
@@ -186,10 +78,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     homepage = "https://github.com/sst/opencode";
     license = lib.licenses.mit;
     platforms = lib.platforms.unix;
-    maintainers = with lib.maintainers; [
-      zestsystem
-      delafthi
-    ];
     mainProgram = "opencode";
   };
 })

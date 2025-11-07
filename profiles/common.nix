@@ -68,6 +68,10 @@
   #    MulticastDNS=true
   #  '';
   #};
+  services.mullvad-vpn = {
+    enable = true;
+    package = pkgs.mullvad-vpn;
+  };
   networking = {
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
     useNetworkd = true;

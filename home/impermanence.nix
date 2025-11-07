@@ -61,6 +61,7 @@
       ".config/ignis"
       ".config/ags"
       ".config/quickshell"
+      ".config/Mullvad VPN"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"

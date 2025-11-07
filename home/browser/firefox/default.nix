@@ -21,11 +21,11 @@ in {
   stylix.targets.firefox.enable = false;
   programs.firefox = {
     enable = true;
-    package = pkgs-unstable.firefox.override {
+    package = pkgs.firefox.override {
       nativeMessagingHosts = [
-        pkgs-unstable.tridactyl-native
-        pkgs-unstable.browserpass
-        pkgs-unstable.fx-cast-bridge
+        pkgs.tridactyl-native
+        pkgs.browserpass
+        pkgs.fx-cast-bridge
       ];
       extraPolicies = {
         Extensions = { Install = [
@@ -119,7 +119,7 @@ in {
       };
     };
   };
-  home.packages = with pkgs-unstable; [
+  home.packages = with pkgs; [
     buku # Private cmdline bookmark manager
     #(callPackage ./firefox_openwith/derivation.nix {})
   ];

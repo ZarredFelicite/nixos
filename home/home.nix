@@ -6,6 +6,17 @@
       Install.WantedBy = [ "graphical-session.target" ];
       Service.Restart = "always";
     };
+
+    upscayl-wrapped = pkgs.symlinkJoin {
+      name = "upscayl-wrapped";
+      paths = [ pkgs.upscayl ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/upscayl \
+          --set __EGL_VENDOR_LIBRARY_FILENAMES /run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json \
+          --add-flags "--ozone-platform=wayland"
+      '';
+    };
   in {
   home = {
     packages = [
@@ -17,6 +28,7 @@
 
       # media
       pkgs.mediainfo # Supplies technical and tag information about a video or audio file
+      pkgs.exiftool # Tool to read, write and edit EXIF meta information
 
       # networking
       # TODO: broken pkgs.trayscale # An unofficial GUI wrapper around the Tailscale CLI client
@@ -27,10 +39,15 @@
 
       # AI (GUI or mixed usage)
       pkgs.piper-tts # A fast, local neural text to speech system
-      pkgs.upscayl # Free and Open Source AI Image Upscaler
+      upscayl-wrapped # Free and Open Source AI Image Upscaler (wrapped with NVIDIA EGL + Wayland)
+      pkgs.video2x
       pkgs.openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
 
+      # android dev
       pkgs.android-studio
+      pkgs.android-tools
+      pkgs.jdk17
+      pkgs.gradle
 
       # Desktop/Wayland specific tools
       pkgs.waypipe
@@ -57,12 +74,21 @@
 
   systemd.user.services.syncthingtray = mkGraphicalService {
     Unit.Description = "Syncthing monitoring tray";
-    Service.ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray";
+    Service.ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray --wait";
   };
   systemd.user.services.mppv_watcher = mkGraphicalService {
     Unit.Description = "Watch for mppv changes";
-    Service.ExecStart = "/home/zarred/scripts/video/mppv -w";
+    Service.ExecStart = "/home/zarred/scripts/video/mppv/mppv -w";
     Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "0";
+  };
+  systemd.user.services.bambu-gateway = mkGraphicalService {
+    Unit.Description = "Bambu Labs Printer Gateway";
+    Unit.After = "network.target";
+    Unit.Documentation = "file:///home/zarred/scripts/3d/README.md";
+    Service.ExecStart = "/usr/bin/env python3 /home/zarred/scripts/3d/bambu_gateway.py";
+    Service.WorkingDirectory = "/home/zarred/scripts/3d";
+    Service.RestartSec = "10";
     Service.StartLimitIntervalSec = "0";
   };
 }

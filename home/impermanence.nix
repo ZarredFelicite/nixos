@@ -23,6 +23,7 @@
       ".local/share"
       ".mozilla"
       ".thunderbird"
+      ".tor project"
       ".android"
       ".java"
       ".vscode-oss"
@@ -62,6 +63,9 @@
       ".config/ags"
       ".config/quickshell"
       ".config/Mullvad VPN"
+      ".config/Upscayl"
+      ".config/mpv"
+      ".config/streamrip"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"

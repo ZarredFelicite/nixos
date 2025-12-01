@@ -24,8 +24,8 @@
       bind   =      ,      T, submap, reset
       bind   =      ,      G, exec, ~/scripts/hyprland/toggle_special.sh browser-chatgpt
       bind   =      ,      G, submap, reset
-      bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh browser-messages
-      bind   =      ,      M, submap, reset
+      #bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh browser-messages
+      #bind   =      ,      M, submap, reset
       bind   =      , escape, submap, reset
       submap = reset
   '';
@@ -136,11 +136,11 @@
       " , XF86AudioMute, exec, /home/zarred/scripts/sys/volume.sh mute"
       " , XF86MonBrightnessUp, exec, /home/zarred/scripts/waybar/brightness.sh --increase"
       " , XF86MonBrightnessDown, exec, /home/zarred/scripts/waybar/brightness.sh --decrease"
-      " , XF86AudioRewind, exec, playerctl -i kdeconnect position 5-"
-      " , XF86AudioPrev, exec, playerctl -i kdeconnect previous"
-      " , XF86AudioNext, exec, playerctl -i kdeconnect next"
-      " , XF86AudioForward, exec, playerctl -i kdeconnect position 5+"
-      " , XF86AudioPlay, exec, playerctl -i kdeconnect play-pause"
+      " , XF86AudioRewind, exec, /home/zarred/scripts/sys/media-select position -5"
+      " , XF86AudioPrev, exec, /home/zarred/scripts/sys/media-select previous"
+      " , XF86AudioNext, exec, /home/zarred/scripts/sys/media-select next"
+      " , XF86AudioForward, exec, /home/zarred/scripts/sys/media-select position +5"
+      " , XF86AudioPlay, exec, /home/zarred/scripts/sys/media-select"
       " $mod CTRL, $NAVL, resizeactive, -20 0"
       " $mod CTRL, $NAVD, resizeactive, 0 20"
       " $mod CTRL, $NAVU, resizeactive, 0 -20"

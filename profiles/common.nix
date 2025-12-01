@@ -90,6 +90,8 @@
         IPv6.Enabled = true;
         Settings.AutoConnect = true;
         General.EnableNetworkConfiguration = true;
+        Rank.BandModifier2_4GHz = 0.5;
+        Rank.BandModifier5GHz = 5.0;
       };
     };
     firewall = {
@@ -243,6 +245,7 @@
         openai-api = { owner = "zarred"; };
         gemini-api = { owner = "zarred"; };
         openrouter-api = { owner = "zarred"; };
+        nixAccessTokens = { mode = "0440"; group = config.users.groups.keys.name; };
       }
     ];
   };
@@ -260,7 +263,12 @@
       domain = "*";
       type = "soft";
       item = "nofile";
-      value = "8192";
+      value = "65536";
+    } {
+      domain = "*";
+      type = "hard";
+      item = "nofile";
+      value = "1048576";
     }];
     pam.services.hyprlock = {
       text = ''

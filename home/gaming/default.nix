@@ -4,7 +4,7 @@
     pkgs.protonup-qt
     #pkgs.wineWowPackages.waylandFull
     pkgs.samba
-    pkgs.bottles
+    (pkgs.bottles.override {removeWarningPopup = true; })
     pkgs.mangohud
     # pkgs.darling # Open-source Darwin/macOS emulation layer for Linux
   ];

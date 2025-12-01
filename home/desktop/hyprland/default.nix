@@ -8,7 +8,7 @@ let
   monitor = if osConfig.networking.hostName == "web" then "DP-3" else "eDP-1";
 in {
   imports = [
-    ./autoname-workspaces/hyprland-autoname-workspaces.nix
+    #./autoname-workspaces/hyprland-autoname-workspaces.nix
     ./rules.nix
     ./binds.nix
     ./hyprlock.nix
@@ -16,17 +16,12 @@ in {
   stylix.targets.hyprland.enable = false;
   stylix.targets.hyprlock.enable = false;
   home.packages = [
-    #inputs.hyprlang.packages.${pkgs.hostPlatform.system}.hyprlang
-    pkgs.hyprland-autoname-workspaces
     inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
     inputs.vigiland.packages.${pkgs.system}.vigiland
-    #pkgs.hyprpanel
-    #pkgs.ags
   ];
-  services.hyprland-autoname-workspaces.enable = false;
   services.hyprpaper = {
     enable = true;
-    #package = inputs.hyprpaper.packages.${pkgs.hostPlatform.system}.hyprpaper;
+    package = pkgs-unstable.hyprpaper;
     settings = {
       preload = [
         "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
@@ -84,33 +79,9 @@ in {
     xwayland.enable = true;
     systemd.enable = true;
     plugins = with pkgs-unstable.hyprlandPlugins; [
-        # TODO: broken - hyprspace
-      # hyprgrass - Hyprland plugin for touch gestures
+        hyprspace
         hyprfocus
-        #(pkgs.hyprlandPlugins.mkHyprlandPlugin pkgs.hyprland {
-        #  pluginName = "hyprfocus";
-        #  version = "0-unstable-2025-05-19";
-        #  src = pkgs.fetchFromGitHub {
-        #    owner = "daxisunder";
-        #    repo = "hyprfocus";
-        #    rev = "516e36572f50cca631e7e572249b3716c3602176";
-        #    hash = "sha256-TnsdJxxBFbc54T43UP+7mmZkErc7NrZ31C0QNePdDrE=";
-        #  };
-        #  installPhase = ''
-        #    runHook preInstall
-        #    mkdir -p $out/lib
-        #    mv hyprfocus.so $out/lib/libhyprfocus.so
-        #    runHook postInstall
-        #  '';
-        #  passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch" ]; };
-        #  meta = {
-        #    homepage = "https://github.com/pyt0xic/hyprfocus";
-        #    description = "Focus animation plugin for Hyprland inspired by Flashfocus";
-        #    license = lib.licenses.bsd3;
-        #    maintainers = with lib.maintainers; [ donovanglover ];
-        #    platforms = lib.platforms.linux;
-        #  };
-        #})
+      # hyprgrass - Hyprland plugin for touch gestures
     ];
     settings = {
       debug.disable_logs = false;
@@ -122,7 +93,7 @@ in {
         "${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
         "${pkgs.wayvnc}/bin/wayvnc"
-          #TODO: broken "${pkgs.trayscale}/bin/trayscale --hide-window"
+        "${pkgs.trayscale}/bin/trayscale --hide-window"
         "/etc/profiles/per-user/zarred/bin/discord"
       ];
       monitor = [",preferred,auto,1,transform,1"];
@@ -193,7 +164,7 @@ in {
           drag_lock = true;
           tap-and-drag = true;
           natural_scroll = true;
-          #TODO: not implemented yet drag_3fg = 1;
+          drag_3fg = 1;
         };
         sensitivity = 0;
       };
@@ -264,7 +235,6 @@ in {
         #smart_resizing = true;
         preserve_split = false;
         split_width_multiplier = 1.6;
-        single_window_aspect_ratio = "16 9";
           #special_scale_factor = 0.90;
         use_active_for_splits = true;
         default_split_ratio = 1.2;
@@ -279,20 +249,20 @@ in {
           focus_animation = "flash";
           animate_floating = true;
           animate_workspacechange = true;
-            #bezier = [
-            #  "bezIn, 0.5,0.0,1.0,0.5"
-            #  "bezOut, 0.0,0.5,0.5,1.0"
-            #  "overshot, 0.05, 0.9, 0.1, 1.05"
-            #  "smoothOut, 0.36, 0, 0.66, -0.56"
-            #  "smoothIn, 0.25, 1, 0.5, 1"
-            #  "realsmooth, 0.28, 0.29, 0.69, 1.08"
-            #  "easeInOutBack, 0.68, -0.6, 0.32, 1.6"
-            #];
+          bezier = [
+            "bezIn, 0.5,0.0,1.0,0.5"
+            "bezOut, 0.0,0.5,0.5,1.0"
+            "overshot, 0.05, 0.9, 0.1, 1.05"
+            "smoothOut, 0.36, 0, 0.66, -0.56"
+            "smoothIn, 0.25, 1, 0.5, 1"
+            "realsmooth, 0.28, 0.29, 0.69, 1.08"
+            "easeInOutBack, 0.68, -0.6, 0.32, 1.6"
+          ];
           flash = {
             flash_opacity = 0.85;
-            in_bezier = "bezIn";
+            in_bezier = "smoothIn";
             in_speed = 0.5;
-            out_bezier = "bezOut";
+            out_bezier = "smoothOut";
             out_speed = 1;
           };
         };

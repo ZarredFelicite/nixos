@@ -1,18 +1,207 @@
 { pkgs, ... }: {
   home.packages = [ pkgs.glow ];
-  # TODO: better theme for glow
   xdg.configFile."glow/glow.yml".text = ''
-      # style name or JSON path (default "auto")
-      style: "dark"
-      # show local files only; no network (TUI-mode only)
+      style: "/home/zarred/.config/glow/rose-pine.json"
       local: false
-      # mouse support (TUI-mode only)
       mouse: false
-      # use pager to display markdown
-      pager: false
-      # word-wrap at width
+      pager: true
       # width: 80
+      showLineNumbers: false
     '';
+  xdg.configFile."glow/rose-pine.json".text = ''
+      {
+        "document": {
+          "block_prefix": "\n",
+          "block_suffix": "\n",
+          "color": "#e0def4",
+          "margin": 2
+        },
+        "block_quote": {
+          "indent": 2,
+          "color": "#f6c177",
+          "italic": true
+        },
+        "paragraph": {},
+        "list": {
+          "level_indent": 2,
+          "color": "#e0def4"
+        },
+        "heading": {
+          "block_suffix": "\n",
+          "color": "#c4a7e7",
+          "bold": true
+        },
+        "h1": {
+          "prefix": "# "
+        },
+        "h2": {
+          "prefix": "## "
+        },
+        "h3": {
+          "prefix": "### "
+        },
+        "h4": {
+          "prefix": "#### "
+        },
+        "h5": {
+          "prefix": "##### "
+        },
+        "h6": {
+          "prefix": "###### "
+        },
+        "text": {},
+        "strikethrough": {
+          "crossed_out": true
+        },
+        "emph": {
+          "italic": true,
+          "color": "#f6c177"
+        },
+        "strong": {
+          "bold": true,
+          "color": "#ebbcba"
+        },
+        "hr": {
+          "color": "#908caa",
+          "format": "\n--------\n"
+        },
+        "item": {
+          "block_prefix": "• "
+        },
+        "enumeration": {
+          "block_prefix": ". ",
+          "color": "#9ccfd8"
+        },
+        "task": {
+          "ticked": "[✓] ",
+          "unticked": "[ ] "
+        },
+        "link": {
+          "color": "#9ccfd8",
+          "underline": true
+        },
+        "link_text": {
+          "color": "#eb6f92"
+        },
+        "image": {
+          "color": "#9ccfd8",
+          "underline": true
+        },
+        "image_text": {
+          "color": "#eb6f92",
+          "format": "Image: {{.text}} →"
+        },
+        "code": {
+          "color": "#31748f"
+        },
+        "code_block": {
+          "color": "#ebbcba",
+          "margin": 2,
+          "chroma": {
+            "text": {
+              "color": "#e0def4"
+            },
+            "error": {
+              "color": "#e0def4",
+              "background_color": "#eb6f92"
+            },
+            "comment": {
+              "color": "#6e6a86"
+            },
+            "comment_preproc": {
+              "color": "#eb6f92"
+            },
+            "keyword": {
+              "color": "#eb6f92"
+            },
+            "keyword_reserved": {
+              "color": "#eb6f92"
+            },
+            "keyword_namespace": {
+              "color": "#eb6f92"
+            },
+            "keyword_type": {
+              "color": "#9ccfd8"
+            },
+            "operator": {
+              "color": "#eb6f92"
+            },
+            "punctuation": {
+              "color": "#e0def4"
+            },
+            "name": {
+              "color": "#9ccfd8"
+            },
+            "name_builtin": {
+              "color": "#9ccfd8"
+            },
+            "name_tag": {
+              "color": "#eb6f92"
+            },
+            "name_attribute": {
+              "color": "#31748f"
+            },
+            "name_class": {
+              "color": "#9ccfd8"
+            },
+            "name_constant": {
+              "color": "#c4a7e7"
+            },
+            "name_decorator": {
+              "color": "#31748f"
+            },
+            "name_exception": {},
+            "name_function": {
+              "color": "#31748f"
+            },
+            "name_other": {},
+            "literal": {},
+            "literal_number": {
+              "color": "#f6c177"
+            },
+            "literal_date": {},
+            "literal_string": {
+              "color": "#f6c177"
+            },
+            "literal_string_escape": {
+              "color": "#eb6f92"
+            },
+            "generic_deleted": {
+              "color": "#eb6f92"
+            },
+            "generic_emph": {
+              "color": "#f6c177",
+              "italic": true
+            },
+            "generic_inserted": {
+              "color": "#31748f"
+            },
+            "generic_strong": {
+              "color": "#ebbcba",
+              "bold": true
+            },
+            "generic_subheading": {
+              "color": "#c4a7e7"
+            },
+            "background": {
+              "background_color": "#191724"
+            }
+          }
+        },
+        "table": {
+          "center_separator": "┼",
+          "column_separator": "│",
+          "row_separator": "─"
+        },
+        "definition_list": {},
+        "definition_term": {},
+        "definition_description": {
+          "block_prefix": "\n🠶 "
+        },
+        "html_block": {},
+        "html_span": {}
+      }
+  '';
   xdg.configFile."glow/dracula.json".text = ''
       {
         "document": {

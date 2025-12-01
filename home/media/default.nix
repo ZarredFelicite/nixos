@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }: {
+{ config, pkgs, pkgs-unstable, inputs, ... }: {
   imports = [
     ./mpd_clients.nix
     ./mpv
@@ -10,6 +10,7 @@
   home.packages = [
     #(pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.lowfi
+    pkgs-unstable.streamrip
   ];
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {

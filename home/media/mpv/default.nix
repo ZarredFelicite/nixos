@@ -104,7 +104,7 @@
       };
     };
     scripts = with pkgs-unstable.mpvScripts; [
-      uosc
+      #uosc
       mpris
       #mpv-playlistmanager
       webtorrent-mpv-hook

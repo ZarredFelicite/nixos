@@ -56,7 +56,7 @@ let
   # OpenCode/VSCode configuration
   opencodeConfig = mcp-servers-nix.lib.mkConfig pkgs-unstable {
     format = "json";
-    flavor = "vscode";
+    flavor = "claude";
     fileName = "opencode_mcp_config.json";
 
     programs = {

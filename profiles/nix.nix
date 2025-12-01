@@ -10,6 +10,9 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
+    extraOptions = ''
+      !include ${config.sops.secrets.nixAccessTokens.path}
+    '';
     settings = {
       trusted-users = [ "nixremote" "zarred" "root"];
       experimental-features = [ "nix-command" "flakes" ];
@@ -74,20 +77,22 @@
       #inputs.nix-vscode-extensions.overlays.default
       (final: prev: rec {
         rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
-        bindfs = pkgs.callPackage ../pkgs/bindfs {} ;
+      # NOTE: OBSOLETE
+        #bindfs = pkgs.callPackage ../pkgs/bindfs {} ;
       })
-      (_: prev: {
-        tailscale = prev.tailscale.overrideAttrs (old: {
-          checkFlags =
-            builtins.map (
-              flag:
-                if prev.lib.hasPrefix "-skip=" flag
-                then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
-                else flag
-            )
-            old.checkFlags;
-        });
-      })
+      # NOTE: OBSOLETE
+      #(_: prev: {
+      #  tailscale = prev.tailscale.overrideAttrs (old: {
+      #    checkFlags =
+      #      builtins.map (
+      #        flag:
+      #          if prev.lib.hasPrefix "-skip=" flag
+      #          then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
+      #          else flag
+      #      )
+      #      old.checkFlags;
+      #  });
+      #})
       # Override upstream youtube-transcript-api to use our local version
       (final: prev: rec {
         python3 = prev.python3.override {

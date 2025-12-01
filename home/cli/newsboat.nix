@@ -119,6 +119,7 @@
     urls = [
       { url = "file:///home/zarred/sync/rss/hotcopper.xml"; tags = [ "!" "~HotCopper" "no_unread" "stocks" ]; }
       { url = "https://kill-the-newsletter.com/feeds/08gvjf2woenkq96hac1j.xml"; tags = [ "!" "~ASX-ANN" "no_unread" "stocks" ]; }
+      { url = "https://vblgoldfix.substack.com/feed"; tags = [ "!" "~GoldFix" "no_unread" "stocks" ]; }
       #"exec:/home/zarred/.config/newsboat/parsers/webpage_parse.sh twitter" "~Twitter" stocks no_unread
       #{ url = "https://au.indeed.com/rss?q=Machine+Learning+Engineer&l=Victoria&radius=50&fromage=7&vjk=59ebb4fbfa450728"; tags = [ "~Indeed" "jobs" "no_unread" ]; }
 

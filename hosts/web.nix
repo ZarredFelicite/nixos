@@ -17,7 +17,6 @@
   services.syncthing.enable = true;
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    # TODO: switch back to latest soon
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
     kernelParams = [
     #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
@@ -127,7 +126,7 @@
   };
   swapDevices = [{
     device = "/swap/swapfile";
-    size = 65568;
+    size = 131136;
   }];
   environment.variables = {
     # Necessary to correctly enable va-api (video codec hardware
@@ -163,6 +162,7 @@
   services.power-profiles-daemon.enable = true;
   services.xserver.videoDrivers = ["nvidia"];
   services.hardware.openrgb = {
+    package = pkgs-unstable.openrgb;
     enable = true;
     motherboard = "amd";
   };

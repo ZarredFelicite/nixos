@@ -38,6 +38,7 @@
       feedgen # newer rss generator
       feedparser # Universal feed parser
       selenium # Bindings for Selenium WebDriver
+      pydantic-settings # Settings management using Pydantic (type-safe configuration)
       networkx # graph lib (can be CLI related)
       pygraphviz # graphviz python (can be CLI related)
       pdf2image # pdf utility (CLI usage)
@@ -46,6 +47,7 @@
       ( pkgs.callPackage ../pkgs/python/reader {}) # feed reader (CLI)
       ( pkgs.callPackage ../pkgs/python/ibind {}) # Interactive Brokers (CLI/API)
       youtube-transcript-api # Python API which allows you to get the transcripts/subtitles for a given YouTube video
+      google-cloud-texttospeech # Google Cloud Text-to-Speech API client library
 
       # PYTHON from home/home.nix (GUI related or specific app backends)
       ytmusicapi # Python API for YouTube Music
@@ -69,7 +71,7 @@
       # Ensure all custom python packages from ../pkgs/python are included if not already listed
       #( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
       # TODO: broken vllm
-      # TODO: broken ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
+      ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})
       # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
 

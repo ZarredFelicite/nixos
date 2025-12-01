@@ -1,4 +1,4 @@
-{ config, osConfig, pkgs, lib, ... }:
+{ config, osConfig, pkgs, pkgs-unstable, lib, ... }:
 let
   pinentryRofi = pkgs.writeShellApplication {
     name= "pinentry-rofi-with-env";
@@ -15,6 +15,12 @@ let
     '';
   };
 in {
+  home.packages = [
+    pkgs.proton-pass
+    pkgs.protonvpn-gui
+    pkgs.protonmail-desktop
+    pkgs-unstable.proton-authenticator
+  ];
   programs.password-store = {
     package = pkgs.pass.withExtensions (exts: [
       exts.pass-otp

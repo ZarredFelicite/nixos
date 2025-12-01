@@ -16,6 +16,8 @@
     keybindings = {
       "ctrl+c" = "copy_or_interrupt";
       "ctrl+alt+enter" = "launch --cwd=current";
+      "ctrl+shift+s" = "launch --type tab --spacing margin=50 --stdin-source=@screen_scrollback 'summarizer.py -s -l medium | more";
+      "ctrl+shift+y" = "launch --stdin-source=@last_cmd_output --type clipboard";
       "ctrl+shift+left" = "previous_tab";
       "ctrl+shift+right" = "next_tab";
       "ctrl+shift+t" = "new_tab";

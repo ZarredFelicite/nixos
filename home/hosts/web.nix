@@ -5,7 +5,6 @@
     ../core-settings.nix
     ../xdg-settings.nix
     ../home.nix # Main collection of remaining settings from old core.nix - will be emptied
-    #../python.nix # All python packages
 
     # Desktop specific modules (previously via home/desktop.nix)
     ../browser

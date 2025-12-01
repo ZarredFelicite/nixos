@@ -28,7 +28,7 @@ in {
     ./tmux.nix
     ./glow.nix
     ./ueberzugpp.nix
-    ./mcp-servers.nix
+    # INFO: does not have opencode compat ./mcp-servers.nix
   ];
 
   home.packages = [
@@ -116,7 +116,7 @@ in {
     pkgs.nix-init # Command line tool to generate Nix packages from URLs
 
     # dev tools (general CLI)
-    pkgs.devenv
+    pkgs-unstable.devenv # TODO: stable is broken
     pkgs.git-lfs # Git Large File Storage extension
 
     # ai (CLI focus)
@@ -126,9 +126,10 @@ in {
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
     #pkgs.opencode
-    #pkgs-unstable.opencode
+    pkgs-unstable.opencode
+    pkgs-unstable.antigravity-fhs
     #pkgs-unstable.playwright-mcp
-    (pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
+    #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 
     # latex (CLI toolchain)
     (pkgs.texliveBasic.withPackages(ps: with ps; [

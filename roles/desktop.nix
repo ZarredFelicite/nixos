@@ -1,6 +1,9 @@
 { self, config, pkgs, pkgs-unstable, lib, inputs, outputs,
   #pkgs-unstable, pkgs-stable,
-  ... }: {
+  ... }:
+let
+  hyprland = pkgs-unstable.hyprland;
+in {
   imports = [
     ../profiles/common.nix
     ../profiles/keyd.nix
@@ -73,7 +76,7 @@
   xdg = {
     portal = {
       enable = true;
-      xdgOpenUsePortal = false;
+      xdgOpenUsePortal = true;
       wlr.enable = true;
       config.common.default = "*";
       #config = {
@@ -99,8 +102,9 @@
       #  };
       #};
       extraPortals = [
+        # NOTE: ORDER MATTERS
         pkgs-unstable.xdg-desktop-portal-hyprland
-        #pkgs.xdg-desktop-portal-gtk
+        pkgs-unstable.xdg-desktop-portal-gtk
       ];
     };
   };
@@ -148,7 +152,7 @@
       restart = false;
       settings = rec {
         initial_session = {
-	        command = "${pkgs.hyprland}/bin/Hyprland";
+	        command = "${hyprland}/bin/Hyprland";
 	        user = "zarred";
 	      };
         default_session = {
@@ -156,7 +160,7 @@
             ${pkgs.greetd.tuigreet}/bin/tuigreet \
               --time \
               --asterisks \
-              --cmd ${pkgs.hyprland}/bin/Hyprland \
+              --cmd ${hyprland}/bin/Hyprland \
               -s ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
               --remember \
               --remember-user-session \
@@ -282,7 +286,7 @@
   };
   # NOTE: Disable all mpd settings below if disabling the service
   services.mpd = {
-    enable = false;
+    enable = true;
     user = "zarred";
     group = "users";
     #playlistDirectory = "/mnt/gargantua/media/music/data/playlists";
@@ -321,7 +325,7 @@
     serviceConfig.SupplementaryGroups = [ "pipewire" ];
     #serviceConfig.ExecStartPre = [ "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.netcat}/bin/nc -z 100.64.1.200 6600; do sleep 5; done'" ];
     serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --no-daemon /run/mpd/mpd.conf" ];
-    serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf; ${pkgs.bash}/bin/bash -c 'sleep 5'" ];
+    #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf; ${pkgs.bash}/bin/bash -c 'sleep 5'" ];
     #serviceConfig.KillMode = [ "mixed" ];
     after = [ "mnt-gargantua.mount" ];
     requires = [ "mnt-gargantua.mount" ];

@@ -3,6 +3,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     home-manager = { url = "github:nix-community/home-manager/release-25.05"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     flake-utils.url = "github:numtide/flake-utils";
@@ -22,13 +23,13 @@
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
 
-    mcp-servers-nix = { url = "github:natsukium/mcp-servers-nix"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
+    # INFO:. does not have opencode compat. mcp-servers-nix = { url = "github:natsukium/mcp-servers-nix"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
 
     #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
   };
   outputs = {
     self, nixpkgs,
-    nixpkgs-unstable,
+    nixpkgs-unstable, #nixpkgs-master,
     home-manager, nixos-hardware, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
@@ -39,9 +40,12 @@
         config.allowUnfree = true;
         overlays = [
           inputs.nix-vscode-extensions.overlays.default
-          #(import ./overlays/hyprland-qtutils.nix)
         ];
       };
+      #pkgs-master = import nixpkgs-master {
+      #  inherit system;
+      #  config.allowUnfree = true;
+      #};
     in {
       inherit lib;
       nixpkgs.overlays = [
@@ -72,12 +76,12 @@
           specialArgs = {
             inherit inputs self;
             inherit pkgs-unstable;
+            #inherit pkgs-master;
             #inherit pkgs-stable;
           };
       	  modules = [
             ({ nixpkgs.overlays = [
               (import ./overlays/omniverse.nix )
-              #(import ./overlays/hyprland-qtutils.nix )
             ]; })
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix
@@ -89,6 +93,7 @@
           specialArgs = {
             inherit inputs self;
             inherit pkgs-unstable;
+            #inherit pkgs-master;
             #inherit pkgs-stable;
           };
       	  modules = [
@@ -106,6 +111,7 @@
           specialArgs = {
             inherit inputs self;
             inherit pkgs-unstable;
+            #inherit pkgs-master;
             #inherit pkgs-stable;
           };
       	  modules = [

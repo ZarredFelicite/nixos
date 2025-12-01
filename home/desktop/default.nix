@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, inputs, lib, osConfig, config, ... }:
+{ pkgs, pkgs-unstable, pkgs-master, inputs, lib, osConfig, config, ... }:
 with lib; let
   mkHyprlandService = lib.recursiveUpdate {
     Unit.PartOf = ["hyprland-session.target"];
@@ -81,6 +81,7 @@ in {
     pkgs.gimp
     pkgs.pinta
     pkgs.code-cursor
+    #pkgs-master.antigravity
     #pkgs-unstable.libsForQt5.qt5.qtgraphicaleffects
     #inputs.claude-desktop.packages.${pkgs.system}.claude-desktop # Corrected system reference
     inputs.ignis.packages.x86_64-linux.ignis
@@ -205,7 +206,19 @@ in {
   };
   programs.quickshell = {
     enable = true;
-    package = (pkgs.callPackage ../../pkgs/quickshell.nix {});
+    package = pkgs-unstable.quickshell.overrideAttrs (oldAttrs: {
+      buildInputs = oldAttrs.buildInputs ++ [
+        pkgs-unstable.qt6.qtmultimedia
+        pkgs-unstable.gst_all_1.gstreamer
+        pkgs-unstable.gst_all_1.gst-plugins-base
+        pkgs-unstable.gst_all_1.gst-plugins-good
+        pkgs-unstable.gst_all_1.gst-plugins-bad
+        pkgs-unstable.gst_all_1.gst-plugins-ugly
+        pkgs-unstable.gst_all_1.gst-libav
+        pkgs-unstable.gst_all_1.gst-rtsp-server
+        pkgs-unstable.ffmpeg
+      ];
+    });
     activeConfig = "primary";
     systemd.enable = true;
     systemd.target = "hyprland-session.target";

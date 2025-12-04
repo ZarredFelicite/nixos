@@ -10,6 +10,7 @@
     ../profiles/nginx.nix
     ../profiles/cloud.nix
     ../profiles/printer.nix
+    ../profiles/home-assistant.nix
     #../profiles/ib.nix
   ];
   # home-manager block removed: Handled by individual host configs

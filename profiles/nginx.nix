@@ -87,8 +87,20 @@
       }
       access_log /var/log/nginx/access.log;
     '';
-    virtualHosts =
-      let SSLA = {
+    virtualHosts = {
+      # Configure SSL for service-managed virtual hosts
+      "ttrss.zar.red" = {
+        enableACME = true;
+        forceSSL = true;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+      };
+      "nextcloud.zar.red" = {
+        enableACME = true;
+        forceSSL = true;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+      };
+    } //
+      (let SSLA = {
         enableACME = true;
         forceSSL = true;
         #listen = [ { addr = "0.0.0.0"; port = 2053; ssl = true; } { addr = "[::0]"; port = 2053; ssl = true; } { addr = "0.0.0.0"; port = 8080; } { addr = "[::0]"; port = 8080; }];
@@ -157,13 +169,21 @@
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
-        "jellyfin.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8096";};};
+        "jellyfin.zar.red" = SSL//{
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8096";
+            extraConfig = ''
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Host $http_host;
+            '';
+          };
+        };
         #"cvat.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8082";};};
         # AUTH
-        "nextcloud.zar.red" = SSLA//{locations."= /" = AUTH;};
         "gotify.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app
         "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
-        "ttrss.zar.red" = SSLA//{locations."/" = AUTH;};
         "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};
         "prowlarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9696";};};
         "sonarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8989";};};
@@ -179,6 +199,7 @@
         "pdf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8088";};};
         "mainsail.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8001"; proxyWebsockets = true;};};
         "immich.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:2283";};};
+        "hass.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8123"; proxyWebsockets = true;};};
         #"headscale.zar.red" = SSL//{
         #  locations."/" = {
         #    proxyPass = "http://127.0.0.1:8080";
@@ -236,6 +257,6 @@
         #    '';
         #  };
         #};
-    };
+      });
   };
 }

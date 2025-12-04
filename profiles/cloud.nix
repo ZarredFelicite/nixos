@@ -1,6 +1,6 @@
 { pkgs, config, ... }: {
   services.nextcloud = {
-    package = pkgs.nextcloud30;
+    package = pkgs.nextcloud31;
     hostName = "nextcloud.zar.red";
     https = true;
     home = "/var/lib/nextcloud";

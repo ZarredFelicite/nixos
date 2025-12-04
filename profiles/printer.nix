@@ -55,7 +55,7 @@
     user = "zarred";
     group = "users";
     mutableConfig = true;
-    mutableConfigFolder = "/var/lib/moonraker/config";
+    configDir = "/var/lib/moonraker/config";
     logFile = "/var/lib/moonraker/logs/klipper.log";
     inputTTY = "/run/klipper/tty";
     apiSocket = "/run/klipper/api";

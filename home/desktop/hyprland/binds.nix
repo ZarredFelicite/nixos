@@ -43,8 +43,8 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      "$mod, O, overview:toggle, all"
-      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
+      "$mod CTRL, O, overview:toggle, all"
+      "$mod CTRL SHIFT, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -63,6 +63,7 @@
       "$mod, D, exec, ~/scripts/hyprland/toggle_special.sh stats"
       "$mod, M, exec, ~/scripts/hyprland/toggle_special.sh music"
       "$mod, A, exec, ~/scripts/hyprland/toggle_special.sh reset"
+      "$mod, O, exec, ~/scripts/hyprland/toggle_special.sh obsidian"
       "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox ChatGPT browser-chatgpt"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"

@@ -1,7 +1,7 @@
 { osConfig, config, pkgs, lib, ... }:
 {
   home.packages = [
-    pkgs.mpc-cli # A minimalist command line interface to MPD
+    pkgs.mpc # A minimalist command line interface to MPD
   ];
   services = {
     mpdris2 = {

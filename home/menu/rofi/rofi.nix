@@ -1,7 +1,7 @@
 { pkgs, lib, osConfig, ... }: {
   stylix.targets.rofi.enable = false;
   programs.rofi = {
-    package = pkgs.rofi-wayland;
+    #package = pkgs.rofi-wayland;
     cycle = false;
     location = "center";
     font = lib.mkDefault "IosevkaTerm NFM 16";
@@ -16,6 +16,8 @@
       "filebrowser"
       "recursivebrowser"
       "calc"
+      "nerdy"
+      "games"
       {
         name = "obsidian";
         path = lib.getExe pkgs.rofi-obsidian;
@@ -29,6 +31,8 @@
     plugins = [
       pkgs.rofi-calc # overlay for rofi-wayland
       pkgs.rofi-emoji
+      pkgs.rofi-nerdy
+      pkgs.rofi-games
     ];
   };
   home.packages = [

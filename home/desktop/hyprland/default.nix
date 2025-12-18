@@ -8,7 +8,6 @@ let
   monitor = if osConfig.networking.hostName == "web" then "DP-3" else "eDP-1";
 in {
   imports = [
-    #./autoname-workspaces/hyprland-autoname-workspaces.nix
     ./rules.nix
     ./binds.nix
     ./hyprlock.nix
@@ -16,7 +15,7 @@ in {
   stylix.targets.hyprland.enable = false;
   stylix.targets.hyprlock.enable = false;
   home.packages = [
-    inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
+    inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.vigiland.packages.${pkgs.system}.vigiland
   ];
   services.hyprpaper = {
@@ -154,7 +153,7 @@ in {
         kb_layout = "us";
         repeat_rate = 60;
         repeat_delay = 250;
-        follow_mouse = 2;
+        follow_mouse = 1;
         mouse_refocus = true;
         float_switch_override_focus = 0;
         special_fallthrough = true;

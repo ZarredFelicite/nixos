@@ -32,6 +32,8 @@
       ".opencode"
       ".gemini"
       ".codex"
+      ".tor project"
+      ".antigravity"
       # PERSISTENT .CONF
       ".config/kdeconnect"
       ".config/BraveSoftware"
@@ -66,6 +68,9 @@
       ".config/Upscayl"
       ".config/mpv"
       ".config/streamrip"
+      ".config/comfy-ui"
+      ".config/Antigravity"
+      ".config/rncbc.org" # qpwgraph
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"

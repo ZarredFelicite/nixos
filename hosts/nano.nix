@@ -6,7 +6,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { 
+    extraSpecialArgs = {
       inherit self inputs outputs pkgs-unstable;
     };
     users.zarred = import ../home/hosts/nano.nix;
@@ -161,7 +161,7 @@
         intel-media-driver # LIBVA_DRIVER_NAME=iHD
         # TODO: build fail? intel-ocl
         #vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-        vaapiVdpau
+        libva-vdpau-driver
         libvdpau-va-gl
       ];
     };

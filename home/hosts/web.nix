@@ -66,6 +66,28 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.services.computer-vision = {
+    Unit.Description = "Server for computer vision inference";
+    Service.User = "zarred";
+    Service.ExecStart = "/home/zarred/dev/yolo-server/run.sh";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "5";
+    Service.WorkingDirectory = "/home/zarred/dev/yolo-server";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+  systemd.user.services.speech-enhancement = {
+    Unit.Description = "Server for streaming audio for speech enhancement";
+    Service.User = "zarred";
+    Service.ExecStart = "/run/current-system/sw/bin/nix develop --command ./entry.sh";
+    Service.Restart = "always";
+    Service.RestartSec = "300s";
+    Service.StartLimitIntervalSec = "5";
+    Service.WorkingDirectory = "/home/zarred/dev/speech-enhancement/gtcrn";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   # Placeholder for any home-manager settings absolutely specific to zarred on web
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-web-specific-tool ];

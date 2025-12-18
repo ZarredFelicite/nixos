@@ -12,8 +12,8 @@ pkgs.python3.pkgs.buildPythonPackage rec {
   };
   propagatedBuildInputs = with pkgs; [
     python3Packages.setuptools
-    python3Packages.setuptools_scm
-    python3Packages.paho-mqtt_2
+    python3Packages.setuptools-scm
+    python3Packages.paho-mqtt
     python3Packages.pillow
   ];
   #nativeBuildInputs = with pkgs; [ pkg-config ];

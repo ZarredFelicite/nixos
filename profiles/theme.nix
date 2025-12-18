@@ -5,7 +5,7 @@
       nerd-fonts.iosevka-term
       # font-awesome already in nerd-fonts
       noto-fonts
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       material-symbols
     ];
   };
@@ -54,7 +54,7 @@
       sansSerif = config.stylix.fonts.monospace;
       serif = config.stylix.fonts.monospace;
       emoji = {
-        package = pkgs.noto-fonts-emoji;
+        package = pkgs.noto-fonts-color-emoji;
         name = "Noto Color Emoji";
       };
     };

@@ -20,10 +20,11 @@
     efi.canTouchEfiVariables = true;
   };
   boot.kernel.sysctl."fs.file-max" = 524288;
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=10s
-  '';
-
+  systemd.settings.Manager = {
+    DefaultIOAccounting = true;
+    DefaultIPAccounting = true;
+    DefaultTimeoutStopSec = 10;
+  };
   systemd.network = {
     #wait-online = {
     #  anyInterface = true;
@@ -69,7 +70,7 @@
   #  '';
   #};
   services.mullvad-vpn = {
-    enable = true;
+    enable = false;
     package = pkgs.mullvad-vpn;
   };
   networking = {
@@ -348,7 +349,7 @@
       sops
       direnv
       inotify-tools
-      inputs.rose-pine-hyprcursor.packages.${pkgs.hostPlatform.system}.default
+      inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
       nodejs
       openjpeg
       impala

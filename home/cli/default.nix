@@ -67,7 +67,7 @@ in {
     pkgs.yj # Convert YAML <=> TOML <=> JSON <=> HCL
     pkgs.bc # GNU software calculator
     pkgs.ripdrag # An application that lets you drag and drop files from and to the terminal
-    pkgs.du-dust # du + rust = dust. Like du but more intuitive
+    pkgs.dust # du + rust = dust. Like du but more intuitive
     pkgs.duf # Disk Usage/Free Utility
     pkgs.ttyplot # A simple general purpose plotting utility for tty with data input from stdin
     pkgs.grc # Generic text colouriser
@@ -122,7 +122,7 @@ in {
     # ai (CLI focus)
     # TODO: broken - pkgs-unstable.aider-chat # AI pair programming in your terminal
     pkgs-unstable.claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
-    pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
+    pkgs.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
     #pkgs.opencode

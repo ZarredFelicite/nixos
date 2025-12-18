@@ -23,7 +23,8 @@
       # system tools
       pkgs.gtk3
       pkgs.helvum # A GTK patchbay for pipewire
-      pkgs.pavucontrol
+      pkgs-unstable.hyprpwcenter
+      pkgs.qpwgraph # Qt graph manager for PipeWire, similar to QjackCtl
       pkgs.libva-utils # Often a dependency for GUI media players too
 
       # media
@@ -41,7 +42,7 @@
       pkgs.piper-tts # A fast, local neural text to speech system
       upscayl-wrapped # Free and Open Source AI Image Upscaler (wrapped with NVIDIA EGL + Wayland)
       pkgs.video2x
-      pkgs.openai-whisper-cpp # Port of OpenAI's Whisper model in C/C++
+      pkgs.whisper-cpp # Port of OpenAI's Whisper model in C/C++
 
       # android dev
       pkgs.android-studio

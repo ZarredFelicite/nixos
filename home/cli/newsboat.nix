@@ -14,6 +14,7 @@
       jobs = "tags # \"jobs\"";
       tech = "tags # \"tech\" and tags !# \"yt\"";
       news = "tags # \"news\"";
+      software = "tags # \"software\"";
       ai = "tags # \"ai\"";
       shopping = "tags # \"shopping\"";
       linux = "tags # \"linux\"";
@@ -128,6 +129,9 @@
       { url = "https://www.ycombinator.com/blog/rss"; tags = [ "!" "~YC" "tech" ]; }
       { url = "https://www.theverge.com/rss/index.xml"; tags = [ "!" "~Verge" "tech" ]; }
       { url = "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"; tags = [ "!" "~Verge-AI" "tech" ]; }
+
+      # software
+      { url = "https://github.com/hyprwm/Hyprland/releases.atom"; tags = [ "!" "~Hyprland" "software" ]; }
 
       # ai
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }

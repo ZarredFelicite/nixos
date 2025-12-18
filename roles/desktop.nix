@@ -142,13 +142,12 @@ in {
     avahi.enable = true;
     avahi.nssmdns4 = true;
     avahi.openFirewall = true;
-    xserver.desktopManager.gnome.enable = false;
+    desktopManager.gnome.enable = false;
     #displayManager.session = [
     #   { name = "Desktop"; manage = "desktop"; start = "Hyprland"; }
     #];
     greetd = {
       enable = true;
-      vt = 1; # clean login screen, no startup logs
       restart = false;
       settings = rec {
         initial_session = {
@@ -157,7 +156,7 @@ in {
 	      };
         default_session = {
           command = ''
-            ${pkgs.greetd.tuigreet}/bin/tuigreet \
+            ${pkgs.tuigreet}/bin/tuigreet \
               --time \
               --asterisks \
               --cmd ${hyprland}/bin/Hyprland \
@@ -173,15 +172,15 @@ in {
       };
     };
     logind = {
-      suspendKey = "suspend";
-      suspendKeyLongPress = "reboot";
-      powerKey = "suspend";
-      powerKeyLongPress = "reboot";
-      lidSwitch = "suspend";
-      extraConfig = ''
-        InhibitDelayMaxSec=30
-        HoldoffTimeoutSec=10
-      '';
+      settings.Login = {
+        HandleSuspendKey = "suspend";
+        HandleSuspendKeyLongPress = "reboot";
+        HandlePowerKey = "suspend";
+        HandlePowerKeyLongPress = "reboot";
+        HandleLidSwitch = "suspend";
+        InhibitDelayMaxSec = 30;
+        HoldoffTimeoutSec = 10;
+      };
     };
     pipewire = {
       enable = true;

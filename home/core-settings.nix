@@ -48,48 +48,47 @@
   programs.git = {
     enable = true;
     lfs.enable = true;
-    userName = "ZarredFelicite";
-    userEmail = "zarred.f@gmail.com";
+    settings.user.name = "ZarredFelicite";
+    settings.user.email = "zarred.f@gmail.com";
     signing = {
       format = "openpgp";
       key = "0xD276AC444633E146";
       signByDefault = true;
     };
-    extraConfig = {
+    settings = {
       core = {
         editor ="nvim";
       };
     };
-    delta = {
-      # https://dandavison.github.io/delta/introduction.html
-      enable = true;
-      options = {
-        dark = true;
-        hyperlinks = true; # makes file paths clickable in the terminal
-        hyperlinks-file-link-format = "vscode://file/{path}:{line}"; # opens links in vscode
-        features = "decorations interactive";
-        #interactive = {
-        #  keep-plus-minus-markers = false;
-        #};
-        minus-style = "red bold ul \"#ffeeee\"";
-        decorations = {
-          commit-decoration-style = "bold yellow box ul";
-          file-style = "bold yellow ul";
-          file-decoration-style = "none";
-        };
-        whitespace-error-style = "22 reverse";
-        #side-by-side = true;
-        line-numbers = true;
-      };
-    };
   };
 
+  programs.delta = {
+    # https://dandavison.github.io/delta/introduction.html
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      dark = true;
+      hyperlinks = true; # makes file paths clickable in the terminal
+      hyperlinks-file-link-format = "vscode://file/{path}:{line}"; # opens links in vscode
+      features = "decorations interactive";
+      #interactive = {
+      #  keep-plus-minus-markers = false;
+      #};
+      minus-style = "red bold ul \"#ffeeee\"";
+      decorations = {
+        commit-decoration-style = "bold yellow box ul";
+        file-style = "bold yellow ul";
+        file-decoration-style = "none";
+      };
+      whitespace-error-style = "22 reverse";
+      #side-by-side = true;
+      line-numbers = true;
+    };
+  };
   programs.ssh = {
     enable = true;
     #controlMaster = "yes";
     #controlPersist = "30m";
-    userKnownHostsFile = "~/.ssh/known_hosts";
-    addKeysToAgent = "yes";
     matchBlocks = {
       rpicam = {
         hostname = "rpicam";
@@ -98,6 +97,8 @@
           RequestTTY = "yes";
           RemoteCommand = "export TERM=xterm-256color; tmux new -A -s rpicam";
         };
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
       };
       rpi = {
         hostname = "10.131.3.83";
@@ -106,6 +107,8 @@
           RequestTTY = "yes";
           RemoteCommand = "tmux new -A -s horus";
         };
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
       };
       tmux-sankara = {
         hostname = "sankara";
@@ -116,6 +119,8 @@
           RequestTTY = "yes";
           RemoteCommand = "tmux new -A -s sankara_remote";
         };
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
       };
       home-sankara = {
         hostname = "sankara";
@@ -126,6 +131,8 @@
           RequestTTY = "yes";
           RemoteCommand = "tmuxinator home";
         };
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
       };
       tmux-web = {
         hostname = "web";
@@ -136,6 +143,8 @@
           RequestTTY = "yes";
           RemoteCommand = "tmux new -A -s web_remote";
         };
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
       };
     };
   };

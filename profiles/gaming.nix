@@ -50,8 +50,10 @@
     #gamemode
     libva
     libva-utils
-    protonup
-  ];
+    protonup-ng
+
+    (pkgs.callPackage ../pkgs/rgd {}) # Installed game detection utility for Linux. Built to be simple and scriptable.
+   ];
   #environment.sessionVariables.STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/zarred/.steam/root/compatibilitytools.d";
   programs.gamescope = {
     # NOTE: Gamescope Compositor / "Boot to Steam Deck"

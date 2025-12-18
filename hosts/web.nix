@@ -126,7 +126,7 @@
   };
   swapDevices = [{
     device = "/swap/swapfile";
-    size = 131136;
+    size = 65568;
   }];
   environment.variables = {
     # Necessary to correctly enable va-api (video codec hardware
@@ -175,7 +175,7 @@
     enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     nvidia = {
-      open = true;
+      open = false;
       nvidiaSettings = true;
       #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
       #  version = "580.95.05";
@@ -202,7 +202,7 @@
       enable = true;
       enable32Bit = true;
       extraPackages = with pkgs; [
-        vaapiVdpau
+        libva-vdpau-driver
         libvdpau-va-gl
         nvidia-vaapi-driver
       ];

@@ -20,7 +20,7 @@ in {
     ./notifications.nix
     ./waybar
     ./vscode.nix
-    ../../modules/quickshell.nix
+    #../../modules/quickshell.nix
     inputs.ags.homeManagerModules.default
   ];
 

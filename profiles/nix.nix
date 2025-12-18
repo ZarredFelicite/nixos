@@ -75,11 +75,11 @@
     overlays = [
       inputs.nur.overlays.default
       #inputs.nix-vscode-extensions.overlays.default
-      (final: prev: rec {
-        rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
+      #(final: prev: rec {
+      #  rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };
       # NOTE: OBSOLETE
         #bindfs = pkgs.callPackage ../pkgs/bindfs {} ;
-      })
+      #})
       # NOTE: OBSOLETE
       #(_: prev: {
       #  tailscale = prev.tailscale.overrideAttrs (old: {

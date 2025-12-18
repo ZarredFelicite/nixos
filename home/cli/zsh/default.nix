@@ -8,7 +8,7 @@
   ];
   # TODO: investigate https://github.com/marlonrichert/zsh-autocomplete
   programs.zsh = {
-    dotDir = ".config/zsh";
+    dotDir = "${config.xdg.configHome}/zsh";
     autosuggestion.enable = true;
     enableCompletion = false; # enables https://github.com/nix-community/nix-zsh-completions which significantly slows zsh init
     syntaxHighlighting.enable = true;

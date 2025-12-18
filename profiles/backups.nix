@@ -24,6 +24,9 @@
         "/home/zarred/.cache"
         "/home/zarred/games"
         "/home/zarred/downloads/games"
+        "/home/zarred/.local/share/micromamba"
+        "venv"
+        ".env"
       ];
       timerConfig = {
         OnCalendar = "daily";

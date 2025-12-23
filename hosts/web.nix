@@ -13,33 +13,24 @@
     users.zarred = import ../home/hosts/web.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
+  nixpkgs.overlays = [
+    (final: prev: {
+      linux-firmware = pkgs-unstable.linux-firmware;
+    })
+  ];
   networking.hostName = "web";
   services.syncthing.enable = true;
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs-unstable.linuxPackages_latest;
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
-    kernelParams = [
-    #  #"SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
-    #  "initcall_debug"
-    #  "log_buf_len=16M"
-    #  "nvidia-drm.fbdev=1"
-    #  "nvidia-drm.modeset=1"
-    #  "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-      #"nvidia.NVreg_UsePageAttributeTable=1"
-      #''nvidia.NVreg_RegistryDwords="OverrideMaxPerf=0x1"''
-    ];
-    #kernelPatches = [
-    #  # Fix the /proc/net/tcp seek issue
-    #  # Impacts tailscale: https://github.com/tailscale/tailscale/issues/16966
-    #  {
-    #  name = "proc: fix missing pde_set_flags() for net proc files";
-    #  patch = pkgs.fetchurl {
-    #    name = "fix-missing-pde_set_flags-for-net-proc-files.patch";
-    #    url = "https://patchwork.kernel.org/project/linux-fsdevel/patch/20250821105806.1453833-1-wangzijie1@honor.com/raw/";
-    #    hash = "sha256-DbQ8FiRj65B28zP0xxg6LvW5ocEH8AHOqaRbYZOTDXg=";
-    #  };
-    #  }
-    #];
+    kernelParams = [ "modprobe.blacklist=nova,nova_core" "rd.driver.blacklist=nova,nova_core" "nova.modeset=0" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" ];
+    blacklistedKernelModules = [ "nouveau" "nova" "nova_core" ];
+    extraModprobeConfig = ''
+      blacklist nova
+      blacklist nova_core
+      install nova /bin/true
+      install nova_core /bin/true
+    '';
     #kernelPatches = [ {
     #  name = "sleepdebug-config";
     #  patch = null;
@@ -54,10 +45,8 @@
     #    KPROBES_ON_FTRACE y
     #  '';
     #} ];
-    #blacklistedKernelModules = ["nouveau"];
     #kernel.sysctl = { "vm.swappiness" = 90;};
     extraModulePackages = [ config.boot.kernelPackages.ddcci-driver];
-    #extraModulePackages = [ pkgs.linuxPackages_cachyos.ddcci-driver ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
@@ -133,26 +122,24 @@
     # acceleration). If this isn't set, the libvdpau backend will be
     # picked, and that one doesn't work with most things, including
     # Firefox.
-    LIBVA_DRIVER_NAME = "nvidia";
+    #LIBVA_DRIVER_NAME = "nvidia";
     # Required to run the correct GBM backend for nvidia GPUs on wayland
-    GBM_BACKEND = "nvidia-drm";
-    GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
-    WLR_BACKEND = "vulkan";
+    #GBM_BACKEND = "nvidia-drm";
+    #GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
+    #WLR_BACKEND = "vulkan";
     # Apparently, without this nouveau may attempt to be used instead
     # (despite it being blacklisted)
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
     # Required to use va-api it in Firefox. See
     # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
     MOZ_DISABLE_RDD_SANDBOX = "1";
     # It appears that the normal rendering mode is broken on recent
     # nvidia drivers:
     # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
-    NVD_BACKEND = "direct";
+    #NVD_BACKEND = "direct";
     # Required for firefox 98+, see:
     # https://github.com/elFarto/nvidia-vaapi-driver#firefox
     EGL_PLATFORM = "wayland";
-    #__EGL_VENDOR_LIBRARY_FILENAMES = "${pkgs.mesa.outPath}/share/glvnd/egl_vendor.d/50_mesa.json";
-    VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
     NIXOS_OZONE_WL = "1";
   };
   powerManagement = {
@@ -160,7 +147,7 @@
     cpuFreqGovernor = "powersave";
   };
   services.power-profiles-daemon.enable = true;
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = ["nvidia" "amdgpu"];
   services.hardware.openrgb = {
     package = pkgs-unstable.openrgb;
     enable = true;
@@ -175,38 +162,27 @@
     enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     nvidia = {
-      open = false;
+      open = true;
       nvidiaSettings = true;
-      #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      #  version = "580.95.05";
-      #  sha256_64bit = "sha256-hJ7w746EK5gGss3p8RwTA9VPGpp2lGfk5dlhsv4Rgqc=";
-      #  sha256_aarch64 = "sha256-zLRCbpiik2fGDa+d80wqV3ZV1U1b4lRjzNQJsLLlICk=";
-      #  openSha256 = "sha256-RFwDGQOi9jVngVONCOB5m/IYKZIeGEle7h0+0yGnBEI=";
-      #  settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
-      #  persistencedSha256 = "sha256-QCwxXQfG/Pa7jSTBB0xD3lsIofcerAWWAHKvWjWGQtg=";
-      #};
-      #package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      #  version = "570.86.16"; # use new 570 drivers
-      #  sha256_64bit = "sha256-RWPqS7ZUJH9JEAWlfHLGdqrNlavhaR1xMyzs8lJhy9U=";
-      #  openSha256 = "sha256-DuVNA63+pJ8IB7Tw2gM4HbwlOh1bcDg2AN2mbEU9VPE=";
-      #  settingsSha256 = "sha256-9rtqh64TyhDF5fFAYiWl3oDHzKJqyOW3abpcf2iNRT8=";
-      #  usePersistenced = false;
-      #};
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;
-      videoAcceleration = true;
+      videoAcceleration = false;
     };
+    amdgpu.initrd.enable = true;
+    amdgpu.opencl.enable = true;
+    amdgpu.overdrive.enable = true;
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [
+      package = pkgs-unstable.mesa.drivers;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
+      extraPackages = with pkgs-unstable; [
         libva-vdpau-driver
         libvdpau-va-gl
-        nvidia-vaapi-driver
       ];
-      extraPackages32 = with pkgs.pkgsi686Linux; [nvidia-vaapi-driver];
+      #extraPackages32 = with pkgs-unstable.pkgsi686Linux; [ ];
     };
     openrazer = {
       enable = false;
@@ -214,34 +190,38 @@
       devicesOffOnScreensaver = true;
     };
   };
+  services.lact.enable = true;
+  systemd.packages = with pkgs; [ lact ];
+  systemd.services.lactd.wantedBy = ["multi-user.target"];
   environment.systemPackages = [
     pkgs.polychromatic
+    pkgs.lact
   ];
   environment.etc.machine-id.text = "b7608440568f4ffb8d26dcadf1eb28d6";
-  environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.txt".text = ''
-    {
-        "rules": [
-            {
-                "pattern": {
-                    "feature": "procname",
-                    "matches": "Hyprland"
-                },
-                "profile": "Limit Free Buffer Pool On Wayland Compositors"
-            }
-        ],
-        "profiles": [
-            {
-                "name": "Limit Free Buffer Pool On Wayland Compositors",
-                "settings": [
-                    {
-                        "key": "GLVidHeapReuseRatio",
-                        "value": 1
-                    }
-                ]
-            }
-        ]
-    }
-'';
+  #environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.txt".text = ''
+  #  {
+  #      "rules": [
+  #          {
+  #              "pattern": {
+  #                  "feature": "procname",
+  #                  "matches": "Hyprland"
+  #              },
+  #              "profile": "Limit Free Buffer Pool On Wayland Compositors"
+  #          }
+  #      ],
+  #      "profiles": [
+  #          {
+  #              "name": "Limit Free Buffer Pool On Wayland Compositors",
+  #              "settings": [
+  #                  {
+  #                      "key": "GLVidHeapReuseRatio",
+  #                      "value": 1
+  #                  }
+  #              ]
+  #          }
+  #      ]
+  #  }
+  #'';
   systemd.services.nvidia-oc = {
     wantedBy = [ "multi-user.target" ];
     description = "Set nvidia GPU settings with python wrapper of NVML";
@@ -250,7 +230,7 @@
       User = "root";
       Group = "root";
       ExecStart = pkgs.writers.writePython3 "nvidia-oc" {
-        libraries = [ pkgs.python312Packages.nvidia-ml-py pkgs.python312Packages.pynvml ];
+        libraries = [ pkgs.python313Packages.nvidia-ml-py pkgs.python313Packages.pynvml ];
         flakeIgnore = [ "E265" "E225" ];
       }
       ''

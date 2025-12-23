@@ -22,14 +22,6 @@ pkgs.rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-UqyRlcrvn0G7H4XeVKRPmFBx2IDdAo/1YyZlKxvpCxI=";
 
-  #   # libs are loaded dynamically; make make sure we'll find them
-  #  postFixup = with pkgs; ''
-  #    patchelf \
-  #      --add-needed ${xorg.libX11}/lib/libX11.so \
-  #      --add-needed ${wayland}/lib/libwayland-client.so \
-  #      --add-needed ${libGL}/lib/libEGL.so \
-  #      $out/bin/stl-thumb
-  #  '';
   postInstall = ''
     mkdir $out/include
     cp libstl_thumb.h $out/include
@@ -39,24 +31,34 @@ pkgs.rustPlatform.buildRustPackage rec {
     cp stl-thumb-mime.xml $out/mime/packages/stl-thumb-mime.xml
   '';
 
+  postFixup = ''
+    wrapProgram $out/bin/stl-thumb \
+      --prefix LD_LIBRARY_PATH : /run/opengl-driver/lib:${lib.makeLibraryPath [ pkgs.libGL ]}
+  '';
+
   meta = with lib; {
     description = "Thumbnail generator for STL files";
     homepage = "https://github.com/unlimitedbacon/stl-thumb";
     license = licenses.mit;
     maintainers = [];
   };
+
   buildInputs = with pkgs; [
     fontconfig
     libX11
     expat
+    libGL
   ];
+
   propagatedBuildInputs = [
     libXcursor
     libXrandr
     libXi
   ];
+
   nativeBuildInputs = with pkgs; [
     cmake
     pkg-config
+    makeWrapper
   ];
 }

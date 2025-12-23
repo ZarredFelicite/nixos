@@ -104,7 +104,7 @@
                 owner = "jdepoix";
                 repo = "youtube-transcript-api";
                 tag = "v1.1.0";
-                hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA=";
+                hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA="; # NOTE: UPDATE
               };
               doCheck = false;
             });

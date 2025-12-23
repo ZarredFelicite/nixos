@@ -1,18 +1,17 @@
 { pkgs, pkgs-unstable, inputs, ... }:
 let
   onebar-css = builtins.readFile( builtins.fetchGit {
-      # NOTE: UPDATE
       url = "https://git.gay/freeplay/Firefox-Onebar";
-      rev = "78789cadd56cdf0d273ace47e3ac8b6f7db94eef";
+      rev = "78789cadd56cdf0d273ace47e3ac8b6f7db94eef"; # NOTE: UPDATE
     } + "/onebar.css" );
   # Touch focused css (outdated)
   alpha-css = builtins.readFile( builtins.fetchGit {
       url = "https://github.com/Tagggar/Firefox-Alpha";
-      rev = "7d4ad9d7b052a25d4ea70b4e19a5da6359ea6b97";
+      rev = "7d4ad9d7b052a25d4ea70b4e19a5da6359ea6b97"; # NOTE: UPDATE
     } + "/chrome/userChrome.css" );
   onefox-css = builtins.readFile( builtins.fetchGit {
       url = "https://github.com/Perseus333/One-Fox";
-      rev = "41765dfdb5e0ba15d847585320ee70edb0c7b422";
+      rev = "bb476da749332942c6739e04bec64efea2642d18"; # NOTE: UPDATE
     } + "/chrome/userChrome.css" );
 in {
   imports = [
@@ -49,7 +48,7 @@ in {
           #bpc-pkg = bypass-paywalls-clean.override rec {
           #  version = "4.0.7.0";
           #  url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
-          #  sha256 = "sha256-c9IWMgkpk21nItNpdscs+aCEzmvlrFSNeFr3MepV/c8=";
+          #  sha256 = "sha256-c9IWMgkpk21nItNpdscs+aCEzmvlrFSNeFr3MepV/c8="; # NOTE: UPDATE
           #}; in [
           #bpc-pkg
           ublock-origin
@@ -81,7 +80,8 @@ in {
         userChrome = onebar-css;
         extraConfig = builtins.readFile(builtins.fetchGit {
           url = "https://codeberg.org/Narsil/user.js";
-          rev = "42988c09080695802c4fdbe5d3d9fa1a01315c2a"; }
+          rev = "b4455ee737bb31c36d6bb26cf19cf8d221a585ff"; # NOTE: UPDATE
+        }
           + "/desktop/user.js") ;
       };
       tracking = {
@@ -100,10 +100,6 @@ in {
           "browser.urlbar.maxRichResults" = 0;
           "browser.urlbar.clickSelectsAll" = true;
         };
-          #extraConfig = builtins.readFile(builtins.fetchGit {
-          #  url = "https://codeberg.org/Narsil/user.js";
-          #  rev = "42988c09080695802c4fdbe5d3d9fa1a01315c2a"; }
-          #  + "/desktop/user.js") ;
       };
       onefox = {
         id = 4;
@@ -112,10 +108,6 @@ in {
         settings = {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
-          #extraConfig = builtins.readFile(builtins.fetchGit {
-          #  url = "https://codeberg.org/Narsil/user.js";
-          #  rev = "42988c09080695802c4fdbe5d3d9fa1a01315c2a"; }
-          #  + "/desktop/user.js") ;
       };
     };
   };

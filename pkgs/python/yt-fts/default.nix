@@ -9,7 +9,7 @@ let
       owner = "glut23";
       repo = pname;
       rev = "${version}";
-      sha256 = "sha256-rsxhZ/O/XAiiQZqdsAfCBg+cdP8Hn56EPbZARkKamdA=";
+      sha256 = "sha256-rsxhZ/O/XAiiQZqdsAfCBg+cdP8Hn56EPbZARkKamdA="; # NOTE: UPDATE
     };
     pythonRelaxDeps = true;
     propagatedBuildInputs = with pkgs.python3Packages; [
@@ -19,13 +19,13 @@ let
 in
 pkgs.python3.pkgs.buildPythonPackage rec {
   pname = "yt-fts";
-  version = "0.1.57";
+  version = "0.1.62";
   format = "pyproject";
   src = pkgs.fetchFromGitHub {
     owner = "NotJoeMartinez";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-447dGEAE7JqJZ5u+1UA9DwHldBEm6UkV7RSG5AQ2nzc=";
+    sha256 = "6z//Oi0Sz40fSffFE7kPCCuSz5xiPe71bWBEF+XZZDg="; # NOTE: UPDATE
   };
   pythonRelaxDeps = true;
   propagatedBuildInputs = with pkgs.python3Packages; [

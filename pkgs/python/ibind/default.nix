@@ -17,11 +17,11 @@ pkgs.python3.pkgs.buildPythonPackage rec {
   #  owner = "Voyz";
   #  repo = "ibind";
   #  tag = "v${version}";
-  #  hash = "sha256-Ymv9UU/dhzaG9ae4D7Wm5YDQp4ie0poivU5IxvaC3SE=";
+  #  hash = "sha256-Ymv9UU/dhzaG9ae4D7Wm5YDQp4ie0poivU5IxvaC3SE="; # NOTE: UPDATE
   #};
   src = pkgs.python3.pkgs.fetchPypi {
     inherit pname version;
-    sha256 = "sha256-UT3eElyPCYbEkudUs/Q4iVFQ7yGunk40YVzADbcL9Z4=";
+    sha256 = "sha256-UT3eElyPCYbEkudUs/Q4iVFQ7yGunk40YVzADbcL9Z4="; # NOTE: UPDATE
   };
 
 

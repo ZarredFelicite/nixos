@@ -9,7 +9,7 @@ let
       owner = "soywod";
       repo = pname;
       rev = version;
-      sha256 = "sha256-ScepvT0HWkESiItz0367W9xQ4PsqPwiH9EFtjfuv4PA=";
+      sha256 = "sha256-ScepvT0HWkESiItz0367W9xQ4PsqPwiH9EFtjfuv4PA="; # NOTE: UPDATE
     };
     checkPhase = "";
     cargoHash = "sha256-rOMJLXuEhyxXNdcoxlTIMulYtNYgE4RzhwPwXDJN8iI=";

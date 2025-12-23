@@ -17,8 +17,8 @@ buildNpmPackage {
     repo = "gemini-cli";
     # Currently there's no release tag, use the `package-lock.json` to see
     # what's the latest version
-    rev = "v0.1.7";
-    hash = "sha256-DAenod/w9BydYdYsOnuLj7kCQRcTnZ81tf4MhLUug6c=";
+    rev = "v0.1.7"; # NOTE: UPDATE
+    hash = "sha256-DAenod/w9BydYdYsOnuLj7kCQRcTnZ81tf4MhLUug6c="; # NOTE: UPDATE
   };
 
   npmDepsHash = "sha256-otogkSsKJ5j1BY00y4SRhL9pm7CK9nmzVisvGCDIMlU=";

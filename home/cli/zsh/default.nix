@@ -67,8 +67,8 @@
         src = pkgs.fetchFromGitHub {
           owner = "Aloxaf";
           repo = "fzf-tab";
-          rev = "c2b4aa5ad2532cca91f23908ac7f00efb7ff09c9";
-          sha256 = "sha256-gvZp8P3quOtcy1Xtt1LAW1cfZ/zCtnAmnWqcwrKel6w=";
+          rev = "fac145167f7ec1861233c54de0c8900b09c650fe"; # NOTE: UPDATE
+          sha256 = "1Ior+/9e+M+Fc1u0uq5HhknlGRS96q7tazhEE6rmx9Y="; # NOTE: UPDATE
         };
       }
       #{
@@ -77,8 +77,8 @@
       #  src = pkgs.fetchFromGitHub {
       #    owner = "zsh-users";
       #    repo = "zsh-autosuggestions";
-      #    rev = "v0.4.0";
-      #    sha256 = "0z6i9wjjklb4lvr7zjhbphibsyx51psv50gm07mbb0kj9058j6kc";
+      #    rev = "v0.4.0"; # NOTE: UPDATE
+      #    sha256 = "0z6i9wjjklb4lvr7zjhbphibsyx51psv50gm07mbb0kj9058j6kc"; # NOTE: UPDATE
       #  };
       #}
       { name = "functions"; file = "./plugins/functions.sh"; src = ./plugins;}
@@ -89,8 +89,8 @@
         src = pkgs.fetchFromGitHub {
           owner = "Freed-Wu";
           repo = "fzf-tab-source";
-          rev = "b1a236e34d68a3f76c20d9035679a3ec8bfa325d";
-          sha256 = "sha256-tGCpEfbCh2qzHWMIr6zLokjS9g9cGZ78XIXxA1ptWvk=";
+          rev = "825d7130c559aab84b1635499c027e392ddd707b"; # NOTE: UPDATE
+          sha256 = "N4fxH92q0fm8fDAHqCkpKxBARddcEBZR5YY/iRG9LC4="; # NOTE: UPDATE
         };
       }
       {
@@ -98,15 +98,22 @@
         src = pkgs.fetchFromGitHub {
           owner = "reegnz";
           repo = "jq-zsh-plugin";
-          rev = "e61804e35a593ada9c4d23ee5c957d08974ac382";
-          sha256 = "0x64g0sr4j6kkbnr8hqjgnpbasazljppx612zihgdisc6b074jk0";
+          rev = "3aa96cc33a260ad4495d703da0fc6528110e6475"; # NOTE: UPDATE
+          sha256 = "sha256-NVUR+CgJ4fk1b+pAJjel/jDElsqAtBEJNWoatovRcG8="; # NOTE: UPDATE
         };
+        # INFO: USAGE
+        # type out a command that you expect to produce json on its standard output
+        # press alt + j
+        # start typing jq expression and watch it being evaluated in real time (like a true REPL!)
+        # use up/down and hit tab to select one of the suggestions
+        # or type out a jq query on your own
+        # press enter, and the jq expression is appended to your initial command!
       }
       #{
       #  src = pkgs.fetchgit {
       #    url = "https://github.com/zsh-users/zsh-syntax-highlighting";
-      #    rev = "1386f1213eb0b0589d73cd3cf7c56e6a972a9bfd";
-      #    sha256 = "1sykb0a8jwndrdf5sfy0mi0j763rcyli62w7h4zd0zcwwkckac7a";
+      #    rev = "1386f1213eb0b0589d73cd3cf7c56e6a972a9bfd"; # NOTE: UPDATE
+      #    sha256 = "1sykb0a8jwndrdf5sfy0mi0j763rcyli62w7h4zd0zcwwkckac7a"; # NOTE: UPDATE
       #  };
       #};
     ];

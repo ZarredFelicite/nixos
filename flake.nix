@@ -14,6 +14,7 @@
     sops-nix.url = "github:Mic92/sops-nix";
 
     rose-pine-hyprcursor = { url = "github:ndom91/rose-pine-hyprcursor"; };
+    flake-compat.url = "github:nix-community/flake-compat";
     vigiland.url = "github:jappie3/vigiland";
     ignis = { url = "github:ignis-sh/ignis"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     astal.url = "github:aylur/astal";
@@ -48,27 +49,7 @@
       #};
     in {
       inherit lib;
-      nixpkgs.overlays = [
-        inputs.nixpkgs-wayland.overlay
-        (import ./overlays)
-        (self: super: {
-          nixos-option = let
-            flake-compact = super.fetchFromGitHub {
-              owner = "edolstra";
-              repo = "flake-compat";
-              rev = "12c64ca55c1014cdc1b16ed5a804aa8576601ff2";
-              sha256 = "sha256-hY8g6H2KFL8ownSiFeMOjwPC8P0ueXpCVEbxgda3pko=";
-            };
-            prefix = ''(import ${flake-compact} { src = /etc/nixos; }).defaultNix.nixosConfigurations.\$(hostname)'';
-          in super.runCommandNoCC "nixos-option" { buildInputs = [ super.makeWrapper ]; } ''
-            makeWrapper ${super.nixos-option}/bin/nixos-option $out/bin/nixos-option \
-              --add-flags --config_expr \
-              --add-flags "\"${prefix}.config\"" \
-              --add-flags --options_expr \
-              --add-flags "\"${prefix}.options\""
-          '';
-        })
-      ];
+      nixpkgs.overlays = (import ./overlays inputs);
 
       nixosConfigurations = {
         web = lib.nixosSystem {
@@ -79,9 +60,9 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-      	  modules = [
+       	  modules = [
             ({ nixpkgs.overlays = [
-              (import ./overlays/omniverse.nix )
+              (import ./overlays/omniverse.nix { })
             ]; })
             inputs.stylix.nixosModules.stylix
             ./hosts/web.nix
@@ -96,9 +77,9 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-      	  modules = [
+       	  modules = [
             ({ nixpkgs.overlays = [
-              (import ./overlays/omniverse.nix )
+              (import ./overlays/omniverse.nix { })
             ]; })
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix

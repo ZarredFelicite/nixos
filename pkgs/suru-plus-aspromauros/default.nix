@@ -17,8 +17,8 @@ stdenvNoCC.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "gusbemacbe";
     repo = "suru-plus-aspromauros";
-    rev = "v${version}";
-    sha256 = "sha256-TLXicDAb7VmzjwCsKtNTnSDq8Z8P1ZBJTMcghF0r0gk=";
+    rev = "v${version}"; # NOTE: UPDATE
+    sha256 = "sha256-TLXicDAb7VmzjwCsKtNTnSDq8Z8P1ZBJTMcghF0r0gk="; # NOTE: UPDATE
   };
 
   nativeBuildInputs = [

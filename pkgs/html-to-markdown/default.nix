@@ -14,8 +14,8 @@ buildGoModule {
   src = fetchFromGitHub {
     owner = "JohannesKaufmann";
     repo = "html-to-markdown";
-    rev = "v${version}";
-    hash = "sha256-3Ww28RXFP9Su2+MJYufCCAjseWaF2JgEoigwY93KcqM=";
+    rev = "v${version}"; # NOTE: UPDATE
+    hash = "sha256-3Ww28RXFP9Su2+MJYufCCAjseWaF2JgEoigwY93KcqM="; # NOTE: UPDATE
   };
 
   vendorHash = "sha256-nMb4moiTMzLSWfe8JJwlH6H//cOHbKWfnM9SM366ey0=";

@@ -5,14 +5,6 @@ with lib; let
     Unit.After = ["hyprland-session.target"];
     Install.WantedBy = ["hyprland-session.target"];
   };
-  #cliphist = (pkgs.cliphist.overrideAttrs (_old: {
-  #  src = pkgs.fetchFromGitHub {
-  #    owner = "sentriz";
-  #    repo = "cliphist";
-  #    rev = "v0.6.1";
-  #    sha256 = "sha256-tImRbWjYCdIY8wVMibc5g5/qYZGwgT9pl4pWvY7BDlI=";
-  #  };
-  #}));
 in {
   imports = [
     ./hyprland
@@ -66,6 +58,7 @@ in {
     pkgs.nb
     pkgs-unstable.obsidian
     pkgs.orca-slicer
+    (pkgs.callPackage ../../pkgs/stl-thumb.nix {} )
     pkgs.vtk
     pkgs.xdg-utils
     pkgs.glib

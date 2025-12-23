@@ -7,8 +7,8 @@ pkgs.rustPlatform.buildRustPackage rec {
   src = pkgs.fetchFromGitHub {
     owner = "Rolv-Apneseth";
     repo = pname;
-    rev = "v${version}";
-    sha256 = "sha256-wnUn/MmbXTvwxF4QiWzcLWNPT+XUoKbFwl0l+v51CSE=";
+    rev = "v${version}"; # NOTE: UPDATE
+    sha256 = "sha256-wnUn/MmbXTvwxF4QiWzcLWNPT+XUoKbFwl0l+v51CSE="; # NOTE: UPDATE
   };
 
   cargoHash = "sha256-a4MqS1AUcXhlZGImeqzUnDVxYuje5dm4SaebeEPjlEE=";

@@ -18,7 +18,7 @@ in appimageTools.wrapType2 {
 
   src = fetchurl {
     url = "https://extorage.breakds.org/binaries/omniverse-launcher-linux.AppImage";
-    sha256 = "03rqbg8ghlm3yh9yfsfazl836nkwbagfzb05lv7rz2j196wz2j9f";
+    sha256 = "03rqbg8ghlm3yh9yfsfazl836nkwbagfzb05lv7rz2j196wz2j9f"; # NOTE: UPDATE
   };
 
   extraPkgs = pkgs: with pkgs; [ icu ];

@@ -8,7 +8,7 @@ pkgs.rustPlatform.buildRustPackage rec {
     owner = "talwat";
     repo = pname;
     rev = version;
-    sha256 = "sha256-pfvTOoWsXukZTfev9+Ifcp3YYIqtYZgmEVPHuqD4IsM=";
+    sha256 = "sha256-pfvTOoWsXukZTfev9+Ifcp3YYIqtYZgmEVPHuqD4IsM="; # NOTE: UPDATE
   };
 
   cargoHash = "sha256-TGj3xH18xanhA25r+gTtLPa7KQKS9WEyGl412pnFZdw=";

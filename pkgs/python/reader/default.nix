@@ -7,7 +7,7 @@ pkgs.python3.pkgs.buildPythonPackage rec {
   format = "pyproject";
   src = pkgs.python3.pkgs.fetchPypi {
     inherit pname version;
-    sha256 = "sha256-tt9vqGrsHP/3UgEHzmnjNW8UMdYm6fyR3LSGxcyhkdg=";
+    sha256 = "sha256-tt9vqGrsHP/3UgEHzmnjNW8UMdYm6fyR3LSGxcyhkdg="; # NOTE: UPDATE
   };
   propagatedBuildInputs = with pkgs; [
     python3Packages.setuptools

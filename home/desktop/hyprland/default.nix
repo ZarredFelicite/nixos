@@ -95,7 +95,7 @@ in {
         "${pkgs.trayscale}/bin/trayscale --hide-window"
         "/etc/profiles/per-user/zarred/bin/discord"
       ];
-      monitor = [",preferred,auto,1,transform,1"];
+      monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;
       general = {
         gaps_in = 8;

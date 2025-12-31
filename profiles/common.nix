@@ -50,6 +50,13 @@
         networkConfig.DHCP = "yes";
         routes = [ { Metric = 10; } ];
       };
+      "40-wired" = {
+        matchConfig = {
+          MACAddress = "16:ea:52:ae:91:11";
+        };
+        networkConfig.DHCP = "yes";
+        routes = [ { Metric = 10; } ];
+      };
       "60-wifi" = {
         matchConfig.Name = "wlan0";
         networkConfig.DHCP = "yes";

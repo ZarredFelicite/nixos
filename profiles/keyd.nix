@@ -6,8 +6,8 @@
         src = prev.fetchFromGitHub {
           owner = "rvaiya";
           repo = "keyd";
-          rev = "v2.5.0";
-          hash = "sha256-pylfQjTnXiSzKPRJh9Jli1hhin/MIGIkZxLKxqlReVo=";
+          rev = "v2.5.0"; # NOTE: UPDATE
+          hash = "sha256-pylfQjTnXiSzKPRJh9Jli1hhin/MIGIkZxLKxqlReVo="; # NOTE: UPDATE
         };
         postPatch = ''
           substituteInPlace Makefile \

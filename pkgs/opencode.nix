@@ -14,19 +14,19 @@ let
   sources = {
     "aarch64-darwin" = {
       url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-darwin-arm64.zip";
-      hash = "sha256-Oizu4QKISBSDeBDXXSfUPPz3cS4MrapG+IezhkoInGU=";
+      hash = "sha256-Oizu4QKISBSDeBDXXSfUPPz3cS4MrapG+IezhkoInGU="; # NOTE: UPDATE
     };
     "aarch64-linux" = {
       url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-linux-arm64.zip";
-      hash = "sha256-+V1RwzvgAXKqK57ZujjDg3BlE0rxqxCywsMghVDrX2M=";
+      hash = "sha256-+V1RwzvgAXKqK57ZujjDg3BlE0rxqxCywsMghVDrX2M="; # NOTE: UPDATE
     };
     "x86_64-darwin" = {
       url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-darwin-x64.zip";
-      hash = "sha256-0s9sqlmuk3Nnn7XnI5W7MS22VbcTvmwj4LsxJ1j2AWs=";
+      hash = "sha256-0s9sqlmuk3Nnn7XnI5W7MS22VbcTvmwj4LsxJ1j2AWs="; # NOTE: UPDATE
     };
     "x86_64-linux" = {
       url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-linux-x64.zip";
-      hash = "sha256-nozyFG92eJSsw6dznyugMTnVzf7yQCRlFTiQGdRL54c=";
+      hash = "sha256-nozyFG92eJSsw6dznyugMTnVzf7yQCRlFTiQGdRL54c="; # NOTE: UPDATE
     };
   };
 

@@ -16,6 +16,7 @@
     package = lib.mkIf (osConfig.networking.hostName == "web" || osConfig.networking.hostName == "sankara") (
       pkgs.btop.override {
         cudaSupport = true;
+        rocmSupport = true;
       }
     );
     enable = true;
@@ -32,7 +33,7 @@
       graph_symbol_mem = "default";
       graph_symbol_net = "default";
       graph_symbol_proc = "default";
-      shown_boxes = "cpu gpu0 mem net proc";
+      shown_boxes = "cpu gpu0 gpu1 mem net proc";
       update_ms = 500;
       proc_sorting = "cpu direct";
       proc_reversed = false;

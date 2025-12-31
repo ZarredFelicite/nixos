@@ -15,7 +15,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://bindfs.org/downloads/bindfs-${finalAttrs.version}.tar.gz";
-    hash = "sha256-KnBk2ZOl8lXFLXI4XvFONJwTG8RBlXZuIXNCjgbSef0=";
+    hash = "sha256-KnBk2ZOl8lXFLXI4XvFONJwTG8RBlXZuIXNCjgbSef0="; # NOTE: UPDATE
   };
 
   patches = [
@@ -25,7 +25,7 @@ stdenv.mkDerivation (finalAttrs: {
     # https://github.com/mpartel/bindfs/issues/169
     (fetchpatch {
       url = "https://github.com/mpartel/bindfs/commit/3293dc98e37eed0fb0cbfcbd40434d3c37c69480.patch";
-      hash = "sha256-dtjvSJTS81R+sksl7n1QiyssseMQXPlm+LJYZ8/CESQ=";
+      hash = "sha256-dtjvSJTS81R+sksl7n1QiyssseMQXPlm+LJYZ8/CESQ="; # NOTE: UPDATE
       revert = true;
     })
   ];

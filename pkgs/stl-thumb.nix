@@ -11,18 +11,17 @@
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "stl-thumb";
   version = "v0.5.0-dec70d8";
-
-  src = /home/tom/t7/stl-thumb;
-  src2 = fetchFromGitHub {
+  src = fetchFromGitHub {
     owner = "unlimitedbacon";
     repo = pname;
-    rev = "dec70d8d8cfbb6c635ecbd8c1f3d3959ea42f5e8";
-    sha256 = "sha256-xF3sl3LOno3MeLK11cP48KlkbQDIZ/7Ax17dD8DL+po=";
+    rev = "dec70d8d8cfbb6c635ecbd8c1f3d3959ea42f5e8"; # NOTE: UPDATE
+    sha256 = "sha256-xF3sl3LOno3MeLK11cP48KlkbQDIZ/7Ax17dD8DL+po="; # NOTE: UPDATE
   };
 
   doCheck = false;
 
-  cargoSha256 = "sha256-1sQzMyrzy43l5MJxqg9ihUpp0rskuIXndTnh230wO6Q=";
+  cargoHash = "sha256-UqyRlcrvn0G7H4XeVKRPmFBx2IDdAo/1YyZlKxvpCxI=";
+
   #   # libs are loaded dynamically; make make sure we'll find them
   #  postFixup = with pkgs; ''
   #    patchelf \
@@ -49,6 +48,7 @@ pkgs.rustPlatform.buildRustPackage rec {
   buildInputs = with pkgs; [
     fontconfig
     libX11
+    expat
   ];
   propagatedBuildInputs = [
     libXcursor

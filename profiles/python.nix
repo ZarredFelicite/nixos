@@ -72,8 +72,7 @@
       #( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
       # TODO: broken vllm
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
-      # TODO dep chromadb broken ( pkgs.callPackage ../pkgs/python/yt-fts {})
-      # Fails paho-mqtt version conflict ( pkgs.callPackage ../pkgs/python/bambu-connect {})
+      ( pkgs.callPackage ../pkgs/python/yt-fts {})
 
       #(inputs.ignis.packages.${pkgs.stdenv.hostPlatform.system}.ignis.override {
       #  extraPackages = [

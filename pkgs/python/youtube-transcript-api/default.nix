@@ -9,7 +9,7 @@ pkgs.python3.pkgs.buildPythonPackage rec {
     owner = "jdepoix";
     repo = "youtube-transcript-api";
     tag = "v${version}";
-    hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA=";
+    hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA="; # NOTE: UPDATE
   };
 
 

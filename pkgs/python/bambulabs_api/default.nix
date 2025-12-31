@@ -7,8 +7,8 @@ pkgs.python3.pkgs.buildPythonPackage rec {
   src = pkgs.fetchFromGitHub {
     owner = "mchrisgm";
     repo = pname;
-    rev = "${version}";
-    sha256 = "sha256-uKQIP87bG7xs8g3scqGvHlzEYDi2j8sAxbeNYMhwo8w=";
+    rev = "${version}"; # NOTE: UPDATE
+    sha256 = "sha256-uKQIP87bG7xs8g3scqGvHlzEYDi2j8sAxbeNYMhwo8w="; # NOTE: UPDATE
   };
   propagatedBuildInputs = with pkgs; [
     python3Packages.setuptools

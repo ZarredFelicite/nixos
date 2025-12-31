@@ -2,20 +2,20 @@
   yazi-plugins = pkgs.fetchFromGitHub {
     owner = "yazi-rs";
     repo = "plugins";
-    rev = "d7588f6d29b5998733d5a71ec312c7248ba14555";
-    hash = "sha256-...";
+    rev = "d7588f6d29b5998733d5a71ec312c7248ba14555"; # NOTE: UPDATE
+    hash = "sha256-..."; # NOTE: UPDATE
   };
   yazi-flavors = pkgs.fetchFromGitHub {
     owner = "yazi-rs";
     repo = "flavors";
-    rev = "4296a380570399e3c36aec054f37aa48f35cf6b1";
-    hash = "sha256-KNpr7eYHm2dPky1L6EixoD956bsYZZO3bCyKIyAlIEw=";
+    rev = "4296a380570399e3c36aec054f37aa48f35cf6b1"; # NOTE: UPDATE
+    hash = "sha256-KNpr7eYHm2dPky1L6EixoD956bsYZZO3bCyKIyAlIEw="; # NOTE: UPDATE
   };
   yazi-augment-command = pkgs.fetchFromGitHub {
     owner = "hankertrix";
     repo = "augment-command.yazi";
-    rev = "v25.5.28-or-lower";
-    hash = "sha256-nhu02TSVcyPxjgUjz/hOvjgE78tJ1KVqXktyLWiWxgQ=";
+    rev = "v25.5.28-or-lower"; # NOTE: UPDATE
+    hash = "sha256-nhu02TSVcyPxjgUjz/hOvjgE78tJ1KVqXktyLWiWxgQ="; # NOTE: UPDATE
   };
 in {
   imports = [

@@ -14,6 +14,6 @@ in pkgs.makeDesktopItem {
     # icon from playstore
     name = "amongus.png";
     url = "https://play-lh.googleusercontent.com/l6m9l92a4SgtCXGnJX97AXNSSh8eVZPxDLpklXe4QpSE2PGam69wTWzr1sna1fc74no6=w240-h480-rw";
-    sha256 = "0knyfxbmnw0ad68zv9h5rmh6102lnn81silzkqi1rpixzc2dgp6b";
+    sha256 = "0knyfxbmnw0ad68zv9h5rmh6102lnn81silzkqi1rpixzc2dgp6b"; # NOTE: UPDATE
   };
 }

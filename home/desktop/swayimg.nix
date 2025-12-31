@@ -90,11 +90,12 @@
     "Shift+r" = "rand_file";
     "Shift+d" = "prev_dir";
     d = "next_dir";
-    "Shift+o" = "prev_frame";
-    o = "next_frame";
+    "Shift+n" = "prev_frame";
+    "Shift+o" = "next_frame";
+    n = "prev_file";
+    o = "next_file";
     c = "skip_file";
     s = "mode slideshow";
-    n = "animation";
     f = "fullscreen";
     Return = "mode gallery";
     Left = "step_left 10";
@@ -117,6 +118,7 @@
     m = "flip_vertical";
     "Shift+m" = "flip_horizontal";
     a = "antialiasing";
+    "Shift+a" = "animation";
     r = "reload";
     i = "info";
     "Shift+Delete" = "exec rm -f '%' && echo \"File removed: %\"; skip_file";
@@ -125,8 +127,8 @@
 
     ScrollLeft = "step_right 5";
     ScrollRight = "step_left 5";
-    ScrollUp = "step_up 5";
-    ScrollDown = "step_down 5";
+    ScrollUp = "zoom +5";
+    ScrollDown = "zoom -5";
     "Ctrl+ScrollUp" = "zoom +10";
     "Ctrl+ScrollDown" = "zoom -10";
     "Shift+ScrollUp" = "prev_file";

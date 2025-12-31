@@ -1,8 +1,30 @@
-{ pkgs, ... }: {
-  nixpkgs.config.packageOverrides = pkgs: {
-    steam = pkgs.steam.override {
-      extraPkgs = pkgs:
-        with pkgs; [
+{ pkgs, pkgs-unstable, ... }: {
+  #nixpkgs.config.packageOverrides = pkgs-unstable: {
+  #  steam = pkgs-unstable.steam.override {
+  #    extraPkgs = pkgs-unstable:
+  #      with pkgs-unstable; [
+  #        xorg.libXcursor
+  #        xorg.libXi
+  #        xorg.libXinerama
+  #        xorg.libXScrnSaver
+  #        libpng
+  #        libpulseaudio
+  #        libvorbis
+  #        stdenv.cc.cc.lib
+  #        libkrb5
+  #        keyutils
+  #        gamescope-wsi
+  #        vulkan-loader
+  #        zenity
+  #        wayland
+  #      ];
+  #  };
+  #};
+  programs.steam = {
+    enable = true;
+    package = pkgs-unstable.steam.override {
+      extraPkgs = pkgs-unstable:
+        with pkgs-unstable; [
           xorg.libXcursor
           xorg.libXi
           xorg.libXinerama
@@ -17,26 +39,23 @@
           vulkan-loader
           zenity
           wayland
+          vkd3d-proton
+          vkd3d
+          dxvk_2
+          proton-ge-bin
+          freetype
+          openjdk21_headless
+          wineWowPackages.waylandFull
+          gamescope
+          #gamescope-wsi
+          vulkan-loader
         ];
     };
-  };
-  programs.steam = {
-    enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
     gamescopeSession.enable = true;
     #extraCompatPackages = with pkgs; [
-    #  vkd3d-proton
-    #  vkd3d
-    #  dxvk_2
-    #  proton-ge-bin
-    #  freetype
-    #  openjdk21_headless
-    #  wineWowPackages.waylandFull
-    #  gamescope
-    #  #gamescope-wsi
-    #  vulkan-loader
     #];
   };
   environment.systemPackages = with pkgs; [

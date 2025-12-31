@@ -6,8 +6,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "tomasklaen";
     repo = "uosc";
-    rev = "af04ab1e746b45ffdecb58663e6ecc35270a6ad7";
-    hash = "sha256-GMUDn8TdgQymWxIJp6ckbKZW4Ubj2JJFM/Paanq9V54=";
+    rev = "af04ab1e746b45ffdecb58663e6ecc35270a6ad7"; # NOTE: UPDATE
+    hash = "sha256-GMUDn8TdgQymWxIJp6ckbKZW4Ubj2JJFM/Paanq9V54="; # NOTE: UPDATE
   };
 
   postPatch = ''

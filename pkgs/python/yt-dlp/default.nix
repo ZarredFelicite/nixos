@@ -27,7 +27,7 @@ python3Packages.buildPythonApplication rec {
     owner = "yt-dlp";
     repo = "yt-dlp";
     tag = version;
-    hash = "sha256-pqdR1JfiqvBs5vSKF7bBBKqq0DRAi3kXCN1zDvaW3nQ=";
+    hash = "sha256-pqdR1JfiqvBs5vSKF7bBBKqq0DRAi3kXCN1zDvaW3nQ="; # NOTE: UPDATE
   };
 
   postPatch = ''

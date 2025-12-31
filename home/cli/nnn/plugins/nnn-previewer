@@ -354,7 +354,7 @@ generate_preview() {
                    else
                        image_preview "$1" "$2" "$3" && return
                    fi ;;
-			model) stl-thumb "$3" "$NNN_PREVIEWDIR/$3.png" 2>/dev/null ;;
+			model) stl-thumb -b 00000000 -m 232136 3e8fb0 9ccfd8 "$3" "$NNN_PREVIEWDIR/$3.png" 2>/dev/null ;;
             office) libreoffice --convert-to jpg "$3" --outdir "$NNN_PREVIEWDIR/${3%/*}"
                     filename="$(printf "%s" "${3##*/}" | cut -d. -f1)"
                     mv "$NNN_PREVIEWDIR/${3%/*}/$filename.jpg" "$NNN_PREVIEWDIR/$3.jpg" ;;

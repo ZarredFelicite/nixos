@@ -163,7 +163,7 @@ in {
           drag_lock = true;
           tap-and-drag = true;
           natural_scroll = true;
-          drag_3fg = 2;
+          drag_3fg = 1;
         };
         sensitivity = 0;
       };

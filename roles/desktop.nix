@@ -285,7 +285,7 @@ in {
   };
   # NOTE: Disable all mpd settings below if disabling the service
   services.mpd = {
-    enable = true;
+    enable = false;
     user = "zarred";
     group = "users";
     #playlistDirectory = "/mnt/gargantua/media/music/data/playlists";

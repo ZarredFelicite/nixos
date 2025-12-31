@@ -88,6 +88,46 @@
     size = 24 * 1024;
   }];
 
+  systemd.services.radio-power-on-sleep = {
+    description = "Save WiFi and Bluetooth state before sleep";
+    before = [ "sleep.target" ];
+    wantedBy = [ "sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "radio-pre-sleep" ''
+        # Save WiFi state
+        if ${pkgs.iwd}/bin/iwctl device wlan0 show | ${pkgs.gnugrep}/bin/grep -q "Powered: on"; then
+          echo "on" > /run/wifi_state
+        else
+          echo "off" > /run/wifi_state
+        fi
+
+        # Bluetooth logic: turn off if no active connections
+        if ${pkgs.bluez}/bin/bluetoothctl devices Connected | ${pkgs.gnugrep}/bin/grep -q "Device"; then
+          echo "connected" > /run/bluetooth_state
+        else
+          echo "disconnected" > /run/bluetooth_state
+          ${pkgs.bluez}/bin/bluetoothctl power off
+        fi
+      '';
+    };
+  };
+
+  systemd.services.radio-power-on-resume = {
+    description = "Restore WiFi and Bluetooth state after resume";
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "radio-post-resume" ''
+        # Restore WiFi if it was on
+        if [ -f /run/wifi_state ] && [ "$(${pkgs.coreutils}/bin/cat /run/wifi_state)" = "on" ]; then
+          ${pkgs.iwd}/bin/iwctl device wlan0 set-property Powered on
+        fi
+      '';
+    };
+  };
+
   powerManagement = {
     enable = true;
     #resumeCommands = "${pkgs.kmod}/bin/rmmod atkbd; ${pkgs.kmod}/bin/modprobe atkbd reset=1";
@@ -127,7 +167,7 @@
       WIFI_PWR_ON_BAT = "on";
       WOL_DISABLE = "N";
       DEVICES_TO_ENABLE_ON_AC = "bluetooth wifi";
-      DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE = "bluetooth wifi";
+      DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE = "";
       USB_AUTOSUSPEND = 1;
 
       CPU_MIN_PERF_ON_AC = 0;

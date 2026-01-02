@@ -116,7 +116,7 @@ in {
     pkgs.nix-init # Command line tool to generate Nix packages from URLs
 
     # dev tools (general CLI)
-    pkgs-unstable.devenv # TODO: stable is broken
+    pkgs.devenv # TODO: stable is broken
     pkgs.git-lfs # Git Large File Storage extension
 
     # ai (CLI focus)

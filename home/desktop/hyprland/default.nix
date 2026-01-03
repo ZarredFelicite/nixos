@@ -78,7 +78,7 @@ in {
     xwayland.enable = true;
     systemd.enable = true;
     plugins = with pkgs-unstable.hyprlandPlugins; [
-        hyprspace
+        # hyprspace # TODO: broken
         hyprfocus
       # hyprgrass - Hyprland plugin for touch gestures
     ];
@@ -201,22 +201,22 @@ in {
           "col.inactive" = lib.mkForce "rgba(31748f99)";
         };
       };
-      misc = {
-        disable_hyprland_logo = true;
-        animate_manual_resizes = true;
-        animate_mouse_windowdragging = true;
-        focus_on_activate = true;
-        layers_hog_keyboard_focus = true;
-        mouse_move_enables_dpms = false;
-        key_press_enables_dpms = true;
-        enable_swallow = false;
-        swallow_regex = "^(kitty)$";
-        swallow_exception_regex = "^(cava|wev)$";
-        vfr = true;
-        vrr = true;
-        new_window_takes_over_fullscreen = 2;
-        initial_workspace_tracking = 0; # NOTE: 2 causing new windows to be created on previous workspaces
-      };
+       misc = {
+         disable_hyprland_logo = true;
+         animate_manual_resizes = true;
+         animate_mouse_windowdragging = true;
+         focus_on_activate = true;
+         layers_hog_keyboard_focus = true;
+         mouse_move_enables_dpms = false;
+         key_press_enables_dpms = true;
+         enable_swallow = false;
+         swallow_regex = "^(kitty)$";
+         swallow_exception_regex = "^(cava|wev)$";
+         vfr = true;
+         vrr = true;
+         on_focus_under_fullscreen = 2;
+         initial_workspace_tracking = 0; # NOTE: 2 causing new windows to be created on previous workspaces
+       };
       opengl.nvidia_anti_flicker = true;
       cursor = {
         enable_hyprcursor = true;

@@ -18,24 +18,36 @@ in {
     inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.vigiland.packages.${pkgs.system}.vigiland
   ];
-  services.hyprpaper = {
-    enable = true;
-    package = pkgs-unstable.hyprpaper;
-    settings = {
-      preload = [
-        "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
-        "~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
-        "~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
-      ];
-      wallpaper = [
-        ",~/pictures/wallpapers/tarantula_nebula_nano.png"
-        "eDP-1,~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
-        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
-        "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
-      ];
-      ipc = "on";
-    };
-  };
+   services.hyprpaper = {
+     enable = true;
+     package = pkgs-unstable.hyprpaper;
+     settings = {
+       preload = [
+         "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
+         "~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
+         "~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
+       ];
+       wallpaper = [
+         {
+           monitor = "";
+           path = "~/pictures/wallpapers/tarantula_nebula_nano.png";
+         }
+         {
+           monitor = "eDP-1";
+           path = "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg";
+         }
+         {
+           monitor = "DP-3";
+           path = "~/pictures/wallpapers/tarantula_nebula_web_left_darker.png";
+         }
+         {
+           monitor = "DP-2";
+           path = "~/pictures/wallpapers/tarantula_nebula_web_right_darker.png";
+         }
+       ];
+       ipc = "on";
+     };
+   };
   systemd.user.services.hyprpolkitagent = mkHyprlandService {
     Unit.Description = "hyprpolkitagent polkit authentication daemon";
     Service = {

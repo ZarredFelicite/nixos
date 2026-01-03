@@ -150,25 +150,25 @@ in {
       enable = true;
       restart = false;
       settings = rec {
-        initial_session = {
-	        command = "${hyprland}/bin/Hyprland";
-	        user = "zarred";
-	      };
-        default_session = {
-          command = ''
-            ${pkgs.tuigreet}/bin/tuigreet \
-              --time \
-              --asterisks \
-              --cmd ${hyprland}/bin/Hyprland \
-              -s ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
-              --remember \
-              --remember-user-session \
-              --width 50
-              --theme "border=magenta;text=cyan;prompt=lightblue;time=lightblue;action=lightblue;button=darkgrey;container=black;input=lightcyan"
-              --debug /tmp/tuigreet.log
-          '';
-          #user = "greeter";
-        };
+       initial_session = {
+ 	        command = "${hyprland}/bin/start-hyprland";
+ 	        user = "zarred";
+ 	      };
+         default_session = {
+           command = ''
+             ${pkgs.tuigreet}/bin/tuigreet \
+               --time \
+               --asterisks \
+               --cmd ${hyprland}/bin/start-hyprland \
+               -s ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
+               --remember \
+               --remember-user-session \
+               --width 50
+               --theme "border=magenta;text=cyan;prompt=lightblue;time=lightblue;action=lightblue;button=darkgrey;container=black;input=lightcyan"
+               --debug /tmp/tuigreet.log
+           '';
+           #user = "greeter";
+         };
       };
     };
     logind = {

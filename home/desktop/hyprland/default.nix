@@ -189,17 +189,18 @@ in {
         insert_after_current = true;
         "col.border_active" = lib.mkForce "rgba(9ccfd899)";
         "col.border_inactive" = lib.mkForce "rgba(31748f99)";
-        groupbar = {
-          enabled = true;
-          height = 6;
-          indicator_height = 6;
-          render_titles = false;
-          gradients = false;
-          rounding = 4;
-          keep_upper_gap = false;
-          "col.active" = lib.mkForce "rgba(9ccfd899)";
-          "col.inactive" = lib.mkForce "rgba(31748f99)";
-        };
+         groupbar = {
+           enabled = true;
+           height = 6;
+           indicator_height = 6;
+           render_titles = false;
+           gradients = false;
+           rounding = 4;
+           keep_upper_gap = false;
+           blur = true;
+           "col.active" = lib.mkForce "rgba(9ccfd899)";
+           "col.inactive" = lib.mkForce "rgba(31748f99)";
+         };
       };
        misc = {
          disable_hyprland_logo = true;

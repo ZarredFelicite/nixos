@@ -10,15 +10,12 @@ let unstablePkgs = import (builtins.fetchTarball {
       system = prev.system;
     };
 
-
-    pythonOverride = {
-      pacakgeOverrides = python-final: python-prev: {
-        # Put the customized python packages, with or without
-        # python-final.callPackage
-      };
-    };
-
 in {
-  #robot-deployment-suite = final.python3Packages.callPackage ../../pkgs/robot-deployment-suite {};
   omniverse-launcher = final.callPackage ../pkgs/omniverse/bin.nix {};
+  
+  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+    (python-final: python-prev: {
+      yfinance = python-final.callPackage ../pkgs/python/yfinance {};
+    })
+  ];
 }

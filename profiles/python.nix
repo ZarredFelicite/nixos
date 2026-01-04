@@ -63,13 +63,18 @@
       matplotlib # Plotting library
       cairosvg
       pybluez # Bluetooth
-      #yfinance
       bleak # Bluetooth Low Energy
       pyaudio # PortAudio bindings
       webrtcvad # Interface to the Google WebRTC Voice Activity Detector (VAD)
+      textual # TUI framework for Python inspired by modern web development
+      textual-image # Render images in the terminal with Textual and rich
+      ( pkgs.callPackage ../pkgs/python/textual-plotext.nix {})
+      tabulate # Pretty-print tabular data
+      pandas # Powerful data structures for data analysis, time series, and statistics
+      plotly # Python plotting library for collaborative, interactive, publication-quality graphs
+      kaleido # Fast static image export for web-based visualization libraries with zero dependencies
 
-      # Ensure all custom python packages from ../pkgs/python are included if not already listed
-      #( pkgs.python3Packages.callPackage ../pkgs/python/yfinance {})
+      pkgs.python3Packages.yfinance
       # TODO: broken vllm
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       ( pkgs.callPackage ../pkgs/python/yt-fts {})

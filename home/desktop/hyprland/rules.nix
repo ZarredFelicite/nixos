@@ -1,5 +1,54 @@
 { ... }: {
   wayland.windowManager.hyprland.extraConfig = ''
+    # Window rules for v0.53
+    windowrule = float, match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$
+    #windowrule = float, match:tag pin
+    #windowrule = move 100%-w-10 40, match:tag pin
+    #windowrule = size 850 480, match:tag pin
+    #windowrule = pin, match:tag pin
+    #windowrule = noblur, match:tag pin
+    #windowrule = group barred, match:tag pin
+    #windowrule = opacity 1.0 override 0.7 override 1.0 override, match:tag pin
+    #windowrule = no_initial_focus, match:tag pin
+    windowrule = float, match:initial_title Picture-in-Picture|cctv|Syncthing Tray
+    windowrule = float, match:title nova
+    windowrule = move 100%-w-10 40, match:initial_title Picture-in-Picture|cctv
+    windowrule = size 850 480, match:initial_title Picture-in-Picture
+    windowrule = size 530 400, match:initial_title cctv
+    windowrule = pin, match:initial_title Picture-in-Picture|cctv
+    windowrule = noblur, match:initial_title Picture-in-Picture|cctv
+    windowrule = group barred, match:initial_title Picture-in-Picture|cctv
+    windowrule = opacity 1.0 override 0.7 override 1.0 override, match:initial_title Picture-in-Picture|cctv
+    windowrule = no_initial_focus, match:initial_title Picture-in-Picture|cctv
+    windowrule = tag +pin, match:initial_title Picture-in-Picture|cctv
+    windowrule = size 1200 800, match:class ^(nova)$
+    windowrule = size 1200 800, match:title nova
+    windowrule = dimaround, match:class ^(nova|obsidian)$
+    windowrule = dimaround, match:title nova
+    #windowrule = center, match:class ^(nova)$
+    #windowrule = pin, match:class ^(nova)$
+    #windowrule = stayfocused, match:class ^(nova)$
+    #windowrule = animation slidefadevert, match:class ^(waybar|nova)$
+    windowrule = rounding 6, match:class ^(waybar)$
+    windowrule = center, match:class ^(xdg-desktop-portal-gtk|zenity|Rofi)$
+    windowrule = stayfocused, match:class ^(Pinentry)$
+    windowrule = stayfocused, match:title ^(Hyprland Polkit Agent)$
+    #windowrule = keepaspectratio, match:class ^(mpv)$
+    windowrule = noblur, match:class ^(mpv)$ match:float true match:fullscreen false
+    windowrule = suppressevent maximize, match:class ^(firefox)$
+    windowrule = suppressevent activatefocus, match:class ^(OrcaSlicer)$
+    windowrule = pin, match:title ^(ripdrag)$
+    windowrule = size 60% 50%, match:title ^(Enter name of file to save to…)$ match:class xdg-desktop-portal-gtk
+    windowrule = float, match:title ^(mpd_cover|float)$
+    windowrule = size 1000 1000, match:title ^(mpd_cover)$
+    windowrule = pseudo, match:class swayimg.*
+    windowrule = float, match:class swayimg.*
+    windowrule = tile, match:class ^(kdeconnect.sms)$
+    windowrule = fullscreenstate -1 2, match:workspace special:browser-tradingview
+    windowrule = fullscreenstate -1 2, match:workspace special:browser-chatgpt
+    windowrule = fullscreenstate -1 2, match:workspace special:browser-messages
+    windowrule = fullscreenstate -1 2, match:workspace special:server
+
     # Layer rules for v0.53
     layerrule = blur on, match:namespace notifications
     layerrule = above_lock 1, match:namespace notifications
@@ -41,55 +90,6 @@
     layerrule = ignore_alpha 0.25, match:namespace swaync-notification-window
   '';
   wayland.windowManager.hyprland.settings = {
-    windowrule = [
-      "float, match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$"
-      #"float, match:tag pin"
-      #"move 100%-w-10 40, match:tag pin"
-      #"size 850 480, match:tag pin"
-      #"pin, match:tag pin"
-      #"noblur, match:tag pin"
-      #"group barred, match:tag pin"
-      #"opacity 1.0 override 0.7 override 1.0 override, match:tag pin"
-      #"no_initial_focus, match:tag pin"
-      "float, match:initial_title Picture-in-Picture|cctv|Syncthing Tray"
-      "float, match:title nova"
-      "move 100%-w-10 40, match:initial_title Picture-in-Picture|cctv"
-      "size 850 480, match:initial_title Picture-in-Picture"
-      "size 530 400, match:initial_title cctv"
-      "pin, match:initial_title Picture-in-Picture|cctv"
-      "noblur, match:initial_title Picture-in-Picture|cctv"
-      "group barred, match:initial_title Picture-in-Picture|cctv"
-      "opacity 1.0 override 0.7 override 1.0 override, match:initial_title Picture-in-Picture|cctv"
-      "no_initial_focus, match:initial_title Picture-in-Picture|cctv"
-      "tag +pin, match:initial_title Picture-in-Picture|cctv"
-      "size 1200 800, match:class ^(nova)$"
-      "size 1200 800, match:title nova"
-      "dimaround, match:class ^(nova|obsidian)$"
-      "dimaround, match:title nova"
-      #"center, match:class ^(nova)$"
-      #"pin, match:class ^(nova)$"
-      #"stayfocused, match:class ^(nova)$"
-      #"animation slidefadevert, match:class ^(waybar|nova)$"
-      "rounding 6, match:class ^(waybar)$"
-      "center, match:class ^(xdg-desktop-portal-gtk|zenity|Rofi)$"
-      "stayfocused, match:class ^(Pinentry)$"
-      "stayfocused, match:title ^(Hyprland Polkit Agent)$"
-      #"keepaspectratio, match:class ^(mpv)$"
-      "noblur, match:class ^(mpv)$ match:float true match:fullscreen false"
-      "suppressevent maximize, match:class ^(firefox)$"
-      "suppressevent activatefocus, match:class ^(OrcaSlicer)$"
-      "pin, match:title ^(ripdrag)$"
-      "size 60% 50%, match:title ^(Enter name of file to save to…)$ match:class xdg-desktop-portal-gtk"
-      "float, match:title ^(mpd_cover|float)$"
-      "size 1000 1000, match:title ^(mpd_cover)$"
-      "pseudo, match:class swayimg.*"
-      "float, match:class swayimg.*"
-      "tile, match:class ^(kdeconnect.sms)$"
-      "fullscreenstate -1 2, match:workspace special:browser-tradingview"
-      "fullscreenstate -1 2, match:workspace special:browser-chatgpt"
-      "fullscreenstate -1 2, match:workspace special:browser-messages"
-      "fullscreenstate -1 2, match:workspace special:server"
-    ];
     workspace = [
       "1, monitor:DP-3, default:true"
       "5, monitor:DP-2, default:true"

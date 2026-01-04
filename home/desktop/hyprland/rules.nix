@@ -1,70 +1,44 @@
 { ... }: {
   wayland.windowManager.hyprland.extraConfig = ''
-    # Layer rules with section format for v0.53
-    layerrule {
-      blur = true
-      match = notifications
-    }
-    
-    layerrule {
-      blur = true
-      match = waybar
-    }
-    
-    layerrule {
-      blur = true
-      match = primary-bar
-    }
-    
-    layerrule {
-      blur = true
-      match = ignis_bar_0
-    }
-    
-    layerrule {
-      blur = true
-      match = ignis_bar_1
-    }
-    
-    layerrule {
-      blur = true
-      match = ignis_bar_2
-    }
-    
-    layerrule {
-      blur = true
-      match = ignis_bar_3
-    }
-    
-    layerrule {
-      blur = true
-      match = rofi
-    }
-    
-    layerrule {
-      blur = true
-      match = wlroots
-    }
-    
-    layerrule {
-      blur = true
-      match = gtk-layer-shell
-    }
-    
-    layerrule {
-      blur = true
-      match = anyrun
-    }
-    
-    layerrule {
-      blur = true
-      match = swaync-control-center
-    }
-    
-    layerrule {
-      blur = true
-      match = swaync-notification-window
-    }
+    # Layer rules for v0.53
+    layerrule = blur on, match:namespace notifications
+    layerrule = above_lock 1, match:namespace notifications
+    layerrule = blur on, match:namespace waybar
+    layerrule = blur on, match:namespace primary-bar
+    layerrule = blur on, match:namespace ignis_bar_0
+    layerrule = blur on, match:namespace ignis_bar_1
+    layerrule = blur on, match:namespace ignis_bar_2
+    layerrule = blur on, match:namespace ignis_bar_3
+    layerrule = above_lock 1, match:namespace waybar
+    layerrule = above_lock 1, match:namespace primary-bar
+    layerrule = above_lock 1, match:namespace ignis_bar_0
+    layerrule = above_lock 1, match:namespace ignis_bar_1
+    layerrule = above_lock 1, match:namespace ignis_bar_2
+    layerrule = above_lock 1, match:namespace ignis_bar_3
+    layerrule = blur on, match:namespace rofi
+    layerrule = animation popin, match:namespace rofi
+    layerrule = blur on, match:namespace wlroots
+    layerrule = blur on, match:namespace gtk-layer-shell
+    layerrule = blur on, match:namespace anyrun
+    layerrule = ignore_alpha 0, match:namespace notifications
+    layerrule = ignore_alpha 0, match:namespace waybar
+    layerrule = ignore_alpha 0.45, match:namespace primary-bar
+    layerrule = ignore_alpha 0, match:namespace ignis_bar_0
+    layerrule = ignore_alpha 0, match:namespace ignis_bar_1
+    layerrule = ignore_alpha 0, match:namespace ignis_bar_2
+    layerrule = ignore_alpha 0, match:namespace ignis_bar_3
+    layerrule = ignore_alpha 0.1, match:namespace rofi
+    layerrule = ignore_alpha 0, match:namespace wlroots
+    layerrule = ignore_alpha 0, match:namespace gtk-layer-shell
+    layerrule = ignore_alpha 0, match:namespace anyrun
+    layerrule = blur on, match:namespace swaync-control-center
+    layerrule = blur on, match:namespace swaync-notification-window
+    layerrule = above_lock 1, match:namespace swaync-notification-window
+    layerrule = above_lock 1, match:namespace swaync-control-center
+    layerrule = ignore_alpha 0, match:namespace swaync-control-center
+    layerrule = ignore_alpha 0, match:namespace swaync-notification-window
+    layerrule = ignore_alpha 0.25, match:namespace swaync-control-center
+    layerrule = ignore_alpha 0.25, match:namespace swaync-notification-window
   '';
   wayland.windowManager.hyprland.settings = {
     windowrule = [

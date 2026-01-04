@@ -43,7 +43,7 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      "$mod CTRL, O, overview:toggle, all"
+      #"$mod CTRL, O, overview:toggle, all" # Dispatcher doesn't exist in v0.53
       "$mod CTRL SHIFT, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"

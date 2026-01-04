@@ -227,7 +227,7 @@ in {
         warp_on_change_workspace = true;
           #allow_dumb_copy = true;
       };
-      experimental.xx_color_management_v4 = true;
+      #experimental.xx_color_management_v4 = true; # Removed in v0.53
       dwindle = {
         pseudotile = true;
         force_split = 2;

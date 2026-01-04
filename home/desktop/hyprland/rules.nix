@@ -1,4 +1,45 @@
 { ... }: {
+  wayland.windowManager.hyprland.extraConfig = ''
+    # Layer rules
+    layerrule=blur,notifications
+    layerrule=abovelock true,notifications
+    layerrule=blur,waybar
+    layerrule=blur,primary-bar
+    layerrule=blur,ignis_bar_0
+    layerrule=blur,ignis_bar_1
+    layerrule=blur,ignis_bar_2
+    layerrule=blur,ignis_bar_3
+    layerrule=abovelock true,waybar
+    layerrule=abovelock true,primary-bar
+    layerrule=abovelock true,ignis_bar_0
+    layerrule=abovelock true,ignis_bar_1
+    layerrule=abovelock true,ignis_bar_2
+    layerrule=abovelock true,ignis_bar_3
+    layerrule=blur,rofi
+    layerrule=animation slidefadevert,rofi
+    layerrule=blur,wlroots
+    layerrule=blur,gtk-layer-shell
+    layerrule=blur,anyrun
+    layerrule=ignorezero,notifications
+    layerrule=ignorezero,waybar
+    layerrule=ignorealpha 0.45,primary-bar
+    layerrule=ignorezero,ignis_bar_0
+    layerrule=ignorezero,ignis_bar_1
+    layerrule=ignorezero,ignis_bar_2
+    layerrule=ignorezero,ignis_bar_3
+    layerrule=ignorealpha 0.1,rofi
+    layerrule=ignorezero,wlroots
+    layerrule=ignorezero,gtk-layer-shell
+    layerrule=ignorezero,anyrun
+    layerrule=blur,swaync-control-center
+    layerrule=blur,swaync-notification-window
+    layerrule=abovelock true,swaync-notification-window
+    layerrule=abovelock true,swaync-control-center
+    layerrule=ignorezero,swaync-control-center
+    layerrule=ignorezero,swaync-notification-window
+    layerrule=ignorealpha 0.25,swaync-control-center
+    layerrule=ignorealpha 0.25,swaync-notification-window
+  '';
   wayland.windowManager.hyprland.settings = {
     windowrule = [
       "match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$, float"
@@ -48,46 +89,6 @@
       "match:workspace special:browser-chatgpt, fullscreenstate -1 2"
       "match:workspace special:browser-messages, fullscreenstate -1 2"
       "match:workspace special:server, fullscreenstate -1 2"
-    ];
-    layerrule = [
-      "blur, notifications"
-      "abovelock true, notifications"
-      "blur, waybar"
-      "blur, primary-bar"
-      "blur, ignis_bar_0"
-      "blur, ignis_bar_1"
-      "blur, ignis_bar_2"
-      "blur, ignis_bar_3"
-      "abovelock true, waybar"
-      "abovelock true, primary-bar"
-      "abovelock true, ignis_bar_0"
-      "abovelock true, ignis_bar_1"
-      "abovelock true, ignis_bar_2"
-      "abovelock true, ignis_bar_3"
-      "blur, rofi"
-      "animation slidefadevert, rofi"
-      "blur, wlroots"
-      "blur, gtk-layer-shell"
-      "blur, anyrun"
-      "ignorezero, notifications"
-      "ignorezero, waybar"
-      "ignorealpha 0.45, primary-bar"
-      "ignorezero, ignis_bar_0"
-      "ignorezero, ignis_bar_1"
-      "ignorezero, ignis_bar_2"
-      "ignorezero, ignis_bar_3"
-      "ignorealpha 0.1, rofi"
-      "ignorezero, wlroots"
-      "ignorezero, gtk-layer-shell"
-      "ignorezero, anyrun"
-      "blur, swaync-control-center"
-      "blur, swaync-notification-window"
-      "abovelock true, swaync-notification-window"
-      "abovelock true, swaync-control-center"
-      "ignorezero, swaync-control-center"
-      "ignorezero, swaync-notification-window"
-      "ignorealpha 0.25, swaync-control-center"
-      "ignorealpha 0.25, swaync-notification-window"
     ];
     workspace = [
       "1, monitor:DP-3, default:true"

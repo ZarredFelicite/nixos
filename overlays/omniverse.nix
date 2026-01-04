@@ -12,10 +12,4 @@ let unstablePkgs = import (builtins.fetchTarball {
 
 in {
   omniverse-launcher = final.callPackage ../pkgs/omniverse/bin.nix {};
-  
-  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-    (python-final: python-prev: {
-      yfinance = python-final.callPackage ../pkgs/python/yfinance {};
-    })
-  ];
 }

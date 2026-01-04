@@ -1,6 +1,19 @@
 { pkgs, lib, config, inputs, ... }:
 
+let
+  customPythonPackages = python-final: python-prev: {
+    yfinance = python-final.callPackage ../pkgs/python/yfinance {};
+  };
+in
 {
+  nixpkgs.overlays = [
+    (final: prev: {
+      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+        customPythonPackages
+      ];
+    })
+  ];
+
   environment.systemPackages = with pkgs; [
     # PYTHON Tools from home/cli-apps.nix
     uv # Extremely fast Python package installer and resolver, written in Rust

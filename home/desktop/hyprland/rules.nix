@@ -1,44 +1,70 @@
 { ... }: {
   wayland.windowManager.hyprland.extraConfig = ''
-    # Layer rules
-    layerrule=blur,notifications
-    layerrule=abovelock true,notifications
-    layerrule=blur,waybar
-    layerrule=blur,primary-bar
-    layerrule=blur,ignis_bar_0
-    layerrule=blur,ignis_bar_1
-    layerrule=blur,ignis_bar_2
-    layerrule=blur,ignis_bar_3
-    layerrule=abovelock true,waybar
-    layerrule=abovelock true,primary-bar
-    layerrule=abovelock true,ignis_bar_0
-    layerrule=abovelock true,ignis_bar_1
-    layerrule=abovelock true,ignis_bar_2
-    layerrule=abovelock true,ignis_bar_3
-    layerrule=blur,rofi
-    layerrule=animation slidefadevert,rofi
-    layerrule=blur,wlroots
-    layerrule=blur,gtk-layer-shell
-    layerrule=blur,anyrun
-    layerrule=ignorezero,notifications
-    layerrule=ignorezero,waybar
-    layerrule=ignorealpha 0.45,primary-bar
-    layerrule=ignorezero,ignis_bar_0
-    layerrule=ignorezero,ignis_bar_1
-    layerrule=ignorezero,ignis_bar_2
-    layerrule=ignorezero,ignis_bar_3
-    layerrule=ignorealpha 0.1,rofi
-    layerrule=ignorezero,wlroots
-    layerrule=ignorezero,gtk-layer-shell
-    layerrule=ignorezero,anyrun
-    layerrule=blur,swaync-control-center
-    layerrule=blur,swaync-notification-window
-    layerrule=abovelock true,swaync-notification-window
-    layerrule=abovelock true,swaync-control-center
-    layerrule=ignorezero,swaync-control-center
-    layerrule=ignorezero,swaync-notification-window
-    layerrule=ignorealpha 0.25,swaync-control-center
-    layerrule=ignorealpha 0.25,swaync-notification-window
+    # Layer rules with section format for v0.53
+    layerrule {
+      blur = true
+      match = notifications
+    }
+    
+    layerrule {
+      blur = true
+      match = waybar
+    }
+    
+    layerrule {
+      blur = true
+      match = primary-bar
+    }
+    
+    layerrule {
+      blur = true
+      match = ignis_bar_0
+    }
+    
+    layerrule {
+      blur = true
+      match = ignis_bar_1
+    }
+    
+    layerrule {
+      blur = true
+      match = ignis_bar_2
+    }
+    
+    layerrule {
+      blur = true
+      match = ignis_bar_3
+    }
+    
+    layerrule {
+      blur = true
+      match = rofi
+    }
+    
+    layerrule {
+      blur = true
+      match = wlroots
+    }
+    
+    layerrule {
+      blur = true
+      match = gtk-layer-shell
+    }
+    
+    layerrule {
+      blur = true
+      match = anyrun
+    }
+    
+    layerrule {
+      blur = true
+      match = swaync-control-center
+    }
+    
+    layerrule {
+      blur = true
+      match = swaync-notification-window
+    }
   '';
   wayland.windowManager.hyprland.settings = {
     windowrule = [

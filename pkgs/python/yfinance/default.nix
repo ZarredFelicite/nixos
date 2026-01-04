@@ -32,7 +32,7 @@ buildPythonPackage rec {
     owner = "ranaroussi";
     repo = "yfinance";
     tag = version;
-    hash = "sha256-Xndky4sMVn0sPH4CFdLuwcfhPzMXtH4rdakQdve3RK0="; # NOTE: UPDATE
+    hash = "sha256-Xndky4sMVn0sPH4CFdLuwcfhPzMXtH4rdakQdve3RK0=";
   };
 
   build-system = [ setuptools ];
@@ -56,7 +56,7 @@ buildPythonPackage rec {
       src = {
         x86_64-linux = fetchurl {
           url = "https://github.com/lexiforest/curl_cffi/releases/download/v${version}/curl_cffi-${version}-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl";
-          hash = "sha256-6DBlvIm2clpNcrr688vd31a7TwFLxjvnP4fxs5A/0K4="; # NOTE: UPDATE
+          hash = "sha256-6DBlvIm2clpNcrr688vd31a7TwFLxjvnP4fxs5A/0K4=";
         };
       }."${stdenv.hostPlatform.system}";
       format = "wheel";
@@ -81,7 +81,7 @@ buildPythonPackage rec {
   # Tests require internet access
   doCheck = false;
 
-  #pythonImportsCheck = [ "yfinance" ];
+  pythonImportsCheck = [ "yfinance" ];
 
   meta = with lib; {
     description = "Module to doiwnload Yahoo! Finance market data";

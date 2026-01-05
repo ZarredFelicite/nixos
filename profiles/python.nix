@@ -2,7 +2,7 @@
 
 let
   customPythonPackages = python-final: python-prev: {
-    yfinance = python-final.callPackage ../pkgs/python/yfinance {};
+    #yfinance = python-final.callPackage ../pkgs/python/yfinance {};
   };
 in
 {
@@ -87,7 +87,8 @@ in
       plotly # Python plotting library for collaborative, interactive, publication-quality graphs
       kaleido # Fast static image export for web-based visualization libraries with zero dependencies
 
-      pkgs.python3Packages.yfinance
+      #pkgs.python3Packages.yfinance
+      yfinance
       # TODO: broken vllm
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       ( pkgs.callPackage ../pkgs/python/yt-fts {})

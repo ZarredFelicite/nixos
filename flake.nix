@@ -60,14 +60,11 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-       	  modules = [
-            ({ nixpkgs.overlays = [
-              (import ./overlays/omniverse.nix { })
-            ]; })
-            inputs.stylix.nixosModules.stylix
-            ./hosts/web.nix
-            ./roles/desktop.nix
-          ];
+        	  modules = [
+             inputs.stylix.nixosModules.stylix
+             ./hosts/web.nix
+             ./roles/desktop.nix
+           ];
         };
         nano = lib.nixosSystem {
           inherit system;
@@ -77,15 +74,12 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-       	  modules = [
-            ({ nixpkgs.overlays = [
-              (import ./overlays/omniverse.nix { })
-            ]; })
-            nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
-            inputs.stylix.nixosModules.stylix
-            ./hosts/nano.nix
-            ./roles/desktop.nix
-          ];
+        	  modules = [
+             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
+             inputs.stylix.nixosModules.stylix
+             ./hosts/nano.nix
+             ./roles/desktop.nix
+           ];
         };
         sankara = lib.nixosSystem {
           inherit system;

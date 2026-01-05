@@ -25,6 +25,10 @@
     sensibleOnTop = true;
     tmuxinator.enable = true;
     extraConfig = ''
+      set-option -sa terminal-features ',xterm-256color:RGB'
+      set-option -ga terminal-overrides ",xterm-256color:Tc"
+      set -g window-style bg=default
+      set -g window-active-style bg=default
       bind r source-file ~/.config/tmux/tmux.conf
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top

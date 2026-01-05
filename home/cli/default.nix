@@ -143,7 +143,6 @@ in {
 
     # text conversion (CLI)
     pkgs.lynx # Text-mode web browser
-    ( pkgs.callPackage ../../pkgs/html-to-markdown {} ) # Path relative to home/cli/default.nix
     pkgs.presenterm # Terminal based slideshow tool https://github.com/mfontanini/presenterm
   ];
 

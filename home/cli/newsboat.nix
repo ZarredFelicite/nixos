@@ -20,6 +20,7 @@
       linux = "tags # \"linux\"";
       football = "tags # \"football\"";
       stocks = "tags # \"stocks\"";
+      reddit-finance = "tags # \"reddit-finance\"";
     };
     extraConfig = ''
       # -- misc ----------------------------------------------------------------------
@@ -132,6 +133,11 @@
 
       # software
       { url = "https://github.com/hyprwm/Hyprland/releases.atom"; tags = [ "!" "~Hyprland" "software" ]; }
+
+      # finance reddit
+      { url = "https://reddit.com/r/wallstreetbets/top/.rss?t=week"; tags = [ "!" "~r/WSB" "reddit-finance" ]; }
+      { url = "https://reddit.com/r/Silverbugs/top/.rss?t=week"; tags = [ "!" "~r/WSB" "reddit-finance" ]; }
+      { url = "https://reddit.com/r/Wallstreetsilver/top/.rss?t=week"; tags = [ "!" "~r/WSB" "reddit-finance" ]; }
 
       # ai
       { url = "http://googleresearch.blogspot.com/atom.xml"; tags = [ "!" "~GoogleAI" "ai" ]; }

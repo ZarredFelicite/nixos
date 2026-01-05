@@ -178,13 +178,15 @@ in {
       #  };
       #};
       gestures = {
-        workspace_swipe = true;
-        workspace_swipe_fingers = 4;
         workspace_swipe_distance = 200;
         workspace_swipe_min_speed_to_force = 3;
         workspace_swipe_cancel_ratio = 0.2;
         workspace_swipe_forever = true;
       };
+      gesture = [
+        "4, horizontal, workspace"
+        "3, up, mod: SUPER, scale: 1.5, fullscreen"
+      ];
       group = {
         insert_after_current = true;
         "col.border_active" = lib.mkForce "rgba(9ccfd899)";

@@ -46,7 +46,7 @@
           enable = true;
           boxes = [ "[Gmail]/All Mail" ];
           onNotify = "${pkgs.isync}/bin/mbsync --all";
-          onNotifyPost = "/home/zarred/scripts/mail/mail-notify.sh &2 > /home/zarred/mail-notify-log";
+          onNotifyPost = "/home/zarred/scripts/mail/mail-notify.sh > /home/zarred/mail-notify-log 2>&1 &";
         };
         mbsync = {
           enable = true;

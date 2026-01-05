@@ -3,6 +3,7 @@
   beautifulsoup4,
   buildPythonPackage,
   cryptography,
+  curl-cffi,
   fetchFromGitHub,
   frozendict,
   html5lib,
@@ -18,9 +19,6 @@
   requests,
   scipy,
   setuptools,
-  stdenv,
-  fetchurl,
-  autoPatchelfHook,
 }:
 
 buildPythonPackage rec {
@@ -40,6 +38,7 @@ buildPythonPackage rec {
   dependencies = [
     beautifulsoup4
     cryptography
+    curl-cffi
     frozendict
     html5lib
     lxml
@@ -50,22 +49,6 @@ buildPythonPackage rec {
     platformdirs
     pytz
     requests
-    (buildPythonPackage rec {
-      pname = "curl-cffi";
-      version = "0.11.3";
-      src = {
-        x86_64-linux = fetchurl {
-          url = "https://github.com/lexiforest/curl_cffi/releases/download/v${version}/curl_cffi-${version}-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl";
-          hash = "sha256-6DBlvIm2clpNcrr688vd31a7TwFLxjvnP4fxs5A/0K4=";
-        };
-      }."${stdenv.hostPlatform.system}";
-      format = "wheel";
-      buildInputs = [ stdenv.cc.cc.lib ];
-      nativeBuildInputs = [
-        stdenv.cc.cc.lib
-        autoPatchelfHook
-      ];
-    })
   ];
 
   optional-dependencies = {

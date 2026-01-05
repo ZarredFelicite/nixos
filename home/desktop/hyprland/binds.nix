@@ -2,6 +2,8 @@
   wayland.windowManager.hyprland.extraConfig = ''
       bind   =  $mod,      I,    submap, dropdowns
       submap = dropdowns
+      bind   =      ,      $NAVL, exec, ~/scripts/bar/move_widget_cursor.sh l
+      bind   =      ,      $NAVR, exec, ~/scripts/bar/move_widget_cursor.sh r
       bind   =      ,      E, exec, ~/scripts/hyprland/toggle_special.sh volume
       bind   =      ,      E, submap, reset
       bind   =      ,      S, exec, ~/scripts/hyprland/toggle_special.sh scratchpad

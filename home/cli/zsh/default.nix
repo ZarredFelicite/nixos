@@ -118,6 +118,7 @@
       #};
     ];
     sessionVariables = {
+      COLORTERM = "truecolor";
       BLK = "04"; CHR = "04"; DIR = "04"; EXE = "00"; REG = "00"; HARDLINK = "00"; SYMLINK = "06"; MISSING = "00"; ORPHAN = "01"; FIFO = "0F"; SOCK = "0F"; OTHER = "02";
       # Colors
       FG = "\\033[38;2;";

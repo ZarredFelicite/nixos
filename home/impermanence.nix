@@ -1,6 +1,5 @@
-{ inputs, ... }: {
-  imports = [ inputs.impermanence.nixosModules.home-manager.impermanence ];
-  home.persistence."/persist/home/zarred" = {
+{ ... }: {
+  home.persistence."/persist" = {
     directories = [
       # VISIBLE
       "documents" # syncthing
@@ -32,7 +31,6 @@
       ".opencode"
       ".gemini"
       ".codex"
-      ".tor project"
       ".antigravity"
       # PERSISTENT .CONF
       ".config/kdeconnect"
@@ -81,6 +79,5 @@
       ".config/syncthingtray.ini"
       ".claude.json"
     ];
-    allowOther = true;
   };
 }

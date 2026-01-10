@@ -89,7 +89,7 @@ in
 
       #pkgs.python3Packages.yfinance
       yfinance
-      # TODO: broken vllm
+      vllm
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       ( pkgs.callPackage ../pkgs/python/yt-fts {})
 

@@ -135,8 +135,7 @@ in {
     xserver.enable = true;
     ollama = {
       enable = true;
-      package = pkgs-unstable.ollama.overrideAttrs { doCheck = false; };
-      #package = pkgs.ollama;
+      package = pkgs-unstable.ollama-cuda;
     };
     printing.enable = true;
     avahi.enable = true;

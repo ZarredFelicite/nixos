@@ -13,11 +13,11 @@
     users.zarred = import ../home/hosts/web.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
-  nixpkgs.overlays = [
-    (final: prev: {
-      linux-firmware = pkgs-unstable.linux-firmware;
-    })
-  ];
+  #nixpkgs.overlays = [
+  #  (final: prev: {
+  #    linux-firmware = pkgs-unstable.linux-firmware;
+  #  })
+  #];
   networking.hostName = "web";
   services.syncthing.enable = true;
   boot = {
@@ -122,7 +122,7 @@
     # acceleration). If this isn't set, the libvdpau backend will be
     # picked, and that one doesn't work with most things, including
     # Firefox.
-    #LIBVA_DRIVER_NAME = "nvidia";
+    LIBVA_DRIVER_NAME = "radeonsi";
     # Required to run the correct GBM backend for nvidia GPUs on wayland
     #GBM_BACKEND = "nvidia-drm";
     #GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
@@ -147,7 +147,7 @@
     cpuFreqGovernor = "powersave";
   };
   services.power-profiles-daemon.enable = true;
-  services.xserver.videoDrivers = ["nvidia" "amdgpu"];
+  services.xserver.videoDrivers = ["amdgpu" "nvidia"];
   services.hardware.openrgb = {
     package = pkgs-unstable.openrgb;
     enable = true;
@@ -172,16 +172,13 @@
     };
     amdgpu.initrd.enable = true;
     amdgpu.opencl.enable = true;
-    amdgpu.overdrive.enable = true;
+    amdgpu.overdrive.enable = false;
     graphics = {
       enable = true;
       enable32Bit = true;
       package = pkgs-unstable.mesa.drivers;
       package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
-      extraPackages = with pkgs-unstable; [
-        libva-vdpau-driver
-        libvdpau-va-gl
-      ];
+      extraPackages = [ ];
       #extraPackages32 = with pkgs-unstable.pkgsi686Linux; [ ];
     };
     openrazer = {

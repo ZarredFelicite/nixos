@@ -362,7 +362,7 @@ imports = [
             additional_vim_regex_highlighting = true;
           };
         };
-        folding = true;
+        folding.enable = true;
         nixGrammars = true;
         #grammarPackages = [
         #  # Default: config.plugins.treesitter.package.passthru.allGrammars

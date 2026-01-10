@@ -128,7 +128,7 @@ in {
     #pkgs.opencode
     pkgs-unstable.opencode
     pkgs-unstable.antigravity-fhs
-    #pkgs-unstable.playwright-mcp
+    pkgs-unstable.playwright-mcp
     #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 
     # latex (CLI toolchain)

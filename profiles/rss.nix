@@ -25,16 +25,10 @@
     ];
     logDestination = "syslog";
   };
-  virtualisation.oci-containers.containers."freshrss" = {
-    image = "lscr.io/linuxserver/freshrss:latest";
-    ports = [ "8880:80" ];
-    environment = {
-      PUID = "1000";
-      PGID = "1000";
-      TZ = "Etc/UTC";
-    };
-    volumes = [
-      "/var/lib/freshrss:/config"
-    ];
+  services.freshrss = {
+    enable = true;
+    package = pkgs.freshrss;
+    virtualHost = "freshrss.zar.red";
+    baseUrl = "https://freshrss.zar.red";
   };
 }

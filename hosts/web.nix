@@ -2,6 +2,7 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
+    ../modules/docling-server.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
@@ -241,9 +242,24 @@
       '';
     };
   };
-  virtualisation.oci-containers.containers.kokoro = {
-    image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
-    ports = [ "8880:8880" ];
+  virtualisation.oci-containers.containers = {
+    kokoro = {
+      image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
+      ports = [ "8880:8880" ];
+    };
+    crawl4ai = {
+      image = "unclecode/crawl4ai:latest";
+      ports = [ "11235:11235" ];
+      environment = {
+        OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai-api.path})";
+        LLM_PROVIDER = "openai/gpt-5-mini";
+      };
+    };
+  };
+  services.docling-server = {
+    enable = true;
+    # host = "127.0.0.1";
+    # port = 5001;
   };
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {

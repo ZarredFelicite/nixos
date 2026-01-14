@@ -235,6 +235,7 @@
         ib-gateway-vnc = { owner = "zarred"; };
         syncthing-api = { owner = "zarred"; };
         jellyfin-zarred = { owner = "zarred"; };
+        freshrss = { owner = "zarred"; };
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";

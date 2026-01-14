@@ -64,7 +64,6 @@
     ssl = true;
   };
   services.nginx = {
-    package = pkgs.nginxStable.override { openssl = pkgs.libressl; };
     logError = "stderr debug";
     recommendedProxySettings = true;
     recommendedTlsSettings = true;

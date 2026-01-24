@@ -173,7 +173,7 @@
     };
     amdgpu.initrd.enable = true;
     amdgpu.opencl.enable = true;
-    amdgpu.overdrive.enable = false;
+    amdgpu.overdrive.enable = true;
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -229,16 +229,36 @@
       Group = "root";
       ExecStart = pkgs.writers.writePython3 "nvidia-oc" {
         libraries = [ pkgs.python313Packages.nvidia-ml-py pkgs.python313Packages.pynvml ];
-        flakeIgnore = [ "E265" "E225" ];
+        flakeIgnore = [ "E265" "E225" "E231" "F405" "F403" ];
       }
       ''
-        import pynvml
-        pynvml.nvmlInit()
-        myGPU = pynvml.nvmlDeviceGetHandleByIndex(0)
-        #pynvml.nvmlDeviceSetGpuLockedClocks(myGPU, 225, 2115)
-        pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 100)
-        pynvml.nvmlDeviceSetMemClkVfOffset(myGPU, 1000)
-        pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 370000)
+        #import pynvml
+        #pynvml.nvmlInit()
+        #myGPU = pynvml.nvmlDeviceGetHandleByIndex(0)
+        #pynvml.nvmlDeviceSetGpuLockedClocks(myGPU, 225, 2000)
+        #pynvml.nvmlDeviceSetGpcClkVfOffset(myGPU, 250)
+        #pynvml.nvmlDeviceSetMemClkVfOffset(myGPU, 1000)
+        #pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 330000)
+        from pynvml import *
+        from ctypes import byref
+        nvmlInit()
+        deviceCount = nvmlDeviceGetCount()
+        for i in range(deviceCount):
+            handle = nvmlDeviceGetHandleByIndex(i)
+            print(f"Device {i} : {nvmlDeviceGetName(handle)}")
+        device = nvmlDeviceGetHandleByIndex(0)
+        nvmlDeviceSetGpuLockedClocks(device,225,2010)
+        nvmlDeviceSetPowerManagementLimit(device,330000)
+
+        info = c_nvmlClockOffset_t()
+        info.version = nvmlClockOffset_v1
+        info.type = NVML_CLOCK_GRAPHICS
+        info.pstate = NVML_PSTATE_0
+        info.clockOffsetMHz = 200
+
+        nvmlDeviceSetClockOffsets(device, byref(info))
+
+        nvmlShutdown()
       '';
     };
   };

@@ -56,6 +56,9 @@ in
       pygraphviz # graphviz python (can be CLI related)
       pdf2image # pdf utility (CLI usage)
       reportlab # pdf generation (CLI usage)
+      ( pkgs.callPackage ../pkgs/python/pymupdf-layout {}) # PyMuPDF with layout extension
+      ( ps.callPackage ../pkgs/python/pymupdf4llm { pymupdf = pkgs.callPackage ../pkgs/python/pymupdf-layout {}; }) # PyMuPDF Utilities for LLM/RAG - converts PDF pages to Markdown format for Retrieval-Augmented Generation
+      tabulate # Pretty-print tabular data
       fontforge # font editor (CLI/scriptable)
       ( pkgs.callPackage ../pkgs/python/reader {}) # feed reader (CLI)
       ( pkgs.callPackage ../pkgs/python/ibind {}) # Interactive Brokers (CLI/API)
@@ -72,6 +75,8 @@ in
       playsound # Simple audio playback
       gtts # Google Text-to-Speech
       flask # Web framework, could be for local tools
+      fastapi # Web framework for building APIs
+      fastmcp # Fast, Pythonic way to build MCP servers and clients
       numpy # Often with matplotlib
       matplotlib # Plotting library
       cairosvg
@@ -82,14 +87,14 @@ in
       textual # TUI framework for Python inspired by modern web development
       textual-image # Render images in the terminal with Textual and rich
       ( pkgs.callPackage ../pkgs/python/textual-plotext.nix {})
-      tabulate # Pretty-print tabular data
       pandas # Powerful data structures for data analysis, time series, and statistics
       plotly # Python plotting library for collaborative, interactive, publication-quality graphs
       kaleido # Fast static image export for web-based visualization libraries with zero dependencies
-
+      pynvml # Unofficial Python bindings for the NVIDIA Management Library
       #pkgs.python3Packages.yfinance
       yfinance
       vllm
+      ollama # Ollama Python library
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       ( pkgs.callPackage ../pkgs/python/yt-fts {})
 

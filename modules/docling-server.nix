@@ -28,7 +28,7 @@ in
         Type = "simple";
         WorkingDirectory = "/home/zarred/dev/ocr/docling/docling-server";
         ExecStart = "${pkgs.nix}/bin/nix-shell /home/zarred/dev/ocr/docling/docling-server/shell.nix --run '.venv/bin/docling-serve run --host 127.0.0.1 --port ${toString cfg.port} --enable-ui'";
-        
+
         Restart = "on-failure";
         RestartSec = "5s";
       };
@@ -37,10 +37,15 @@ in
         HF_HOME = "/home/zarred/.cache/docling/huggingface";
         EASYOCR_MODULE_PATH = "/home/zarred/.cache/docling/easyocr";
         MPLCONFIGDIR = "/home/zarred/.cache/docling/matplotlib";
-        
+
+        DOCLING_DEBUG_PROFILE_PIPELINE_TIMINGS = "true";
         # Disable torch.compile to avoid overhead (critical for VLM performance)
         TORCH_COMPILE_DISABLE = "1";
         TORCHDYNAMO_DISABLE = "1";
+        # Docling performance tuning (16-core CPU)
+        DOCLING_NUM_THREADS = "16";
+        DOCLING_PERF_PAGE_BATCH_SIZE = "8";
+        DOCLING_PERF_ELEMENTS_BATCH_SIZE = "16";
       };
     };
   };

@@ -69,6 +69,8 @@
 
         bind w composite hint -pipe a href | js -p tri.excmds.shellescape(JS_ARG) | exclaim_quiet linkhandler.sh
         bind W composite get_current_url | exclaim_quiet ~/scripts/file-ops/linkhandler.sh
+        bind gr composite js document.location.href + " " + document.title | exclaim_quiet /home/zarred/scripts/web/save-to-read-later.sh
+        bind ;r composite js document.location.href + " " + document.title | exclaim_quiet /home/zarred/scripts/web/save-to-read-later.sh
         "bind ;v composite hint -qpipe a href | js -p JS_ARG.map(h => `'$\{h}'`).join(" ") | ! mpv
         "bind e hint -W js -p tri.native.run(`\$HOME/bin/add-magnet '\$\{JS_ARG}'`)
 

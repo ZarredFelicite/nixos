@@ -78,6 +78,7 @@
       ".sops.yaml"
       ".config/syncthingtray.ini"
       ".claude.json"
+      ".config/nvtop/interface.ini"
     ];
   };
 }

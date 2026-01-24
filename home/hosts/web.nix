@@ -34,6 +34,7 @@
   };
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
+    Unit.Requires = [ "graphical-session.target" ];
     Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300 --serve --serve-port 8000";
     Service.Restart = "always";
     Service.RestartSec = "300s";

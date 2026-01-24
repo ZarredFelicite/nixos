@@ -79,7 +79,7 @@ in {
     systemd.enable = true;
     plugins = with pkgs-unstable.hyprlandPlugins; [
         # hyprspace # TODO: broken
-        hyprfocus
+        #hyprfocus
       # hyprgrass - Hyprland plugin for touch gestures
     ];
     settings = {

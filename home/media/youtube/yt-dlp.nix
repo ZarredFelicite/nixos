@@ -12,7 +12,7 @@
     --downloader-args aria2c:'-c -x8 -s8 -k1M --continue=true'
     --downloader-arg "ffmpeg_i1:-extension_picky 0"
     --downloader-arg "ffmpeg_i2:-extension_picky 0"
-    --extractor-args "youtube:player-client=web_safari;player_js_version=actual"
+    --extractor-args "youtube:player-client=default,-web_safari"
     #--cookies-from-browser firefox
     -N 16
   '';

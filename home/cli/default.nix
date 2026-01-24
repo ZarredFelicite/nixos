@@ -71,6 +71,7 @@ in {
     pkgs.duf # Disk Usage/Free Utility
     pkgs.ttyplot # A simple general purpose plotting utility for tty with data input from stdin
     pkgs.grc # Generic text colouriser
+    pkgs.qpdf # C++ library and set of programs that inspect and manipulate the structure of PDF files
 
     # backup/recovery (CLI)
     pkgs.testdisk # Data recovery utilities

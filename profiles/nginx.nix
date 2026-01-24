@@ -64,10 +64,9 @@
     ssl = true;
   };
   services.nginx = {
-    package = pkgs.nginxStable.override { openssl = pkgs.libressl; };
     logError = "stderr debug";
     recommendedProxySettings = true;
-    recommendedTlsSettings = true;
+    recommendedTlsSettings = false;
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     statusPage = true; # reachable from localhost on http://127.0.0.1/nginx_status
@@ -86,6 +85,10 @@
         default "no-cache";
       }
       access_log /var/log/nginx/access.log;
+      ssl_session_timeout 1d;
+      ssl_session_cache shared:SSL:10m;
+      ssl_session_tickets off;
+      ssl_prefer_server_ciphers off;
     '';
     virtualHosts = {
       # Configure SSL for service-managed virtual hosts

@@ -63,6 +63,7 @@ in {
     pkgs.unrar
 
     # utils (CLI focus)
+    pkgs.fx # Terminal JSON viewer
     pkgs.yq-go # yaml processer https://github.com/mikefarah/yq
     pkgs.yj # Convert YAML <=> TOML <=> JSON <=> HCL
     pkgs.bc # GNU software calculator
@@ -277,6 +278,9 @@ in {
     hyfetch = {
       enable = true;
       #settings = builtins.toJSON {};
+    };
+    lazygit = {
+      enable = true;
     };
 
     # Programs from home/cli-apps.nix

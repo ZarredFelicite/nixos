@@ -30,6 +30,9 @@
     package = pkgs.freshrss;
     virtualHost = "freshrss.zar.red";
     baseUrl = "https://freshrss.zar.red";
-    authType = "none";
+    passwordFile = "/run/secrets/freshrss";
+    defaultUser = "zarred";
+    authType = "form";
+    api.enable = true;
   };
 }

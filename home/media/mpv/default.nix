@@ -47,7 +47,8 @@
       keepaspect = true;
       autofit = "100%x100%";
       panscan = 1.0;
-      hwdec = "auto-safe";
+      #hwdec = "auto-safe";
+      hwdec = "no";
       vo = "gpu-next";
       gpu-api = "opengl";
       gpu-context = "wayland";

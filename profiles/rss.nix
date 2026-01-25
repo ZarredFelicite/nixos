@@ -32,4 +32,9 @@
     baseUrl = "https://freshrss.zar.red";
     authType = "none";
   };
+  services.nginx.virtualHosts."freshrss.zar.red" = {
+    enableACME = true;
+    forceSSL = true;
+    sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+  };
 }

@@ -1,35 +1,36 @@
-{ ... }: {
+{ ... }:
+{
   wayland.windowManager.hyprland.extraConfig = ''
-      bind   =  $mod,      I,    submap, dropdowns
-      submap = dropdowns
-      bind   =      ,      $NAVL, exec, ~/scripts/bar/move_widget_cursor.sh l
-      bind   =      ,      $NAVR, exec, ~/scripts/bar/move_widget_cursor.sh r
-      bind   =      ,      E, exec, ~/scripts/hyprland/toggle_special.sh volume
-      bind   =      ,      E, submap, reset
-      bind   =      ,      S, exec, ~/scripts/hyprland/toggle_special.sh scratchpad
-      bind   =      ,      S, submap, reset
-      bind   =      ,      O, exec, ~/scripts/hyprland/toggle_special.sh finance
-      bind   =      ,      O, submap, reset
-      bind   =      ,      N, exec, ~/scripts/hyprland/toggle_special.sh mail
-      bind   =      ,      N, submap, reset
-      bind   =      ,      F, exec, ~/scripts/hyprland/toggle_special.sh server
-      bind   =      ,      F, submap, reset
-      bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh media
-      bind   =      ,      M, submap, reset
-      bind   =      ,      C, exec, ~/scripts/hyprland/toggle_special.sh cameras
-      bind   =      ,      C, submap, reset
-      bind   =      ,      I, submap, browser
-      bind   =      , escape, submap, reset
-      submap = reset
-      submap = browser
-      bind   =      ,      T, exec, ~/scripts/hyprland/toggle_special.sh browser-tradingview
-      bind   =      ,      T, submap, reset
-      bind   =      ,      G, exec, ~/scripts/hyprland/toggle_special.sh browser-chatgpt
-      bind   =      ,      G, submap, reset
-      #bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh browser-messages
-      #bind   =      ,      M, submap, reset
-      bind   =      , escape, submap, reset
-      submap = reset
+    bind   =  $mod,      I,    submap, dropdowns
+    submap = dropdowns
+    bind   =      ,      $NAVL, exec, ~/scripts/bar/move_widget_cursor.sh l
+    bind   =      ,      $NAVR, exec, ~/scripts/bar/move_widget_cursor.sh r
+    bind   =      ,      E, exec, ~/scripts/hyprland/toggle_special.sh volume
+    bind   =      ,      E, submap, reset
+    bind   =      ,      S, exec, ~/scripts/hyprland/toggle_special.sh scratchpad
+    bind   =      ,      S, submap, reset
+    bind   =      ,      O, exec, ~/scripts/hyprland/toggle_special.sh finance
+    bind   =      ,      O, submap, reset
+    bind   =      ,      N, exec, ~/scripts/hyprland/toggle_special.sh mail
+    bind   =      ,      N, submap, reset
+    bind   =      ,      F, exec, ~/scripts/hyprland/toggle_special.sh server
+    bind   =      ,      F, submap, reset
+    bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh media
+    bind   =      ,      M, submap, reset
+    bind   =      ,      C, exec, ~/scripts/hyprland/toggle_special.sh cameras
+    bind   =      ,      C, submap, reset
+    bind   =      ,      I, submap, browser
+    bind   =      , escape, submap, reset
+    submap = reset
+    submap = browser
+    bind   =      ,      T, exec, ~/scripts/hyprland/toggle_special.sh browser-tradingview
+    bind   =      ,      T, submap, reset
+    bind   =      ,      G, exec, ~/scripts/hyprland/toggle_special.sh browser-chatgpt
+    bind   =      ,      G, submap, reset
+    #bind   =      ,      M, exec, ~/scripts/hyprland/toggle_special.sh browser-messages
+    #bind   =      ,      M, submap, reset
+    bind   =      , escape, submap, reset
+    submap = reset
   '';
   wayland.windowManager.hyprland.settings = {
     binds = {
@@ -45,8 +46,10 @@
       "$mod, mouse:273, resizewindow"
     ];
     bind = [
-      #"$mod CTRL, O, overview:toggle, all" # Dispatcher doesn't exist in v0.53
-      "$mod CTRL SHIFT, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
+      "$mod, O, exec, ~/scripts/hyprland/toggle_special.sh obsidian"
+      "$mod CTRL, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special"
+      "$mod SHIFT, O, exec, ~/scripts/hyprland/hide_window.sh obsidian 'home - Obsidian' special join"
+      #"$mod CTRL SHIFT, O, overview:toggle, all" # Dispatcher doesn't exist in v0.53
       "$mod, T, togglegroup,"
       #"$mod, T, hy3:makegroup, tab"
       "$mod CTRL, T, lockactivegroup, toggle"
@@ -65,7 +68,6 @@
       "$mod, D, exec, ~/scripts/hyprland/toggle_special.sh stats"
       "$mod, M, exec, ~/scripts/hyprland/toggle_special.sh music"
       "$mod, A, exec, ~/scripts/hyprland/toggle_special.sh reset"
-      "$mod, O, exec, ~/scripts/hyprland/toggle_special.sh obsidian"
       "$mod, G, exec, ~/scripts/hyprland/hide_window.sh firefox ChatGPT browser-chatgpt"
       "$mod, L, exec, ~/scripts/sys/system rofi"
       "$mod, C, exec, pkill 'rofi' || rofi -show calc"

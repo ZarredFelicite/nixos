@@ -32,16 +32,6 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
-  systemd.user.services.hotcopper = {
-    Unit.Description = "Scrape HotCopper for user posts";
-    Unit.Requires = [ "graphical-session.target" ];
-    Service.ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300 --serve --serve-port 8000";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
   systemd.user.services.abc-news = {
     Unit.Description = "Summarize abc news rss feed";
     Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";

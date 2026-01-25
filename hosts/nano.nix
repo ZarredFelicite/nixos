@@ -88,6 +88,19 @@
     size = 24 * 1024;
   }];
 
+  systemd.services.nfs-suspend-fix = {
+    description = "Unmount NFS shares before sleep to prevent hangs";
+    before = [ "sleep.target" ];
+    wantedBy = [ "sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "nfs-unmount" ''
+        export PATH="${pkgs.nfs-utils}/bin:$PATH"
+        ${pkgs.util-linux}/bin/umount -f -l /mnt/gargantua /mnt/ceres /mnt/eros /mnt/turing || true
+      '';
+    };
+  };
+
   systemd.services.radio-power-on-sleep = {
     description = "Save WiFi and Bluetooth state before sleep";
     before = [ "sleep.target" ];

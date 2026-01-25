@@ -330,7 +330,7 @@
   programs.ssh = {
     extraConfig = ''
       Host nixremote-web
-        HostName web
+        HostName 100.64.1.150
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
     '';

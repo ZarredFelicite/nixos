@@ -63,6 +63,7 @@ in {
     pkgs.unrar
 
     # utils (CLI focus)
+    pkgs.fx # Terminal JSON viewer
     pkgs.yq-go # yaml processer https://github.com/mikefarah/yq
     pkgs.yj # Convert YAML <=> TOML <=> JSON <=> HCL
     pkgs.bc # GNU software calculator
@@ -71,6 +72,7 @@ in {
     pkgs.duf # Disk Usage/Free Utility
     pkgs.ttyplot # A simple general purpose plotting utility for tty with data input from stdin
     pkgs.grc # Generic text colouriser
+    pkgs.qpdf # C++ library and set of programs that inspect and manipulate the structure of PDF files
 
     # backup/recovery (CLI)
     pkgs.testdisk # Data recovery utilities
@@ -276,6 +278,9 @@ in {
     hyfetch = {
       enable = true;
       #settings = builtins.toJSON {};
+    };
+    lazygit = {
+      enable = true;
     };
 
     # Programs from home/cli-apps.nix

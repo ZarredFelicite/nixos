@@ -20,6 +20,7 @@
   xdg.configFile."mpv/scripts/history.lua".source = ./plugins/mpvhistory.lua;
   xdg.configFile."mpv/scripts/jellyfin.lua".source = ./plugins/jellyfin.lua;
   xdg.configFile."mpv/scripts/easycrop.lua".source = ./plugins/easycrop.lua;
+  xdg.configFile."mpv/scripts/clear-old-buffers.lua".source = ./plugins/clear-old-buffers.lua;
   programs.mpv = {
     enable = true;
     config = {
@@ -46,7 +47,8 @@
       keepaspect = true;
       autofit = "100%x100%";
       panscan = 1.0;
-      hwdec = "auto-safe";
+      #hwdec = "auto-safe";
+      hwdec = "no";
       vo = "gpu-next";
       gpu-api = "opengl";
       gpu-context = "wayland";
@@ -79,6 +81,7 @@
       demuxer-max-bytes = "512MiB";
       demuxer-readahead-secs = 60;
       demuxer-max-back-bytes = "512MiB";
+      prefetch-playlist = false;     # Don't preload next video (saves memory)
       demuxer-lavf-o = "extension_picky=0";
       slang = "eng,en";
       vlang = "eng,en";

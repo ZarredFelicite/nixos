@@ -148,6 +148,7 @@
       zarred = {
         isNormalUser = true;
         description = "Zarred";
+        uid = 1000;
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
         extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp" "keyd" "input"];
         home = "/home/zarred";

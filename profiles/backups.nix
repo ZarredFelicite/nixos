@@ -4,7 +4,7 @@
     RESTIC_REPOSITORY = config.services.restic.backups.home.repository;
     RESTIC_PASSWORD_FILE = config.sops.secrets.restic-home.path;
   };
-  systemd.services.restic-backups-home.environment.SSH_AUTH_SOCK = "/run/user/1002/gnupg/S.gpg-agent.ssh";
+  systemd.services.restic-backups-home.environment.SSH_AUTH_SOCK = "/run/user/${toString config.users.users.zarred.uid}/gnupg/S.gpg-agent.ssh";
   services.restic.backups = {
     home = {
       repository = "sftp:zarred@sankara:/mnt/gargantua/backups/restic/${config.networking.hostName}-home";
@@ -41,8 +41,8 @@
         "--keep-yearly 75"
       ];
       inhibitsSleep = false; # TODO: systemd-inhibit[388820]: Failed to inhibit: Access denied
-      backupPrepareCommand = "export SSH_AUTH_SOCK=/run/user/1002/gnupg/S.gpg-agent.ssh; ssh-add -L; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup starting'";
-      backupCleanupCommand = "touch /run/restic-backups-home/includes; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1002/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup complete'";
+      backupPrepareCommand = "export SSH_AUTH_SOCK=/run/user/${toString config.users.users.zarred.uid}/gnupg/S.gpg-agent.ssh; ssh-add -L; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/${toString config.users.users.zarred.uid}/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup starting'";
+      backupCleanupCommand = "touch /run/restic-backups-home/includes; export DISPLAY=:0; export DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/${toString config.users.users.zarred.uid}/bus'; ${pkgs.libnotify}/bin/notify-send 'Restic' 'Backup complete'";
     };
   };
 }

@@ -1,4 +1,21 @@
 { pkgs, ... }: {
+  xdg.configFile."newsboat/urls".text = ''
+    "query:ai:tags # \"ai\""
+    "query:finance:tags # \"finance\""
+    "query:football:tags # \"football\""
+    "query:jobs:tags # \"jobs\""
+    "query:later:flags # \"L\""
+    "query:linux:tags # \"linux\""
+    "query:news:tags # \"news\""
+    "query:podcasts:tags # \"podcasts\""
+    "query:shopping:tags # \"shopping\""
+    "query:software:tags # \"software\""
+    "query:starred:flags # \"s\""
+    "query:stocks:tags # \"stocks\""
+    "query:tech:tags # \"tech\" and tags !# \"yt\""
+    "query:unread:unread = \"yes\" and tags !# \"unixporn\" and tags !# \"no_unread\" and tags !# \"podcasts\" and tags !# \"\""
+    "query:youtube:tags # \"yt\""
+  '';
   programs.newsboat = {
     enable = true;
     autoReload = true;
@@ -34,8 +51,11 @@
 
       urls-source "freshrss"
       freshrss-url "https://freshrss.zar.red/api/greader.php"
-      freshrss-login "zarred"
+      freshrss-login "admin"
       freshrss-passwordeval "gpg -d sync/password-store/server/freshrss-api.gpg"
+      freshrss-min-items 100
+      freshrss-flag-star "s"
+      freshrss-show-special-feeds "true"
 
       external-url-viewer "/home/zarred/scripts/file-ops/urlview fzf"
 

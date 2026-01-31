@@ -103,11 +103,12 @@
       };
     };
     firewall = {
-      enable = false;
-      allowedTCPPorts = [ 111 8080 80 443 8384]; # showmount,
-      allowedUDPPorts = [ config.services.tailscale.port ];
+      enable = true;
+      allowedTCPPorts = [ 22 ];
+      allowedUDPPorts = [ ];
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
+      interfaces = {};
     };
   };
   services.tailscale = {
@@ -148,6 +149,7 @@
       zarred = {
         isNormalUser = true;
         description = "Zarred";
+        uid = 1000;
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
         extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp" "keyd" "input"];
         home = "/home/zarred";
@@ -234,6 +236,8 @@
         ib-gateway = { owner = "zarred"; };
         ib-gateway-vnc = { owner = "zarred"; };
         syncthing-api = { owner = "zarred"; };
+        syncthing-gui = { owner = "zarred"; };
+        transmission-rpc = { owner = "zarred"; };
         jellyfin-zarred = { owner = "zarred"; };
         freshrss = { owner = "freshrss"; };
         twitch-api-token = {
@@ -330,7 +334,7 @@
   programs.ssh = {
     extraConfig = ''
       Host nixremote-web
-        HostName web
+        HostName 100.64.1.150
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
     '';

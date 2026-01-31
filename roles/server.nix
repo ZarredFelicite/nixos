@@ -78,7 +78,7 @@
     serviceConfig.Restart = "always";
     serviceConfig.RuntimeMaxSec = "1d";
     serviceConfig.RestartSec = "1min";
-    environment.SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+    environment.SSH_AUTH_SOCK = "/run/user/${toString config.users.users.zarred.uid}/gnupg/S.gpg-agent.ssh";
     path = [
       pkgs.inotify-tools
       pkgs.unixtools.ping

@@ -177,8 +177,8 @@
     graphics = {
       enable = true;
       enable32Bit = true;
-      package = pkgs-unstable.mesa.drivers;
-      package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
+      package = pkgs-unstable.mesa;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa;
       extraPackages = [ ];
       #extraPackages32 = with pkgs-unstable.pkgsi686Linux; [ ];
     };

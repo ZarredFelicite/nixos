@@ -1,8 +1,9 @@
-{ pkgs, lib, config, inputs, ... }:
+{ pkgs, pkgs-unstable, lib, config, inputs, ... }:
 
 let
   customPythonPackages = python-final: python-prev: {
     #yfinance = python-final.callPackage ../pkgs/python/yfinance {};
+    yt-dlp = pkgs.callPackage ../pkgs/python/yt-dlp { python3 = python-final.python; };
   };
 in
 {
@@ -19,12 +20,12 @@ in
     uv # Extremely fast Python package installer and resolver, written in Rust
     ruff # Extremely fast Python linter
     geckodriver # Proxy for using W3C WebDriver-compatible clients to interact with Gecko-based browsers
-    #( pkgs.callPackage ../pkgs/python/yt-dlp {}) # Already covered by yt-dlp
+    ( pkgs.callPackage ../pkgs/python/yt-dlp {} ) # Custom yt-dlp package
     (python3.withPackages(ps: with ps; [
       # CLI related or general purpose from cli-apps.nix
       pip # PyPA recommended tool for installing Python packages
       jwt # JSON Web Token library for Python 3
-      yt-dlp # Command-line tool to download videos from YouTube.com and other sites (youtube-dl fork)
+      yt-dlp # yt-dlp (custom via pythonPackagesExtensions)
       rich # Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
       psutil # Process and system utilization information interface
       mutagen # Python module for handling audio metadata (often CLI)
@@ -74,6 +75,8 @@ in
       python-mpv-jsonipc # For mpv control
       playsound # Simple audio playback
       gtts # Google Text-to-Speech
+      ( ps.callPackage ../pkgs/python/pocket-tts {} ) # Lightweight text-to-speech (TTS) application designed to run efficiently on CPUs
+      ( ps.callPackage ../pkgs/python/soprano-tts {} ) # Soprano TTS
       flask # Web framework, could be for local tools
       fastapi # Web framework for building APIs
       fastmcp # Fast, Pythonic way to build MCP servers and clients
@@ -96,7 +99,7 @@ in
       vllm
       ollama # Ollama Python library
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
-      ( pkgs.callPackage ../pkgs/python/yt-fts {})
+      #( pkgs.callPackage ../pkgs/python/yt-fts {})
 
       #(inputs.ignis.packages.${pkgs.stdenv.hostPlatform.system}.ignis.override {
       #  extraPackages = [

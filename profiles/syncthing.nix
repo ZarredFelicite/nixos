@@ -24,8 +24,8 @@
       gui = {
         tls = "true";
         theme = "black";
-        user = "";
-        password = "";
+        user = "zarred";
+        password = builtins.readFile config.sops.secrets.syncthing-gui.path;
       };
       devices = {
         "web" = { id = "FJPCMZP-BFNE27P-TFDPM26-X2TNVZC-BBKQX4B-4YQO7JZ-5NHRWER-X4YU6AD"; };

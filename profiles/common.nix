@@ -103,11 +103,12 @@
       };
     };
     firewall = {
-      enable = false;
-      allowedTCPPorts = [ 111 8080 80 443 8384]; # showmount,
-      allowedUDPPorts = [ config.services.tailscale.port ];
+      enable = true;
+      allowedTCPPorts = [ 22 ];
+      allowedUDPPorts = [ ];
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
+      interfaces = {};
     };
   };
   services.tailscale = {
@@ -235,6 +236,8 @@
         ib-gateway = { owner = "zarred"; };
         ib-gateway-vnc = { owner = "zarred"; };
         syncthing-api = { owner = "zarred"; };
+        syncthing-gui = { owner = "zarred"; };
+        transmission-rpc = { owner = "zarred"; };
         jellyfin-zarred = { owner = "zarred"; };
         freshrss = { owner = "zarred"; };
         twitch-api-token = {

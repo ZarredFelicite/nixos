@@ -181,7 +181,9 @@
       rpc-host-whitelist-enabled = false;
       rpc-whitelist-enabled = true;
       rpc-whitelist = "127.0.0.* 192.168.*.* 100.64.1.*";
-      rpc-authentication-required = false;
+      rpc-authentication-required = true;
+      rpc-username = "zarred";
+      rpc-password = builtins.readFile config.sops.secrets.transmission-rpc.path;
       anti-brute-force-enabled = true;
       anti-brute-force-threshold = 50;
       # scheduling

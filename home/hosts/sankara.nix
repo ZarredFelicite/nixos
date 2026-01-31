@@ -24,14 +24,21 @@
   home.packages = [ pkgs.firefox ]; # required for web scraping with selenium
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
+    Unit.After = [ "graphical-session.target" ];
+    Unit.StartLimitIntervalSec = 0;
     Service = {
       ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300 --serve --serve-port 8186";
       Restart = "always";
       RestartSec = "300s";
-      StartLimitIntervalSec = "0";
-      Environment = "PATH=${lib.makeBinPath [ pkgs.gnupg pkgs.firefox pkgs.geckodriver ]}:$PATH";
+      Environment = [
+        "PATH=${lib.makeBinPath [ pkgs.gnupg pkgs.firefox pkgs.geckodriver ]}:$PATH"
+        "FIREFOX_BIN=${pkgs.firefox}/bin/firefox"
+        "GECKODRIVER_BIN=${pkgs.geckodriver}/bin/geckodriver"
+        "GECKODRIVER_LOG_PATH=/tmp/hotcopper_geckodriver.log"
+        "MOZ_HEADLESS=1"
+        "HOME=/home/zarred"
+      ];
     };
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
+    Install.WantedBy = [ "default.target" ];
   };
 }

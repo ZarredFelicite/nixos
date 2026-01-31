@@ -31,9 +31,24 @@
     virtualHost = "freshrss.zar.red";
     baseUrl = "https://freshrss.zar.red";
     passwordFile = "/run/secrets/freshrss";
-    defaultUser = "zarred";
+    defaultUser = "admin";
     authType = "form";
-    api.enable = true;
+    #api.enable = true;
+    extensions = with pkgs.freshrss-extensions; [
+      reddit-image
+    ] ++ [
+      (pkgs.freshrss-extensions.buildFreshRssExtension {
+        FreshRssExtUniqueId = "ArticleSummary";
+        pname = "ArticleSummary";
+        version = "1.0";
+        src = pkgs.fetchFromGitHub {
+          owner = "LiangWei88";
+          repo = "xExtension-ArticleSummary";
+          rev = "b1e83a67fc24d5686309444b773ad84d15889270";
+          hash = "sha256-2XJgIE+4t9/Cs1AdVBbc1hFyjxpI/WXj6vLtFw4tXoc=";
+       };
+      })
+    ];
   };
   services.nginx.virtualHosts."freshrss.zar.red" = {
     enableACME = true;

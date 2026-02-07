@@ -3,7 +3,6 @@
   buildPythonPackage,
   fetchPypi,
   setuptools,
-  makeWrapper,
   onnxruntime,
   silero_vad,
   librosa,
@@ -25,7 +24,6 @@ buildPythonPackage rec {
   };
 
   build-system = [ setuptools ];
-  nativeBuildInputs = [ makeWrapper ];
 
   dependencies = [
     onnxruntime
@@ -34,12 +32,8 @@ buildPythonPackage rec {
     sounddevice
     soundfile
     numpy
+    portaudio
   ];
-
-  postFixup = ''
-    wrapProgram $out/bin/lwake \
-      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ portaudio ]}"
-  '';
 
   doCheck = false;
 

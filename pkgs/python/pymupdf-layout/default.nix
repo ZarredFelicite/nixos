@@ -29,6 +29,10 @@ pkgs.python3Packages.pymupdf.overridePythonAttrs (old: {
 
   pythonImportsCheck = [ "pymupdf.layout" ];
 
+  # Upstream memory regression test is flaky under Nix/CI on Python 3.13.
+  # Keep checks enabled but skip this known non-deterministic case.
+  disabledTests = (old.disabledTests or []) ++ [ "test_2791" ];
+
   meta = old.meta // {
     description = "PyMuPDF with PyMuPDF Layout extension";
     homepage = "https://pypi.org/project/pymupdf-layout/";

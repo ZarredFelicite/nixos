@@ -25,6 +25,8 @@
         "/home/zarred/games"
         "/home/zarred/downloads/games"
         "/home/zarred/.local/share/micromamba"
+        "/home/zarred/.local/share/containers/storage/overlay/*/work/work"
+        "/home/zarred/.local/share/docker/check-overlayfs-support*/work/work"
         "venv"
         ".env"
       ];

@@ -1,4 +1,4 @@
-{ self, pkgs,
+{ self, pkgs, config,
 #pkgs-unstable,
   inputs, outputs, ... }: {
   imports = [

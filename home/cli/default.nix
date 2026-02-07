@@ -28,6 +28,7 @@ in {
     ./tmux.nix
     ./glow.nix
     ./ueberzugpp.nix
+    ./openclaw.nix
     # INFO: does not have opencode compat ./mcp-servers.nix
   ];
 

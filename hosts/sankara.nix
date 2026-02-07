@@ -9,6 +9,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
+    sharedModules = [ inputs.nix-openclaw.homeManagerModules.openclaw ];
     users.zarred = import ../home/hosts/sankara.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";

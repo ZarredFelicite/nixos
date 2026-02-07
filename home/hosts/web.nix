@@ -79,6 +79,19 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+
+  systemd.user.services.lwake-multi-listen = {
+    Unit.Description = "Listen for local wake words and trigger phrase actions";
+    Unit.After = [ "graphical-session.target" ];
+    Install.WantedBy = [ "graphical-session.target" ];
+
+    Service = {
+      ExecStart = "/home/zarred/scripts/stt/lwake-multi-listen.sh /home/zarred/audio/wake-words";
+      Restart = "always";
+      RestartSec = "2s";
+      StartLimitIntervalSec = "0";
+    };
+  };
   # Placeholder for any home-manager settings absolutely specific to zarred on web
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-web-specific-tool ];

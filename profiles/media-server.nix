@@ -183,7 +183,7 @@
       rpc-whitelist = "127.0.0.* 192.168.*.* 100.64.1.*";
       rpc-authentication-required = true;
       rpc-username = "zarred";
-      rpc-password = builtins.readFile config.sops.secrets.transmission-rpc.path;
+      # rpc-password will be set via systemd.services.transmission.preStart using sops secret
       anti-brute-force-enabled = true;
       anti-brute-force-threshold = 50;
       # scheduling

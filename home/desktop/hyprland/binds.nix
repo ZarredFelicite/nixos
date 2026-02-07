@@ -89,7 +89,7 @@
       "$mod, Q, exec, loginctl lock-session"
       "$mod, S, exec, ~/scripts/nova/nova_window"
       "$mod SHIFT, S, exec, ~/scripts/screencapture/screenshot --selector-arg rofi 2&> /tmp/screenshot_log"
-      "$mod CTRL, S, exec, ~/scripts/screencapture/screenshot screenshot focused 2&> /tmp/screenshot_log"
+      "$mod CTRL, S, exec, ~/scripts/screencapture/screenshot screenshot region 2&> /tmp/screenshot_log"
       "$mod, P, exec, ~/scripts/launcher/rofi_programs rofi"
       "$mod, F, exec, firefox"
       " , PRINT, exec, ~/scripts/screencapture/screenshot rofi > /tmp/screenshot_log"

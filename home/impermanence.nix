@@ -32,6 +32,7 @@
       ".gemini"
       ".codex"
       ".antigravity"
+      ".openclaw"
       # PERSISTENT .CONF
       ".config/kdeconnect"
       ".config/BraveSoftware"
@@ -69,6 +70,8 @@
       ".config/comfy-ui"
       ".config/Antigravity"
       ".config/rncbc.org" # qpwgraph
+      ".config/openclaw"
+      ".config/openclaw-docs"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"

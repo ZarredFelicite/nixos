@@ -43,6 +43,7 @@ in {
     pkgs.wl-clipboard
     pkgs.cliphist
     pkgs.hyprpicker
+    pkgs.wayfreeze
     pkgs.wl-mirror
     pkgs.pipectl
 

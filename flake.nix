@@ -27,11 +27,14 @@
     # INFO:. does not have opencode compat. mcp-servers-nix = { url = "github:natsukium/mcp-servers-nix"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
 
     #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
+    
+    nix-openclaw = { url = "github:openclaw/nix-openclaw"; };
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
   };
   outputs = {
     self, nixpkgs,
     nixpkgs-unstable, #nixpkgs-master,
-    home-manager, nixos-hardware, ...  }@inputs:
+    home-manager, nixos-hardware, determinate, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
       system = "x86_64-linux";
@@ -60,11 +63,44 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-        	  modules = [
-             inputs.stylix.nixosModules.stylix
-             ./hosts/web.nix
-             ./roles/desktop.nix
-           ];
+          modules = [
+            { 
+              nixpkgs.overlays = [ 
+                inputs.nix-openclaw.overlays.default
+                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
+                (final: prev: {
+                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
+                    installPhase = ''
+                      ${oldAttrs.installPhase}
+                      echo "Installing workspace templates (manual phase)..."
+                      mkdir -p $out/lib/openclaw/docs/reference/templates
+                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
+                      echo "Templates installed successfully"
+                      echo "Linking hasown for form-data..."
+                      hasown_src=""
+                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
+                        if [ -e "$candidate" ]; then
+                          hasown_src="$candidate"
+                          break
+                        fi
+                      done
+                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
+                        mkdir -p "$out/lib/openclaw/node_modules"
+                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
+                      fi
+                    '';
+                  });
+                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
+                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
+                  });
+                })
+              ]; 
+            }
+            inputs.stylix.nixosModules.stylix
+            determinate.nixosModules.default
+            ./hosts/web.nix
+            ./roles/desktop.nix
+          ];
         };
         nano = lib.nixosSystem {
           inherit system;
@@ -74,12 +110,44 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-        	  modules = [
-             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
-             inputs.stylix.nixosModules.stylix
-             ./hosts/nano.nix
-             ./roles/desktop.nix
-           ];
+          modules = [
+            { 
+              nixpkgs.overlays = [ 
+                inputs.nix-openclaw.overlays.default
+                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
+                (final: prev: {
+                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
+                    installPhase = ''
+                      ${oldAttrs.installPhase}
+                      echo "Installing workspace templates (manual phase)..."
+                      mkdir -p $out/lib/openclaw/docs/reference/templates
+                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
+                      echo "Templates installed successfully"
+                      echo "Linking hasown for form-data..."
+                      hasown_src=""
+                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
+                        if [ -e "$candidate" ]; then
+                          hasown_src="$candidate"
+                          break
+                        fi
+                      done
+                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
+                        mkdir -p "$out/lib/openclaw/node_modules"
+                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
+                      fi
+                    '';
+                  });
+                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
+                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
+                  });
+                })
+              ]; 
+            }
+            nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
+            inputs.stylix.nixosModules.stylix
+            ./hosts/nano.nix
+            ./roles/desktop.nix
+          ];
         };
         sankara = lib.nixosSystem {
           inherit system;
@@ -89,7 +157,39 @@
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
-      	  modules = [
+          modules = [
+            { 
+              nixpkgs.overlays = [ 
+                inputs.nix-openclaw.overlays.default
+                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
+                (final: prev: {
+                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
+                    installPhase = ''
+                      ${oldAttrs.installPhase}
+                      echo "Installing workspace templates (manual phase)..."
+                      mkdir -p $out/lib/openclaw/docs/reference/templates
+                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
+                      echo "Templates installed successfully"
+                      echo "Linking hasown for form-data..."
+                      hasown_src=""
+                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
+                        if [ -e "$candidate" ]; then
+                          hasown_src="$candidate"
+                          break
+                        fi
+                      done
+                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
+                        mkdir -p "$out/lib/openclaw/node_modules"
+                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
+                      fi
+                    '';
+                  });
+                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
+                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
+                  });
+                })
+              ]; 
+            }
             inputs.stylix.nixosModules.stylix
             ./hosts/sankara.nix
             ./roles/server.nix
@@ -100,7 +200,39 @@
           specialArgs = {
             inherit inputs self;
           };
-      	  modules = [
+          modules = [
+            { 
+              nixpkgs.overlays = [ 
+                inputs.nix-openclaw.overlays.default
+                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
+                (final: prev: {
+                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
+                    installPhase = ''
+                      ${oldAttrs.installPhase}
+                      echo "Installing workspace templates (manual phase)..."
+                      mkdir -p $out/lib/openclaw/docs/reference/templates
+                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
+                      echo "Templates installed successfully"
+                      echo "Linking hasown for form-data..."
+                      hasown_src=""
+                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
+                        if [ -e "$candidate" ]; then
+                          hasown_src="$candidate"
+                          break
+                        fi
+                      done
+                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
+                        mkdir -p "$out/lib/openclaw/node_modules"
+                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
+                      fi
+                    '';
+                  });
+                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
+                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
+                  });
+                })
+              ]; 
+            }
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
             ./hosts/nano_minimal.nix

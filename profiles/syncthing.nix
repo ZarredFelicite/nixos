@@ -17,7 +17,7 @@
     overrideFolders = true;
     relay.enable = false;
     openDefaultPorts = true;
-    extraFlags = [ "--gui-apikey=${builtins.readFile config.sops.secrets.syncthing-api.path}" ];
+    # extraFlags = [ "--gui-apikey=${builtins.readFile config.sops.secrets.syncthing-api.path}" ]; # Cannot use builtins.readFile with runtime paths
     settings = {
       options.urAccepted = -1;
       options.relaysEnabled = false;

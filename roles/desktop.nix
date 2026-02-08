@@ -50,9 +50,15 @@ in {
     allowReboot = false;
   };
   #stylix.targets.plymouth.enable = false;
-  #systemd.tmpfiles.rules = [
-  #  "d /etc/systemd/system/display-manager.service.d 1777 root root"
-  #];
+  systemd.tmpfiles.rules = [
+    # Transmission paths may not exist on tmpfs-backed /var during activation.
+    # Ensure they are created before transmission's namespace setup runs.
+    "d /var/lib/transmission 0750 transmission users - -"
+    "d /var/lib/transmission/downloads 0755 transmission users - -"
+    "d /var/lib/transmission/downloads/complete 0755 transmission users - -"
+    "d /var/lib/transmission/downloads/incomplete 0755 transmission users - -"
+    "d /var/lib/transmission/watch-dir 0755 transmission users - -"
+  ];
   environment.etc = {
     #"systemd/system/display-manager.service.d/plymouth.conf".text = ''
     #  [Unit]

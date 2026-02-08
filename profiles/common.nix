@@ -184,7 +184,16 @@
   # 1 - execute only (--x)
   # 0 - none (---)
   security = {
-    doas.enable = true;
+    doas = {
+      enable = true;
+      extraRules = [
+        {
+          users = [ "zarred" ];
+          keepEnv = true;
+          persist = true;
+        }
+      ];
+    };
     # TODO: enable lanzaboote for secureboot on nixos
     tpm2 = {
       enable = true;
@@ -287,12 +296,13 @@
       openjpeg
       impala
       iwgtk
+      portaudio
     ])
     # ++ ( with pkgs-unstable; [ ])
     ;
     shells = with pkgs; [ zsh bashInteractive ];
     pathsToLink = [ "/share/zsh" ];
-    
+
     # Ensure system binaries take precedence over user profile binaries
     # This prevents Home Manager packages (like openclaw) from shadowing system packages (like python)
     extraInit = ''

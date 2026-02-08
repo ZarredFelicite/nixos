@@ -1,6 +1,7 @@
 { config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
+    ../profiles/hardware/thinkpad-x1-nano-gen1.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {

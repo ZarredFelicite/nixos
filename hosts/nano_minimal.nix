@@ -1,6 +1,7 @@
 { config, lib, pkgs, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
+    ../profiles/hardware/thinkpad-x1-nano-gen1.nix
   ];
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "nano";

@@ -8,7 +8,7 @@
     nur = { url = "github:nix-community/NUR"; };
     flake-utils.url = "github:numtide/flake-utils";
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # nixos-hardware removed; x1 nano settings are now vendored locally.
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:danth/stylix/release-25.11";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -34,7 +34,7 @@
   outputs = {
     self, nixpkgs,
     nixpkgs-unstable, #nixpkgs-master,
-    home-manager, nixos-hardware, determinate, ...  }@inputs:
+    home-manager, determinate, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
       system = "x86_64-linux";
@@ -143,7 +143,6 @@
                 })
               ]; 
             }
-            nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
             ./hosts/nano.nix
             ./roles/desktop.nix
@@ -233,7 +232,6 @@
                 })
               ]; 
             }
-            nixos-hardware.nixosModules.lenovo-thinkpad-x1-nano-gen1
             inputs.stylix.nixosModules.stylix
             ./hosts/nano_minimal.nix
             ./profiles/common.nix

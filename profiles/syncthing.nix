@@ -17,6 +17,8 @@
     overrideFolders = true;
     relay.enable = false;
     openDefaultPorts = true;
+    # Use module-supported runtime password file; avoids eval-time read of /run/secrets.
+    guiPasswordFile = config.sops.secrets.syncthing-gui.path;
     # extraFlags = [ "--gui-apikey=${builtins.readFile config.sops.secrets.syncthing-api.path}" ]; # Cannot use builtins.readFile with runtime paths
     settings = {
       options.urAccepted = -1;
@@ -25,7 +27,6 @@
         tls = "true";
         theme = "black";
         user = "zarred";
-        password = builtins.readFile config.sops.secrets.syncthing-gui.path;
       };
       devices = {
         "web" = { id = "FJPCMZP-BFNE27P-TFDPM26-X2TNVZC-BBKQX4B-4YQO7JZ-5NHRWER-X4YU6AD"; };

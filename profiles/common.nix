@@ -290,7 +290,6 @@
       iotop
       wget
       curl
-      neovim
       cmake
       gnumake
       ninja

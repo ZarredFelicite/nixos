@@ -106,6 +106,13 @@
       enable = true;
       allowedTCPPorts = [ 22 ];
       allowedUDPPorts = [ ];
+      # KDE Connect uses TCP/UDP 1714-1764 for discovery + data channels.
+      allowedTCPPortRanges = [
+        { from = 1714; to = 1764; }
+      ];
+      allowedUDPPortRanges = [
+        { from = 1714; to = 1764; }
+      ];
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
       interfaces = {};

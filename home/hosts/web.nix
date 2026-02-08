@@ -98,6 +98,17 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.services.soprano-streaming-server = {
+    Unit.Description = "Soprano low-latency streaming TTS server";
+    Service.User = "zarred";
+    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/tts/soprano/shell.nix --run '/home/zarred/.micromamba/envs/soprano/bin/python /home/zarred/scripts/tts/soprano/streaming_server.py --backend lmdeploy --device cuda --host 0.0.0.0 --port 8000'";
+    Service.Restart = "always";
+    Service.RestartSec = "5s";
+    Service.StartLimitIntervalSec = "0";
+    Service.WorkingDirectory = "/home/zarred/scripts/tts/soprano";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
 
   systemd.user.services.lwake-multi-listen = {
     Unit.Description = "Listen for local wake words and trigger phrase actions";
@@ -111,6 +122,24 @@
       StartLimitIntervalSec = "0";
     };
   };
+
+  # Expose loopback-bound OpenClaw gateway over Tailscale Serve for node hosts.
+  systemd.user.services.openclaw-tailnet-serve = {
+    Unit = {
+      Description = "OpenClaw gateway via Tailscale Serve (TCP 18789)";
+      After = [ "network-online.target" "openclaw-gateway.service" ];
+      Wants = [ "network-online.target" "openclaw-gateway.service" ];
+      PartOf = [ "openclaw-gateway.service" ];
+    };
+    Service = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.tailscale}/bin/tailscale serve --bg --tcp 18789 127.0.0.1:18789";
+      ExecStop = "${pkgs.tailscale}/bin/tailscale serve --tcp=18789 off";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   # Placeholder for any home-manager settings absolutely specific to zarred on web
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-web-specific-tool ];

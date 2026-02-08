@@ -1,6 +1,6 @@
 { lib, pkgs, inputs, config, osConfig, ... }: {
   disabledModules = [
-    "programs/himalaya.nix"
+    #"programs/himalaya.nix"
     #"services/imapnotify.nix"
     #"programs/neomutt.nix"
   ];
@@ -8,6 +8,7 @@
     ./frontends/aerc.nix
     ./frontends/alot.nix
     ./frontends/neomutt.nix
+    ./frontends/himalaya.nix
     #../../modules/imapnotify.nix
   ];
   accounts.email = {
@@ -69,6 +70,14 @@
     enable = true;
     path = [
       pkgs.bash
+      pkgs.coreutils
+      pkgs.jq
+      pkgs.libnotify
+      pkgs.lynx
+      pkgs.gnused
+      pkgs.gawk
+      pkgs.libiconv
+      pkgs.glibc.bin
     ];
   };
   programs.mbsync = {

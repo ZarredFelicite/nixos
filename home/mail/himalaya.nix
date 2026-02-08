@@ -79,8 +79,8 @@ let
       });
 
       notmuchConfig = lib.optionalAttrs notmuchEnabled (compactAttrs {
-        backend = "notmuch";
-        notmuch-db-path = maildirBasePath;
+        backend.type = "notmuch";
+        backend.db-path = maildirBasePath;
       });
 
       smtpConfig = lib.optionalAttrs (!isNull account.smtp) (compactAttrs {

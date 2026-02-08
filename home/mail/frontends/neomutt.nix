@@ -10,6 +10,16 @@
       virtual-mailboxes "payslips" "notmuch://?query=query:payslips"
       virtual-mailboxes "news" "notmuch://?query=query:news"
       virtual-mailboxes "other" "notmuch://?query=query:other"
+      set spoolfile = "notmuch://?query=tag:inbox"
+      startup-hook "push <change-folder>notmuch://?query=tag:inbox<enter>"
+      mailboxes \
+        "notmuch://?query=query:important" \
+        "notmuch://?query=query:updates" \
+        "notmuch://?query=query:career" \
+        "notmuch://?query=query:receipts" \
+        "notmuch://?query=query:payslips" \
+        "notmuch://?query=query:news" \
+        "notmuch://?query=query:other"
       '';
   };
   programs.neomutt = {
@@ -49,7 +59,7 @@
       count_alternatives = "yes";    # recurse into text/multipart when looking for attachement types
 
       nm_query_type = "threads";           # bring in the whole thread instead of just the matched message, really useful
-      nm_default_url = "notmuch:///home/zarred/.local/share/mail";
+      nm_default_uri = "notmuch:///home/zarred/.mail";
       nm_record_tags = "sent";           # default 'sent' tag
       virtual_spoolfile = "yes";
 

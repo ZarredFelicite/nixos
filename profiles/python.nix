@@ -77,9 +77,11 @@ in
       playsound # Simple audio playback
       gtts # Google Text-to-Speech
       ( ps.callPackage ../pkgs/python/pocket-tts {} ) # Lightweight text-to-speech (TTS) application designed to run efficiently on CPUs
-      ( ps.callPackage ../pkgs/python/soprano-tts {} ) # Soprano TTS
+
       flask # Web framework, could be for local tools
       fastapi # Web framework for building APIs
+      uvicorn # ASGI server for FastAPI
+      python-multipart # Multipart parser for file uploads
       fastmcp # Fast, Pythonic way to build MCP servers and clients
       numpy # Often with matplotlib
       matplotlib # Plotting library
@@ -104,6 +106,7 @@ in
       ollama # Ollama Python library
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       #( pkgs.callPackage ../pkgs/python/yt-fts {})
+      ( ps.callPackage ../pkgs/python/deepface {} )
 
       #(inputs.ignis.packages.${pkgs.stdenv.hostPlatform.system}.ignis.override {
       #  extraPackages = [

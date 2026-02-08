@@ -68,6 +68,25 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  systemd.user.services.deepface-api = {
+    Unit.Description = "DeepFace API server";
+    Service.User = "zarred";
+    Service.Environment = [
+      "DEEPFACE_DATABASE_TYPE=pgvector"
+      "DEEPFACE_CONNECTION_DETAILS=postgresql://zarred@/deepface?host=/run/postgresql"
+      "OPENCV_OPENCL_RUNTIME=disabled"
+      "CUDA_VISIBLE_DEVICES="
+      "HIP_VISIBLE_DEVICES="
+      "ROCR_VISIBLE_DEVICES="
+    ];
+    Service.ExecStart = "/run/current-system/sw/bin/python -m uvicorn api.main:app --app-dir /home/zarred/dev/deepface --host 0.0.0.0 --port 5005";
+    Service.Restart = "always";
+    Service.RestartSec = "5s";
+    Service.StartLimitIntervalSec = "0";
+    Service.WorkingDirectory = "/home/zarred/dev/deepface";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
   systemd.user.services.speech-enhancement = {
     Unit.Description = "Server for streaming audio for speech enhancement";
     Service.User = "zarred";

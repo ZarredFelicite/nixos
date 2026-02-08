@@ -75,7 +75,8 @@
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"
-      "$mod, R, exec, ~/scripts/stt/record2.sh --type"
+      "$mod, U, exec, ~/scripts/stt/record-transcribe.py --agent --deliver"
+      "$mod, CTRL, U, exec, ~/scripts/stt/record-transcribe.py --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
 
       "$mod CTRL, Return, exec, ghostty"

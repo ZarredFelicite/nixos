@@ -22,6 +22,22 @@
   #];
   networking.hostName = "web";
   services.syncthing.enable = true;
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql_16;
+    enableTCPIP = true;
+    extensions = ps: with ps; [ pgvector ];
+    ensureUsers = [
+      {
+        name = "deepface";
+        ensureDBOwnership = true;
+      }
+      {
+        name = "zarred";
+      }
+    ];
+    ensureDatabases = [ "deepface" ];
+  };
   boot = {
     kernelPackages = pkgs-unstable.linuxPackages_latest;
     kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];

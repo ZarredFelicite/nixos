@@ -188,6 +188,41 @@ in {
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      extraConfig.pipewire."99-deepfilternet" = {
+        "context.modules" = [
+          {
+            name = "libpipewire-module-filter-chain";
+            args = {
+              "node.description" = "DeepFilter Noise Canceling source";
+              "media.name" = "DeepFilter Noise Canceling source";
+
+              "filter.graph" = {
+                nodes = [
+                  {
+                    type = "ladspa";
+                    name = "DeepFilter Mono";
+                    plugin = "${pkgs.deepfilternet}/lib/ladspa/libdeep_filter_ladspa.so";
+                    label = "deep_filter_mono";
+                    control = {
+                      "Attenuation Limit (dB)" = 100;
+                    };
+                  }
+                ];
+              };
+
+              "audio.rate" = 48000;
+              "audio.position" = [ "MONO" ];
+
+              "capture.props" = {
+                "node.passive" = true;
+              };
+              "playback.props" = {
+                "media.class" = "Audio/Source";
+              };
+            };
+          }
+        ];
+      };
       #extraConfig.pipewire-pulse."mpd-connection" = {
       #  "server.address" = [ {
       #    address = "tcp:4713";              # address

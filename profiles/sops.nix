@@ -33,11 +33,12 @@
       '';
       owner = "zarred";
     };
-    secrets = {
+    secrets = lib.mkMerge [
+      (lib.mkIf (config.networking.hostName == "sankara") {
         nextcloud-admin = { owner = "nextcloud"; };
-        authelia-jwtSecret = { owner = "zarred"; };
-        authelia-storageEncryptionKey = { owner = "zarred"; };
         immich-secrets = { sopsFile = ../secrets/immich.enc.env; format = "dotenv"; owner = "immich"; };
+      })
+      {
         users-zarred.neededForUsers = true;
         users-root.neededForUsers = true;
         gmail-personal = { owner = "zarred"; };
@@ -74,6 +75,9 @@
         elevenlabs-api = { owner = "zarred"; };
         openclaw-token = { owner = "zarred"; };
         nixAccessTokens = { mode = "0440"; group = config.users.groups.keys.name; };
+        authelia-jwtSecret = { owner = "zarred"; };
+        authelia-storageEncryptionKey = { owner = "zarred"; };
+        freshrss-api = { owner = "zarred"; };
       }
     ];
   };

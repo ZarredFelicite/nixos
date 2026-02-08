@@ -207,8 +207,13 @@
         $'\033[38;5;214m' $'\033[38;5;165m' $'\033[38;5;124m' $'\033[38;5;120m'
     )
     zstyle ':fzf-tab:*' group-colors $FZF_TAB_GROUP_COLORS
+
+    # Override generic fzf-tab-source "less $realpath" preview to avoid lingering
+    # pager processes (especially on binary/image completions).
+    zstyle ':fzf-tab:complete:*' fzf-preview '~/scripts/previewers/mini_previewer "$realpath"'
+
     ## cd
-    zstyle ':fzf-tab:complete:cd:*' fzf-preview '~/scripts/previewers/mini_previewer $realpath'
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview '~/scripts/previewers/mini_previewer "$realpath"'
     ## git
     zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview \
       'git diff $word | delta'

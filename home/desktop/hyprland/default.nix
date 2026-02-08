@@ -20,7 +20,8 @@ in {
   ];
   services.hyprpaper = {
     enable = true;
-    package = pkgs-unstable.hyprpaper;
+    # 0.8.x has been crashing at session start on this host; stick to stable for now.
+    package = pkgs.hyprpaper;
     settings = {
       preload = [
         "~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
@@ -36,6 +37,17 @@ in {
       ipc = "on";
     };
   };
+  # Start hyprpaper only after the session is up; mitigates login-time startup races.
+  systemd.user.services.hyprpaper = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "3";
+      ExecStartPre = [
+        "${pkgs.coreutils}/bin/sleep 2"
+      ];
+    };
+  };
+
   systemd.user.services.hyprpolkitagent = mkHyprlandService {
     Unit.Description = "hyprpolkitagent polkit authentication daemon";
     Service = {

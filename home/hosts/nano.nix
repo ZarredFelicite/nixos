@@ -40,7 +40,7 @@
     Service = {
       Type = "simple";
       EnvironmentFile = "%h/.config/openclaw/node-host.env";
-      ExecStart = "${pkgs.openclaw-gateway}/bin/openclaw node run --host web.manticore-lenok.ts.net --port 18789 --display-name nano";
+      ExecStart = "${pkgs.openclaw-gateway}/bin/openclaw node run --host web.manticore-lenok.ts.net --port 18789 --tls --display-name nano";
       Restart = "always";
       RestartSec = "2s";
     };

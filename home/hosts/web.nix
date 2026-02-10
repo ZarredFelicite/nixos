@@ -123,10 +123,10 @@
     };
   };
 
-  # Expose loopback-bound OpenClaw gateway over Tailscale Serve for node hosts.
+  # Expose loopback-bound OpenClaw gateway over Tailscale Serve (HTTPS).
   systemd.user.services.openclaw-tailnet-serve = {
     Unit = {
-      Description = "OpenClaw gateway via Tailscale Serve (TCP 18789)";
+      Description = "OpenClaw gateway via Tailscale Serve (HTTPS 18789)";
       After = [ "network-online.target" "openclaw-gateway.service" ];
       Wants = [ "network-online.target" "openclaw-gateway.service" ];
       PartOf = [ "openclaw-gateway.service" ];
@@ -134,8 +134,8 @@
     Service = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${pkgs.tailscale}/bin/tailscale serve --bg --tcp 18789 127.0.0.1:18789";
-      ExecStop = "${pkgs.tailscale}/bin/tailscale serve --tcp=18789 off";
+      ExecStart = "${pkgs.tailscale}/bin/tailscale serve --bg --https 18789 https+insecure://127.0.0.1:18789";
+      ExecStop = "${pkgs.tailscale}/bin/tailscale serve --https=18789 off";
     };
     Install.WantedBy = [ "default.target" ];
   };

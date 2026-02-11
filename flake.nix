@@ -29,6 +29,7 @@
     #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
     
     nix-openclaw = { url = "github:openclaw/nix-openclaw"; };
+    qmd = { url = "github:tobi/qmd"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
   };
   outputs = {
@@ -67,33 +68,7 @@
             { 
               nixpkgs.overlays = [ 
                 inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
+                # Workaround for openclaw/nix-openclaw#18 overrides disabled
               ]; 
             }
             inputs.stylix.nixosModules.stylix
@@ -114,33 +89,7 @@
             { 
               nixpkgs.overlays = [ 
                 inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
+                # Workaround for openclaw/nix-openclaw#18 overrides disabled
               ]; 
             }
             inputs.stylix.nixosModules.stylix
@@ -160,33 +109,7 @@
             { 
               nixpkgs.overlays = [ 
                 inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
+                # Workaround for openclaw/nix-openclaw#18 overrides disabled
               ]; 
             }
             inputs.stylix.nixosModules.stylix
@@ -203,33 +126,7 @@
             { 
               nixpkgs.overlays = [ 
                 inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
+                # Workaround for openclaw/nix-openclaw#18 overrides disabled
               ]; 
             }
             inputs.stylix.nixosModules.stylix

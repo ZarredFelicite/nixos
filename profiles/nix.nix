@@ -130,6 +130,12 @@
   systemd.services.nix-daemon = {
     environment.TMPDIR = "/var/cache/nix";
     serviceConfig.CacheDirectory = "nix";
+    unitConfig = {
+      # determinate-nixd can exit quickly during activation churn; avoid
+      # tripping start-rate limits and breaking nh/nix daemon connections.
+      StartLimitIntervalSec = 0;
+      StartLimitBurst = 0;
+    };
   };
   programs.nix-ld.enable = true;
 }

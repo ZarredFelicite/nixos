@@ -55,8 +55,6 @@ in {
     pkgs.sox
     pkgs.decibels
     pkgs.amberol
-    pkgs.glow
-    pkgs.nb
     pkgs-unstable.obsidian
     pkgs.orca-slicer
     (pkgs.callPackage ../../pkgs/stl-thumb.nix {} )

@@ -364,9 +364,12 @@ in {
     serviceConfig.SupplementaryGroups = [ "pipewire" ];
     #serviceConfig.ExecStartPre = [ "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.netcat}/bin/nc -z 100.64.1.200 6600; do sleep 5; done'" ];
     serviceConfig.ExecStart = [ "" "${pkgs.mpd}/bin/mpd --no-daemon /run/mpd/mpd.conf" ];
+    serviceConfig.TimeoutStopSec = "10s";
     #serviceConfig.ExecStop = [ "${pkgs.mpd}/bin/mpd --kill /run/mpd/mpd.conf; ${pkgs.bash}/bin/bash -c 'sleep 5'" ];
     #serviceConfig.KillMode = [ "mixed" ];
     after = [ "mnt-gargantua.mount" ];
+    before = [ "umount.target" ];
+    conflicts = [ "umount.target" ];
     requires = [ "mnt-gargantua.mount" ];
     environment = {
       # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/609

@@ -44,6 +44,7 @@
       default = {
         ids = [
         "045E:09AE" "045e:09ae" "17ef:60ee" "046d:408a" "0001:0001"
+        "046d:b369" "046D:B369" # MX Keys Mini (Bluetooth)
         "17EF:60E1" # trackpoint keyboard
         ];
         settings = {

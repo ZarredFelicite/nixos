@@ -74,6 +74,9 @@ in {
     pkgs.ttyplot # A simple general purpose plotting utility for tty with data input from stdin
     pkgs.grc # Generic text colouriser
     pkgs.qpdf # C++ library and set of programs that inspect and manipulate the structure of PDF files
+    pkgs.nb # Command line note-taking, bookmarking, archiving, and knowledge base application
+    pkgs.glow # Render markdown on the CLI, with pizzazz
+    pkgs.gum # Tasty Bubble Gum for your shell
 
     # backup/recovery (CLI)
     pkgs.testdisk # Data recovery utilities
@@ -130,7 +133,7 @@ in {
     pkgs-unstable.gemini-cli
     #pkgs.opencode
     pkgs-unstable.opencode
-    pkgs-unstable.antigravity-fhs
+    # antigravity removed
     pkgs-unstable.playwright-mcp
     #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 

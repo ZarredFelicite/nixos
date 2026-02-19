@@ -56,14 +56,12 @@ in {
         Install.WantedBy = [ "default.target" ];
       };
 
-      openclaw-node.Install.WantedBy = lib.mkForce [ ];
       openclaw-node-host.Install.WantedBy = lib.mkForce [ ];
     })
 
     (lib.mkIf isNodeHost {
       # Node hosts (nano/sankara): do not run gateway/node client; run node-host only.
       openclaw-gateway.Install.WantedBy = lib.mkForce [ ];
-      openclaw-node.Install.WantedBy = lib.mkForce [ ];
 
       openclaw-node-host = {
         Unit = {

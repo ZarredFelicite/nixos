@@ -28,6 +28,7 @@
 
   # Nano should act as a node host, not run its own gateway service.
   systemd.user.services.openclaw-gateway.Install.WantedBy = lib.mkForce [ ];
+  systemd.user.services.openclaw-node.Install.WantedBy = lib.mkForce [ ];
 
   # OpenClaw node host for connecting nano to the main gateway over Tailscale.
   # Token/config stays imperative in ~/.config/openclaw/node-host.env (persisted).

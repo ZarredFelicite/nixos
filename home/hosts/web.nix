@@ -123,23 +123,6 @@
     };
   };
 
-  # Expose loopback-bound OpenClaw gateway over Tailscale Serve (HTTPS).
-  systemd.user.services.openclaw-tailnet-serve = {
-    Unit = {
-      Description = "OpenClaw gateway via Tailscale Serve (HTTPS 18789)";
-      After = [ "network-online.target" "openclaw-gateway.service" ];
-      Wants = [ "network-online.target" "openclaw-gateway.service" ];
-      PartOf = [ "openclaw-gateway.service" ];
-    };
-    Service = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.tailscale}/bin/tailscale serve --bg --https 18789 https+insecure://127.0.0.1:18789";
-      ExecStop = "${pkgs.tailscale}/bin/tailscale serve --https=18789 off";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
-
   # Placeholder for any home-manager settings absolutely specific to zarred on web
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-web-specific-tool ];

@@ -1,66 +1,10 @@
-{ osConfig, pkgs, inputs, lib, ... }:
+{ osConfig, config, pkgs, inputs, lib, ... }:
 let
-  qmdSrc = inputs.qmd;
+  qmdPkg = pkgs.callPackage ../../pkgs/qmd/package.nix {};
 
-  qmdNodeModules = pkgs.stdenvNoCC.mkDerivation {
-    pname = "qmd-node-modules";
-    version = "1.0.0";
-    src = qmdSrc;
-
-    nativeBuildInputs = [
-      pkgs.bun
-      pkgs.writableTmpDirAsHomeHook
-    ];
-
-    dontConfigure = true;
-
-    buildPhase = ''
-      runHook preBuild
-      export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
-      bun install --frozen-lockfile --no-progress
-      runHook postBuild
-    '';
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out
-      cp -r node_modules $out/
-      runHook postInstall
-    '';
-
-    dontFixup = true;
-
-    outputHash = "sha256-LPAbmfBXKlTmInQ+KYJrTvlB1Z9esBY9yziQ8IkKbtY=";
-    outputHashAlgo = "sha256";
-    outputHashMode = "recursive";
-  };
-
-  qmdPkg = pkgs.stdenvNoCC.mkDerivation {
-    pname = "qmd";
-    version = "1.0.0";
-    src = qmdSrc;
-
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    buildInputs = [ pkgs.sqlite ];
-
-    dontConfigure = true;
-
-    installPhase = ''
-      runHook preInstall
-
-      mkdir -p $out/lib/qmd $out/bin
-      cp -r src $out/lib/qmd/
-      cp package.json bun.lock $out/lib/qmd/
-      cp -r ${qmdNodeModules}/node_modules $out/lib/qmd/
-
-      makeWrapper ${pkgs.bun}/bin/bun $out/bin/qmd \
-        --add-flags "$out/lib/qmd/src/qmd.ts" \
-        --set DYLD_LIBRARY_PATH "${pkgs.sqlite.out}/lib" \
-        --set LD_LIBRARY_PATH "${pkgs.sqlite.out}/lib"
-
-      runHook postInstall
-    '';
-  };
+  hostName = osConfig.networking.hostName or "";
+  isWeb = hostName == "web";
+  isNodeHost = builtins.elem hostName [ "nano" "sankara" ];
 
   # Create a wrapper script that sets OPENROUTER_API_KEY from the secret file
   openclawWrapper = pkgs.writeShellScript "openclaw-gateway-wrapper" ''
@@ -70,26 +14,72 @@ let
 in {
   home.packages = [ pkgs.openclaw-gateway qmdPkg ];
 
-  # Manually defined service (bypasses the module's config generation)
-  systemd.user.services.openclaw-gateway = {
-    Unit = {
-      Description = "Openclaw Gateway";
-      After = [ "network.target" ];
-    };
-    Service = {
-      ExecStart = "${openclawWrapper}";
-      WorkingDirectory = "%h/.openclaw";
-      Restart = "always";
-      RestartSec = "5s";
-      Environment = [
-        "MOLTBOT_NIX_MODE=1"
-        "CLAWDBOT_NIX_MODE=1"
-        "HOME=%h"
-        "PATH=${qmdPkg}/bin:${pkgs.openssl.bin}/bin:/run/current-system/sw/bin"
-      ];
-    };
-    Install = {
-      WantedBy = [ "default.target" ];
-    };
-  };
+  systemd.user.services = lib.mkMerge [
+    (lib.mkIf isWeb {
+      # Gateway host (web): run gateway + tailscale serve; disable node clients.
+      openclaw-gateway = {
+        Unit = {
+          Description = "Openclaw Gateway";
+          After = [ "network.target" ];
+        };
+        Service = {
+          ExecStart = "${openclawWrapper}";
+          WorkingDirectory = "%h/.openclaw";
+          Restart = "always";
+          RestartSec = "5s";
+          Environment = [
+            "MOLTBOT_NIX_MODE=1"
+            "CLAWDBOT_NIX_MODE=1"
+            "HOME=%h"
+            "PATH=${qmdPkg}/bin:${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
+          ];
+        };
+        Install = {
+          WantedBy = [ "default.target" ];
+        };
+      };
+
+      # Expose loopback-bound OpenClaw gateway over Tailscale Serve (HTTPS).
+      openclaw-tailnet-serve = {
+        Unit = {
+          Description = "OpenClaw gateway via Tailscale Serve (HTTPS 18789)";
+          After = [ "network-online.target" "openclaw-gateway.service" ];
+          Wants = [ "network-online.target" "openclaw-gateway.service" ];
+          PartOf = [ "openclaw-gateway.service" ];
+        };
+        Service = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${pkgs.tailscale}/bin/tailscale serve --bg --https 18789 http://127.0.0.1:18789";
+          ExecStop = "${pkgs.tailscale}/bin/tailscale serve --https=18789 off";
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
+
+      openclaw-node.Install.WantedBy = lib.mkForce [ ];
+      openclaw-node-host.Install.WantedBy = lib.mkForce [ ];
+    })
+
+    (lib.mkIf isNodeHost {
+      # Node hosts (nano/sankara): do not run gateway/node client; run node-host only.
+      openclaw-gateway.Install.WantedBy = lib.mkForce [ ];
+      openclaw-node.Install.WantedBy = lib.mkForce [ ];
+
+      openclaw-node-host = {
+        Unit = {
+          Description = "OpenClaw node host (${hostName})";
+          After = [ "network-online.target" ];
+          Wants = [ "network-online.target" ];
+        };
+        Service = {
+          Type = "simple";
+          EnvironmentFile = "%h/.config/openclaw/node-host.env";
+          ExecStart = "${pkgs.openclaw-gateway}/bin/openclaw node run --host web.manticore-lenok.ts.net --port 18789 --tls --display-name ${hostName}";
+          Restart = "always";
+          RestartSec = "2s";
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
+    })
+  ];
 }

@@ -23,28 +23,6 @@
   # that don't fit into a reusable profile.
   home.packages = [ pkgs.firefox ]; # required for web scraping with selenium
 
-  # Sankara should act as a node host, not run its own gateway service.
-  systemd.user.services.openclaw-gateway.Install.WantedBy = lib.mkForce [ ];
-  systemd.user.services.openclaw-node.Install.WantedBy = lib.mkForce [ ];
-
-  # OpenClaw node host for connecting sankara to the main gateway over Tailscale.
-  # Token/config stays imperative in ~/.config/openclaw/node-host.env (persisted).
-  systemd.user.services.openclaw-node-host = {
-    Unit = {
-      Description = "OpenClaw node host (sankara)";
-      After = [ "network-online.target" ];
-      Wants = [ "network-online.target" ];
-    };
-    Service = {
-      Type = "simple";
-      EnvironmentFile = "%h/.config/openclaw/node-host.env";
-      ExecStart = "${pkgs.openclaw-gateway}/bin/openclaw node run --host web.manticore-lenok.ts.net --port 18789 --tls --display-name sankara";
-      Restart = "always";
-      RestartSec = "2s";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
-
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
     Unit.After = [ "graphical-session.target" ];

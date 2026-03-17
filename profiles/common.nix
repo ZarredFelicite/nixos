@@ -84,6 +84,10 @@
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
     useNetworkd = true;
     useDHCP = false;
+    wg-quick.interfaces.proton = {
+      configFile = "/etc/wireguard/proton.conf";
+      autostart = false;
+    };
     #dhcpcd.enable = false;
     #interfaces.wlan0.wakeOnLan.enable = true;
     networkmanager = {
@@ -208,6 +212,20 @@
       tctiEnvironment.enable = true;
     };
     polkit.enable = true;
+    polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.systemd1.manage-units" &&
+            subject.user == "zarred") {
+          var unit = action.lookup("unit");
+          var verb = action.lookup("verb");
+
+          if (unit == "wg-quick-proton.service" &&
+              (verb == "start" || verb == "stop" || verb == "restart")) {
+            return polkit.Result.YES;
+          }
+        }
+      });
+    '';
     rtkit.enable = true;
     pam.loginLimits = [{
       domain = "*";

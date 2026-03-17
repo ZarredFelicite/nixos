@@ -11,6 +11,7 @@
       "/var/cache"
       "/var/db/sudo/lectured"
       "/etc/NetworkManager/system-connections"
+      "/etc/wireguard"
       "/etc/coolercontrol"
       "/nixos" # for nixos github repo
     ];

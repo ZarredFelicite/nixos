@@ -1,6 +1,6 @@
 # https://github.com/Lurkki14/tuxclocker
 
-{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -8,14 +8,13 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
-    sharedModules = [ inputs.nix-openclaw.homeManagerModules.openclaw ];
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell; };
     users.zarred = import ../home/hosts/sankara.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "sankara";
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
@@ -93,6 +92,8 @@
   };
   swapDevices = [ ];
 
+  hardware.bluetooth.enable = true;
+
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''
     /mnt        *(rw,fsid=0,no_subtree_check)
@@ -135,6 +136,20 @@
       WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
       ExecStart = "${pkgs.nix}/bin/nix develop --command 'start'";
       Restart = "on-failure";
+    };
+  };
+
+  systemd.services.ocr-server = {
+    description = "OCR HTTP + MCP server";
+    after = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/ocr";
+      ExecStart = "${pkgs.bash}/bin/bash -lc '/home/zarred/dev/ocr/run.sh server.py --host 0.0.0.0 --port 5498'";
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
   };
 }

@@ -14,6 +14,8 @@
       # Recommended for fast zlib compression
       # https://www.home-assistant.io/integrations/isal
       "isal"
+      "lifx"
+      "matter"
     ];
     configWritable = true; # configuration.yaml writable from web ui but will be overwritten on startup
     config = {
@@ -27,6 +29,12 @@
           "::1"
         ];
       };
+      scene = [
+        {
+          platform = "lifx_cloud";
+          token = "!include /run/secrets/lifx-api-token";
+        }
+      ];
     };
   };
 }

@@ -1,6 +1,7 @@
-{ osConfig, config, pkgs, inputs, lib, ... }:
+{ osConfig, config, pkgs, pkgs-unstable, inputs, lib, ... }:
 let
   qmdPkg = pkgs.callPackage ../../pkgs/qmd/package.nix {};
+  openclawPkg = pkgs-unstable.openclaw;
 
   hostName = osConfig.networking.hostName or "";
   isWeb = hostName == "web";
@@ -9,10 +10,10 @@ let
   # Create a wrapper script that sets OPENROUTER_API_KEY from the secret file
   openclawWrapper = pkgs.writeShellScript "openclaw-gateway-wrapper" ''
     export OPENROUTER_API_KEY=$(cat ${osConfig.sops.secrets.openrouter-api.path})
-    exec ${pkgs.openclaw-gateway}/bin/openclaw gateway --port 18789
+    exec ${openclawPkg}/bin/openclaw gateway --port 18789
   '';
 in {
-  home.packages = [ pkgs.openclaw-gateway qmdPkg ];
+  home.packages = [ openclawPkg qmdPkg ];
 
   systemd.user.services = lib.mkMerge [
     (lib.mkIf isWeb {
@@ -20,17 +21,19 @@ in {
       openclaw-gateway = {
         Unit = {
           Description = "Openclaw Gateway";
-          After = [ "network.target" ];
+          After = [ "network-online.target" ];
+          Wants = [ "network-online.target" ];
         };
         Service = {
           ExecStart = "${openclawWrapper}";
-          WorkingDirectory = "%h/.openclaw";
+          WorkingDirectory = "${config.home.homeDirectory}/.openclaw";
           Restart = "always";
           RestartSec = "5s";
           Environment = [
             "MOLTBOT_NIX_MODE=1"
             "CLAWDBOT_NIX_MODE=1"
-            "HOME=%h"
+            "HOME=${config.home.homeDirectory}"
+            "OPENCLAW_STATE_DIR=${config.home.homeDirectory}/.openclaw"
             "PATH=${qmdPkg}/bin:${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
           ];
         };
@@ -72,7 +75,7 @@ in {
         Service = {
           Type = "simple";
           EnvironmentFile = "%h/.config/openclaw/node-host.env";
-          ExecStart = "${pkgs.openclaw-gateway}/bin/openclaw node run --host web.manticore-lenok.ts.net --port 18789 --tls --display-name ${hostName}";
+          ExecStart = "${openclawPkg}/bin/openclaw node run --host web.manticore-lenok.ts.net --port 18789 --tls --display-name ${hostName}";
           Restart = "always";
           RestartSec = "2s";
         };

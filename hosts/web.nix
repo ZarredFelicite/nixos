@@ -1,17 +1,18 @@
-{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
     ../modules/docling-server.nix
+    ../modules/nanobot.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
+    backupFileExtension = "hm-bak";
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit self inputs outputs pkgs-unstable;
+      inherit self inputs outputs pkgs-unstable pkgs-quickshell;
     };
-    sharedModules = [ inputs.nix-openclaw.homeManagerModules.openclaw ];
     users.zarred = import ../home/hosts/web.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -43,7 +44,7 @@
   };
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
+    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" "iwlwifi" "iwlmvm" ];
     kernelParams = [ "modprobe.blacklist=nova,nova_core" "rd.driver.blacklist=nova,nova_core" "nova.modeset=0" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" ];
     blacklistedKernelModules = [ "nouveau" "nova" "nova_core" ];
     extraModprobeConfig = ''
@@ -68,7 +69,7 @@
     #} ];
     #kernel.sysctl = { "vm.swappiness" = 90;};
     extraModulePackages = [ config.boot.kernelPackages.ddcci-driver];
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
+    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" "iwlwifi" "iwlmvm" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
     initrd.systemd.enable = true;
@@ -76,6 +77,18 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="i2c-dev", ACTION=="add",\
       ATTR{name}=="NVIDIA i2c adapter*",\
+      TAG+="ddcci",\
+      TAG+="systemd",\
+      ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
+
+    SUBSYSTEM=="i2c-dev", ACTION=="add",\
+      ATTR{name}=="AMDGPU DM aux hw bus*",\
+      TAG+="ddcci",\
+      TAG+="systemd",\
+      ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
+
+    SUBSYSTEM=="i2c-dev", ACTION=="add",\
+      ATTR{name}=="AMDGPU DM i2c hw bus*",\
       TAG+="ddcci",\
       TAG+="systemd",\
       ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
@@ -315,19 +328,15 @@
       image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
       ports = [ "8880:8880" ];
     };
-    crawl4ai = {
-      image = "unclecode/crawl4ai:latest";
-      ports = [ "11235:11235" ];
-      environment = {
-        OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai-api.path})";
-        LLM_PROVIDER = "openai/gpt-5-mini";
-      };
-    };
   };
   services.docling-server = {
     enable = true;
     # host = "127.0.0.1";
     # port = 5001;
+  };
+  services.nanobot = {
+    enable = true;
+    verbose = true;
   };
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {

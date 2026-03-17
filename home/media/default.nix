@@ -34,7 +34,7 @@
       colorScheme = "RosePine";
   };
   programs.beets = {
-    enable = false;
+    enable = true;
     mpdIntegration = {
       enableStats = true;
       enableUpdate = true;
@@ -45,13 +45,13 @@
       directory = "/mnt/gargantua/media/music";
       library = "/mnt/gargantua/media/music/data/beets.db";
       import = {
-        move = false;
-        write = false;
+        move = true;
+        write = true;
       };
       paths = {
-        default = "%lower{$albumartist}/%lower{$album%aunique{}}/$track - %lower{$title}";
-        singleton = "%lower{$artist}/%lower{$title}";
-        comp = "Compilations/%lower{$album%aunique{}}/$track %lower{$title}";
+        default = "%lower{$albumartist}/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
+        singleton = "%lower{$artist}/%lower{$title} - %left{$year,4}/01 - %lower{$title}";
+        comp = "compilations/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
       };
       plugins = [ "fetchart" "edit" "scrub" "lyrics" "acousticbrainz" "zero" "info" ];
       zero = {

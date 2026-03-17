@@ -26,15 +26,15 @@
     DefaultTimeoutStopSec = 10;
   };
   systemd.network = {
-    #wait-online = {
-    #  anyInterface = true;
-    #  timeout = 0;
-    #};
+    wait-online = {
+      anyInterface = true;
+      timeout = 0;
+    };
     networks = {
       "10-wired" = {
         matchConfig.Name = "enp38s0";
         #networkConfig.IPv6AcceptRA = true;
-        address = [ "10.20.30.1/30" ];
+        networkConfig.DHCP = "yes";
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };

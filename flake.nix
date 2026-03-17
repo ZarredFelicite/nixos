@@ -3,6 +3,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";
     #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
@@ -28,23 +29,34 @@
 
     #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
     
-    nix-openclaw = { url = "github:openclaw/nix-openclaw"; };
+    qmd = { url = "github:tobi/qmd"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
+    vicinae.url = "path:/home/zarred/dev/vicinae";
   };
   outputs = {
     self, nixpkgs,
-    nixpkgs-unstable, #nixpkgs-master,
+    nixpkgs-unstable, nixpkgs-quickshell, #nixpkgs-master,
     home-manager, determinate, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
       system = "x86_64-linux";
+      permittedInsecurePackages = [
+        "openclaw-2026.2.26"
+      ];
       pkgs = nixpkgs.legacyPackages.${system};
       pkgs-unstable = import nixpkgs-unstable {
         inherit system;
-        config.allowUnfree = true;
+        config = {
+          allowUnfree = true;
+          inherit permittedInsecurePackages;
+        };
         overlays = [
           inputs.nix-vscode-extensions.overlays.default
         ];
+      };
+      pkgs-quickshell = import nixpkgs-quickshell {
+        inherit system;
+        config.allowUnfree = true;
       };
       #pkgs-master = import nixpkgs-master {
       #  inherit system;
@@ -59,45 +71,13 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable;
+            inherit pkgs-unstable pkgs-quickshell;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
           modules = [
-            { 
-              nixpkgs.overlays = [ 
-                inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
-              ]; 
-            }
             inputs.stylix.nixosModules.stylix
-            determinate.nixosModules.default
+            # determinate.nixosModules.default  # temporarily disabled on web to unstick nix-daemon/HM
             ./hosts/web.nix
             ./roles/desktop.nix
           ];
@@ -106,43 +86,11 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable;
+            inherit pkgs-unstable pkgs-quickshell;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
           modules = [
-            { 
-              nixpkgs.overlays = [ 
-                inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
-              ]; 
-            }
             inputs.stylix.nixosModules.stylix
             ./hosts/nano.nix
             ./roles/desktop.nix
@@ -152,43 +100,11 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable;
+            inherit pkgs-unstable pkgs-quickshell;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
           modules = [
-            { 
-              nixpkgs.overlays = [ 
-                inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
-              ]; 
-            }
             inputs.stylix.nixosModules.stylix
             ./hosts/sankara.nix
             ./roles/server.nix
@@ -200,38 +116,6 @@
             inherit inputs self;
           };
           modules = [
-            { 
-              nixpkgs.overlays = [ 
-                inputs.nix-openclaw.overlays.default
-                # Workaround for openclaw/nix-openclaw#18: Missing workspace templates
-                (final: prev: {
-                  openclaw-gateway = prev.openclaw-gateway.overrideAttrs (oldAttrs: {
-                    installPhase = ''
-                      ${oldAttrs.installPhase}
-                      echo "Installing workspace templates (manual phase)..."
-                      mkdir -p $out/lib/openclaw/docs/reference/templates
-                      cp -rv $src/docs/reference/templates/* $out/lib/openclaw/docs/reference/templates/
-                      echo "Templates installed successfully"
-                      echo "Linking hasown for form-data..."
-                      hasown_src=""
-                      for candidate in "$out/lib/openclaw/node_modules/.pnpm/hasown@"*/node_modules/hasown; do
-                        if [ -e "$candidate" ]; then
-                          hasown_src="$candidate"
-                          break
-                        fi
-                      done
-                      if [ -n "$hasown_src" ] && [ ! -e "$out/lib/openclaw/node_modules/hasown" ]; then
-                        mkdir -p "$out/lib/openclaw/node_modules"
-                        ln -s "$hasown_src" "$out/lib/openclaw/node_modules/hasown"
-                      fi
-                    '';
-                  });
-                  openclaw = prev.openclaw.overrideAttrs (oldAttrs: {
-                    paths = builtins.map (p: if p == prev.openclaw-gateway then final.openclaw-gateway else p) (oldAttrs.paths or []);
-                  });
-                })
-              ]; 
-            }
             inputs.stylix.nixosModules.stylix
             ./hosts/nano_minimal.nix
             ./profiles/common.nix

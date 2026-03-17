@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, pkgs-master, inputs, lib, osConfig, config, ... }:
+{ pkgs, pkgs-unstable, pkgs-quickshell, pkgs-master, inputs, lib, osConfig, config, ... }:
 with lib; let
   mkHyprlandService = lib.recursiveUpdate {
     Unit.PartOf = ["hyprland-session.target"];
@@ -55,8 +55,6 @@ in {
     pkgs.sox
     pkgs.decibels
     pkgs.amberol
-    pkgs.glow
-    pkgs.nb
     pkgs-unstable.obsidian
     pkgs.orca-slicer
     (pkgs.callPackage ../../pkgs/stl-thumb.nix {} )
@@ -66,7 +64,7 @@ in {
     pkgs.dracula-theme
     pkgs.wtype
     pkgs.signal-desktop
-    pkgs.telegram-desktop
+    #pkgs.telegram-desktop # hydra build not working
     pkgs.zoom-us
     pkgs.v4l-utils
     (pkgs.discord.override { withOpenASAR = true; withVencord = true; })
@@ -204,17 +202,17 @@ in {
   };
   programs.quickshell = {
     enable = true;
-    package = pkgs-unstable.quickshell.overrideAttrs (oldAttrs: {
+    package = pkgs-quickshell.quickshell.overrideAttrs (oldAttrs: {
       buildInputs = oldAttrs.buildInputs ++ [
-        pkgs-unstable.qt6.qtmultimedia
-        pkgs-unstable.gst_all_1.gstreamer
-        pkgs-unstable.gst_all_1.gst-plugins-base
-        pkgs-unstable.gst_all_1.gst-plugins-good
-        pkgs-unstable.gst_all_1.gst-plugins-bad
-        pkgs-unstable.gst_all_1.gst-plugins-ugly
-        pkgs-unstable.gst_all_1.gst-libav
-        pkgs-unstable.gst_all_1.gst-rtsp-server
-        pkgs-unstable.ffmpeg
+        pkgs-quickshell.qt6.qtmultimedia
+        pkgs-quickshell.gst_all_1.gstreamer
+        pkgs-quickshell.gst_all_1.gst-plugins-base
+        pkgs-quickshell.gst_all_1.gst-plugins-good
+        pkgs-quickshell.gst_all_1.gst-plugins-bad
+        pkgs-quickshell.gst_all_1.gst-plugins-ugly
+        pkgs-quickshell.gst_all_1.gst-libav
+        pkgs-quickshell.gst_all_1.gst-rtsp-server
+        pkgs-quickshell.ffmpeg
       ];
     });
     activeConfig = "primary";
@@ -222,8 +220,8 @@ in {
     systemd.target = "hyprland-session.target";
   };
   programs.waybar.enable = false;
-  services.mako.enable = false; # This was in original home/desktop/default.nix
-  services.swaync.enable = true; # This was in original home/desktop/default.nix
+  services.mako.enable = false;
+  services.swaync.enable = false;
 
   # Ensure pkgs.system is used for inputs.claude-desktop if it was ${system}
   # This is handled by `inputs.claude-desktop.packages.${pkgs.system}.claude-desktop` above.

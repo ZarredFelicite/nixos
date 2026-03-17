@@ -134,7 +134,7 @@ in {
           size = 10;
           passes = 3;
           brightness = 0.7;
-          special = false;
+          special = true;
           popups = true;
           popups_ignorealpha = 0.1;
           new_optimizations = true;

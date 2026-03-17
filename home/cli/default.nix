@@ -1,4 +1,5 @@
 { self, inputs, config, pkgs, pkgs-unstable, lib, osConfig, ... }: let
+  nanobotPackage = pkgs.callPackage ../../pkgs/nanobot.nix {};
   yazi-plugins = pkgs.fetchFromGitHub {
     owner = "yazi-rs";
     repo = "plugins";
@@ -74,6 +75,9 @@ in {
     pkgs.ttyplot # A simple general purpose plotting utility for tty with data input from stdin
     pkgs.grc # Generic text colouriser
     pkgs.qpdf # C++ library and set of programs that inspect and manipulate the structure of PDF files
+    pkgs.nb # Command line note-taking, bookmarking, archiving, and knowledge base application
+    pkgs.glow # Render markdown on the CLI, with pizzazz
+    pkgs.gum # Tasty Bubble Gum for your shell
 
     # backup/recovery (CLI)
     pkgs.testdisk # Data recovery utilities
@@ -121,6 +125,8 @@ in {
     # dev tools (general CLI)
     pkgs.devenv # TODO: stable is broken
     pkgs.git-lfs # Git Large File Storage extension
+    pkgs.go # Go Programming language
+    pkgs.gcc # GNU Compiler CollGNU Compiler Collection, version 14.3.0 (wrapper script)
 
     # ai (CLI focus)
     # TODO: broken - pkgs-unstable.aider-chat # AI pair programming in your terminal
@@ -128,9 +134,11 @@ in {
     pkgs.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
+    nanobotPackage
     #pkgs.opencode
     pkgs-unstable.opencode
-    pkgs-unstable.antigravity-fhs
+    (pkgs.callPackage ../../pkgs/pi.nix {})
+    # antigravity removed
     pkgs-unstable.playwright-mcp
     #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )
 

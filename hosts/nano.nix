@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/hardware/thinkpad-x1-nano-gen1.nix
@@ -8,9 +8,8 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit self inputs outputs pkgs-unstable;
+      inherit self inputs outputs pkgs-unstable pkgs-quickshell;
     };
-    sharedModules = [ inputs.nix-openclaw.homeManagerModules.openclaw ];
     users.zarred = import ../home/hosts/nano.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";

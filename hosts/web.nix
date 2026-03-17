@@ -1,17 +1,18 @@
-{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
     ../modules/docling-server.nix
+    ../modules/nanobot.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
+    backupFileExtension = "hm-bak";
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit self inputs outputs pkgs-unstable;
+      inherit self inputs outputs pkgs-unstable pkgs-quickshell;
     };
-    sharedModules = [ inputs.nix-openclaw.homeManagerModules.openclaw ];
     users.zarred = import ../home/hosts/web.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -21,6 +22,9 @@
   #  })
   #];
   networking.hostName = "web";
+  networking.extraHosts = ''
+    149.154.166.110 api.telegram.org
+  '';
   services.syncthing.enable = true;
   services.postgresql = {
     enable = true;
@@ -39,8 +43,8 @@
     ensureDatabases = [ "deepface" ];
   };
   boot = {
-    kernelPackages = pkgs-unstable.linuxPackages_latest;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" "iwlwifi" "iwlmvm" ];
     kernelParams = [ "modprobe.blacklist=nova,nova_core" "rd.driver.blacklist=nova,nova_core" "nova.modeset=0" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" ];
     blacklistedKernelModules = [ "nouveau" "nova" "nova_core" ];
     extraModprobeConfig = ''
@@ -65,7 +69,7 @@
     #} ];
     #kernel.sysctl = { "vm.swappiness" = 90;};
     extraModulePackages = [ config.boot.kernelPackages.ddcci-driver];
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" ];
+    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "usbhid" "iwlwifi" "iwlmvm" ];
     initrd.kernelModules = [ ];
     initrd.luks.devices."root".device = "/dev/disk/by-uuid/2ab90543-1156-4f0d-8674-8b1d35d4a7e8";
     initrd.systemd.enable = true;
@@ -73,6 +77,18 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="i2c-dev", ACTION=="add",\
       ATTR{name}=="NVIDIA i2c adapter*",\
+      TAG+="ddcci",\
+      TAG+="systemd",\
+      ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
+
+    SUBSYSTEM=="i2c-dev", ACTION=="add",\
+      ATTR{name}=="AMDGPU DM aux hw bus*",\
+      TAG+="ddcci",\
+      TAG+="systemd",\
+      ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
+
+    SUBSYSTEM=="i2c-dev", ACTION=="add",\
+      ATTR{name}=="AMDGPU DM i2c hw bus*",\
       TAG+="ddcci",\
       TAG+="systemd",\
       ENV{SYSTEMD_WANTS}+="ddcci@$kernel.service"
@@ -180,9 +196,15 @@
     enableAllFirmware = true;
     cpu.amd.updateMicrocode = true;
     nvidia = {
-      open = true;
+      open = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+        version = "590.48.01";
+        sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
+        settingsSha256 = "sha256-NWsqUciPa4f1ZX6f0By3yScz3pqKJV1ei9GvOF8qIEE=";
+        persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
+      };
+      gsp.enable = false;
       modesetting.enable = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;
@@ -208,6 +230,23 @@
   services.lact.enable = true;
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = ["multi-user.target"];
+
+  # Help avoid long NFS shutdown stalls by stopping mpd and killing stale users
+  # of /mnt/gargantua early in shutdown, before unmount starts.
+  systemd.services.gargantua-shutdown-prep = {
+    description = "Pre-shutdown cleanup for /mnt/gargantua";
+    wantedBy = [ "shutdown.target" ];
+    before = [ "shutdown.target" "umount.target" "mnt-gargantua.mount" ];
+    unitConfig.DefaultDependencies = false;
+    serviceConfig = {
+      Type = "oneshot";
+      TimeoutStartSec = "15s";
+    };
+    script = ''
+      ${pkgs.systemd}/bin/systemctl stop --no-block mpd.service || true
+      ${pkgs.psmisc}/bin/fuser -km /mnt/gargantua || true
+    '';
+  };
   environment.systemPackages = [
     pkgs.polychromatic
     pkgs.lact
@@ -258,24 +297,29 @@
         #pynvml.nvmlDeviceSetPowerManagementLimit(myGPU, 330000)
         from pynvml import *
         from ctypes import byref
-        nvmlInit()
-        deviceCount = nvmlDeviceGetCount()
-        for i in range(deviceCount):
-            handle = nvmlDeviceGetHandleByIndex(i)
-            print(f"Device {i} : {nvmlDeviceGetName(handle)}")
-        device = nvmlDeviceGetHandleByIndex(0)
-        nvmlDeviceSetGpuLockedClocks(device,225,2010)
-        nvmlDeviceSetPowerManagementLimit(device,330000)
 
-        info = c_nvmlClockOffset_t()
-        info.version = nvmlClockOffset_v1
-        info.type = NVML_CLOCK_GRAPHICS
-        info.pstate = NVML_PSTATE_0
-        info.clockOffsetMHz = 200
+        try:
+            nvmlInit()
+            deviceCount = nvmlDeviceGetCount()
+            for i in range(deviceCount):
+                handle = nvmlDeviceGetHandleByIndex(i)
+                print(f"Device {i} : {nvmlDeviceGetName(handle)}")
+            device = nvmlDeviceGetHandleByIndex(0)
+            nvmlDeviceSetGpuLockedClocks(device,225,2010)
+            nvmlDeviceSetPowerManagementLimit(device,330000)
 
-        nvmlDeviceSetClockOffsets(device, byref(info))
+            info = c_nvmlClockOffset_t()
+            info.version = nvmlClockOffset_v1
+            info.type = NVML_CLOCK_GRAPHICS
+            info.pstate = NVML_PSTATE_0
+            info.clockOffsetMHz = 200
 
-        nvmlShutdown()
+            nvmlDeviceSetClockOffsets(device, byref(info))
+
+            nvmlShutdown()
+        except NVMLError as e:
+            # Avoid failing full system activation during driver transitions.
+            print(f"nvidia-oc skipped: {e}")
       '';
     };
   };
@@ -284,19 +328,15 @@
       image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
       ports = [ "8880:8880" ];
     };
-    crawl4ai = {
-      image = "unclecode/crawl4ai:latest";
-      ports = [ "11235:11235" ];
-      environment = {
-        OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai-api.path})";
-        LLM_PROVIDER = "openai/gpt-5-mini";
-      };
-    };
   };
   services.docling-server = {
     enable = true;
     # host = "127.0.0.1";
     # port = 5001;
+  };
+  services.nanobot = {
+    enable = true;
+    verbose = true;
   };
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {

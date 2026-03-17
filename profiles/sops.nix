@@ -78,6 +78,8 @@
         authelia-jwtSecret = { owner = "zarred"; };
         authelia-storageEncryptionKey = { owner = "zarred"; };
         freshrss-api = { owner = "zarred"; };
+        firecrawl-api = { owner = "zarred"; };
+        opencode-api = { owner = "zarred"; };
       }
     ];
   };

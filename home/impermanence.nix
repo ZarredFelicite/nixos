@@ -33,7 +33,9 @@
       ".codex"
       ".antigravity"
       ".openclaw"
+      ".nanobot"
       # PERSISTENT .CONF
+      ".config/skills"
       ".config/kdeconnect"
       ".config/BraveSoftware"
       ".config/PrusaSlicer"
@@ -70,8 +72,7 @@
       ".config/comfy-ui"
       ".config/Antigravity"
       ".config/rncbc.org" # qpwgraph
-      ".config/openclaw"
-      ".config/openclaw-docs"
+      ".config/tasknotes-cli"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"
@@ -82,6 +83,7 @@
       ".config/syncthingtray.ini"
       ".claude.json"
       ".config/nvtop/interface.ini"
+      ".config/vicinae/settings.json"
     ];
   };
 }

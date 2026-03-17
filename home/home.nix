@@ -17,6 +17,23 @@
           --add-flags "--ozone-platform=wayland"
       '';
     };
+
+    sheetmetalSrc = pkgs.fetchFromGitHub {
+      owner = "shaise";
+      repo = "FreeCAD_SheetMetal";
+      rev = "6ac145908a6073ad18af3d47184a7e6987900097";
+      hash = "sha256-uGjgDiViANQ5t3ZyolVJR4ZmChq6qd11rajDRoLbSFg=";
+    };
+
+    sheetmetalMod = pkgs.runCommand "freecad-sheetmetal-mod" {} ''
+      mkdir -p $out/Mod/SheetMetal
+      cp -r ${sheetmetalSrc}/. $out/Mod/SheetMetal/
+    '';
+
+    freecad-with-sheetmetal = pkgs.freecad-wayland.customize {
+      modules = [ "${sheetmetalMod}/Mod" ];
+      pythons = [ (ps: with ps; [ networkx ]) ];
+    };
   in {
   home = {
     packages = [
@@ -62,7 +79,7 @@
 
       # kinect
       #freenect
-      pkgs.freecad-wayland
+      freecad-with-sheetmetal
 
       # Offic
       pkgs.libreoffice-qt6-fresh

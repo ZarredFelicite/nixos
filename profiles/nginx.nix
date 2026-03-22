@@ -202,7 +202,12 @@
         "pdf.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8088";};};
         "mainsail.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8001"; proxyWebsockets = true;};};
         "immich.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:2283";};};
-        "hass.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8123"; proxyWebsockets = true;};};
+        "hass.zar.red" = SSL//{
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8123";
+            proxyWebsockets = true;
+          };
+        };
         #"headscale.zar.red" = SSL//{
         #  locations."/" = {
         #    proxyPass = "http://127.0.0.1:8080";

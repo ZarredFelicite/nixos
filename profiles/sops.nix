@@ -80,6 +80,7 @@
         freshrss-api = { owner = "zarred"; };
         firecrawl-api = { owner = "zarred"; };
         opencode-api = { owner = "zarred"; };
+        lifx-api-token = { owner = "hass"; group = "hass"; };
       }
     ];
   };

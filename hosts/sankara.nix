@@ -15,7 +15,7 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "sankara";
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
@@ -91,7 +91,21 @@
     #  ];
     #};
   };
-  swapDevices = [ ];
+  swapDevices = [{
+    device = "/persist/swap/swapfile";
+    size = 8192;
+  }];
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
 
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''
@@ -111,8 +125,9 @@
       open = false;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
+      #gsp.enable = true;
       modesetting.enable = true;
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
     };
     graphics = {
@@ -135,6 +150,20 @@
       WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
       ExecStart = "${pkgs.nix}/bin/nix develop --command 'start'";
       Restart = "on-failure";
+    };
+  };
+
+  systemd.services.ocr-server = {
+    description = "OCR HTTP + MCP server";
+    after = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/ocr";
+      ExecStart = "${pkgs.bash}/bin/bash -lc '/home/zarred/dev/ocr/run.sh server.py --host 0.0.0.0 --port 5498'";
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
   };
 }

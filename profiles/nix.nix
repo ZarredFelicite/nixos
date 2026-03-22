@@ -115,6 +115,7 @@
     ];
     config = {
       allowUnfree = true;
+      nvidia.acceptLicense = true;
       #allowUnfreePredicate = _: true;
       #allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
       #  "copilot.vim"

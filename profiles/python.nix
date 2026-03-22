@@ -46,6 +46,7 @@ in
       requests
       pysocks # SOCKS module for Python
       openai # For CLI AI tools
+      litellm # Use any LLM as a drop in replacement for gpt-3.5-turbo. Use Azure, OpenAI, Cohere, Anthropic, Ollama, VLLM, Sagemaker, HuggingFace, Replicate (100+ LLMs)
       transformers # Often used by CLI AI tools
       onnxruntime # Often used by CLI AI tools
       tensorboard # Can be CLI for viewing logs

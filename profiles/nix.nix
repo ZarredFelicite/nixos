@@ -124,7 +124,7 @@
         "olm-3.2.16"
         "dotnet-sdk-6.0.428" # sonarr
         "aspnetcore-runtime-6.0.36" # sonarr
-        "openclaw-2026.1.30"
+        "openclaw-2026.2.26"
       ];
     };
   };

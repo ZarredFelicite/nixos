@@ -110,6 +110,18 @@
     Unit.After = [ "graphical-session.target" ];
   };
 
+  systemd.user.services.crawl4ai-api = {
+    Unit.Description = "Crawl4AI FastAPI server";
+    Service.User = "zarred";
+    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'uvicorn server:app --host 0.0.0.0 --port 11235'";
+    Service.Restart = "always";
+    Service.RestartSec = "5s";
+    Service.StartLimitIntervalSec = "0";
+    Service.WorkingDirectory = "/home/zarred/scripts/scrapers/crawl4ai";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Unit.After = [ "graphical-session.target" ];
+  };
+
   systemd.user.services.lwake-multi-listen = {
     Unit.Description = "Listen for local wake words and trigger phrase actions";
     Unit.After = [ "graphical-session.target" ];

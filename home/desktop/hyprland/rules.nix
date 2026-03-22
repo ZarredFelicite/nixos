@@ -2,25 +2,23 @@
   wayland.windowManager.hyprland.extraConfig = ''
     # Window rules for v0.53
     windowrule = match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$, float on
-    #windowrule = match:tag pin, float on
-    #windowrule = match:tag pin, move 100%-w-10 40
-    #windowrule = match:tag pin, size 850 480
-    #windowrule = match:tag pin, pin on
-    #windowrule = match:tag pin, no_blur on
-    #windowrule = match:tag pin, group barred
-    #windowrule = match:tag pin, opacity 1.0 override 0.7 override 1.0 override
-    #windowrule = match:tag pin, no_initial_focus on
+    # hyprpin adds the static tag `pin` after the window is created.
+    # Only dynamic effects will re-evaluate on tag changes, so keep tag-based
+    # rules limited to dynamic properties and let `hyprpin` handle float/pin/move/size.
+    windowrule = match:tag pin, no_blur on
+    windowrule = match:tag pin, opacity 1.0 override 0.7 override 1.0 override
+    # PiP windows still need creation-time rules when relying on Hyprland for placement.
     windowrule = match:initial_title Picture-in-Picture|cctv|Syncthing Tray, float on
-    windowrule = match:title nova, float on
-    windowrule = match:initial_title Picture-in-Picture|cctv, move 100%-w-10 40
+    windowrule = match:initial_title Picture-in-Picture|cctv, move (monitor_w-window_w-10) 40
     windowrule = match:initial_title Picture-in-Picture, size 850 480
     windowrule = match:initial_title cctv, size 530 400
-    windowrule = match:initial_title Picture-in-Picture|cctv, pin on
-    windowrule = match:initial_title Picture-in-Picture|cctv, no_blur on
-    windowrule = match:initial_title Picture-in-Picture|cctv, group barred
+    #windowrule = match:initial_title Picture-in-Picture|cctv, pin on
+    #windowrule = match:initial_title Picture-in-Picture|cctv, no_blur on
+    #windowrule = match:initial_title Picture-in-Picture|cctv, group barred
     windowrule = match:initial_title Picture-in-Picture|cctv, opacity 1.0 override 0.7 override 1.0 override
     windowrule = match:initial_title Picture-in-Picture|cctv, no_initial_focus on
-    windowrule = match:initial_title Picture-in-Picture|cctv, tag +pin
+    #windowrule = match:initial_title Picture-in-Picture|cctv, tag +pin
+    windowrule = match:initial_title Picture-in-Picture|cctv, group deny
     windowrule = match:class ^(nova)$, size 1200 800
     windowrule = match:title nova, size 1200 800
     windowrule = match:class ^(nova|obsidian)$, dimaround on
@@ -65,6 +63,7 @@
     layerrule = match:namespace ignis_bar_2, above_lock 1
     layerrule = match:namespace ignis_bar_3, above_lock 1
     layerrule = match:namespace rofi, blur on
+    layerrule = match:namespace vicinae, blur on
     layerrule = match:namespace rofi, animation popin
     layerrule = match:namespace wlroots, blur on
     layerrule = match:namespace gtk-layer-shell, blur on
@@ -77,6 +76,7 @@
     layerrule = match:namespace ignis_bar_2, ignore_alpha 0
     layerrule = match:namespace ignis_bar_3, ignore_alpha 0
     layerrule = match:namespace rofi, ignore_alpha 0.1
+    layerrule = match:namespace vicinae, ignore_alpha 0.1
     layerrule = match:namespace wlroots, ignore_alpha 0
     layerrule = match:namespace gtk-layer-shell, ignore_alpha 0
     layerrule = match:namespace anyrun, ignore_alpha 0

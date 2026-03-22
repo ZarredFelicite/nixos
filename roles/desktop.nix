@@ -141,7 +141,7 @@ in {
     xserver.enable = true;
     ollama = {
       enable = true;
-      package = pkgs-unstable.ollama-cuda;
+      package = pkgs-unstable.ollama-vulkan;
     };
     printing.enable = true;
     avahi.enable = true;

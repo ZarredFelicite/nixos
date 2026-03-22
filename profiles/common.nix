@@ -26,15 +26,15 @@
     DefaultTimeoutStopSec = 10;
   };
   systemd.network = {
-    #wait-online = {
-    #  anyInterface = true;
-    #  timeout = 0;
-    #};
+    wait-online = {
+      anyInterface = true;
+      timeout = 0;
+    };
     networks = {
       "10-wired" = {
         matchConfig.Name = "enp38s0";
         #networkConfig.IPv6AcceptRA = true;
-        address = [ "10.20.30.1/30" ];
+        networkConfig.DHCP = "yes";
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };
@@ -84,6 +84,10 @@
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
     useNetworkd = true;
     useDHCP = false;
+    wg-quick.interfaces.proton = {
+      configFile = "/etc/wireguard/proton.conf";
+      autostart = false;
+    };
     #dhcpcd.enable = false;
     #interfaces.wlan0.wakeOnLan.enable = true;
     networkmanager = {
@@ -208,6 +212,20 @@
       tctiEnvironment.enable = true;
     };
     polkit.enable = true;
+    polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.systemd1.manage-units" &&
+            subject.user == "zarred") {
+          var unit = action.lookup("unit");
+          var verb = action.lookup("verb");
+
+          if (unit == "wg-quick-proton.service" &&
+              (verb == "start" || verb == "stop" || verb == "restart")) {
+            return polkit.Result.YES;
+          }
+        }
+      });
+    '';
     rtkit.enable = true;
     pam.loginLimits = [{
       domain = "*";

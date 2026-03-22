@@ -1,6 +1,6 @@
 # https://github.com/Lurkki14/tuxclocker
 
-{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -8,8 +8,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable; };
-    sharedModules = [ inputs.nix-openclaw.homeManagerModules.openclaw ];
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell; };
     users.zarred = import ../home/hosts/sankara.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -106,6 +105,8 @@
     nssmdns4 = true;
     openFirewall = true;
   };
+
+  hardware.bluetooth.enable = true;
 
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''

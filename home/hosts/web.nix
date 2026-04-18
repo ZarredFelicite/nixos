@@ -110,6 +110,17 @@
     Unit.After = [ "graphical-session.target" ];
   };
 
+  systemd.user.services.chatterbox = {
+    Unit.Description = "Chatterbox TTS server";
+    Service.User = "zarred";
+    Service.ExecStart = "/home/zarred/scripts/tts/chatterbox/systemd-start.sh";
+    Service.WorkingDirectory = "/home/zarred/scripts/tts/chatterbox";
+    Service.Restart = "on-failure";
+    Service.RestartSec = "5s";
+    Service.TimeoutStartSec = "15min";
+    Service.Environment = [ "PYTHONUNBUFFERED=1" ];
+  };
+
   systemd.user.services.crawl4ai-api = {
     Unit.Description = "Crawl4AI FastAPI server";
     Service.User = "zarred";

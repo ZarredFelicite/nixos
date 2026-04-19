@@ -41,18 +41,11 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
-  systemd.user.timers.ibkr = {
-    Unit.Description = "Timer for ibkr stocks service";
-    Unit.Requires = "ibkr.service";
-    Install.WantedBy = [ "timers.target" ];
-    Timer.OnCalendar = "*:0/5";
-    Timer.Persistent = true;
-  };
   systemd.user.services.ibkr = {
-    Unit.Description = "Get stocks data from ibkr and yfinance";
-    Service.ExecStart = "/home/zarred/scripts/finances/ibkr/ibkr.py -psyvc --flex-period 1";
+    Unit.Description = "Serve IBKR web UI with in-process refresh";
+    Service.ExecStart = "/home/zarred/scripts/finances/ibkr/ibkr.py --server --yfinance --flex-period 1 --timer 300 --port 8000 --verbose";
     Service.Restart = "always";
-    Service.RestartSec = "300s";
+    Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "0";
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];

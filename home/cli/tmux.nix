@@ -27,6 +27,8 @@
     extraConfig = ''
       set-option -sa terminal-features ',xterm-256color:RGB'
       set-option -ga terminal-overrides ",xterm-256color:Tc"
+      set -g extended-keys on
+      set -g extended-keys-format csi-u
       set -g window-style bg=default
       set -g window-active-style bg=default
       bind r source-file ~/.config/tmux/tmux.conf
@@ -34,7 +36,7 @@
       set -g pane-border-status top
       set-option -g status-interval 5
       set-option -g automatic-rename on
-      set-option -g automatic-rename-format '#{b:pane_current_path}'
+      set-option -g automatic-rename-format '#{pane_current_command}'
       # set-option -g detach-on-destroy off
       # in .tmux.conf
       # set -g status-right '#{cpu_bg_color} CPU: #{cpu_icon} #{cpu_percentage} | %a %h-%d %H:%M '

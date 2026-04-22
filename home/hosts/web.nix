@@ -43,6 +43,7 @@
   };
   systemd.user.services.ibkr = {
     Unit.Description = "Serve IBKR web UI with in-process refresh";
+    Service.EnvironmentFile = "/home/zarred/scripts/finances/ibkr/auth/env.list";
     Service.ExecStart = "/home/zarred/scripts/finances/ibkr/ibkr.py --server --yfinance --flex-period 1 --timer 300 --port 8001 --verbose";
     Service.Restart = "always";
     Service.RestartSec = "5s";

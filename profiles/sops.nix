@@ -73,6 +73,7 @@
         gemini-api = { owner = "zarred"; };
         openrouter-api = { owner = "zarred"; };
         elevenlabs-api = { owner = "zarred"; };
+        inworld-api = { owner = "zarred"; };
         openclaw-token = { owner = "zarred"; };
         nixAccessTokens = { mode = "0440"; group = config.users.groups.keys.name; };
         authelia-jwtSecret = { owner = "zarred"; };
@@ -80,6 +81,7 @@
         freshrss-api = { owner = "zarred"; };
         firecrawl-api = { owner = "zarred"; };
         opencode-api = { owner = "zarred"; };
+        brave-api = { owner = "zarred"; };
       }
     ];
   };

@@ -14,7 +14,6 @@
 
     # Modules for a full desktop experience (previously via home/core.nix's imports)
     ../cli
-    ../menu
     ../mail
     ../finance
     ../media

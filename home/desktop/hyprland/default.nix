@@ -11,6 +11,7 @@ in {
     ./rules.nix
     ./binds.nix
     ./hyprlock.nix
+    ./menu.nix
   ];
   stylix.targets.hyprland.enable = false;
   stylix.targets.hyprlock.enable = false;

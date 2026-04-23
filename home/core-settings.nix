@@ -150,6 +150,14 @@
         userKnownHostsFile = "~/.ssh/known_hosts";
         addKeysToAgent = "yes";
       };
+      github.com = {
+        hostname = "github.com";
+        user = "git";
+        identitiesOnly = true;
+        extraOptions = {
+          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+        };
+      };
     };
   };
 

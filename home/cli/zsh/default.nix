@@ -38,6 +38,9 @@
         bindkey '^H' backward-kill-word
         bindkey '5~' kill-word
 
+        export GPG_TTY="$(tty 2>/dev/null || true)"
+        gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 || true
+
         source ~/.config/zsh/fzf-tab.conf
 
         bindkey -s '^a' 'buku_fzf\n'

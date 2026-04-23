@@ -10,7 +10,7 @@ let
   };
 in {
   imports = [
-    ../../menu/rofi/rofi.nix
+    ../rofi/rofi.nix
   ];
 
   home.packages = [

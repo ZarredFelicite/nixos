@@ -33,6 +33,16 @@
       '';
       owner = "zarred";
     };
+    templates."user-api-keys.env" = {
+      content = ''
+        OPENAI_API_KEY=${config.sops.placeholder.openai-api}
+        GEMINI_API_KEY=${config.sops.placeholder.gemini-api}
+        OPENROUTER_API_KEY=${config.sops.placeholder.openrouter-api}
+        INWORLD_API_KEY=${config.sops.placeholder.inworld-api}
+        BRAVE_API_KEY=${config.sops.placeholder.brave-api}
+      '';
+      owner = "zarred";
+    };
     secrets = lib.mkMerge [
       (lib.mkIf (config.networking.hostName == "sankara") {
         nextcloud-admin = { owner = "nextcloud"; };

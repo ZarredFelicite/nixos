@@ -9,10 +9,6 @@ let
       url = "https://github.com/Tagggar/Firefox-Alpha";
       rev = "78bf9a9ea57538b0a58212731e81dea80d490105"; # NOTE: UPDATE
     } + "/chrome/userChrome.css" );
-  onefox-css = builtins.readFile( builtins.fetchGit {
-      url = "https://github.com/Perseus333/One-Fox";
-      rev = "bb476da749332942c6739e04bec64efea2642d18"; # NOTE: UPDATE
-    } + "/chrome/userChrome.css" );
 in {
   imports = [
     ./tridactyl.nix
@@ -58,10 +54,10 @@ in {
           #tampermonkey
           firemonkey
           tridactyl
-          consent-o-matic
+          #consent-o-matic
           decentraleyes
           canvasblocker
-          browserpass
+          #browserpass
           videospeed
           adaptive-tab-bar-colour
           # TODO: unavailable - video-downloadhelper
@@ -99,14 +95,6 @@ in {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           "browser.urlbar.maxRichResults" = 0;
           "browser.urlbar.clickSelectsAll" = true;
-        };
-      };
-      onefox = {
-        id = 4;
-        bookmarks = {};
-        userChrome = onefox-css;
-        settings = {
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
       };
     };

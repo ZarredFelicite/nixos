@@ -1,6 +1,6 @@
 # https://github.com/Lurkki14/tuxclocker
 
-{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, pkgs-brave-origin, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -8,7 +8,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell pkgs-brave-origin; };
     users.zarred = import ../home/hosts/sankara.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";

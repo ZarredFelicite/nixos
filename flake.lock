@@ -609,6 +609,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-brave-origin": {
+      "locked": {
+        "lastModified": 1777016841,
+        "narHash": "sha256-ClzTmewKZ2qJH6ukN/cRk6AvXJ+7lUVEKIO0aj3JIHU=",
+        "owner": "WitteShadovv",
+        "repo": "nixpkgs",
+        "rev": "cfc309238360a9f5e5e7612b87df8083fb69ef09",
+        "type": "github"
+      },
+      "original": {
+        "owner": "WitteShadovv",
+        "repo": "nixpkgs",
+        "rev": "cfc309238360a9f5e5e7612b87df8083fb69ef09",
+        "type": "github"
+      }
+    },
     "nixpkgs-quickshell": {
       "locked": {
         "lastModified": 1770720068,
@@ -956,6 +972,7 @@
         "impermanence": "impermanence",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixpkgs": "nixpkgs_6",
+        "nixpkgs-brave-origin": "nixpkgs-brave-origin",
         "nixpkgs-quickshell": "nixpkgs-quickshell",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",

@@ -78,6 +78,7 @@
       ".config/rncbc.org" # qpwgraph
       ".config/tasknotes-cli"
       ".config/qmd"
+      ".config/ibkr"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"

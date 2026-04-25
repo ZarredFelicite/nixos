@@ -90,7 +90,10 @@
     #  ];
     #};
   };
-  swapDevices = [ ];
+  swapDevices = [{
+    device = "/persist/swap/swapfile";
+    size = 32 * 1024;
+  }];
 
   hardware.bluetooth.enable = true;
 

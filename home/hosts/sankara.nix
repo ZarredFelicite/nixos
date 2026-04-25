@@ -30,6 +30,9 @@
       ExecStart = "/home/zarred/scripts/scrapers/hotcopper/hotcopper_parse.py -rst 300 --serve --serve-port 8186";
       Restart = "always";
       RestartSec = "300s";
+      RuntimeMaxSec = "6h";
+      MemoryMax = "3G";
+      MemorySwapMax = "4G";
       Environment = [
         "PATH=${lib.makeBinPath [ pkgs.gnupg pkgs.firefox pkgs.geckodriver ]}:$PATH"
         "FIREFOX_BIN=${pkgs.firefox}/bin/firefox"

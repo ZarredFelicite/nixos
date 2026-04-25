@@ -25,10 +25,10 @@
   ## NETWORK
   "network.buffer.cache.size" = 262144;
   "network.buffer.cache.count" = 128;
-  "network.http.max-connections" = 1800;
-  "network.http.max-persistent-connections-per-server" = 10;
-  "network.http.max-urgent-start-excessive-connections-per-host" = 5;
-  "network.websocket.max-connections" = 400;
+  "network.http.max-connections" = 900;
+  "network.http.max-persistent-connections-per-server" = 6;
+  "network.http.max-urgent-start-excessive-connections-per-host" = 3;
+  "network.websocket.max-connections" = 200;
   "network.http.pacing.requests.min-parallelism" = 12;
   "network.http.pacing.requests.burst" = 20;
   "network.http.connection-retry-timeout" = 0;

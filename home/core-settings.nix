@@ -150,7 +150,8 @@
         userKnownHostsFile = "~/.ssh/known_hosts";
         addKeysToAgent = "yes";
       };
-      "github.com" = {
+      github = {
+        host = "github.com";
         hostname = "github.com";
         user = "git";
         identitiesOnly = true;

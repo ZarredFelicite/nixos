@@ -37,13 +37,13 @@
   "network.dns.max_high_priority_threads" = 8;
   "network.ssl_tokens_cache_capacity" = 32768;
   ## SPECULATIVE CONNECTIONS
-  "network.http.speculative-parallel-limit" = 0;
-  "network.dns.disablePrefetch" = true;
-  "browser.urlbar.speculativeConnect.enabled" = false;
-  "browser.places.speculativeConnect.enabled" = false;
-  "network.prefetch-next" = false;
-  "network.predictor.enabled" = false;
-  "network.predictor.enable-prefetch" = false;
+  "network.http.speculative-parallel-limit" = 6;
+  "network.dns.disablePrefetch" = false;
+  "browser.urlbar.speculativeConnect.enabled" = true;
+  "browser.places.speculativeConnect.enabled" = true;
+  "network.prefetch-next" = true;
+  "network.predictor.enabled" = true;
+  "network.predictor.enable-prefetch" = true;
   # SECUREFOX
   ## TRACKING PROTECTION
   "browser.contentblocking.category" = "strict";
@@ -256,7 +256,7 @@
   "network.trr.request_timeout_mode_trronly_ms" = 1500;
   "network.trr.confirmation_telemetry_enabled" = false;
   "network.socket.ip_addr_any.disabled" = true;
-  "network.dns.disablePrefetchFromHTTPS" = true;
+  "network.dns.disablePrefetchFromHTTPS" = false;
   ## extra telemetry / remote-content kill switches
   "browser.search.serpEventTelemetryCategorization.enabled" = false;
   "browser.region.network.scan" = false;

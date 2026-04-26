@@ -91,18 +91,16 @@
   };
   programs.ssh = {
     enable = true;
-    #controlMaster = "yes";
-    #controlPersist = "30m";
     matchBlocks = {
+      "*" = {
+        controlMaster = "auto";
+        controlPath = "~/.ssh/controlmasters/%r@%h:%p";
+        controlPersist = "1h";
+      };
       sankara = {
         hostname = "sankara";
         user = "zarred";
         identityFile = "/home/zarred/.ssh/id_ed25519";
-        extraOptions = {
-          ControlMaster = "auto";
-          ControlPath = "~/.ssh/controlmasters/%r@%h:%p";
-          ControlPersist = "1h";
-        };
         userKnownHostsFile = "~/.ssh/known_hosts";
         addKeysToAgent = "yes";
       };

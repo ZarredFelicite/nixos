@@ -33,11 +33,17 @@
         password_reset.disable = false;
       };
       session = {
-        name = "authelia_session";
-        expiration = "12h";
-        inactivity = "45m";
-        remember_me_duration = "1M";
-        domain = "zar.red";
+        cookies = [
+          {
+            name = "authelia_session";
+            domain = "zar.red";
+            authelia_url = "https://auth.zar.red";
+            default_redirection_url = "https://ember.zar.red";
+            expiration = "12h";
+            inactivity = "45m";
+            remember_me = "1M";
+          }
+        ];
       };
       storage = {
         local = {

@@ -83,9 +83,11 @@ in {
       # set-option -g detach-on-destroy off
 
       # Pi sets useful terminal titles; prefer those over tmux-window-name's
-      # process/directory naming for Pi windows.
+      # process/directory naming for Pi windows. The status hook is invisible;
+      # it keeps Pi window names synced when Pi updates its session title.
       set-hook -g after-select-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
+      set -g @rose_pine_status_right_prepend_section '#(${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id})'
 
       # Catppuccin status modules were set here after the plugin loaded.
       # set -g status-left-length 100

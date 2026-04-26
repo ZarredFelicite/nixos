@@ -22,7 +22,7 @@
     customPaneNavigationAndResize = false;
     newSession = true;
     terminal = "xterm-256color";
-    sensibleOnTop = true;
+    focusEvents = true;
     tmuxinator.enable = true;
     extraConfig = ''
       set-option -sa terminal-features ',xterm-256color:RGB'
@@ -34,42 +34,56 @@
       bind r source-file ~/.config/tmux/tmux.conf
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
+      set-option -g display-time 4000
       set-option -g status-interval 5
       set-option -g automatic-rename on
       set-option -g automatic-rename-format '#{pane_current_command}'
       # set-option -g detach-on-destroy off
-      # in .tmux.conf
-      # set -g status-right '#{cpu_bg_color} CPU: #{cpu_icon} #{cpu_percentage} | %a %h-%d %H:%M '
+
+      # Catppuccin status modules were set here after the plugin loaded.
+      # set -g status-left-length 100
+      # set -g status-right-length 100
+      # set -g status-left ""
+      # set -g status-right "#{E:@catppuccin_status_application}"
+      # set -ag status-right "#{E:@catppuccin_status_session}"
+      # set -ag status-right "#{E:@catppuccin_status_host}"
     '';
     plugins = with pkgs; [
-      { plugin = tmuxPlugins.catppuccin;
-        # https://github.com/catppuccin/tmux
+      # { plugin = tmuxPlugins.catppuccin;
+      #   # https://github.com/catppuccin/tmux
+      #   extraConfig = ''
+      #     set -g @catppuccin_flavour 'mocha'
+      #     # set -g @catppuccin_status_modules_right "directory application session host"
+      #     # set -g @catppuccin_directory_text "#{pane_current_path}"
+      #     # set -g @catppuccin_icon_window_last "󰖰"
+      #     # set -g @catppuccin_icon_window_current "󰖯"
+      #     # set -g @catppuccin_icon_window_zoom "󰁌"
+      #     # set -g @catppuccin_icon_window_mark "󰃀"
+      #     # set -g @catppuccin_icon_window_silent "󰂛"
+      #     # set -g @catppuccin_icon_window_activity "󰖲"
+      #     # set -g @catppuccin_icon_window_bell "󰂞"
+      #     # set -g @catppuccin_window_default_text "#T"
+      #     # set -g @catppuccin_window_current_text "#T"
+      #     # set -g @catppuccin_window_right_separator "█ "
+      #     # set -g @catppuccin_window_number_position "left"
+      #     # set -g @catppuccin_window_middle_separator " | "
+      #     # set -g @catppuccin_window_default_fill "none"
+      #     # set -g @catppuccin_window_current_fill "all"
+      #   '' ;}
+      { plugin = tmuxPlugins.rose-pine;
+        # https://github.com/rose-pine/tmux
         extraConfig = ''
-          set -g @catppuccin_flavour 'mocha'
-          set -g @catppuccin_status_modules_right "directory application session host"
-          set -g @catppuccin_directory_text "#{pane_current_path}"
-          set -g @catppuccin_icon_window_last "󰖰"
-          set -g @catppuccin_icon_window_current "󰖯"
-          set -g @catppuccin_icon_window_zoom "󰁌"
-          set -g @catppuccin_icon_window_mark "󰃀"
-          set -g @catppuccin_icon_window_silent "󰂛"
-          set -g @catppuccin_icon_window_activity "󰖲"
-          set -g @catppuccin_icon_window_bell "󰂞"
-          set -g @catppuccin_window_default_text "#W"
-          set -g @catppuccin_window_current_text "#W"
-          set -g @catppuccin_window_right_separator "█ "
-          set -g @catppuccin_window_number_position "left"
-          set -g @catppuccin_window_middle_separator " | "
-          set -g @catppuccin_window_default_fill "none"
-          set -g @catppuccin_window_current_fill "all"
-        '' ;}
-      #tmuxPlugins.cpu
-      # TODO: broken
-      #{ plugin = tmuxPlugins.resurrect;
-      #  extraConfig = ''
-      #    set -g @resurrect-strategy-nvim 'session'
-      #    set -g @resurrect-save 'S'
-      #    set -g @resurrect-restore 'R' ''; }
+          set -g @rose_pine_variant 'main'
+          set -g @rose_pine_host 'on'
+          set -g @rose_pine_user 'on'
+          set -g @rose_pine_directory 'on'
+          set -g @rose_pine_date_time '%H:%M'
+        ''; }
+      { plugin = tmuxPlugins.resurrect;
+        extraConfig = ''
+          set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-save 'S'
+          set -g @resurrect-restore 'R' ''; }
       { plugin = tmuxPlugins.continuum;
         extraConfig = " set -g @continuum-restore 'on' "; }
       { plugin = tmuxPlugins.yank;

@@ -84,6 +84,7 @@ in {
       set -g window-style bg=default
       set -g window-active-style bg=default
       bind r source-file ~/.config/tmux/tmux.conf
+      bind -n M-C source-file ~/.config/tmux/tmux.conf \; display-message "Reloaded config"
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
       set-option -g display-time 1000

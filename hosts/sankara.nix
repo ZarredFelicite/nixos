@@ -110,7 +110,8 @@
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "agent-nixos-switch-flake" ''
       set -euo pipefail
-      exec ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake path:/home/zarred/dots#sankara
+      export NIXPKGS_ALLOW_INSECURE=1
+      exec ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --impure --flake path:/home/zarred/dots#sankara
     '')
   ];
 

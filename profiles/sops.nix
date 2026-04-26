@@ -43,7 +43,7 @@
       '';
       owner = "zarred";
     };
-    templates."transmission-credentials.json" = {
+    templates."transmission-credentials.json" = lib.mkIf (config.networking.hostName == "sankara") {
       content = ''
         { "rpc-password": "${config.sops.placeholder.transmission-rpc}" }
       '';

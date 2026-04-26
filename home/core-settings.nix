@@ -94,6 +94,18 @@
     #controlMaster = "yes";
     #controlPersist = "30m";
     matchBlocks = {
+      sankara = {
+        hostname = "sankara";
+        user = "zarred";
+        identityFile = "/home/zarred/.ssh/id_ed25519";
+        extraOptions = {
+          ControlMaster = "auto";
+          ControlPath = "~/.ssh/controlmasters/%r@%h:%p";
+          ControlPersist = "1h";
+        };
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
+      };
       rpicam = {
         hostname = "rpicam";
         user = "zarred";

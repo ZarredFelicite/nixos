@@ -134,6 +134,7 @@ in {
           set -g @rose_pine_disable_active_window_menu 'on'
           set -g @rose_pine_show_current_program 'on'
           set -g @rose_pine_left_separator '|'
+          set -g @rose_pine_right_separator ' '
         ''; }
       { plugin = tmuxWindowName;
         # https://github.com/ofirgall/tmux-window-name

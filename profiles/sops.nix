@@ -43,6 +43,14 @@
       '';
       owner = "zarred";
     };
+    templates."transmission-credentials.json" = {
+      content = ''
+        { "rpc-password": "${config.sops.placeholder.transmission-rpc}" }
+      '';
+      owner = "media";
+      group = "users";
+      mode = "0400";
+    };
     secrets = lib.mkMerge [
       (lib.mkIf (config.networking.hostName == "sankara") {
         nextcloud-admin = { owner = "nextcloud"; };

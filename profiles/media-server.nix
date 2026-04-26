@@ -192,6 +192,7 @@
       ratio-limit = 1.5;
       ratio-limit-enabled = true;
     };
+    credentialsFile = config.sops.templates."transmission-credentials.json".path;
     #downloadDirPermissions = "770";
     #performanceNetParameters = false;
   };

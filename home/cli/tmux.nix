@@ -163,7 +163,9 @@ in {
         extraConfig = ''
           set -g @resurrect-strategy-nvim 'session'
           set -g @resurrect-save 'S'
-          set -g @resurrect-restore 'R' ''; }
+          # Keep restore away from plain r/R so reload muscle memory doesn't
+          # accidentally restore old sessions.
+          set -g @resurrect-restore 'C-r' ''; }
       { plugin = tmuxPlugins.continuum;
         extraConfig = " set -g @continuum-restore 'on' "; }
       { plugin = tmuxPlugins.yank;

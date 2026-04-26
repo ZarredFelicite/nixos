@@ -73,7 +73,7 @@ in {
       bind r source-file ~/.config/tmux/tmux.conf
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
-      set-option -g display-time 4000
+      set-option -g display-time 1000
       set-option -g status-interval 5
       # tmux-window-name owns window naming now. The plugin briefly uses tmux's
       # automatic-rename flag to detect unnamed windows, then disables it per-window.

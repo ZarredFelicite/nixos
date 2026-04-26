@@ -26,6 +26,9 @@
     group = "users";
     dataDir = "/var/lib/readarr";
   };
+  systemd.services.sonarr.path = [ pkgs.servarr-ffmpeg ];
+  systemd.services.radarr.path = [ pkgs.servarr-ffmpeg ];
+  systemd.services.readarr.path = [ pkgs.servarr-ffmpeg ];
   virtualisation.oci-containers.containers."lidarr" = {
     image = "youegraillot/lidarr-on-steroids";
     ports = [
@@ -192,6 +195,7 @@
       ratio-limit = 1.5;
       ratio-limit-enabled = true;
     };
+    credentialsFile = config.sops.templates."transmission-credentials.json".path;
     #downloadDirPermissions = "770";
     #performanceNetParameters = false;
   };

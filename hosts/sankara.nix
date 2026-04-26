@@ -104,6 +104,24 @@
     /mnt/turing   *(rw,fsid=4,nohide,insecure,no_subtree_check)
   '';
 
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "agent-nixos-switch-flake" ''
+      set -euo pipefail
+      export NIXPKGS_ALLOW_INSECURE=1
+      exec ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --impure --flake path:/home/zarred/dots#sankara
+    '')
+  ];
+
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.policykit.exec" &&
+          subject.user == "zarred" &&
+          action.lookup("program") == "/run/current-system/sw/bin/agent-nixos-switch-flake") {
+        return polkit.Result.YES;
+      }
+    });
+  '';
+
   powerManagement.cpuFreqGovernor = "performance";
   services.xserver.videoDrivers = ["nvidia"];
   hardware = {

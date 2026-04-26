@@ -127,6 +127,7 @@ in {
           set -g @rose_pine_user 'on'
           set -g @rose_pine_directory 'on'
           set -g @rose_pine_date_time '%H:%M'
+          set -g @rose_pine_disable_active_window_menu 'on'
         ''; }
       { plugin = tmuxWindowName;
         # https://github.com/ofirgall/tmux-window-name

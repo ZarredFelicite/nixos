@@ -110,7 +110,7 @@ in {
           set -g @tmux_window_name_max_name_len "24"
           set -g @tmux_window_name_icon_style "'name'"
           set -g @tmux_window_name_show_program_args "False"
-          set -g @tmux_window_name_dir_programs "['nvim', 'vim', 'vi', 'git', 'pi']"
+          set -g @tmux_window_name_dir_programs "['git', 'pi']"
         ''; }
       { plugin = tmuxPlugins.resurrect;
         extraConfig = ''

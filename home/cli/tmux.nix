@@ -1,6 +1,24 @@
 { pkgs, ... }:
 let
   tmuxWindowNamePython = pkgs.python3.withPackages (ps: [ ps.libtmux ]);
+  tmuxRenamePiWindow = pkgs.writeShellApplication {
+    name = "tmux-rename-pi-window";
+    text = ''
+      target="''${1:-}"
+      [ -n "$target" ] || exit 0
+
+      # Run after tmux-window-name's async hook so Pi's terminal title wins.
+      sleep 0.3
+
+      cmd="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_current_command}' 2>/dev/null || true)"
+      [ "$cmd" = "pi" ] || exit 0
+
+      title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
+      [ -n "$title" ] || exit 0
+
+      ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
+    '';
+  };
   tmuxWindowName = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "tmux-window-name";
     version = "unstable-2026-04-26";
@@ -63,6 +81,11 @@ in {
       # set-option -g automatic-rename off
       # set-option -g automatic-rename-format '#{pane_current_command}'
       # set-option -g detach-on-destroy off
+
+      # Pi sets useful terminal titles; prefer those over tmux-window-name's
+      # process/directory naming for Pi windows.
+      set-hook -g after-select-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
+      set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
 
       # Catppuccin status modules were set here after the plugin loaded.
       # set -g status-left-length 100

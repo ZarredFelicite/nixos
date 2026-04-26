@@ -16,6 +16,19 @@ let
       title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
       [ -n "$title" ] || exit 0
 
+      # Pi core decorates terminal titles as "π - <session> - <cwd>".
+      # Use just the session segment for tmux window names.
+      case "$title" in
+        "π - "*" - "*)
+          title="''${title#π - }"
+          title="''${title% - *}"
+          ;;
+        "π - "*)
+          title="''${title#π - }"
+          ;;
+      esac
+      [ -n "$title" ] || exit 0
+
       ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
     '';
   };

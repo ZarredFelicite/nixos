@@ -129,6 +129,8 @@ in {
           set -g @rose_pine_date_time '%H:%M'
           set -g @rose_pine_disable_active_window_menu 'on'
           set -g @rose_pine_show_current_program 'on'
+          set -g window-status-current-style 'fg=#ebbcba,bg=#191724'
+          set -g window-status-current-format '#I#[fg=#ebbcba,bg=]  #[fg=#ebbcba,bg=]#W'
         ''; }
       { plugin = tmuxWindowName;
         # https://github.com/ofirgall/tmux-window-name

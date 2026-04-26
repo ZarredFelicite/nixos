@@ -96,6 +96,10 @@ in {
       # set -g status-right "#{E:@catppuccin_status_application}"
       # set -ag status-right "#{E:@catppuccin_status_session}"
       # set -ag status-right "#{E:@catppuccin_status_host}"
+
+      # Post-theme window list tweaks.
+      set -g window-status-current-style 'fg=#ebbcba,bg=#191724'
+      set -g window-status-current-format '#I#[fg=#ebbcba,bg=]|#[fg=#ebbcba,bg=]#W'
     '';
     plugins = with pkgs; [
       # { plugin = tmuxPlugins.catppuccin;
@@ -129,8 +133,7 @@ in {
           set -g @rose_pine_date_time '%H:%M'
           set -g @rose_pine_disable_active_window_menu 'on'
           set -g @rose_pine_show_current_program 'on'
-          set -g window-status-current-style 'fg=#ebbcba,bg=#191724'
-          set -g window-status-current-format '#I#[fg=#ebbcba,bg=]  #[fg=#ebbcba,bg=]#W'
+          set -g @rose_pine_left_separator '|'
         ''; }
       { plugin = tmuxWindowName;
         # https://github.com/ofirgall/tmux-window-name

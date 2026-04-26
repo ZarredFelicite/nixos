@@ -110,6 +110,9 @@
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "agent-nixos-switch-flake" ''
       set -euo pipefail
+      export GIT_CONFIG_COUNT=1
+      export GIT_CONFIG_KEY_0=safe.directory
+      export GIT_CONFIG_VALUE_0=/home/zarred/dots
       exec ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake /home/zarred/dots#sankara
     '')
   ];

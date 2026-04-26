@@ -1,4 +1,25 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+  tmuxWindowNamePython = pkgs.python3.withPackages (ps: [ ps.libtmux ]);
+  tmuxWindowName = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-window-name";
+    version = "unstable-2026-04-26";
+    rtpFilePath = "tmux_window_name.tmux";
+    src = pkgs.fetchFromGitHub {
+      owner = "ofirgall";
+      repo = "tmux-window-name";
+      rev = "e98189f9a9487d2cdaa2d207b06780d1f5f58a41";
+      hash = "sha256-YI2s/OtywKJQAPpb07dCbWA/6+sWAl+DB+QQbvZOG5k=";
+    };
+    postInstall = ''
+      substituteInPlace "$target/tmux_window_name.tmux" \
+        --replace-fail "python -c" "${tmuxWindowNamePython}/bin/python -c"
+      patchShebangs "$target/scripts"
+      substituteInPlace "$target/scripts/rename_session_windows.py" \
+        --replace-fail "#!/usr/bin/env python" "#!${tmuxWindowNamePython}/bin/python"
+    '';
+  };
+in {
   stylix.targets.tmux.enable = false;
   xdg.configFile."tmuxinator/home.yml".text = builtins.toJSON {
     name = "home";
@@ -36,8 +57,11 @@
       set -g pane-border-status top
       set-option -g display-time 4000
       set-option -g status-interval 5
-      set-option -g automatic-rename on
-      set-option -g automatic-rename-format '#{pane_current_command}'
+      # tmux-window-name owns window naming now. The plugin briefly uses tmux's
+      # automatic-rename flag to detect unnamed windows, then disables it per-window.
+      # set-option -g automatic-rename on
+      # set-option -g automatic-rename off
+      # set-option -g automatic-rename-format '#{pane_current_command}'
       # set-option -g detach-on-destroy off
 
       # Catppuccin status modules were set here after the plugin loaded.
@@ -78,6 +102,13 @@
           set -g @rose_pine_user 'on'
           set -g @rose_pine_directory 'on'
           set -g @rose_pine_date_time '%H:%M'
+        ''; }
+      { plugin = tmuxWindowName;
+        # https://github.com/ofirgall/tmux-window-name
+        # Must load before tmux-resurrect.
+        extraConfig = ''
+          set -g @tmux_window_name_max_name_len "24"
+          set -g @tmux_window_name_icon_style "'name'"
         ''; }
       { plugin = tmuxPlugins.resurrect;
         extraConfig = ''

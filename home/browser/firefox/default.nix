@@ -19,7 +19,6 @@ in {
     package = pkgs.firefox.override {
       nativeMessagingHosts = [
         pkgs.tridactyl-native
-        pkgs.browserpass
         pkgs.fx-cast-bridge
       ];
       extraPolicies = {
@@ -49,14 +48,11 @@ in {
           #bpc-pkg
           ublock-origin
           darkreader
-          user-agent-string-switcher
           redirector
           #tampermonkey
           firemonkey
           tridactyl
           #consent-o-matic
-          decentraleyes
-          canvasblocker
           #browserpass
           videospeed
           adaptive-tab-bar-colour

@@ -16,6 +16,11 @@
             policy = "bypass";
           }
           {
+            domain = ["ember.zar.red"];
+            policy = "two_factor";
+            subject = ["user:zarred"];
+          }
+          {
             domain = ["*.zar.red"];
             policy = "one_factor";
           }

@@ -85,7 +85,7 @@
       "$mod CTRL, Return, exec, ghostty"
       "$mod, Return, exec, kitty -1"
       #"$mod, N, exec, makoctl invoke"
-      "$mod, N, exec, swaync-client --toggle-panel"
+      "$mod, N, exec, quickshell ipc -c primary call bar toggleNotifications"
       #"$mod CTRL, N, exec, makoctl restore"
       "$mod CTRL, N, exec, swaync-client --hide-latest"
       #"$mod SHIFT, N, exec, makoctl dismiss"

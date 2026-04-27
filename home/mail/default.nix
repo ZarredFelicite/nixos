@@ -6,7 +6,6 @@
   ];
   imports = [
     ./frontends/aerc.nix
-    ./frontends/alot.nix
     ./frontends/neomutt.nix
     ./frontends/himalaya.nix
     #../../modules/imapnotify.nix

@@ -2,7 +2,7 @@
   accounts.email.accounts.personal.aerc = {
     enable = true;
     extraAccounts = {
-      source = "notmuch://";
+      source = "notmuch:///home/zarred/.mail";
       query-map = "~/.config/aerc/notmuch-query-map";
       exclude-tags = "trash,spam";
       enable-maildir = true;

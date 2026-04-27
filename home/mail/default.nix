@@ -111,14 +111,19 @@
     search.excludeTags = [ "trash" "spam" ];
     extraConfig = {
       query = {
-        career = "from:\"/(linkedin|seek|indeed|leetcode|gradaustralia|blackbird|kaggle|prosple|angel.co|job email)/\"";
-        receipts = "from:\"/(auto-confirm@amazon.com.au|service@paypal.com.au|googleplay-noreply@google.com)/\"";
-        payslips = "from:\"/AccountRight@apps.myob.com/\"";
-        news = "from:\"/(mailchimp@michaelwest.com.au|ark@arkinvest.com|rosina@tinyml.org|newsletter@benchmarkminerals.com)/\"";
-        updates = "subject:\"/(sign|Sign|Password|payment|Payment|new device|account|login|Login|order|Order|confirmation|delivery|Delivery)/\" or from:\"/(accounts|tracking|order|support)/\"";
-        other = "tag:inbox -query:updates -query:career -query:receipts -query:news -query:products -query:payslips";
+        asx-announcements = ''from:investorpa or subject:"/[A-Z]{2,4}\\.ASX/" or subject:"/price sensitive/"'';
+        career = ''from:"/(linkedin|LinkedIn|seek|SEEK|indeed|leetcode|gradaustralia|blackbird|kaggle|prosple|angel.co|job email|Job Alerts)/" or subject:"/(hiring|Hiring|role|Job|job|Robotics Engineer|Software Engineer|Machine Learning|AI Engineer|Data Scientist)/"'';
+        finance = ''from:"/(Interactive Brokers|IB Trading Assistant|TradingView|Polymarket|GoldFix|Mené|Menē)/" or subject:"/(Account UXXX|Daily Activity Statement|Daily Trade Report|Silver|Gold|Treasury Reserve|Market)/"'';
+        orders = ''from:"/(Amazon|eBay|JB Hi-Fi|Kickstarter|Kickstargogo|KickstarNow|LTT Store|Framework|Klarna|Afterpay|PayPal|Australia Post)/" or subject:"/(receipt|Receipt|order|Order|delivered|Delivered|parcel|payment|Payment|confirmation|Confirmation)/"'';
+        security = ''from:"/(Google|OpenAI|Tangerine|McDonald)/" or subject:"/(Security alert|security alert|password|Password|login|Login|sign.?in|new device|verification|Verify|2FA)/"'';
+        university = ''from:"/(Monash|massive.org.au)/" or subject:"/(Network-athon|submitted|invitation|cancelled event|notification)/"'';
+        receipts = ''from:"/(auto-confirm@amazon.com.au|service@paypal.com.au|googleplay-noreply@google.com|PayPal|Klarna|Afterpay)/" or subject:"/(receipt|Receipt|payment|Payment)/"'';
+        payslips = ''from:"/AccountRight@apps.myob.com/"'';
+        news = ''from:"/(GoldFix|Substack|mailchimp|michaelwest|arkinvest|tinyml|newsletter|benchmarkminerals)/" or subject:"/(newsletter|Newsletter|market|Market|Silver|Gold)/"'';
+        updates = ''subject:"/(sign|Sign|Password|payment|Payment|new device|account|login|Login|order|Order|confirmation|delivery|Delivery|verification|Verify)/" or from:"/(accounts|tracking|order|support|noreply|no-reply)/"'';
         forum = "subject:forum";
-        updates_uni = "subject:\"/(You have submitted|updated invitation|cancelled event|notification)/\" or from:help@massive.org.au";
+        updates_uni = "query:university";
+        other = "tag:inbox -query:updates -query:career -query:receipts -query:news -query:payslips -query:asx-announcements -query:finance -query:orders -query:security -query:university";
         other_uni = "tag:inbox -query:updates_uni -query:forum";
       };
     };

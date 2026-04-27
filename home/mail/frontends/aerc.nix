@@ -169,12 +169,13 @@
   };
   xdg.configFile."aerc/stylesets/catppuccin-mocha".source = ./catppuccin-mocha;
   xdg.configFile."aerc/notmuch-query-map".text = ''
-    important=query:important
-    updates=query:updates
-    career=query:career
-    receipts=query:receipts
-    payslips=query:payslips
-    news=query:news
-    other=query:other
+    inbox=tag:inbox
+    important=tag:flagged
+    updates=subject:"/(sign|Sign|Password|payment|Payment|new device|account|login|Login|order|Order|confirmation|delivery|Delivery)/" or from:"/(accounts|tracking|order|support)/"
+    career=from:"/(linkedin|seek|indeed|leetcode|gradaustralia|blackbird|kaggle|prosple|angel.co|job email)/"
+    receipts=from:"/(auto-confirm@amazon.com.au|service@paypal.com.au|googleplay-noreply@google.com)/"
+    payslips=from:"/AccountRight@apps.myob.com/"
+    news=from:"/(mailchimp@michaelwest.com.au|ark@arkinvest.com|rosina@tinyml.org|newsletter@benchmarkminerals.com)/"
+    other=tag:inbox and not (subject:"/(sign|Sign|Password|payment|Payment|new device|account|login|Login|order|Order|confirmation|delivery|Delivery)/" or from:"/(accounts|tracking|order|support)/") and not from:"/(linkedin|seek|indeed|leetcode|gradaustralia|blackbird|kaggle|prosple|angel.co|job email)/" and not from:"/(auto-confirm@amazon.com.au|service@paypal.com.au|googleplay-noreply@google.com)/" and not from:"/(mailchimp@michaelwest.com.au|ark@arkinvest.com|rosina@tinyml.org|newsletter@benchmarkminerals.com)/" and not from:"/AccountRight@apps.myob.com/"
   '';
 }

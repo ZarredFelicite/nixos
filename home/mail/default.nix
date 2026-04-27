@@ -125,18 +125,7 @@
   };
   home.packages = [
     pkgs.notmuch
-    #pkgs.evolution
     pkgs.lynx
   ];
-  xdg.desktopEntries.Evolution = {
-    name = "Evolution Mail and Calendar";
-    genericName = "Groupware Suite";
-    comment = "Manage your email, contacts and schedule";
-    type = "Application";
-    exec = "evolution %U";
-    terminal = false;
-    categories = [ "Office" "Email" "Calendar" "ContactManagement"];
-    mimeType = [ "text/calendar" "text/x-vcard" "text/directory" "application/mbox" "message/rfc822" "x-scheme-handler/mailto" "x-scheme-handler/webcal" "x-scheme-handler/calendar" "x-scheme-handler/task" "x-scheme-handler/memo" ];
-  };
   programs.msmtp.enable = false;
 }

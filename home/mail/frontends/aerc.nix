@@ -1,6 +1,15 @@
 { pkgs, ... }: {
   accounts.email.accounts.personal.aerc = {
     enable = true;
+    extraAccounts = {
+      source = "notmuch://";
+      query-map = "~/.config/aerc/notmuch-query-map";
+      exclude-tags = "trash,spam";
+      enable-maildir = true;
+      maildir-account-path = "personal";
+      check-mail-cmd = "mbsync --all && notmuch new";
+      check-mail-timeout = "2m";
+    };
   };
 
   home.packages = with pkgs; [
@@ -159,4 +168,13 @@
     };
   };
   xdg.configFile."aerc/stylesets/catppuccin-mocha".source = ./catppuccin-mocha;
+  xdg.configFile."aerc/notmuch-query-map".text = ''
+    important=query:important
+    updates=query:updates
+    career=query:career
+    receipts=query:receipts
+    payslips=query:payslips
+    news=query:news
+    other=query:other
+  '';
 }

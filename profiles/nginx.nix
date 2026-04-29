@@ -215,6 +215,24 @@
         "immich.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:2283";};};
         "hass.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8123"; proxyWebsockets = true;};};
         "ember.zar.red" = SSLA // {
+          locations."= /manifest.json" = {
+            proxyPass = "http://web:4311/manifest.json";
+          };
+          locations."= /sw.js" = {
+            proxyPass = "http://web:4311/sw.js";
+          };
+          locations."= /icon-192.png" = {
+            proxyPass = "http://web:4311/icon-192.png";
+          };
+          locations."= /icon-512.png" = {
+            proxyPass = "http://web:4311/icon-512.png";
+          };
+          locations."= /icon-maskable-192.png" = {
+            proxyPass = "http://web:4311/icon-maskable-192.png";
+          };
+          locations."= /icon-maskable-512.png" = {
+            proxyPass = "http://web:4311/icon-maskable-512.png";
+          };
           locations."= /api/event" = AUTH // {
             proxyPass = "http://web:4311/api/event";
             extraConfig = AUTH.extraConfig + ''

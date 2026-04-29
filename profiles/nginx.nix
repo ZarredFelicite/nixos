@@ -215,6 +215,44 @@
         "immich.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:2283";};};
         "hass.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8123"; proxyWebsockets = true;};};
         "ember.zar.red" = SSLA // {
+          locations."= /api/event" = AUTH // {
+            proxyPass = "http://web:4311/api/event";
+            extraConfig = AUTH.extraConfig + ''
+              proxy_http_version 1.1;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header Connection "";
+
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+          locations."= /log/stream" = AUTH // {
+            proxyPass = "http://web:4311/log/stream";
+            extraConfig = AUTH.extraConfig + ''
+              proxy_http_version 1.1;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header Connection "";
+
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
           locations."/" = AUTH // {
             proxyPass = "http://web:4311";
             proxyWebsockets = true;

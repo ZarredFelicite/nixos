@@ -217,9 +217,19 @@
         "ember.zar.red" = SSLA // {
           locations."= /manifest.json" = {
             proxyPass = "http://web:4311/manifest.json";
+            extraConfig = ''
+              add_header Cache-Control "no-store, must-revalidate" always;
+              add_header Pragma "no-cache" always;
+              add_header Expires "0" always;
+            '';
           };
           locations."= /sw.js" = {
             proxyPass = "http://web:4311/sw.js";
+            extraConfig = ''
+              add_header Cache-Control "no-store, must-revalidate" always;
+              add_header Pragma "no-cache" always;
+              add_header Expires "0" always;
+            '';
           };
           locations."= /icon-192.png" = {
             proxyPass = "http://web:4311/icon-192.png";
@@ -248,6 +258,7 @@
               proxy_request_buffering off;
               gzip off;
               add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
               proxy_read_timeout 1h;
               proxy_send_timeout 1h;
             '';
@@ -267,6 +278,7 @@
               proxy_request_buffering off;
               gzip off;
               add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
               proxy_read_timeout 1h;
               proxy_send_timeout 1h;
             '';
@@ -281,6 +293,9 @@
               proxy_set_header X-Forwarded-Proto $scheme;
 
               proxy_buffering off;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              add_header Pragma "no-cache" always;
+              add_header Expires "0" always;
               proxy_read_timeout 1h;
               proxy_send_timeout 1h;
             '';

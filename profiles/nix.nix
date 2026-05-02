@@ -10,9 +10,6 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    extraOptions = ''
-      !include ${config.sops.secrets.nixAccessTokens.path}
-    '';
     settings = {
       trusted-users = [ "nixremote" "zarred" "root"];
       experimental-features = [ "nix-command" "flakes" ];

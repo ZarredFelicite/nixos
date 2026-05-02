@@ -198,12 +198,7 @@
     nvidia = {
       open = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-        version = "590.48.01";
-        sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
-        settingsSha256 = "sha256-NWsqUciPa4f1ZX6f0By3yScz3pqKJV1ei9GvOF8qIEE=";
-        persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
-      };
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
       gsp.enable = false;
       modesetting.enable = true;
       powerManagement.enable = true;

@@ -60,16 +60,13 @@ in {
   system.autoUpgrade = {
     enable = true;
     operation = "boot";
-    flake = inputs.self.outPath;
-    #flake = "/home/zarred/dots";
+    # Use the live checkout rather than inputs.self.outPath, so auto-upgrade
+    # sees committed config changes instead of the previous generation's
+    # /nix/store source snapshot.
+    flake = "path:/home/zarred/dots";
     flags = [
-      "--update-input"
-      "nixpkgs"
-      "--update-input"
-      "home-manager"
-      #"--commit-lock-file"
-      "--no-write-lock-file"
-      #"--recreate-lock-file"
+      # Match `nh os boot -u`: refresh all flake inputs, not just nixpkgs/home-manager.
+      "--recreate-lock-file"
       "-L" # print build logs
       "--impure"
       "--builders"

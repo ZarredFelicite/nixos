@@ -35,19 +35,22 @@
         matchConfig.Name = "enp38s0";
         #networkConfig.IPv6AcceptRA = true;
         networkConfig.DHCP = "yes";
+        dhcpV4Config.RouteMetric = 10;
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };
       "20-wired" = {
-        matchConfig.Name = "enp0s13f0u3u4u5";
+        matchConfig.MACAddress = "00:e0:4c:68:2a:68";
         #networkConfig.IPv6AcceptRA = true;
-        address = [ "10.20.30.2/30" ];
+        networkConfig.DHCP = "yes";
+        dhcpV4Config.RouteMetric = 10;
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 10; } ];
       };
       "30-wired" = {
         matchConfig.Name = "enp4s0";
         networkConfig.DHCP = "yes";
+        dhcpV4Config.RouteMetric = 10;
         routes = [ { Metric = 10; } ];
       };
       "40-wired" = {
@@ -55,11 +58,13 @@
           MACAddress = "16:ea:52:ae:91:11";
         };
         networkConfig.DHCP = "yes";
+        dhcpV4Config.RouteMetric = 10;
         routes = [ { Metric = 10; } ];
       };
       "60-wifi" = {
         matchConfig.Name = "wlan0";
         networkConfig.DHCP = "yes";
+        dhcpV4Config.RouteMetric = 600;
         #networkConfig.IPv6AcceptRA = true;
         #linkConfig.RequiredForOnline = "routable";
         routes = [ { Metric = 600; } ];

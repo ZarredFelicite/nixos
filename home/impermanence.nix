@@ -20,6 +20,7 @@
       ".ssh"
       ".nixops"
       ".local/share"
+      ".local/state"
       ".mozilla"
       ".thunderbird"
       ".tor project"
@@ -34,6 +35,10 @@
       ".antigravity"
       ".openclaw"
       ".nanobot"
+      ".ember"
+      ".crawl4ai"
+      ".tmux"
+      ".Trash-1000"
       # PERSISTENT .CONF
       ".config/skills"
       ".config/kdeconnect"
@@ -61,6 +66,8 @@
       ".config/Claude"
       ".config/Cursor"
       ".config/opencode"
+      ".config/agent"
+      ".config/pi"
       ".config/syncthing"
       ".config/ignis"
       ".config/ags"
@@ -73,6 +80,8 @@
       ".config/Antigravity"
       ".config/rncbc.org" # qpwgraph
       ".config/tasknotes-cli"
+      ".config/qmd"
+      ".config/ibkr"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"

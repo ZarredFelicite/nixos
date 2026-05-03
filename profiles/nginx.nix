@@ -16,6 +16,11 @@
             policy = "bypass";
           }
           {
+            domain = ["ember.zar.red"];
+            policy = "two_factor";
+            subject = ["user:zarred"];
+          }
+          {
             domain = ["*.zar.red"];
             policy = "one_factor";
           }
@@ -28,11 +33,17 @@
         password_reset.disable = false;
       };
       session = {
-        name = "authelia_session";
-        expiration = "12h";
-        inactivity = "45m";
-        remember_me_duration = "1M";
-        domain = "zar.red";
+        cookies = [
+          {
+            name = "authelia_session";
+            domain = "zar.red";
+            authelia_url = "https://auth.zar.red";
+            default_redirection_url = "https://ember.zar.red";
+            expiration = "12h";
+            inactivity = "45m";
+            remember_me = "1M";
+          }
+        ];
       };
       storage = {
         local = {
@@ -206,6 +217,93 @@
           locations."/" = {
             proxyPass = "http://127.0.0.1:8123";
             proxyWebsockets = true;
+          };
+        };
+        "ember.zar.red" = SSLA // {
+          locations."= /manifest.json" = {
+            proxyPass = "http://web:4311/manifest.json";
+            extraConfig = ''
+              add_header Cache-Control "no-store, must-revalidate" always;
+              add_header Pragma "no-cache" always;
+              add_header Expires "0" always;
+            '';
+          };
+          locations."= /sw.js" = {
+            proxyPass = "http://web:4311/sw.js";
+            extraConfig = ''
+              add_header Cache-Control "no-store, must-revalidate" always;
+              add_header Pragma "no-cache" always;
+              add_header Expires "0" always;
+            '';
+          };
+          locations."= /icon-192.png" = {
+            proxyPass = "http://web:4311/icon-192.png";
+          };
+          locations."= /icon-512.png" = {
+            proxyPass = "http://web:4311/icon-512.png";
+          };
+          locations."= /icon-maskable-192.png" = {
+            proxyPass = "http://web:4311/icon-maskable-192.png";
+          };
+          locations."= /icon-maskable-512.png" = {
+            proxyPass = "http://web:4311/icon-maskable-512.png";
+          };
+          locations."= /api/event" = AUTH // {
+            proxyPass = "http://web:4311/api/event";
+            extraConfig = AUTH.extraConfig + ''
+              proxy_http_version 1.1;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header Connection "";
+
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+          locations."= /log/stream" = AUTH // {
+            proxyPass = "http://web:4311/log/stream";
+            extraConfig = AUTH.extraConfig + ''
+              proxy_http_version 1.1;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header Connection "";
+
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+          locations."/" = AUTH // {
+            proxyPass = "http://web:4311";
+            proxyWebsockets = true;
+            extraConfig = AUTH.extraConfig + ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+
+              proxy_buffering off;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              add_header Pragma "no-cache" always;
+              add_header Expires "0" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
           };
         };
         #"headscale.zar.red" = SSL//{

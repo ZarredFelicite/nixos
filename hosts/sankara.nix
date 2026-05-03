@@ -1,6 +1,6 @@
 # https://github.com/Lurkki14/tuxclocker
 
-{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, pkgs-brave-origin, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -8,7 +8,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell; };
+    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell pkgs-brave-origin; };
     users.zarred = import ../home/hosts/sankara.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -92,7 +92,7 @@
   };
   swapDevices = [{
     device = "/persist/swap/swapfile";
-    size = 8192;
+    size = 32 * 1024;
   }];
 
   hardware.bluetooth = {
@@ -106,8 +106,6 @@
     openFirewall = true;
   };
 
-  hardware.bluetooth.enable = true;
-
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''
     /mnt        *(rw,fsid=0,no_subtree_check)
@@ -116,6 +114,24 @@
     /mnt/ceres   *(rw,fsid=2,nohide,insecure,no_subtree_check)
     /mnt/eros   *(rw,fsid=3,nohide,insecure,no_subtree_check)
     /mnt/turing   *(rw,fsid=4,nohide,insecure,no_subtree_check)
+  '';
+
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "agent-nixos-switch-flake" ''
+      set -euo pipefail
+      export NIXPKGS_ALLOW_INSECURE=1
+      exec ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --impure --flake path:/home/zarred/dots#sankara
+    '')
+  ];
+
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.policykit.exec" &&
+          subject.user == "zarred" &&
+          action.lookup("program") == "/run/current-system/sw/bin/agent-nixos-switch-flake") {
+        return polkit.Result.YES;
+      }
+    });
   '';
 
   powerManagement.cpuFreqGovernor = "performance";

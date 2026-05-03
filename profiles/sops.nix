@@ -33,6 +33,24 @@
       '';
       owner = "zarred";
     };
+    templates."user-api-keys.env" = {
+      content = ''
+        OPENAI_API_KEY=${config.sops.placeholder.openai-api}
+        GEMINI_API_KEY=${config.sops.placeholder.gemini-api}
+        OPENROUTER_API_KEY=${config.sops.placeholder.openrouter-api}
+        INWORLD_API_KEY=${config.sops.placeholder.inworld-api}
+        BRAVE_API_KEY=${config.sops.placeholder.brave-api}
+      '';
+      owner = "zarred";
+    };
+    templates."transmission-credentials.json" = lib.mkIf (config.networking.hostName == "sankara") {
+      content = ''
+        { "rpc-password": "${config.sops.placeholder.transmission-rpc}" }
+      '';
+      owner = "media";
+      group = "users";
+      mode = "0400";
+    };
     secrets = lib.mkMerge [
       (lib.mkIf (config.networking.hostName == "sankara") {
         nextcloud-admin = { owner = "nextcloud"; };
@@ -73,6 +91,7 @@
         gemini-api = { owner = "zarred"; };
         openrouter-api = { owner = "zarred"; };
         elevenlabs-api = { owner = "zarred"; };
+        inworld-api = { owner = "zarred"; };
         openclaw-token = { owner = "zarred"; };
         nixAccessTokens = { mode = "0440"; group = config.users.groups.keys.name; };
         authelia-jwtSecret = { owner = "zarred"; };
@@ -81,6 +100,7 @@
         firecrawl-api = { owner = "zarred"; };
         opencode-api = { owner = "zarred"; };
         lifx-api-token = { owner = "hass"; group = "hass"; };
+        brave-api = { owner = "zarred"; };
       }
     ];
   };

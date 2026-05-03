@@ -2,16 +2,12 @@
 let
   onebar-css = builtins.readFile( builtins.fetchGit {
       url = "https://git.gay/freeplay/Firefox-Onebar";
-      rev = "78789cadd56cdf0d273ace47e3ac8b6f7db94eef"; # NOTE: UPDATE
+      rev = "cf1ddf9ba1b2e417e1db8b7c5aac4bb0ef0c699a"; # NOTE: UPDATE
     } + "/onebar.css" );
   # Touch focused css (outdated)
   alpha-css = builtins.readFile( builtins.fetchGit {
       url = "https://github.com/Tagggar/Firefox-Alpha";
-      rev = "7d4ad9d7b052a25d4ea70b4e19a5da6359ea6b97"; # NOTE: UPDATE
-    } + "/chrome/userChrome.css" );
-  onefox-css = builtins.readFile( builtins.fetchGit {
-      url = "https://github.com/Perseus333/One-Fox";
-      rev = "bb476da749332942c6739e04bec64efea2642d18"; # NOTE: UPDATE
+      rev = "78bf9a9ea57538b0a58212731e81dea80d490105"; # NOTE: UPDATE
     } + "/chrome/userChrome.css" );
 in {
   imports = [
@@ -23,7 +19,6 @@ in {
     package = pkgs.firefox.override {
       nativeMessagingHosts = [
         pkgs.tridactyl-native
-        pkgs.browserpass
         pkgs.fx-cast-bridge
       ];
       extraPolicies = {
@@ -53,15 +48,12 @@ in {
           #bpc-pkg
           ublock-origin
           darkreader
-          user-agent-string-switcher
           redirector
           #tampermonkey
           firemonkey
           tridactyl
-          consent-o-matic
-          decentraleyes
-          canvasblocker
-          browserpass
+          #consent-o-matic
+          #browserpass
           videospeed
           adaptive-tab-bar-colour
           # TODO: unavailable - video-downloadhelper
@@ -80,7 +72,7 @@ in {
         userChrome = onebar-css;
         extraConfig = builtins.readFile(builtins.fetchGit {
           url = "https://codeberg.org/Narsil/user.js";
-          rev = "b4455ee737bb31c36d6bb26cf19cf8d221a585ff"; # NOTE: UPDATE
+          rev = "2f6ca400f65d947699e4b7f8e3234c5ca67fb00e"; # NOTE: UPDATE
         }
           + "/desktop/user.js") ;
       };
@@ -99,14 +91,6 @@ in {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           "browser.urlbar.maxRichResults" = 0;
           "browser.urlbar.clickSelectsAll" = true;
-        };
-      };
-      onefox = {
-        id = 4;
-        bookmarks = {};
-        userChrome = onefox-css;
-        settings = {
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
       };
     };

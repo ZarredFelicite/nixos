@@ -180,7 +180,7 @@
       rpc-bind-address = "0.0.0.0";
       rpc-host-whitelist-enabled = false;
       rpc-whitelist-enabled = true;
-      rpc-whitelist = "127.0.0.* 192.168.*.* 100.64.1.*";
+      rpc-whitelist = "127.0.0.*,192.168.*.*,100.64.1.*";
       rpc-authentication-required = true;
       rpc-username = "zarred";
       # rpc-password will be set via systemd.services.transmission.preStart using sops secret
@@ -192,6 +192,7 @@
       ratio-limit = 1.5;
       ratio-limit-enabled = true;
     };
+    credentialsFile = config.sops.templates."transmission-credentials.json".path;
     #downloadDirPermissions = "770";
     #performanceNetParameters = false;
   };

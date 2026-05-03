@@ -4,6 +4,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";
+    nixpkgs-brave-origin.url = "github:WitteShadovv/nixpkgs/cfc309238360a9f5e5e7612b87df8083fb69ef09";
     #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
@@ -35,7 +36,7 @@
   };
   outputs = {
     self, nixpkgs,
-    nixpkgs-unstable, nixpkgs-quickshell, #nixpkgs-master,
+    nixpkgs-unstable, nixpkgs-quickshell, nixpkgs-brave-origin, #nixpkgs-master,
     home-manager, determinate, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
@@ -58,6 +59,10 @@
         inherit system;
         config.allowUnfree = true;
       };
+      pkgs-brave-origin = import nixpkgs-brave-origin {
+        inherit system;
+        config.allowUnfree = true;
+      };
       #pkgs-master = import nixpkgs-master {
       #  inherit system;
       #  config.allowUnfree = true;
@@ -71,7 +76,7 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable pkgs-quickshell;
+            inherit pkgs-unstable pkgs-quickshell pkgs-brave-origin;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
@@ -86,7 +91,7 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable pkgs-quickshell;
+            inherit pkgs-unstable pkgs-quickshell pkgs-brave-origin;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };
@@ -100,7 +105,7 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable pkgs-quickshell;
+            inherit pkgs-unstable pkgs-quickshell pkgs-brave-origin;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };

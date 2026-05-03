@@ -29,8 +29,10 @@ in {
     ./tmux.nix
     ./glow.nix
     ./ueberzugpp.nix
-    ./openclaw.nix
+    ./fzf.nix
     # INFO: does not have opencode compat ./mcp-servers.nix
+  ] ++ lib.optionals (osConfig.networking.hostName != "sankara") [
+      #./openclaw.nix
   ];
 
   home.packages = [

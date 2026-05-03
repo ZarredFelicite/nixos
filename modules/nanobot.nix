@@ -32,9 +32,14 @@ in
 
   config = mkIf cfg.enable {
     systemd.user.services.nanobot = let
+      qmdPkg = pkgs.callPackage ../pkgs/qmd/package.nix {};
       nanobotPackage = pkgs.callPackage ../pkgs/nanobot.nix {
         projectDir = cfg.projectDir;
       };
+      nanobotStart = pkgs.writeShellScript "nanobot-start" ''
+        export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
+        exec ${lib.getExe nanobotPackage} gateway --port ${toString cfg.port}${optionalString cfg.verbose " --verbose"}
+      '';
     in {
       description = "Nanobot AI Gateway";
       after = [ "network-online.target" ];
@@ -44,12 +49,16 @@ in
       serviceConfig = {
         Type = "simple";
         WorkingDirectory = cfg.projectDir;
-        ExecStart = "${lib.getExe nanobotPackage} gateway --port ${toString cfg.port}${optionalString cfg.verbose " --verbose"}";
+        Environment = [
+          "HOME=%h"
+          "PATH=${qmdPkg}/bin:%h/.nix-profile/bin:%h/.local/state/nix/profile/bin:/etc/profiles/per-user/%u/bin:/nix/profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
+        ];
+        ExecStart = "${nanobotStart}";
         Restart = "on-failure";
         RestartSec = "10s";
       };
 
-      path = [ "/run/current-system/sw" ];
+      path = [ qmdPkg "/run/current-system/sw" ];
     };
   };
 }

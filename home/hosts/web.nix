@@ -14,7 +14,6 @@
 
     # Modules for a full desktop experience (previously via home/core.nix's imports)
     ../cli
-    ../menu
     ../mail
     ../finance
     ../media
@@ -41,18 +40,15 @@
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
-  systemd.user.timers.ibkr = {
-    Unit.Description = "Timer for ibkr stocks service";
-    Unit.Requires = "ibkr.service";
-    Install.WantedBy = [ "timers.target" ];
-    Timer.OnCalendar = "*:0/5";
-    Timer.Persistent = true;
-  };
   systemd.user.services.ibkr = {
-    Unit.Description = "Get stocks data from ibkr and yfinance";
-    Service.ExecStart = "/home/zarred/scripts/finances/ibkr/ibkr.py -psyvc --flex-period 1";
+    Unit.Description = "Serve IBKR web UI with in-process refresh";
+    Service.EnvironmentFile = [
+      "/home/zarred/.config/ibkr/auth/env.list"
+      osConfig.sops.templates."user-api-keys.env".path
+    ];
+    Service.ExecStart = "/home/zarred/scripts/finances/ibkr/ibkr.py --server --yfinance --flex-period 1 --timer 300 --port 8001 --verbose";
     Service.Restart = "always";
-    Service.RestartSec = "300s";
+    Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "0";
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
@@ -108,6 +104,17 @@
     Service.WorkingDirectory = "/home/zarred/scripts/tts/soprano";
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.chatterbox = {
+    Unit.Description = "Chatterbox TTS server";
+    Service.User = "zarred";
+    Service.ExecStart = "/home/zarred/scripts/tts/chatterbox/systemd-start.sh";
+    Service.WorkingDirectory = "/home/zarred/scripts/tts/chatterbox";
+    Service.Restart = "on-failure";
+    Service.RestartSec = "5s";
+    Service.TimeoutStartSec = "15min";
+    Service.Environment = [ "PYTHONUNBUFFERED=1" ];
   };
 
   systemd.user.services.crawl4ai-api = {

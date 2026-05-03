@@ -14,6 +14,10 @@
       OPENAI_API_KEY = "$(cat /run/secrets/openai-api)";
       GEMINI_API_KEY = "$(cat /run/secrets/gemini-api)";
       OPENROUTER_API_KEY = "$(cat /run/secrets/openrouter-api)";
+      INWORLD_API_KEY = "$(cat /run/secrets/inworld-api)";
+      BRAVE_API_KEY = "$(cat /run/secrets/brave-api)";
+      PI_CODING_AGENT_DIR = "~/.config/pi/agent";
+      PI_SKIP_VERSION_CHECK = "1";
     };
 
     # A few truly core packages. Most packages will be in other profiles.
@@ -71,10 +75,10 @@
       hyperlinks = true; # makes file paths clickable in the terminal
       hyperlinks-file-link-format = "vscode://file/{path}:{line}"; # opens links in vscode
       features = "decorations interactive";
-      #interactive = {
-      #  keep-plus-minus-markers = false;
-      #};
-      minus-style = "red bold ul \"#ffeeee\"";
+      syntax-theme = "ansi";
+      minus-style = "red";
+      plus-style = "green";
+      zero-style = "normal";
       decorations = {
         commit-decoration-style = "bold yellow box ul";
         file-style = "bold yellow ul";
@@ -87,9 +91,19 @@
   };
   programs.ssh = {
     enable = true;
-    #controlMaster = "yes";
-    #controlPersist = "30m";
     matchBlocks = {
+      "*" = {
+        controlMaster = "auto";
+        controlPath = "~/.ssh/controlmasters/%r@%h:%p";
+        controlPersist = "1h";
+      };
+      sankara = {
+        hostname = "sankara";
+        user = "zarred";
+        identityFile = "/home/zarred/.ssh/id_ed25519";
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        addKeysToAgent = "yes";
+      };
       rpicam = {
         hostname = "rpicam";
         user = "zarred";
@@ -145,6 +159,15 @@
         };
         userKnownHostsFile = "~/.ssh/known_hosts";
         addKeysToAgent = "yes";
+      };
+      github = {
+        host = "github.com";
+        hostname = "github.com";
+        user = "git";
+        identitiesOnly = true;
+        extraOptions = {
+          IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
+        };
       };
     };
   };

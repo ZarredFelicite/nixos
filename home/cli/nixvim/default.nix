@@ -101,6 +101,9 @@ imports = [
       kickstart-lsp-attach = {
         clear = true;
       };
+      tmux-window-title = {
+        clear = true;
+      };
     };
     autoCmd = [
       # Highlight when yanking (copying) text
@@ -113,6 +116,42 @@ imports = [
         callback.__raw = ''
           function()
             vim.highlight.on_yank()
+          end
+        '';
+      }
+      {
+        event = ["BufEnter"];
+        desc = "Set tmux window name to the active Neovim buffer filename";
+        group = "tmux-window-title";
+        callback.__raw = ''
+          function()
+            if vim.env.TMUX == nil then
+              return
+            end
+
+            local name = vim.fn.expand("%:t")
+            if name == nil or name == "" then
+              name = vim.bo.filetype
+            end
+            if name == nil or name == "" then
+              name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+            end
+
+            vim.fn.system({ "tmux", "rename-window", name })
+          end
+        '';
+      }
+      {
+        event = ["VimLeavePre"];
+        desc = "Hand tmux window naming back to tmux-window-name";
+        group = "tmux-window-title";
+        callback.__raw = ''
+          function()
+            if vim.env.TMUX == nil then
+              return
+            end
+
+            vim.fn.system({ "tmux", "rename-window", "" })
           end
         '';
       }

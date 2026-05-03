@@ -1,9 +1,6 @@
 { pkgs, pkgs-unstable, lib, inputs, ... }:
 let
   vicinaePackage = inputs.vicinae.packages.${pkgs.system}.default;
-  #selectorScript = pkgs.writeShellScriptBin "selectorMenu" ''
-  #  exec ${}
-  #'';
   clipboardSelector = pkgs.writeShellScriptBin "clipboardSelector" "cliphist list | rofi -dmenu -matching prefix | cliphist decode | wl-copy ";
   hyprlauncherSettings = {
     general.grab_focus = true;
@@ -13,20 +10,17 @@ let
   };
 in {
   imports = [
-    ./rofi/rofi.nix
-    #inputs.anyrun.homeModules.default
+    ../rofi/rofi.nix
   ];
+
   home.packages = [
-    #selectorScript
     clipboardSelector
     pkgs-unstable.hyprlauncher
     vicinaePackage
   ];
 
-  # Vicinae launcher (like Raycast for Wayland)
   stylix.targets.vicinae.enable = false;
 
-  # Create vicinae.json directly with settings (more reliable than symlinks to store)
   xdg.configFile."vicinae/vicinae.json".text = builtins.toJSON {
     favicon_service = "twenty";
     pop_to_root_on_close = false;
@@ -49,11 +43,9 @@ in {
     package = vicinaePackage;
     systemd.enable = true;
     systemd.autoStart = true;
-    # Settings now in xdg.configFile."vicinae/settings.json"
     settings = {};
   };
 
-  # Hyprlauncher (no HM module on this channel, wire declaratively)
   xdg.configFile."hypr/hyprlauncher.conf".text =
     lib.hm.generators.toHyprconf { attrs = hyprlauncherSettings; };
 
@@ -72,41 +64,4 @@ in {
   };
 
   programs.rofi.enable = true;
-  programs.fzf = {
-    enable = true;
-    enableZshIntegration = true;
-    colors = {
-      "fg" = lib.mkForce "#9ccfd8";
-      "fg+" = lib.mkForce "#ebbcba";
-    #  "hl" = "yellow";
-    #  "hl+" = "red";
-      "bg" = lib.mkForce "-1";
-      "bg+" = lib.mkForce "-1";
-      "gutter" = lib.mkForce "-1";
-      "pointer" = lib.mkForce "#ebbcba";
-      "border" = lib.mkForce "#6e6a86";
-      "scrollbar" = lib.mkForce "#6e6a86";
-      "info" = lib.mkForce "#6e6a86";
-    };
-    defaultCommand = "fd --type file --no-ignore";
-    defaultOptions = [
-      "--layout reverse"
-      #"--border"
-      "--info inline"
-      "--no-separator"
-      "--cycle"
-      "--scroll-off 10"
-      "--pointer '⏽'"
-      "--marker '󰧟'"
-      "--prompt '  '"
-      "--gutter ' '"
-      "--ansi"
-      "-m"
-      "--bind='ctrl-a:toggle-all,ctrl-j:replace-query,ctrl-p:change-preview-window(right,70%|down,40%|hidden),change:top'"
-    ];
-    fileWidgetCommand = "fd --type f";
-    fileWidgetOptions = [ "--preview 'head {}'" ];
-    historyWidgetOptions = [ "--sort" "--exact" ];
-    tmux.enableShellIntegration = true;
-  };
 }

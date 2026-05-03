@@ -3,6 +3,40 @@
   ... }:
 let
   hyprland = pkgs-unstable.hyprland;
+  linkDeepfilterInput = pkgs.writeShellScript "link-deepfilter-input" ''
+    set -euo pipefail
+
+    wpctl=${pkgs.wireplumber}/bin/wpctl
+    pw_link=${pkgs.pipewire}/bin/pw-link
+    grep=${pkgs.gnugrep}/bin/grep
+    awk=${pkgs.gawk}/bin/awk
+
+    raw_port="alsa_input.usb-0c76_USB_PnP_Audio_Device-00.mono-fallback:capture_MONO"
+
+    for _ in {1..40}; do
+      filter_inputs="$($pw_link -i 2>/dev/null | $grep '^input\.filter-chain-.*:input_' || true)"
+      filter_source_id="$($wpctl status 2>/dev/null | $awk '
+        /Filters:/ { f=1; next }
+        /Streams:/ { f=0 }
+        f && ($0 ~ /DeepFilter|output\.filter-chain/) && $0 ~ /\[Audio\/Source\]/ {
+          if (match($0, /([0-9]+)\./, m)) { print m[1]; exit }
+        }
+      ')"
+
+      if [ -n "$filter_inputs" ] && [ -n "$filter_source_id" ]; then
+        while IFS= read -r dst; do
+          [ -n "$dst" ] && $pw_link "$raw_port" "$dst" 2>/dev/null || true
+        done <<< "$filter_inputs"
+
+        $wpctl set-default "$filter_source_id" 2>/dev/null || true
+        exit 0
+      fi
+
+      sleep 0.5
+    done
+
+    exit 1
+  '';
 in {
   imports = [
     ../profiles/common.nix
@@ -26,16 +60,13 @@ in {
   system.autoUpgrade = {
     enable = true;
     operation = "boot";
-    flake = inputs.self.outPath;
-    #flake = "/home/zarred/dots";
+    # Use the live checkout rather than inputs.self.outPath, so auto-upgrade
+    # sees committed config changes instead of the previous generation's
+    # /nix/store source snapshot.
+    flake = "path:/home/zarred/dots";
     flags = [
-      "--update-input"
-      "nixpkgs"
-      "--update-input"
-      "home-manager"
-      #"--commit-lock-file"
-      "--no-write-lock-file"
-      #"--recreate-lock-file"
+      # Match `nh os boot -u`: refresh all flake inputs, not just nixpkgs/home-manager.
+      "--recreate-lock-file"
       "-L" # print build logs
       "--impure"
       "--builders"
@@ -50,6 +81,26 @@ in {
     allowReboot = false;
   };
   #stylix.targets.plymouth.enable = false;
+  systemd.user.services.deepfilter-input-link = {
+    description = "Link USB microphone into DeepFilter";
+    after = [ "pipewire.service" "wireplumber.service" ];
+    wants = [ "pipewire.service" "wireplumber.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = linkDeepfilterInput;
+    };
+  };
+
+  systemd.user.timers.deepfilter-input-link = {
+    description = "Periodically relink USB microphone into DeepFilter";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "10s";
+      OnCalendar = "*:0/30";
+      Unit = "deepfilter-input-link.service";
+    };
+  };
+
   systemd.tmpfiles.rules = [
     # Transmission paths may not exist on tmpfs-backed /var during activation.
     # Ensure they are created before transmission's namespace setup runs.
@@ -245,7 +296,7 @@ in {
             bluez_monitor.properties = {
               ["bluez5.enable-sbc-xq"] = true,
               ["bluez5.enable-msbc"] = true,
-              ["bluez5.enable-hw-volume"] = true,
+              ["bluez5.enable-hw-volume"] = false,
             }
           '')
           #["bluez5.headset-roles"] = "[ hsp_hs hsp_ag hfp_hf hfp_ag ]"

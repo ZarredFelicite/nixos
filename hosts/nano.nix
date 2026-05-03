@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, modulesPath, inputs, outputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, pkgs-brave-origin, modulesPath, inputs, outputs, self, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/hardware/thinkpad-x1-nano-gen1.nix
@@ -8,7 +8,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit self inputs outputs pkgs-unstable pkgs-quickshell;
+      inherit self inputs outputs pkgs-unstable pkgs-quickshell pkgs-brave-origin;
     };
     users.zarred = import ../home/hosts/nano.nix;
   };

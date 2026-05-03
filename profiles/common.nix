@@ -108,7 +108,7 @@
     };
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 ];
+      allowedTCPPorts = [ 22 4096 ];
       allowedUDPPorts = [ ];
       # KDE Connect uses TCP/UDP 1714-1764 for discovery + data channels.
       allowedTCPPortRanges = [
@@ -162,7 +162,7 @@
         description = "Zarred";
         uid = 1000;
         hashedPasswordFile = config.sops.secrets.users-zarred.path;
-        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp" "keyd" "input"];
+        extraGroups = [ "networkmanager" "wheel" "video" "render" "tss" "ftp" "keyd" "input" "dialout"];
         home = "/home/zarred";
         createHome = true;
         shell = pkgs.zsh;

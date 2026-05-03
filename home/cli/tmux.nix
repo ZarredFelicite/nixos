@@ -1,4 +1,56 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+  tmuxWindowNamePython = pkgs.python3.withPackages (ps: [ ps.libtmux ]);
+  tmuxRenamePiWindow = pkgs.writeShellApplication {
+    name = "tmux-rename-pi-window";
+    text = ''
+      target="''${1:-}"
+      [ -n "$target" ] || exit 0
+
+      # Run after tmux-window-name's async hook so Pi's terminal title wins.
+      sleep 0.3
+
+      cmd="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_current_command}' 2>/dev/null || true)"
+      [ "$cmd" = "pi" ] || exit 0
+
+      title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
+      [ -n "$title" ] || exit 0
+
+      # Pi core decorates terminal titles as "π - <session> - <cwd>".
+      # Use just the session segment for tmux window names.
+      case "$title" in
+        "π - "*" - "*)
+          title="''${title#π - }"
+          title="''${title% - *}"
+          ;;
+        "π - "*)
+          title="''${title#π - }"
+          ;;
+      esac
+      [ -n "$title" ] || exit 0
+
+      ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
+    '';
+  };
+  tmuxWindowName = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-window-name";
+    version = "unstable-2026-04-26";
+    rtpFilePath = "tmux_window_name.tmux";
+    src = pkgs.fetchFromGitHub {
+      owner = "ofirgall";
+      repo = "tmux-window-name";
+      rev = "e98189f9a9487d2cdaa2d207b06780d1f5f58a41";
+      hash = "sha256-YI2s/OtywKJQAPpb07dCbWA/6+sWAl+DB+QQbvZOG5k=";
+    };
+    postInstall = ''
+      substituteInPlace "$target/tmux_window_name.tmux" \
+        --replace-fail "python -c" "${tmuxWindowNamePython}/bin/python -c"
+      patchShebangs "$target/scripts"
+      substituteInPlace "$target/scripts/rename_session_windows.py" \
+        --replace-fail "#!/usr/bin/env python" "#!${tmuxWindowNamePython}/bin/python"
+    '';
+  };
+in {
   stylix.targets.tmux.enable = false;
   xdg.configFile."tmuxinator/home.yml".text = builtins.toJSON {
     name = "home";
@@ -21,53 +73,102 @@
     prefix = "C-a";
     customPaneNavigationAndResize = false;
     newSession = true;
-    terminal = "xterm-256color";
-    sensibleOnTop = true;
+    terminal = "tmux-256color";
+    focusEvents = true;
     tmuxinator.enable = true;
     extraConfig = ''
       set-option -sa terminal-features ',xterm-256color:RGB'
+      set-option -sa terminal-features ',xterm-kitty:RGB'
       set-option -ga terminal-overrides ",xterm-256color:Tc"
+      set-option -ga terminal-overrides ",xterm-kitty:Tc"
+      set -g allow-passthrough all
+      set -g extended-keys on
+      set -g extended-keys-format csi-u
       set -g window-style bg=default
       set -g window-active-style bg=default
       bind r source-file ~/.config/tmux/tmux.conf
+      bind -n M-C source-file ~/.config/tmux/tmux.conf \; display-message "Reloaded config"
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
+      set-option -g display-time 1000
       set-option -g status-interval 5
-      set-option -g automatic-rename on
-      set-option -g automatic-rename-format '#{b:pane_current_path}'
+      # tmux-window-name owns window naming now. The plugin briefly uses tmux's
+      # automatic-rename flag to detect unnamed windows, then disables it per-window.
+      # set-option -g automatic-rename on
+      # set-option -g automatic-rename off
+      # set-option -g automatic-rename-format '#{pane_current_command}'
       # set-option -g detach-on-destroy off
-      # in .tmux.conf
-      # set -g status-right '#{cpu_bg_color} CPU: #{cpu_icon} #{cpu_percentage} | %a %h-%d %H:%M '
+
+      # Pi sets useful terminal titles; prefer those over tmux-window-name's
+      # process/directory naming for Pi windows. The status hook is invisible;
+      # it keeps Pi window names synced when Pi updates its session title.
+      set-hook -g after-select-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
+      set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
+      set -g @rose_pine_status_right_prepend_section '#(${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id})'
+
+      # Catppuccin status modules were set here after the plugin loaded.
+      # set -g status-left-length 100
+      # set -g status-right-length 100
+      # set -g status-left ""
+      # set -g status-right "#{E:@catppuccin_status_application}"
+      # set -ag status-right "#{E:@catppuccin_status_session}"
+      # set -ag status-right "#{E:@catppuccin_status_host}"
+
+      # Post-theme window list tweaks.
+      set -g window-status-current-style 'fg=#ebbcba,bg=#191724'
+      set -g window-status-current-format '#I#[fg=#ebbcba,bg=] #[fg=#ebbcba,bg=]#W'
     '';
     plugins = with pkgs; [
-      { plugin = tmuxPlugins.catppuccin;
-        # https://github.com/catppuccin/tmux
+      # { plugin = tmuxPlugins.catppuccin;
+      #   # https://github.com/catppuccin/tmux
+      #   extraConfig = ''
+      #     set -g @catppuccin_flavour 'mocha'
+      #     # set -g @catppuccin_status_modules_right "directory application session host"
+      #     # set -g @catppuccin_directory_text "#{pane_current_path}"
+      #     # set -g @catppuccin_icon_window_last "󰖰"
+      #     # set -g @catppuccin_icon_window_current "󰖯"
+      #     # set -g @catppuccin_icon_window_zoom "󰁌"
+      #     # set -g @catppuccin_icon_window_mark "󰃀"
+      #     # set -g @catppuccin_icon_window_silent "󰂛"
+      #     # set -g @catppuccin_icon_window_activity "󰖲"
+      #     # set -g @catppuccin_icon_window_bell "󰂞"
+      #     # set -g @catppuccin_window_default_text "#T"
+      #     # set -g @catppuccin_window_current_text "#T"
+      #     # set -g @catppuccin_window_right_separator "█ "
+      #     # set -g @catppuccin_window_number_position "left"
+      #     # set -g @catppuccin_window_middle_separator " | "
+      #     # set -g @catppuccin_window_default_fill "none"
+      #     # set -g @catppuccin_window_current_fill "all"
+      #   '' ;}
+      { plugin = tmuxPlugins.rose-pine;
+        # https://github.com/rose-pine/tmux
         extraConfig = ''
-          set -g @catppuccin_flavour 'mocha'
-          set -g @catppuccin_status_modules_right "directory application session host"
-          set -g @catppuccin_directory_text "#{pane_current_path}"
-          set -g @catppuccin_icon_window_last "󰖰"
-          set -g @catppuccin_icon_window_current "󰖯"
-          set -g @catppuccin_icon_window_zoom "󰁌"
-          set -g @catppuccin_icon_window_mark "󰃀"
-          set -g @catppuccin_icon_window_silent "󰂛"
-          set -g @catppuccin_icon_window_activity "󰖲"
-          set -g @catppuccin_icon_window_bell "󰂞"
-          set -g @catppuccin_window_default_text "#W"
-          set -g @catppuccin_window_current_text "#W"
-          set -g @catppuccin_window_right_separator "█ "
-          set -g @catppuccin_window_number_position "left"
-          set -g @catppuccin_window_middle_separator " | "
-          set -g @catppuccin_window_default_fill "none"
-          set -g @catppuccin_window_current_fill "all"
-        '' ;}
-      #tmuxPlugins.cpu
-      # TODO: broken
-      #{ plugin = tmuxPlugins.resurrect;
-      #  extraConfig = ''
-      #    set -g @resurrect-strategy-nvim 'session'
-      #    set -g @resurrect-save 'S'
-      #    set -g @resurrect-restore 'R' ''; }
+          set -g @rose_pine_variant 'main'
+          set -g @rose_pine_host 'on'
+          set -g @rose_pine_user 'on'
+          set -g @rose_pine_directory 'on'
+          set -g @rose_pine_date_time '%H:%M'
+          set -g @rose_pine_disable_active_window_menu 'on'
+          set -g @rose_pine_show_current_program 'on'
+          set -g @rose_pine_left_separator ' '
+          set -g @rose_pine_right_separator ' '
+        ''; }
+      { plugin = tmuxWindowName;
+        # https://github.com/ofirgall/tmux-window-name
+        # Must load before tmux-resurrect.
+        extraConfig = ''
+          set -g @tmux_window_name_max_name_len "24"
+          set -g @tmux_window_name_icon_style "'name'"
+          set -g @tmux_window_name_show_program_args "False"
+          set -g @tmux_window_name_dir_programs "['git', 'pi']"
+        ''; }
+      { plugin = tmuxPlugins.resurrect;
+        extraConfig = ''
+          set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-save 'S'
+          # Keep restore away from plain r/R so reload muscle memory doesn't
+          # accidentally restore old sessions.
+          set -g @resurrect-restore 'C-r' ''; }
       { plugin = tmuxPlugins.continuum;
         extraConfig = " set -g @continuum-restore 'on' "; }
       { plugin = tmuxPlugins.yank;
@@ -83,7 +184,7 @@
       { plugin = tmuxPlugins.tilish;
       # https://github.com/jabirali/tmux-tilish
         extraConfig = ''
-          set -g @tilish-default 'main-horizontal'
+          set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
         '';}
       #   -------------------------------------------------

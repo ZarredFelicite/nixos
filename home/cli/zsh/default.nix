@@ -38,6 +38,9 @@
         bindkey '^H' backward-kill-word
         bindkey '5~' kill-word
 
+        export GPG_TTY="$(tty 2>/dev/null || true)"
+        gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 || true
+
         source ~/.config/zsh/fzf-tab.conf
 
         bindkey -s '^a' 'buku_fzf\n'
@@ -54,6 +57,7 @@
         export OPENAI_API_KEY=$(cat ${osConfig.sops.secrets.openai-api.path})
         export GEMINI_API_KEY=$(cat ${osConfig.sops.secrets.gemini-api.path})
         export OPENROUTER_API_KEY=$(cat ${osConfig.sops.secrets.openrouter-api.path})
+        #export BRAVE_API_KEY=$(cat ${osConfig.sops.secrets.brave-api.path})
       '';
     in
       lib.mkMerge [ zshConfigEarlyInit ];

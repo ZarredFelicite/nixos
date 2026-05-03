@@ -73,12 +73,15 @@ in {
     prefix = "C-a";
     customPaneNavigationAndResize = false;
     newSession = true;
-    terminal = "xterm-256color";
+    terminal = "tmux-256color";
     focusEvents = true;
     tmuxinator.enable = true;
     extraConfig = ''
       set-option -sa terminal-features ',xterm-256color:RGB'
+      set-option -sa terminal-features ',xterm-kitty:RGB'
       set-option -ga terminal-overrides ",xterm-256color:Tc"
+      set-option -ga terminal-overrides ",xterm-kitty:Tc"
+      set -g allow-passthrough all
       set -g extended-keys on
       set -g extended-keys-format csi-u
       set -g window-style bg=default
@@ -181,7 +184,7 @@ in {
       { plugin = tmuxPlugins.tilish;
       # https://github.com/jabirali/tmux-tilish
         extraConfig = ''
-          set -g @tilish-default 'main-horizontal'
+          set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
         '';}
       #   -------------------------------------------------

@@ -36,6 +36,9 @@
       ".openclaw"
       ".nanobot"
       ".ember"
+      ".crawl4ai"
+      ".tmux"
+      ".Trash-1000"
       # PERSISTENT .CONF
       ".config/skills"
       ".config/kdeconnect"

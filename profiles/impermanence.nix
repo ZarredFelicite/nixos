@@ -14,6 +14,7 @@
       "/etc/wireguard"
       "/etc/coolercontrol"
       "/nixos" # for nixos github repo
+      "/etc/ssh/authorized_keys.d"
     ];
     files = [
       "/etc/ssh/ssh_host_ed25519_key"

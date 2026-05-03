@@ -56,6 +56,9 @@
         nextcloud-admin = { owner = "nextcloud"; };
         immich-secrets = { sopsFile = ../secrets/immich.enc.env; format = "dotenv"; owner = "immich"; };
       })
+      (lib.mkIf config.services.home-assistant.enable {
+        lifx-api-token = { owner = "hass"; group = "hass"; };
+      })
       {
         users-zarred.neededForUsers = true;
         users-root.neededForUsers = true;
@@ -99,7 +102,6 @@
         freshrss-api = { owner = "zarred"; };
         firecrawl-api = { owner = "zarred"; };
         opencode-api = { owner = "zarred"; };
-        lifx-api-token = { owner = "hass"; group = "hass"; };
         brave-api = { owner = "zarred"; };
       }
     ];

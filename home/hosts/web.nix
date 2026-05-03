@@ -56,11 +56,11 @@
   systemd.user.services.computer-vision = {
     Unit.Description = "Server for computer vision inference";
     Service.User = "zarred";
-    Service.ExecStart = "/home/zarred/dev/yolo-server/run.sh";
+    Service.ExecStart = "/home/zarred/dev/computer-vision/run.sh";
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "5";
-    Service.WorkingDirectory = "/home/zarred/dev/yolo-server";
+    Service.WorkingDirectory = "/home/zarred/dev/computer-vision";
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };

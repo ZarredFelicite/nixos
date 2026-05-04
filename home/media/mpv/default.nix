@@ -142,7 +142,7 @@
       jellyfin = {
         url = "http://sankara:8096";
         username = "zarred";
-        password = "${builtins.readFile osConfig.sops.secrets.jellyfin-zarred.path}";
+        password = "";
         image_path = "/tmp/mpv-jellyfin";
         hide_images = "off";
         hide_spoilers = "off";

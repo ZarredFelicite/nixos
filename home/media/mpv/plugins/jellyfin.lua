@@ -21,6 +21,13 @@ local options = {
     colour_watched = "A0A0A0"
 }
 opt.read_options(options, mp.get_script_name())
+if options.password == "" then
+    local secret = io.open("/run/secrets/jellyfin-zarred", "r")
+    if secret ~= nil then
+        options.password = secret:read("*l") or ""
+        secret:close()
+    end
+end
 
 local overlay = mp.create_osd_overlay("ass-events")
 local meta_overlay = mp.create_osd_overlay("ass-events")

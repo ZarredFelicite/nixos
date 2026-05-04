@@ -30,7 +30,7 @@
         "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
-      secret-key-files = config.sops.secrets.binary-cache-key.path;
+      secret-key-files = lib.mkIf (config.networking.hostName == "web") config.sops.secrets.binary-cache-key.path;
     };
     sshServe = {
       enable = if config.networking.hostName == "web" then true else false;

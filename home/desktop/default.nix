@@ -144,8 +144,8 @@ in {
     max-items 2000
     max-dedupe-search 200
   '';
-  xdg.configFile."gotify/cli.json".source = osConfig.sops.templates."gotify-cli.json".path; # from original
-  xdg.configFile."gotify-desktop/config.toml".source = osConfig.sops.templates."gotify-desktop-config.toml".path; # from original
+  xdg.configFile."gotify/cli.json".source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."gotify-cli.json".path; # from original
+  xdg.configFile."gotify-desktop/config.toml".source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."gotify-desktop-config.toml".path; # from original
   systemd.user.services.gotify-desktop = mkHyprlandService { # from original
     Unit.Description = "Small Gotify daemon to send messages as desktop notifications";
     Service = {

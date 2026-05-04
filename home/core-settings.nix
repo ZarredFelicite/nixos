@@ -10,12 +10,7 @@
       #EDITOR = "nvim";
       #MANPAGER = "bat -l man -p'";
       #PAGER = "bat";
-      # API keys from sops - available to GUI apps and graphical sessions
-      OPENAI_API_KEY = "$(cat /run/secrets/openai-api)";
-      GEMINI_API_KEY = "$(cat /run/secrets/gemini-api)";
-      OPENROUTER_API_KEY = "$(cat /run/secrets/openrouter-api)";
-      INWORLD_API_KEY = "$(cat /run/secrets/inworld-api)";
-      BRAVE_API_KEY = "$(cat /run/secrets/brave-api)";
+      # API keys are loaded conditionally from sops in shell/systemd hooks.
       PI_CODING_AGENT_DIR = "~/.config/pi/agent";
       PI_SKIP_VERSION_CHECK = "1";
     };
@@ -38,10 +33,17 @@
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = "${pkgs.writeShellScript "load-api-keys" ''
-        ${pkgs.systemd}/bin/systemctl --user set-environment \
-          OPENAI_API_KEY="$(cat /run/secrets/openai-api)" \
-          GEMINI_API_KEY="$(cat /run/secrets/gemini-api)" \
-          OPENROUTER_API_KEY="$(cat /run/secrets/openrouter-api)"
+        args=()
+        for key in OPENAI_API_KEY:openai-api GEMINI_API_KEY:gemini-api OPENROUTER_API_KEY:openrouter-api; do
+          name="''${key%%:*}"
+          secret="/run/secrets/''${key#*:}"
+          if [ -r "$secret" ]; then
+            args+=("$name=$(cat "$secret")")
+          fi
+        done
+        if [ "''${#args[@]}" -gt 0 ]; then
+          ${pkgs.systemd}/bin/systemctl --user set-environment "''${args[@]}"
+        fi
       ''}";
     };
     Install = {

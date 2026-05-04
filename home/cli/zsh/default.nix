@@ -54,10 +54,10 @@
         # auto completion generation from --help page
         #source <(cod init $$ zsh)
 
-        export OPENAI_API_KEY=$(cat ${osConfig.sops.secrets.openai-api.path})
-        export GEMINI_API_KEY=$(cat ${osConfig.sops.secrets.gemini-api.path})
-        export OPENROUTER_API_KEY=$(cat ${osConfig.sops.secrets.openrouter-api.path})
-        #export BRAVE_API_KEY=$(cat ${osConfig.sops.secrets.brave-api.path})
+        [[ -r ${osConfig.sops.secrets.openai-api.path} ]] && export OPENAI_API_KEY="$(<${osConfig.sops.secrets.openai-api.path})"
+        [[ -r ${osConfig.sops.secrets.gemini-api.path} ]] && export GEMINI_API_KEY="$(<${osConfig.sops.secrets.gemini-api.path})"
+        [[ -r ${osConfig.sops.secrets.openrouter-api.path} ]] && export OPENROUTER_API_KEY="$(<${osConfig.sops.secrets.openrouter-api.path})"
+        # [[ -r ${osConfig.sops.secrets.brave-api.path} ]] && export BRAVE_API_KEY="$(<${osConfig.sops.secrets.brave-api.path})"
       '';
     in
       lib.mkMerge [ zshConfigEarlyInit ];

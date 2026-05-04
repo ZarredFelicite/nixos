@@ -59,6 +59,9 @@
       (lib.mkIf config.services.home-assistant.enable {
         lifx-api-token = { owner = "hass"; group = "hass"; };
       })
+      (lib.mkIf (config.networking.hostName == "web") {
+        binary-cache-key = {};
+      })
       {
         users-zarred.neededForUsers = true;
         users-root.neededForUsers = true;
@@ -87,7 +90,6 @@
         #  owner = "zarred";
         #  path = "/home/zarred/.config/gh/hosts.yml";
         #};
-        binary-cache-key = {};
         #nixremote-private = { owner = config.users.users.zarred.name; group = config.users.users.zarred.group; mode = "0440";};
         nixremote-private = { };
         openai-api = { owner = "zarred"; };

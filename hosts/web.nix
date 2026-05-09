@@ -3,7 +3,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     ../profiles/fans/fans.nix
     ../modules/docling-server.nix
-    ../modules/nanobot.nix
+    ../modules/ember.nix
     inputs.home-manager.nixosModules.home-manager
   ];
   home-manager = {
@@ -329,9 +329,8 @@
     # host = "127.0.0.1";
     # port = 5001;
   };
-  services.nanobot = {
+  services.ember = {
     enable = true;
-    verbose = true;
   };
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {

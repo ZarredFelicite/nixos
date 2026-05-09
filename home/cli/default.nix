@@ -1,5 +1,5 @@
 { self, inputs, config, pkgs, pkgs-unstable, lib, osConfig, ... }: let
-  nanobotPackage = pkgs.callPackage ../../pkgs/nanobot.nix {};
+  emberPackage = pkgs.callPackage ../../pkgs/ember.nix {};
   yazi-plugins = pkgs.fetchFromGitHub {
     owner = "yazi-rs";
     repo = "plugins";
@@ -136,7 +136,7 @@ in {
     pkgs.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
-    nanobotPackage
+    emberPackage
     #pkgs.opencode
     pkgs-unstable.opencode
     (pkgs.callPackage ../../pkgs/pi.nix {})

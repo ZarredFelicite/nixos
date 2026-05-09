@@ -1,47 +1,41 @@
-# NixOS systemd user service for nanobot AI gateway
+# NixOS systemd user service for Ember web server
 # Runs as your user account via the local checkout wrapper package
 { config, lib, pkgs, ... }:
 
 with lib;
 
 let
-  cfg = config.services.nanobot;
+  cfg = config.services.ember;
 in
 {
-  options.services.nanobot = {
-    enable = mkEnableOption "nanobot AI gateway service";
+  options.services.ember = {
+    enable = mkEnableOption "Ember web server service";
 
     port = mkOption {
       type = types.port;
-      default = 18790;
-      description = "Port for the nanobot gateway";
+      default = 4311;
+      description = "Port for the Ember web server";
     };
 
     projectDir = mkOption {
       type = types.str;
-      default = "/home/zarred/dev/nanobot";
-      description = "Path to the nanobot source checkout";
-    };
-
-    verbose = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable verbose/debug logging";
+      default = "/home/zarred/dev/ember";
+      description = "Path to the Ember source checkout";
     };
   };
 
   config = mkIf cfg.enable {
-    systemd.user.services.nanobot = let
+    systemd.user.services.ember = let
       qmdPkg = pkgs.callPackage ../pkgs/qmd/package.nix {};
-      nanobotPackage = pkgs.callPackage ../pkgs/nanobot.nix {
+      emberPackage = pkgs.callPackage ../pkgs/ember.nix {
         projectDir = cfg.projectDir;
       };
-      nanobotStart = pkgs.writeShellScript "nanobot-start" ''
+      emberStart = pkgs.writeShellScript "ember-start" ''
         export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
-        exec ${lib.getExe nanobotPackage} gateway --port ${toString cfg.port}${optionalString cfg.verbose " --verbose"}
+        exec ${lib.getExe emberPackage} --web --web-port=${toString cfg.port}
       '';
     in {
-      description = "Nanobot AI Gateway";
+      description = "Ember Web Server";
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "default.target" ];
@@ -53,7 +47,7 @@ in
           "HOME=%h"
           "PATH=${qmdPkg}/bin:%h/.nix-profile/bin:%h/.local/state/nix/profile/bin:/etc/profiles/per-user/%u/bin:/nix/profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
         ];
-        ExecStart = "${nanobotStart}";
+        ExecStart = "${emberStart}";
         Restart = "on-failure";
         RestartSec = "10s";
       };

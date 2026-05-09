@@ -195,6 +195,11 @@
       fifs = "fif --dir ~/scripts";
     };
   };
+  xdg.configFile."zsh/fzf-tab-sources/--complete.zsh".text = ''
+    # :fzf-tab:complete:*
+    ~/scripts/previewers/mini_previewer "''${realpath#-*=}"
+  '';
+
   xdg.configFile."zsh/fzf-tab.conf".text = ''
     # use tmux popup in tmux
     zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
@@ -203,6 +208,7 @@
     zstyle ':fzf-tab:*' continuous-trigger 'ctrl-I'
     zstyle ':fzf-tab:*' print-query alt-enter
     zstyle ':fzf-tab:*' switch-group ',' '.'
+    zstyle ':fzf-tab:sources' config-directory ~/.config/zsh/fzf-tab-sources
     zstyle ':fzf-tab:*:options*' fzf-flags --preview-window=hidden
     # TODO: (see if any negative impacts) zstyle ':fzf-tab:complete:*:*' fzf-preview '~/scripts/previewers/mini_previewer $realpath'
     FZF_TAB_GROUP_COLORS=(

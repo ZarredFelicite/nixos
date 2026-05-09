@@ -92,6 +92,13 @@ in {
       set -g pane-border-status top
       set-option -g display-time 1000
       set-option -g status-interval 5
+
+      # Faster window switching without prefix.
+      bind-key -n M-Tab last-window
+      bind-key -n M-[ previous-window
+      bind-key -n M-] next-window
+      bind-key -n M-w choose-window
+
       # tmux-window-name owns window naming now. The plugin briefly uses tmux's
       # automatic-rename flag to detect unnamed windows, then disables it per-window.
       # set-option -g automatic-rename on

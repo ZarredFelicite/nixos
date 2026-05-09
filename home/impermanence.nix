@@ -67,6 +67,7 @@
       ".config/Cursor"
       ".config/opencode"
       ".config/agent"
+      ".config/mcporter"
       ".config/pi"
       ".config/syncthing"
       ".config/ignis"

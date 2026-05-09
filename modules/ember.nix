@@ -32,7 +32,7 @@ in
       };
       emberStart = pkgs.writeShellScript "ember-start" ''
         export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
-        exec ${lib.getExe emberPackage} --web --web-port=${toString cfg.port}
+        exec ${lib.getExe emberPackage} --daemon --web-port=${toString cfg.port}
       '';
     in {
       description = "Ember Web Server";

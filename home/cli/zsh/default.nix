@@ -201,9 +201,10 @@
   '';
 
   xdg.configFile."zsh/fzf-tab.conf".text = ''
-    # use tmux popup in tmux
-    zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
-    zstyle ':fzf-tab:*' popup-min-size 100 100
+    # Use fzf's native tmux popup instead of fzf-tab's ftb-tmux-popup wrapper.
+    # Native popup is simpler, avoids ftb temp-file popup hangs, and opens above
+    # the command area by anchoring the popup at the top of the tmux pane.
+    zstyle ':fzf-tab:*' fzf-command 'fzf --tmux=top,80%,60%,border-native'
     zstyle ':fzf-tab:*' fzf-min-height 10
     zstyle ':fzf-tab:*' continuous-trigger 'ctrl-I'
     zstyle ':fzf-tab:*' print-query alt-enter

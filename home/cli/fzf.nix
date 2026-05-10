@@ -3,17 +3,22 @@
     enable = true;
     enableZshIntegration = true;
     colors = {
-      "fg" = lib.mkForce "#9ccfd8";
-      "fg+" = lib.mkForce "#ebbcba";
-    #  "hl" = "yellow";
-    #  "hl+" = "red";
-      "bg" = lib.mkForce "-1";
-      "bg+" = lib.mkForce "-1";
-      "gutter" = lib.mkForce "-1";
-      "pointer" = lib.mkForce "#ebbcba";
-      "border" = lib.mkForce "#6e6a86";
-      "scrollbar" = lib.mkForce "#6e6a86";
+      # Rosé Pine Main: https://rosepinetheme.com/palette
+      "bg" = lib.mkForce "#191724";
+      "bg+" = lib.mkForce "#26233a";
+      "fg" = lib.mkForce "#e0def4";
+      "fg+" = lib.mkForce "#e0def4";
+      "hl" = lib.mkForce "#ebbcba";
+      "hl+" = lib.mkForce "#ebbcba";
+      "border" = lib.mkForce "#403d52";
+      "gutter" = lib.mkForce "#191724";
+      "header" = lib.mkForce "#9ccfd8";
       "info" = lib.mkForce "#6e6a86";
+      "marker" = lib.mkForce "#f6c177";
+      "pointer" = lib.mkForce "#eb6f92";
+      "prompt" = lib.mkForce "#c4a7e7";
+      "spinner" = lib.mkForce "#f6c177";
+      "scrollbar" = lib.mkForce "#6e6a86";
     };
     defaultCommand = "fd --type file --no-ignore";
     defaultOptions = [

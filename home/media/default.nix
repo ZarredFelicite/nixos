@@ -33,40 +33,41 @@
       theme = spicePkgs.themes.text;
       colorScheme = "RosePine";
   };
-  programs.beets = {
-    enable = true;
-    mpdIntegration = {
-      enableStats = true;
-      enableUpdate = true;
-      host = "localhost";
-      port = config.services.mpd.network.port;
-    };
-    settings = {
-      directory = "/mnt/gargantua/media/music";
-      library = "/mnt/gargantua/media/music/data/beets.db";
-      import = {
-        move = true;
-        write = true;
-      };
-      paths = {
-        default = "%lower{$albumartist}/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
-        singleton = "%lower{$artist}/%lower{$title} - %left{$year,4}/01 - %lower{$title}";
-        comp = "compilations/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
-      };
-      plugins = [ "fetchart" "edit" "scrub" "lyrics" "acousticbrainz" "zero" "info" ];
-      zero = {
-        auto = false;
-        fields = [ "albumtype" "albumtypes" ];
-        update_database = true;
-        #fetchart:
-        #discogs:
-        #   source_weight: 0.0
-        #musicbrainz:
-        #   enabled: no
-        #   source_weight: 0.8
-      };
-    };
-  };
+  # NOTE: CVE-2026-42052: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')
+  # programs.beets = {
+  #   enable = true;
+  #   mpdIntegration = {
+  #     enableStats = true;
+  #     enableUpdate = true;
+  #     host = "localhost";
+  #     port = config.services.mpd.network.port;
+  #   };
+  #   settings = {
+  #     directory = "/mnt/gargantua/media/music";
+  #     library = "/mnt/gargantua/media/music/data/beets.db";
+  #     import = {
+  #       move = true;
+  #       write = true;
+  #     };
+  #     paths = {
+  #       default = "%lower{$albumartist}/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
+  #       singleton = "%lower{$artist}/%lower{$title} - %left{$year,4}/01 - %lower{$title}";
+  #       comp = "compilations/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
+  #     };
+  #     plugins = [ "fetchart" "edit" "scrub" "lyrics" "acousticbrainz" "zero" "info" ];
+  #     zero = {
+  #       auto = false;
+  #       fields = [ "albumtype" "albumtypes" ];
+  #       update_database = true;
+  #       #fetchart:
+  #       #discogs:
+  #       #   source_weight: 0.0
+  #       #musicbrainz:
+  #       #   enabled: no
+  #       #   source_weight: 0.8
+  #     };
+  #   };
+  # };
   programs.gallery-dl = {
     enable = true;
     settings = {

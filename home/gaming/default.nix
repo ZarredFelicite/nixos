@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   home.packages = [
-    pkgs.lutris
+    # pkgs.lutris
     pkgs.protonup-qt
     #pkgs.wineWowPackages.waylandFull
     pkgs.samba

@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   home.packages = [
+    # NOTE: Build is failing.
     # pkgs.lutris
     pkgs.protonup-qt
     #pkgs.wineWowPackages.waylandFull

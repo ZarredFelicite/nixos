@@ -43,6 +43,21 @@
       '';
       owner = "zarred";
     };
+    templates."mpv-jellyfin.conf" = {
+      content = ''
+        hide_images=off
+        hide_spoilers=off
+        image_path=/tmp/mpv-jellyfin
+        password=${config.sops.placeholder.jellyfin-zarred}
+        show_by_default=off
+        show_on_idle=off
+        url=http://sankara:8096
+        use_playlist=on
+        username=zarred
+      '';
+      owner = "zarred";
+      mode = "0400";
+    };
     templates."transmission-credentials.json" = lib.mkIf (config.networking.hostName == "sankara") {
       content = ''
         { "rpc-password": "${config.sops.placeholder.transmission-rpc}" }

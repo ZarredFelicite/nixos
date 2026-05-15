@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, osConfig, ... }:
+{ config, pkgs, pkgs-unstable, osConfig, ... }:
 #let
   #mpv-quality-menu = pkgs.callPackage ./plugins/mpv-quality-menu.nix { };
 #in {
@@ -21,6 +21,9 @@
   xdg.configFile."mpv/scripts/jellyfin.lua".source = ./plugins/jellyfin.lua;
   xdg.configFile."mpv/scripts/easycrop.lua".source = ./plugins/easycrop.lua;
   xdg.configFile."mpv/scripts/clear-old-buffers.lua".source = ./plugins/clear-old-buffers.lua;
+  xdg.configFile."mpv/script-opts/jellyfin.conf".source =
+    config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."mpv-jellyfin.conf".path;
+
   programs.mpv = {
     enable = true;
     config = {
@@ -138,25 +141,6 @@
         #quality_strings_video = ''
         #  [ {"Best" : "best"}, {"1080p" : "bestvideo[height<=?1080]+bestaudio/best"}, {"2160p" : "bestvideo[height<=?2160]"}, {"1440p" : "bestvideo[height<=?1440]"}, {"1080p" : "bestvideo[height<=?1080]"}, {"720p" : "bestvideo[height<=?720]+ba"}]
         #'';
-      };
-      jellyfin = {
-        url = "http://sankara:8096";
-        username = "zarred";
-        password = "";
-        image_path = "/tmp/mpv-jellyfin";
-        hide_images = "off";
-        hide_spoilers = "off";
-        show_by_default = "off";
-          # Show the script's UI again once file playback has ended. Requires
-          # mpv to be started with the --idle flag so that the window persists
-          # after playback has finished.
-          # Defaults to off
-          # ex. on
-        show_on_idle = "off";
-        use_playlist = "on";
-        # colour_default=FFFFFF
-        # colour_selected=FF
-        # colour_watched=A0A0A0
       };
     };
     bindings = {

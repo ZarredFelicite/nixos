@@ -2,6 +2,11 @@
   wayland.windowManager.hyprland.extraConfig = ''
     # Window rules for v0.53
     windowrule = match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$, float on
+    # Hover Lens is a transparent selection overlay; keep compositor effects off
+    # so the cutout remains readable and input focus stays on the overlay.
+    windowrule = match:title ^(hover-lens-overlay)$, no_blur on
+    windowrule = match:title ^(hover-lens-overlay)$, animation none
+    windowrule = match:title ^(hover-lens-overlay)$, stay_focused on
     # hyprpin adds the static tag `pin` after the window is created.
     # Only dynamic effects will re-evaluate on tag changes, so keep tag-based
     # rules limited to dynamic properties and let `hyprpin` handle float/pin/move/size.

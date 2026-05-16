@@ -53,8 +53,8 @@
     windowrule = match:workspace special:server, fullscreen_state -1 2
 
     # Layer rules for v0.53
-    layerrule = match:namespace hover-lens, noanim
-    layerrule = match:namespace hover-lens-bubble, noanim
+    layerrule = match:namespace hover-lens, animation none
+    layerrule = match:namespace hover-lens-bubble, animation none
     layerrule = match:namespace hover-lens-bubble, ignore_alpha 0
     layerrule = match:namespace notifications, blur on
     layerrule = match:namespace notifications, above_lock 1

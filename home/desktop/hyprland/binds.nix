@@ -57,7 +57,7 @@
       #"$mod, U, hy3:makegroup, opposite"
       #"$mod CTRL, U, hy3:changegroup, opposite"
       "$mod, H, togglefloating,"
-      "$mod, B, exec, cd /home/zarred/dev/hover-lens && /run/current-system/sw/bin/python3 -m hover_lens.main"
+      "$mod, B, exec, cd /home/zarred/dev/hover-lens && PATH=/nix/store/rchhgwmbfv3p41sayv54l9f6s18hz7vj-quickshell-0.3.0/bin:$PATH /run/current-system/sw/bin/python3 -m hover_lens.main"
       "$mod, K, killactive,"
       #"$mod, X, hyprexpo:expo, toggle"
       "$mod CTRL, P, pseudo,"

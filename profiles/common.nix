@@ -89,9 +89,39 @@
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
     useNetworkd = true;
     useDHCP = false;
-    wg-quick.interfaces.proton = {
-      configFile = "/etc/wireguard/proton.conf";
-      autostart = false;
+    wg-quick.interfaces = {
+      proton = {
+        configFile = "/etc/wireguard/proton.conf";
+        autostart = false;
+      };
+      proton-au = {
+        configFile = "/etc/wireguard/proton-au.conf";
+        autostart = false;
+      };
+      proton-us = {
+        configFile = "/etc/wireguard/proton-us.conf";
+        autostart = false;
+      };
+      proton-uk = {
+        configFile = "/etc/wireguard/proton-uk.conf";
+        autostart = false;
+      };
+      proton-jp = {
+        configFile = "/etc/wireguard/proton-jp.conf";
+        autostart = false;
+      };
+      proton-nl = {
+        configFile = "/etc/wireguard/proton-nl.conf";
+        autostart = false;
+      };
+      proton-de = {
+        configFile = "/etc/wireguard/proton-de.conf";
+        autostart = false;
+      };
+      proton-sg = {
+        configFile = "/etc/wireguard/proton-sg.conf";
+        autostart = false;
+      };
     };
     #dhcpcd.enable = false;
     #interfaces.wlan0.wakeOnLan.enable = true;
@@ -224,7 +254,7 @@
           var unit = action.lookup("unit");
           var verb = action.lookup("verb");
 
-          if (unit == "wg-quick-proton.service" &&
+          if (unit && unit.indexOf("wg-quick-proton") == 0 && unit.slice(-8) == ".service" &&
               (verb == "start" || verb == "stop" || verb == "restart")) {
             return polkit.Result.YES;
           }

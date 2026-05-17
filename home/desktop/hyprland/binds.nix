@@ -78,7 +78,6 @@
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"
       "$mod, U, exec, ~/scripts/stt/stt --ember"
       "$mod CTRL, U, exec, ~/scripts/stt/stt --type"
-      "$mod SHIFT, U, exec, pkill -f /home/zarred/scripts/stt/stt"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
       "$mod, L, exec, vicinae toggle"
       "$mod, Space, exec, vicinae toggle"

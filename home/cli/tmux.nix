@@ -113,6 +113,15 @@ in {
       set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set -g @rose_pine_status_right_prepend_section '#(${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id})'
 
+      # Reflect tmux alerts in matching kitty tab colors. Tabs are matched by tmux session name.
+      set -g monitor-activity on
+      set -g visual-activity off
+      set -g visual-bell off
+      set-hook -g alert-activity[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} activity"'
+      set-hook -g alert-bell[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} bell"'
+      set-hook -g after-select-window[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
+      set-hook -g client-attached[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
+
       # Catppuccin status modules were set here after the plugin loaded.
       # set -g status-left-length 100
       # set -g status-right-length 100

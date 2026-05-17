@@ -26,6 +26,7 @@
       "ctrl+shift+e" = "open_url_with_hints";
       "ctrl+shift+p>f" = "kitten hints --type path --program -";
       "ctrl+shift+p>shift+f" = "kitten hints --type path";
+      "ctrl+shift+p>t" = "launch --type overlay /home/zarred/scripts/kitty/kitty-tmux-tab";
     };
     extraConfig = ''
       color8 #555169

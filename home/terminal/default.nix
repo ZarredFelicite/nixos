@@ -12,6 +12,7 @@
       dynamic_background_opacity = true;
       share_connections = true;
       enabled_layouts = "vertical,tall,grid";
+      bell_on_tab = "none";
     };
     keybindings = {
       "ctrl+c" = "copy_or_interrupt";

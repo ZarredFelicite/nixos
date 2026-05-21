@@ -117,7 +117,6 @@ in {
       set -g monitor-activity on
       set -g visual-activity off
       set -g visual-bell off
-      set-hook -g alert-activity[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} activity"'
       set-hook -g alert-bell[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} bell"'
       set-hook -g after-select-window[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
       set-hook -g client-attached[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'

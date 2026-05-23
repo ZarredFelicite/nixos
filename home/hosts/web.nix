@@ -20,7 +20,14 @@
     ../terminal
     ../security.nix
     ../impermanence.nix
+    /home/zarred/dev/recall/nix/home-manager.nix
   ];
+
+  services.recall = {
+    enable = true;
+    intervalSeconds = 30;
+    debounceSeconds = 1;
+  };
 
   systemd.user.services.stocks = {
     Unit.Description = "Get stock prices from yfinance";

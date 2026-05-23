@@ -1,6 +1,6 @@
-{ config, ... }:
+{ pkgs-unstable, ... }:
 let
-  quickshell = "${config.programs.quickshell.package}/bin/quickshell";
+  quickshellBin = "${pkgs-unstable.quickshell}/bin";
 in
 {
   wayland.windowManager.hyprland.extraConfig = ''
@@ -97,7 +97,7 @@ in
       "$mod, S, exec, ~/scripts/nova/nova_window"
       "$mod SHIFT, S, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
       "$mod CTRL, S, exec, ~/scripts/screencapture/screenshot screenshot region &> /tmp/screenshot_log"
-      "$mod, P, exec, cd /home/zarred/dev/hover-lens && PATH=${config.programs.quickshell.package}/bin:$PATH /run/current-system/sw/bin/python3 -m hover_lens.main"
+      "$mod, P, exec, cd /home/zarred/dev/hover-lens && PATH=${quickshellBin}:$PATH /run/current-system/sw/bin/python3 -m hover_lens.main"
       "$mod, F, exec, firefox"
       " , PRINT, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
 

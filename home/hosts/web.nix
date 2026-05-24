@@ -25,7 +25,7 @@
 
   services.recall = {
     enable = true;
-    intervalSeconds = 30;
+    intervalSeconds = 60;
     debounceSeconds = 1;
   };
 

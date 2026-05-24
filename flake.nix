@@ -19,10 +19,10 @@
     flake-compat.url = "github:nix-community/flake-compat";
     vigiland.url = "github:jappie3/vigiland";
     ignis = { url = "github:ignis-sh/ignis"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
-    astal.url = "github:aylur/astal";
-    ags.url = "github:aylur/ags";
+    # astal.url = "github:aylur/astal";
+    # ags.url = "github:aylur/ags";
 
-    nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
+    # nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
 
@@ -33,6 +33,11 @@
     qmd = { url = "github:tobi/qmd"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
     vicinae.url = "path:/home/zarred/dev/vicinae";
+    recall = {
+      url = "path:/home/zarred/dev/recall";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
   outputs = {
     self, nixpkgs,
@@ -52,7 +57,7 @@
           inherit permittedInsecurePackages;
         };
         overlays = [
-          inputs.nix-vscode-extensions.overlays.default
+          # inputs.nix-vscode-extensions.overlays.default
         ];
       };
       pkgs-quickshell = import nixpkgs-quickshell {

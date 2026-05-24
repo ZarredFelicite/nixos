@@ -68,7 +68,7 @@ in {
       # Match `nh os boot -u`: refresh all flake inputs, not just nixpkgs/home-manager.
       "--recreate-lock-file"
       "-L" # print build logs
-      "--impure"
+      # "--impure"
       "--builders"
       "''"
       #"--option"

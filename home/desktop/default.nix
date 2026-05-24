@@ -11,9 +11,9 @@ in {
     ./swaync
     ./notifications.nix
     ./waybar
-    ./vscode.nix
+    # ./vscode.nix
     #../../modules/quickshell.nix
-    inputs.ags.homeManagerModules.default
+    # inputs.ags.homeManagerModules.default
   ];
 
   # Content merged from home/desktop.nix (the file)
@@ -22,14 +22,14 @@ in {
   programs.password-store.enable = true; # From home/desktop.nix
   services.hypridle.enable = true; # From home/desktop.nix
 
-  programs.ags = {
-    enable = true;
-    extraPackages = with pkgs; [
-      inputs.astal.packages.${pkgs.system}.battery
-      inputs.astal.packages.${pkgs.system}.hyprland
-      fzf
-    ];
-  };
+  # programs.ags = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [
+  #     inputs.astal.packages.${pkgs.system}.battery
+  #     inputs.astal.packages.${pkgs.system}.hyprland
+  #     fzf
+  #   ];
+  # };
 
   home.packages = [
     pkgs.slurp

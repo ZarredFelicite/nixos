@@ -1,5 +1,20 @@
 { inputs, self, pkgs, lib, osConfig, ... }: # Added osConfig
 
+let
+  audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
+  deepfacePython = pkgs.python313.withPackages (ps: [
+    ps.deepface
+    ps.fastapi
+    ps.numpy
+    ps.opencv4
+    ps.pgvector
+    ps.psycopg
+    ps.python-multipart
+    ps.tensorflow
+    ps.ultralytics
+    ps.uvicorn
+  ]);
+in
 {
   imports = [
     ../core-settings.nix
@@ -20,13 +35,32 @@
     ../terminal
     ../security.nix
     ../impermanence.nix
-    /home/zarred/dev/recall/nix/home-manager.nix
+    inputs.recall.homeManagerModules.default
   ];
 
   services.recall = {
     enable = true;
     intervalSeconds = 60;
     debounceSeconds = 1;
+  };
+
+  systemd.user.services.audio-summary-obsidian = {
+    Unit = {
+      Description = "Watch audio recordings and create Obsidian summaries";
+      After = [ "network-online.target" "load-api-keys.service" ];
+      Wants = [ "network-online.target" "load-api-keys.service" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${audioSummaryPython}/bin/python3 /home/zarred/scripts/stt/stt --watch --llm-intelligence low --recent-days 7";
+      Restart = "always";
+      RestartSec = "60s";
+      WorkingDirectory = "/home/zarred/scripts/stt";
+      Environment = [
+        "PATH=${lib.makeBinPath [ audioSummaryPython pkgs.bash pkgs.coreutils pkgs.ffmpeg pkgs.curl pkgs.jq pkgs.pass pkgs.gnupg ]}"
+      ];
+    };
+    Install.WantedBy = [ "default.target" ];
   };
 
   systemd.user.services.stocks = {
@@ -64,6 +98,7 @@
     Unit.Description = "Server for computer vision inference";
     Service.User = "zarred";
     Service.ExecStart = "/home/zarred/dev/computer-vision/run.sh";
+    Service.Environment = [ "COMPUTER_VISION_PYTHON=${deepfacePython}/bin/python" ];
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "5";
@@ -82,7 +117,7 @@
       "HIP_VISIBLE_DEVICES="
       "ROCR_VISIBLE_DEVICES="
     ];
-    Service.ExecStart = "/run/current-system/sw/bin/python -m uvicorn api.main:app --app-dir /home/zarred/dev/deepface --host 0.0.0.0 --port 5005";
+    Service.ExecStart = "${deepfacePython}/bin/python -m uvicorn api.main:app --app-dir /home/zarred/dev/deepface --host 0.0.0.0 --port 5005";
     Service.Restart = "always";
     Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "0";

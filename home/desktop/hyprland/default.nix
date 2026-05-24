@@ -38,10 +38,11 @@ in {
       ipc = "on";
     };
   };
-  # Start hyprpaper only after the session is up; mitigates login-time startup races.
+  # Start hyprpaper only after the session is up; restart even after clean exits
+  # because Hyprland crashes can terminate hyprpaper successfully and leave a black background.
   systemd.user.services.hyprpaper = mkHyprlandService {
     Service = {
-      Restart = lib.mkForce "on-failure";
+      Restart = lib.mkForce "always";
       RestartSec = lib.mkForce "3";
       ExecStartPre = [
         "${pkgs.coreutils}/bin/sleep 2"

@@ -91,7 +91,8 @@ in {
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
       set-option -g display-time 1000
-      set-option -g status-interval 5
+      # Keep status redraws infrequent; status-right includes shell commands.
+      set-option -g status-interval 60
 
       # Faster window switching without prefix.
       bind-key -n M-Tab last-window
@@ -181,12 +182,19 @@ in {
       { plugin = tmuxPlugins.resurrect;
         extraConfig = ''
           set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-capture-pane-contents 'on'
+          set -g @resurrect-processes 'pi'
+          set -g @resurrect-hook-post-save-layout '/home/zarred/scripts/tmux/pi-resurrect-enrich-save'
+          set -g @resurrect-hook-post-restore-all '/home/zarred/scripts/tmux/pi-resurrect-post-restore'
           set -g @resurrect-save 'S'
           # Keep restore away from plain r/R so reload muscle memory doesn't
           # accidentally restore old sessions.
           set -g @resurrect-restore 'C-r' ''; }
       { plugin = tmuxPlugins.continuum;
-        extraConfig = " set -g @continuum-restore 'on' "; }
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '60'
+        ''; }
       { plugin = tmuxPlugins.yank;
         extraConfig = "set -g @yank_selection 'primary'"; }
       { plugin = tmuxPlugins.tmux-fzf;

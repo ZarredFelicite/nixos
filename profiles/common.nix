@@ -203,6 +203,7 @@
         shell = pkgs.zsh;
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Xu5vJqXmgaWKHIp+4IsorATOO61u5X5ECanN3dn31 openpgp:0xD8C648AB"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKW184b6s77NZqEMDS2t6f6oSGi7wJcTa2kWqLj3YJV2 web"
         ];
       };
       nixremote = {

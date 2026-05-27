@@ -3,6 +3,9 @@
   ... }:
 let
   hyprland = pkgs-unstable.hyprland;
+  # dmemcg-booster enables the DRM device-memory cgroup controller for AMDGPU
+  # VRAM accounting/protection. This is a mitigation for ROCm/ML workloads that
+  # can otherwise starve Hyprland/display allocations on the shared display GPU.
   dmemcg-booster = pkgs.callPackage ../pkgs/dmemcg-booster.nix {};
   linkDeepfilterInput = pkgs.writeShellScript "link-deepfilter-input" ''
     set -euo pipefail
@@ -102,6 +105,8 @@ in {
     };
   };
 
+  # System instance: root has to enable/delegate the `dmem` cgroup controller
+  # high in the hierarchy before user services can set useful dmem.low values.
   systemd.services.dmemcg-booster = {
     description = "Enable DRM device-memory cgroups system-wide";
     wantedBy = [ "multi-user.target" ];
@@ -112,6 +117,8 @@ in {
     };
   };
 
+  # User instance: applies dmem.low protection to user/app slices so desktop
+  # workloads get VRAM protection. This is not a hard VRAM cap, just priority.
   systemd.user.services.dmemcg-booster = {
     description = "Enable DRM device-memory cgroups for user units";
     wantedBy = [ "graphical-session-pre.target" ];

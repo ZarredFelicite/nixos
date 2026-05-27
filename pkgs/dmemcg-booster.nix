@@ -1,5 +1,9 @@
 { lib, rustPlatform, fetchFromGitHub, dbus, pkg-config }:
 
+# Small helper from the SteamOS/CachyOS dmemcg work. It watches systemd units
+# and writes DRM `dmem.low` values so GPU memory has cgroup protection/priorities.
+# Used here to reduce the chance that ROCm jobs exhaust display GPU VRAM and
+# crash Hyprland. It does not impose a hard per-process VRAM limit.
 rustPlatform.buildRustPackage rec {
   pname = "dmemcg-booster";
   version = "0.1.2";

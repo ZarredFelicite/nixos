@@ -1,31 +1,78 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+let
+  nfsMounts = [
+    "/mnt/gargantua"
+    "/mnt/ceres"
+    "/mnt/eros"
+    "/mnt/turing"
+  ];
+
+  nfsOptions = [
+    "x-systemd.automount"
+    "nofail"
+    "_netdev"
+    "x-systemd.idle-timeout=600"
+    "x-systemd.requires=tailscaled.service"
+    "x-systemd.mount-timeout=15s"
+    "x-systemd.device-timeout=5s"
+    "timeo=100"
+    "retrans=2"
+  ];
+in {
   services.rpcbind.enable = true;
   environment.systemPackages = [ pkgs.nfs-utils ];
   boot.initrd = {
     supportedFilesystems = [ "nfs" ];
     kernelModules = [ "nfs" ];
   };
+
+  systemd.services.nfs-client-cleanup = {
+    description = "Stop local NFS users and detach NFS mounts before sleep/shutdown";
+    wantedBy = [ "sleep.target" "shutdown.target" ];
+    before = [
+      "sleep.target"
+      "shutdown.target"
+      "umount.target"
+      "mnt-gargantua.mount"
+      "mnt-ceres.mount"
+      "mnt-eros.mount"
+      "mnt-turing.mount"
+      "tailscaled.service"
+      "network.target"
+    ];
+    unitConfig.DefaultDependencies = false;
+    serviceConfig = {
+      Type = "oneshot";
+      TimeoutStartSec = "20s";
+    };
+    script = ''
+      ${pkgs.systemd}/bin/systemctl stop mpd.service 2>/dev/null || true
+      ${pkgs.psmisc}/bin/fuser -km ${builtins.concatStringsSep " " nfsMounts} 2>/dev/null || true
+      ${pkgs.util-linux}/bin/umount -f -l ${builtins.concatStringsSep " " nfsMounts} 2>/dev/null || true
+    '';
+  };
+
   # TODO: set correct permissions
   fileSystems = {
     "/mnt/gargantua" = {
       device = "sankara:/mnt/gargantua";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
+      options = nfsOptions;
     };
     "/mnt/ceres" = {
       device = "sankara:/mnt/ceres";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
+      options = nfsOptions;
     };
     "/mnt/eros" = {
       device = "sankara:/mnt/eros";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
+      options = nfsOptions;
     };
     "/mnt/turing" = {
       device = "sankara:/mnt/turing";
       fsType = "nfs";
-      options = [ "x-systemd.automount" "nofail" "_netdev" "x-systemd.idle-timeout=600" "x-systemd.requires=tailscaled.service" ];
+      options = nfsOptions;
     };
   };
 }

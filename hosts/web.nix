@@ -226,22 +226,6 @@
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = ["multi-user.target"];
 
-  # Help avoid long NFS shutdown stalls by stopping mpd and killing stale users
-  # of /mnt/gargantua early in shutdown, before unmount starts.
-  systemd.services.gargantua-shutdown-prep = {
-    description = "Pre-shutdown cleanup for /mnt/gargantua";
-    wantedBy = [ "shutdown.target" ];
-    before = [ "shutdown.target" "umount.target" "mnt-gargantua.mount" ];
-    unitConfig.DefaultDependencies = false;
-    serviceConfig = {
-      Type = "oneshot";
-      TimeoutStartSec = "15s";
-    };
-    script = ''
-      ${pkgs.systemd}/bin/systemctl stop --no-block mpd.service || true
-      ${pkgs.psmisc}/bin/fuser -km /mnt/gargantua || true
-    '';
-  };
   environment.systemPackages = [
     pkgs.polychromatic
     pkgs.lact

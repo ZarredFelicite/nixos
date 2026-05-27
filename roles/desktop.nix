@@ -408,7 +408,7 @@ in {
     user = "zarred";
     group = "users";
     #playlistDirectory = "/mnt/gargantua/media/music/data/playlists";
-    dataDir = "/mnt/gargantua/media/music/data";
+    dataDir = if config.networking.hostName == "sankara" then "/mnt/gargantua/media/music/data" else "/var/lib/mpd";
     musicDirectory = "/mnt/gargantua/media/music";
     dbFile = null;
     network.listenAddress = "any";

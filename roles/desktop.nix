@@ -3,6 +3,7 @@
   ... }:
 let
   hyprland = pkgs-unstable.hyprland;
+  dmemcg-booster = pkgs.callPackage ../pkgs/dmemcg-booster.nix {};
   linkDeepfilterInput = pkgs.writeShellScript "link-deepfilter-input" ''
     set -euo pipefail
 
@@ -98,6 +99,26 @@ in {
       OnBootSec = "10s";
       OnCalendar = "*:0/30";
       Unit = "deepfilter-input-link.service";
+    };
+  };
+
+  systemd.services.dmemcg-booster = {
+    description = "Enable DRM device-memory cgroups system-wide";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "dbus.service" ];
+    serviceConfig = {
+      ExecStart = "${lib.getExe dmemcg-booster} --use-system-bus";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.dmemcg-booster = {
+    description = "Enable DRM device-memory cgroups for user units";
+    wantedBy = [ "graphical-session-pre.target" ];
+    after = [ "dbus.service" ];
+    serviceConfig = {
+      ExecStart = lib.getExe dmemcg-booster;
+      Restart = "on-failure";
     };
   };
 

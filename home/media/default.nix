@@ -55,7 +55,7 @@
         singleton = "%lower{$artist}/%lower{$title} - %left{$year,4}/01 - %lower{$title}";
         comp = "compilations/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
       };
-      plugins = [ "fetchart" "edit" "scrub" "lyrics" "acousticbrainz" "zero" "info" ];
+      plugins = [ "fetchart" "edit" "scrub" "lyrics" "zero" "info" ];
       zero = {
         auto = false;
         fields = [ "albumtype" "albumtypes" ];

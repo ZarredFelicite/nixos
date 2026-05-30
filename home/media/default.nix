@@ -1,4 +1,12 @@
-{ config, pkgs, pkgs-unstable, inputs, ... }: {
+{ config, pkgs, pkgs-unstable, inputs, ... }:
+let
+  beetsXtractor = pkgs-unstable.python313Packages.callPackage ../../pkgs/python/beets-xtractor { };
+  essentiaSvmModels = pkgs.callPackage ../../pkgs/essentia-svm-models.nix { };
+  beetsWithXtractor = pkgs-unstable.beets.overridePythonAttrs (old: {
+    propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ beetsXtractor ];
+  });
+  svmModelPath = "${essentiaSvmModels}/share/essentia/svm_models";
+in {
   imports = [
     ./mpd_clients.nix
     ./mpv
@@ -36,7 +44,7 @@
   # CVE-2026-42052 is fixed in beets >= 2.10.0; stable nixpkgs is still on 2.5.1.
   programs.beets = {
     enable = true;
-    package = pkgs-unstable.beets;
+    package = beetsWithXtractor;
     mpdIntegration = {
       enableStats = true;
       enableUpdate = true;
@@ -55,7 +63,7 @@
         singleton = "%lower{$artist}/%lower{$title} - %left{$year,4}/01 - %lower{$title}";
         comp = "compilations/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
       };
-      plugins = [ "fetchart" "edit" "scrub" "lyrics" "zero" "info" ];
+      plugins = [ "fetchart" "edit" "scrub" "lyrics" "zero" "info" "xtractor" ];
       zero = {
         auto = false;
         fields = [ "albumtype" "albumtypes" ];
@@ -66,6 +74,31 @@
         #musicbrainz:
         #   enabled: no
         #   source_weight: 0.8
+      };
+      xtractor = {
+        auto = false;
+        "dry-run" = false;
+        write = true;
+        threads = 1;
+        force = false;
+        "keep-output" = false;
+        "keep-profiles" = false;
+        output_path = "/mnt/gargantua/media/music/data/xtractor";
+        essentia_extractor = "${pkgs-unstable.essentia-extractor}/bin/streaming_extractor_music";
+        extractor_profile.highlevel.svm_models = [
+          "${svmModelPath}/danceability.history"
+          "${svmModelPath}/gender.history"
+          "${svmModelPath}/genre_rosamerica.history"
+          "${svmModelPath}/mood_acoustic.history"
+          "${svmModelPath}/mood_aggressive.history"
+          "${svmModelPath}/mood_electronic.history"
+          "${svmModelPath}/mood_happy.history"
+          "${svmModelPath}/mood_sad.history"
+          "${svmModelPath}/mood_party.history"
+          "${svmModelPath}/mood_relaxed.history"
+          "${svmModelPath}/voice_instrumental.history"
+          "${svmModelPath}/moods_mirex.history"
+        ];
       };
     };
   };

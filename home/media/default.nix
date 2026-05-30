@@ -1,11 +1,9 @@
 { config, pkgs, pkgs-unstable, inputs, ... }:
 let
   beetsXtractor = pkgs-unstable.python313Packages.callPackage ../../pkgs/python/beets-xtractor { };
-  essentiaSvmModels = pkgs.callPackage ../../pkgs/essentia-svm-models.nix { };
   beetsWithXtractor = pkgs-unstable.beets.overridePythonAttrs (old: {
     propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ beetsXtractor ];
   });
-  svmModelPath = "${essentiaSvmModels}/share/essentia/svm_models";
 in {
   imports = [
     ./mpd_clients.nix
@@ -81,24 +79,18 @@ in {
         write = true;
         threads = 1;
         force = false;
-        "keep-output" = false;
-        "keep-profiles" = false;
+        keep_output = false;
+        keep_profiles = false;
         output_path = "/mnt/gargantua/media/music/data/xtractor";
         essentia_extractor = "${pkgs-unstable.essentia-extractor}/bin/streaming_extractor_music";
-        extractor_profile.highlevel.svm_models = [
-          "${svmModelPath}/danceability.history"
-          "${svmModelPath}/gender.history"
-          "${svmModelPath}/genre_rosamerica.history"
-          "${svmModelPath}/mood_acoustic.history"
-          "${svmModelPath}/mood_aggressive.history"
-          "${svmModelPath}/mood_electronic.history"
-          "${svmModelPath}/mood_happy.history"
-          "${svmModelPath}/mood_sad.history"
-          "${svmModelPath}/mood_party.history"
-          "${svmModelPath}/mood_relaxed.history"
-          "${svmModelPath}/voice_instrumental.history"
-          "${svmModelPath}/moods_mirex.history"
-        ];
+        # nixpkgs essentia-extractor is built without Gaia, so high-level SVM
+        # models fail. Keep xtractor on low-level features: bpm, loudness,
+        # danceability, and beat count.
+        high_level_targets = { };
+        extractor_profile.highlevel = {
+          compute = 0;
+          svm_models = [ ];
+        };
       };
     };
   };

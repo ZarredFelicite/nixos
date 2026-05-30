@@ -860,8 +860,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1780129560,
-        "narHash": "sha256-WOmSxUYs10FfrqTsBA7slkvgzHxBELm81JVDmRtqXac=",
+        "lastModified": 1780130245,
+        "narHash": "sha256-kRMhHmbvkGaWvQm2LWnfGaMpU5dV8+CSDh9e4kJ1Q0w=",
         "path": "/home/zarred/dev/recall",
         "type": "path"
       },

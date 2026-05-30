@@ -248,10 +248,12 @@
   "doh-rollout.enabled" = false;
   "doh-rollout.disable-heuristics" = true;
   "network.trr.mode" = 2;
-  "network.trr.use_ohttp" = true;
-  "network.trr.ohttp.config_uri" = "https://dooh.cloudflare-dns.com/.well-known/doohconfig";
-  "network.trr.ohttp.uri" = "https://dooh.cloudflare-dns.com/dns-query";
-  "network.trr.ohttp.relay_uri" = "https://dooh.waterfox.net/";
+  # Disabled: Firefox 151 segfaults on startup with this OHTTP/TRR combo.
+  # Plain TRR stays enabled via network.trr.mode.
+  # "network.trr.use_ohttp" = true;
+  # "network.trr.ohttp.config_uri" = "https://dooh.cloudflare-dns.com/.well-known/doohconfig";
+  # "network.trr.ohttp.uri" = "https://dooh.cloudflare-dns.com/dns-query";
+  # "network.trr.ohttp.relay_uri" = "https://dooh.waterfox.net/";
   "network.trr.max-fails" = 5;
   "network.trr.request_timeout_mode_trronly_ms" = 1500;
   "network.trr.confirmation_telemetry_enabled" = false;

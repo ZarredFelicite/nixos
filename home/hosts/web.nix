@@ -126,9 +126,15 @@ in
     Unit.After = [ "graphical-session.target" ];
   };
   systemd.user.services.speech-enhancement = {
-    Unit.Description = "Server for streaming audio for speech enhancement";
-    Service.User = "zarred";
-    Service.ExecStart = "/run/current-system/sw/bin/nix develop --command ./entry.sh";
+    Unit.Description = "General audio enhancement server";
+    Service.Environment = [
+      "AUDIO_ENHANCE_BACKEND=mossgan"
+      "CLEARVOICE_PYTHON=/persist/home/zarred/.venvs/clearvoice/bin/python"
+      "HF_HOME=/persist/home/zarred/.cache/huggingface"
+      "LD_LIBRARY_PATH=/run/opengl-driver/lib"
+      "PATH=/run/current-system/sw/bin:/etc/profiles/per-user/zarred/bin:/home/zarred/.nix-profile/bin"
+    ];
+    Service.ExecStart = "/run/current-system/sw/bin/python server_onnx.py --port 8649";
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "5";

@@ -80,6 +80,7 @@
       ".config/comfy-ui"
       ".config/Antigravity"
       ".config/rncbc.org" # qpwgraph
+      ".config/recall"
       ".config/tasknotes-cli"
       ".config/qmd"
       ".config/ibkr"

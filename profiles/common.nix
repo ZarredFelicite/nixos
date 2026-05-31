@@ -320,6 +320,22 @@
     };
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb", ATTR{power/wakeup}="enabled"
+
+      # Qudelix-5K USB HID control interface (Chrome WebHID / hidapi)
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4003", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4004", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4005", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4006", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4007", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4125", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4126", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4003", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4004", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4005", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4006", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4007", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4125", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4126", GROUP="users", MODE="0660", TAG+="uaccess"
     '';
   };
   programs.ssh = {

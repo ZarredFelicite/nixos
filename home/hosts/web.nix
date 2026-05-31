@@ -126,7 +126,7 @@ in
     Unit.After = [ "graphical-session.target" ];
   };
   systemd.user.services.speech-enhancement = {
-    Unit.Description = "General audio enhancement server";
+    Unit.Description = "MossGAN audio enhancement server";
     Service.Environment = [
       "AUDIO_ENHANCE_BACKEND=mossgan"
       "CLEARVOICE_PYTHON=/persist/home/zarred/.venvs/clearvoice/bin/python"

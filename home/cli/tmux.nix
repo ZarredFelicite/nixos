@@ -210,6 +210,16 @@ in {
         extraConfig = ''
           set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
+
+          # Override tilish: Ctrl+Alt+arrows move panes, Alt+Shift+arrows swap windows/tabs.
+          bind-key -n M-C-Up swap-pane -s "{up-of}"
+          bind-key -n M-C-Down swap-pane -s "{down-of}"
+          bind-key -n M-C-Left swap-pane -s "{left-of}"
+          bind-key -n M-C-Right swap-pane -s "{right-of}"
+          bind-key -n M-S-Up swap-window -t :-1
+          bind-key -n M-S-Down swap-window -t :+1
+          bind-key -n M-S-Left swap-window -t :-1
+          bind-key -n M-S-Right swap-window -t :+1
         '';}
       #   -------------------------------------------------
       #   Alt + 0-9 	Switch to workspace number 0-9

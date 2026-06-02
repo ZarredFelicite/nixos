@@ -211,13 +211,13 @@ in {
           set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
 
-          # Override tilish: Ctrl+Alt+arrows move panes, Alt+Shift+left/right focus tabs.
+          # Override tilish: Ctrl+Alt+arrows move panes, Alt+Shift arrows navigate/reorder tabs.
           bind-key -n M-C-Up swap-pane -s "{up-of}"
           bind-key -n M-C-Down swap-pane -s "{down-of}"
           bind-key -n M-C-Left swap-pane -s "{left-of}"
           bind-key -n M-C-Right swap-pane -s "{right-of}"
-          unbind-key -n M-S-Up
-          unbind-key -n M-S-Down
+          bind-key -n M-S-Up swap-window -t :-1
+          bind-key -n M-S-Down swap-window -t :+1
           bind-key -n M-S-Left previous-window
           bind-key -n M-S-Right next-window
         '';}

@@ -140,8 +140,10 @@ in {
       set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set -g @rose_pine_status_right_prepend_section '#(${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id})'
 
-      # Reflect tmux alerts in matching kitty tab colors. Tabs are matched by tmux session name.
-      set -g monitor-activity on
+      # Reflect explicit tmux bells in matching kitty tab colors. Tabs are matched by tmux session name.
+      # Do not monitor generic activity: Pi renders frequent status/progress output, which otherwise
+      # makes inactive windows look highlighted on normal terminal updates.
+      set -g monitor-activity off
       set -g visual-activity off
       set -g visual-bell off
       set-hook -g alert-bell[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} bell"'

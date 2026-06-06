@@ -11,7 +11,15 @@ let
       sleep 0.3
 
       cmd="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_current_command}' 2>/dev/null || true)"
-      [ "$cmd" = "pi" ] || exit 0
+      if [ "$cmd" != "pi" ]; then
+        owned="$(${pkgs.tmux}/bin/tmux show-option -wqv -t "$target" @pi_window_name_owned 2>/dev/null || true)"
+        if [ "$owned" = "1" ]; then
+          ${pkgs.tmux}/bin/tmux set-option -wu -t "$target" @pi_window_name_owned 2>/dev/null || true
+          ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @tmux_window_name_enabled 1
+          ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" automatic-rename on
+        fi
+        exit 0
+      fi
 
       title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
       [ -n "$title" ] || exit 0
@@ -30,6 +38,9 @@ let
       [ -n "$title" ] || exit 0
 
       ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
+      ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @pi_window_name_owned 1
+      ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @tmux_window_name_enabled 0
+      ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" automatic-rename off
     '';
   };
   tmuxTilishOverrideBinds = pkgs.writeShellApplication {
@@ -192,7 +203,7 @@ in {
           set -g @tmux_window_name_max_name_len "24"
           set -g @tmux_window_name_icon_style "'name'"
           set -g @tmux_window_name_show_program_args "False"
-          set -g @tmux_window_name_dir_programs "['git', 'pi']"
+          set -g @tmux_window_name_dir_programs "['git']"
         ''; }
       { plugin = tmuxPlugins.resurrect;
         extraConfig = ''

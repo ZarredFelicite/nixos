@@ -32,6 +32,21 @@ let
       ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
     '';
   };
+  tmuxTilishOverrideBinds = pkgs.writeShellApplication {
+    name = "tmux-tilish-override-binds";
+    text = ''
+      # tilish is loaded with tmux run-shell, so apply overrides after its binds land.
+      sleep 0.2
+      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Up swap-pane -s "{up-of}"
+      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Down swap-pane -s "{down-of}"
+      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Left swap-pane -s "{left-of}"
+      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Right swap-pane -s "{right-of}"
+      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Up swap-window -t :-1
+      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Down swap-window -t :+1
+      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Left previous-window
+      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Right next-window
+    '';
+  };
   tmuxWindowName = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "tmux-window-name";
     version = "unstable-2026-04-26";
@@ -211,15 +226,8 @@ in {
           set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
 
-          # Override tilish: Ctrl+Alt+arrows move panes, Alt+Shift arrows navigate/reorder tabs.
-          bind-key -n M-C-Up swap-pane -s "{up-of}"
-          bind-key -n M-C-Down swap-pane -s "{down-of}"
-          bind-key -n M-C-Left swap-pane -s "{left-of}"
-          bind-key -n M-C-Right swap-pane -s "{right-of}"
-          bind-key -n M-S-Up swap-window -t :-1
-          bind-key -n M-S-Down swap-window -t :+1
-          bind-key -n M-S-Left previous-window
-          bind-key -n M-S-Right next-window
+          # Override tilish after its async plugin loader finishes.
+          run-shell -b "${tmuxTilishOverrideBinds}/bin/tmux-tilish-override-binds"
         '';}
       #   -------------------------------------------------
       #   Alt + 0-9 	Switch to workspace number 0-9

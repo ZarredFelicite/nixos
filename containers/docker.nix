@@ -12,7 +12,10 @@
     #  data-root = "/home/zarred/.local/share/docker";
     #};
   };
-  environment.systemPackages = [ pkgs.docker-compose pkgs.docker-client ];
+  environment.systemPackages = [
+    pkgs.docker-compose
+    (pkgs.docker_29.override { clientOnly = true; })
+  ];
   hardware.nvidia-container-toolkit = {
     enable = if config.networking.hostName == "nano" then false else true;
   };

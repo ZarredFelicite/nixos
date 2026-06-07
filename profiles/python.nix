@@ -103,10 +103,7 @@ in
       pynvml # Unofficial Python bindings for the NVIDIA Management Library
       #pkgs.python3Packages.yfinance
       yfinance
-      # vllm is currently marked insecure in nixpkgs 25.11 (CVE-2026-27893,
-      # CVE-2026-44222, CVE-2026-44223). Keep it out of the global system env.
-      # Use a project-local nix/micromamba env for vLLM instead.
-      # vllm
+      vllm
       ollama # Ollama Python library
       ( pkgs.callPackage ../pkgs/python/bambulabs_api {})
       #( pkgs.callPackage ../pkgs/python/yt-fts {})

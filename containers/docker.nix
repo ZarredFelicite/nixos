@@ -3,6 +3,7 @@
     enable = true;
     enableOnBoot = true;
     storageDriver = "btrfs";
+    package = pkgs.docker_29;
     #rootless = {
     #  enable = true;
     #  setSocketVariable = true;

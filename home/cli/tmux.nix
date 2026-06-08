@@ -43,19 +43,23 @@ let
       ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" automatic-rename off
     '';
   };
-  tmuxTilishOverrideBinds = pkgs.writeShellApplication {
-    name = "tmux-tilish-override-binds";
-    text = ''
-      # tilish is loaded with tmux run-shell, so apply overrides after its binds land.
-      sleep 0.2
-      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Up swap-pane -s "{up-of}"
-      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Down swap-pane -s "{down-of}"
-      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Left swap-pane -s "{left-of}"
-      ${pkgs.tmux}/bin/tmux bind-key -n M-C-Right swap-pane -s "{right-of}"
-      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Up swap-window -t :-1
-      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Down swap-window -t :+1
-      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Left previous-window
-      ${pkgs.tmux}/bin/tmux bind-key -n M-S-Right next-window
+  tmuxTilishOverrides = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-tilish-overrides";
+    version = "unstable-2026-06-08";
+    rtpFilePath = "tmux-tilish-overrides.tmux";
+    src = pkgs.runCommand "tmux-tilish-overrides-src" { } ''
+      mkdir -p "$out"
+      install -m 0755 ${pkgs.writeShellScript "tmux-tilish-overrides.tmux" ''
+        # Load after tilish so these bindings are deterministic, not sleep-raced.
+        tmux bind-key -n M-C-Up swap-pane -s "{up-of}"
+        tmux bind-key -n M-C-Down swap-pane -s "{down-of}"
+        tmux bind-key -n M-C-Left swap-pane -s "{left-of}"
+        tmux bind-key -n M-C-Right swap-pane -s "{right-of}"
+        tmux bind-key -n M-S-Up swap-window -t :-1
+        tmux bind-key -n M-S-Down swap-window -t :+1
+        tmux bind-key -n M-S-Left previous-window
+        tmux bind-key -n M-S-Right next-window
+      ''} "$out/tmux-tilish-overrides.tmux"
     '';
   };
   tmuxWindowName = pkgs.tmuxPlugins.mkTmuxPlugin {
@@ -238,10 +242,8 @@ in {
         extraConfig = ''
           set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
-
-          # Override tilish after its async plugin loader finishes.
-          run-shell -b "${tmuxTilishOverrideBinds}/bin/tmux-tilish-override-binds"
         '';}
+      tmuxTilishOverrides
       #   -------------------------------------------------
       #   Alt + 0-9 	Switch to workspace number 0-9
       #   Alt + Shift + 0-9 	Move pane to workspace 0-9

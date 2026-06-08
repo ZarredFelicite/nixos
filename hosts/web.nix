@@ -44,7 +44,28 @@
   };
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" "iwlwifi" "iwlmvm" ];
+    # Keep the NVIDIA driver available, but don't eagerly load it during boot;
+    # the display is on AMD and NVIDIA can autoload when CUDA/NVML needs it.
+    kernelModules = lib.mkForce [
+      "atkbd"
+      "br_netfilter"
+      "bridge"
+      "cpufreq_powersave"
+      "ddcci_backlight"
+      "i2c-dev"
+      "i2c-piix4"
+      "iwlmvm"
+      "iwlwifi"
+      "kvm-amd"
+      "loop"
+      "nct6775"
+      "snd-aloop"
+      "tun"
+      "uinput"
+      "v4l2loopback"
+      "veth"
+      "xt_nat"
+    ];
     kernelParams = [ "modprobe.blacklist=nova,nova_core" "rd.driver.blacklist=nova,nova_core" "nova.modeset=0" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" ];
     blacklistedKernelModules = [ "nouveau" "nova" "nova_core" ];
     extraModprobeConfig = ''
@@ -255,8 +276,15 @@
   #      ]
   #  }
   #'';
+  systemd.timers.nvidia-oc-delayed = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5min";
+      Unit = "nvidia-oc.service";
+    };
+  };
+
   systemd.services.nvidia-oc = {
-    wantedBy = [ "multi-user.target" ];
     description = "Set nvidia GPU settings with python wrapper of NVML";
     serviceConfig = {
       Type = "simple";
@@ -306,6 +334,14 @@
     kokoro = {
       image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
       ports = [ "8880:8880" ];
+      autoStart = false;
+    };
+  };
+  systemd.timers.kokoro-delayed-start = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "3min";
+      Unit = "podman-kokoro.service";
     };
   };
   services.docling-server = {

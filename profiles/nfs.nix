@@ -9,6 +9,7 @@ let
 
   nfsOptions = [
     "x-systemd.automount"
+    "noauto"
     "nofail"
     "_netdev"
     "x-systemd.idle-timeout=600"
@@ -21,9 +22,20 @@ let
 in {
   services.rpcbind.enable = true;
   environment.systemPackages = [ pkgs.nfs-utils ];
-  boot.initrd = {
-    supportedFilesystems = [ "nfs" ];
-    kernelModules = [ "nfs" ];
+  systemd.services.nfs-automounts-delayed = {
+    description = "Start NFS automounts after boot settles";
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ${pkgs.systemd}/bin/systemctl start mnt-gargantua.automount mnt-ceres.automount mnt-eros.automount mnt-turing.automount
+    '';
+  };
+
+  systemd.timers.nfs-automounts-delayed = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "2min";
+      Unit = "nfs-automounts-delayed.service";
+    };
   };
 
   systemd.services.nfs-client-cleanup = {

@@ -168,7 +168,7 @@ in
   systemd.user.services.crawl4ai-api = {
     Unit.Description = "Crawl4AI FastAPI server";
     Service.User = "zarred";
-    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'uvicorn server:app --host 0.0.0.0 --port 11235'";
+    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'xvfb-run -a -s \"-screen 0 1920x1080x24\" uvicorn server:app --host 0.0.0.0 --port 11235'";
     Service.Restart = "always";
     Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "0";

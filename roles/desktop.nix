@@ -15,7 +15,7 @@ let
     grep=${pkgs.gnugrep}/bin/grep
     awk=${pkgs.gawk}/bin/awk
 
-    raw_port="alsa_input.usb-0c76_USB_PnP_Audio_Device-00.mono-fallback:capture_MONO"
+    pnp_port="alsa_input.usb-0c76_USB_PnP_Audio_Device-00.mono-fallback:capture_MONO"
 
     for _ in {1..40}; do
       filter_inputs="$($pw_link -i 2>/dev/null | $grep '^input\.filter-chain-.*:input_' || true)"
@@ -26,12 +26,31 @@ let
           if (match($0, /([0-9]+)\./, m)) { print m[1]; exit }
         }
       ')"
+      pnp_available="$($pw_link -o 2>/dev/null | $grep -Fx "$pnp_port" || true)"
 
       if [ -n "$filter_inputs" ] && [ -n "$filter_source_id" ]; then
-        while IFS= read -r dst; do
-          [ -n "$dst" ] && $pw_link "$raw_port" "$dst" 2>/dev/null || true
-        done <<< "$filter_inputs"
+        if [ -n "$pnp_available" ]; then
+          while IFS= read -r dst; do
+            [ -z "$dst" ] && continue
 
+            # DeepFilter can auto-link to the highest-priority source (for example
+            # the Creative Live cam). Remove those links so only the USB PnP mic
+            # feeds the filter when it is present.
+            existing_sources="$($pw_link -l 2>/dev/null | $awk -v dst="$dst" '
+              $0 == dst { in_dst=1; next }
+              in_dst && $1 == "|<-" { print $2; next }
+              in_dst && $0 !~ /^  \|<-/ { in_dst=0 }
+            ')"
+            while IFS= read -r src; do
+              [ -n "$src" ] && $pw_link -d "$src" "$dst" 2>/dev/null || true
+            done <<< "$existing_sources"
+
+            $pw_link "$pnp_port" "$dst" 2>/dev/null || true
+          done <<< "$filter_inputs"
+        fi
+
+        # If the USB PnP mic is unavailable, leave WirePlumber's existing
+        # auto-link in place as the fallback source.
         $wpctl set-default "$filter_source_id" 2>/dev/null || true
         exit 0
       fi

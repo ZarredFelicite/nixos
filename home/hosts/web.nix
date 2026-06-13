@@ -1,4 +1,4 @@
-{ inputs, self, pkgs, lib, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
 
 let
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
@@ -37,6 +37,9 @@ in
     ../impermanence.nix
     inputs.recall.homeManagerModules.default
   ];
+
+  xdg.configFile."home-assistant/config.json".source =
+    config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;
 
   services.recall = {
     enable = true;

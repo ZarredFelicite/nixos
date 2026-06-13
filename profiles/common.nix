@@ -98,6 +98,10 @@
         configFile = "/etc/wireguard/proton-au.conf";
         autostart = false;
       };
+      proton-nz = {
+        configFile = "/etc/wireguard/proton-nz.conf";
+        autostart = false;
+      };
       proton-us = {
         configFile = "/etc/wireguard/proton-us.conf";
         autostart = false;

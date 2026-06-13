@@ -138,11 +138,11 @@ in {
       # set-option -g detach-on-destroy off
 
       # Pi sets useful terminal titles; prefer those over tmux-window-name's
-      # process/directory naming for Pi windows. The status hook is invisible;
-      # it keeps Pi window names synced when Pi updates its session title.
+      # process/directory naming for Pi windows. Keep this out of status-right:
+      # status commands run once per client redraw and can spawn storms.
+      set-hook -g pane-title-changed[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-select-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
-      set -g @rose_pine_status_right_prepend_section '#(${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id})'
 
       # Reflect explicit tmux bells in matching kitty tab colors. Tabs are matched by tmux session name.
       # Do not monitor generic activity: Pi renders frequent status/progress output, which otherwise

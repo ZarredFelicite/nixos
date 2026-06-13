@@ -11,14 +11,14 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "pi-coding-agent";
-  version = "0.70.0";
+  version = "0.79.3";
   src = fetchFromGitHub {
-    owner = "badlogic";
-    repo = "pi-mono";
+    owner = "earendil-works";
+    repo = "pi";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-gB3QUxA4OZ8Zg5YGbAHmknSnAHrhEGxzz/DXRiKiK50=";
+    hash = "sha256-w9cbxNUH3anMhZ1eVDLLZJiFRgviSICadmQargHdFSw=";
   };
-  npmDepsHash = "sha256-SBm5GPmHNZ24zYBo3rA9n3XTz8Y7oNOaGJ2dY/X2ccw=";
+  npmDepsHash = "sha256-arUKtQ9I4RViiiRmQRfe+rFQ2hyPVlgq6iuKStk8rLU=";
   npmWorkspace = "packages/coding-agent";
   # Skip native module rebuild for unneeded workspaces (e.g. canvas from web-ui)
   npmRebuildFlags = [ "--ignore-scripts" ];
@@ -44,9 +44,9 @@ buildNpmPackage (finalAttrs: {
   postInstall = ''
     local nm="$out/lib/node_modules/pi-monorepo/node_modules"
     # Replace workspace deps needed at runtime with real copies
-    for ws in @mariozechner/pi-ai:packages/ai \
-              @mariozechner/pi-agent-core:packages/agent \
-              @mariozechner/pi-tui:packages/tui; do
+    for ws in @earendil-works/pi-ai:packages/ai \
+              @earendil-works/pi-agent-core:packages/agent \
+              @earendil-works/pi-tui:packages/tui; do
       IFS=: read -r pkg src <<< "$ws"
       rm "$nm/$pkg"
       cp -r "$src" "$nm/$pkg"
@@ -68,9 +68,9 @@ buildNpmPackage (finalAttrs: {
   passthru.updateScript = nix-update-script { };
   meta = {
     description = "Coding agent CLI with read, bash, edit, write tools and session management";
-    homepage = "https://shittycodingagent.ai/";
-    downloadPage = "https://www.npmjs.com/package/@mariozechner/pi-coding-agent";
-    changelog = "https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/CHANGELOG.md";
+    homepage = "https://pi.dev/";
+    downloadPage = "https://www.npmjs.com/package/@earendil-works/pi-coding-agent";
+    changelog = "https://github.com/earendil-works/pi/blob/main/packages/coding-agent/CHANGELOG.md";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ munksgaard ];
     mainProgram = "pi";

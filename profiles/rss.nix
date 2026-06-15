@@ -6,7 +6,12 @@
     extraConfig = ''
       proxy_ssl_verify off;
       proxy_set_header Host freshrss.zar.red;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_redirect http://$host/freshrss/ https://$host/freshrss/;
       proxy_redirect / /freshrss/;
+      proxy_cookie_path /i/ /freshrss/i/;
+      proxy_cookie_path / /freshrss/;
       sub_filter_once off;
       sub_filter_types text/html text/css application/javascript;
       sub_filter 'href="/' 'href="/freshrss/';

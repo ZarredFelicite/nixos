@@ -17,7 +17,7 @@
           }
           {
             domain = ["sankara.manticore-lenok.ts.net"];
-            resources = ["^/auth/.*" "^/auth$"];
+            resources = ["^/auth/.*" "^/auth$" "^/freshrss/api/.*"];
             policy = "bypass";
           }
           {

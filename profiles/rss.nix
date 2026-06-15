@@ -2,6 +2,7 @@
   funnelHost = "sankara.manticore-lenok.ts.net";
   freshrssSubpathProxy = {
     proxyPass = "https://127.0.0.1/";
+    recommendedProxySettings = false;
     extraConfig = ''
       proxy_ssl_verify off;
       proxy_set_header Host freshrss.zar.red;

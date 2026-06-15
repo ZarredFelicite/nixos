@@ -180,6 +180,15 @@
           error_page 401 =302 https://auth.zar.red/?rd=$target_url;
         '';
       };
+      servarrHost = path: port: SSLA // {
+        locations."= /".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = AUTH // {
+          proxyPass = "http://127.0.0.1:${toString port}/${path}/";
+          proxyWebsockets = true;
+        };
+      };
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -199,11 +208,11 @@
         "gotify.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app
         "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
         "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};
-        "prowlarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9696";};};
-        "sonarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8989";};};
-        "radarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7878";};};
+        "prowlarr.zar.red" = servarrHost "prowlarr" 9696;
+        "sonarr.zar.red" = servarrHost "sonarr" 8989;
+        "radarr.zar.red" = servarrHost "radarr" 7878;
         "lidarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8686";};};
-        "readarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8787";};};
+        "readarr.zar.red" = servarrHost "readarr" 8787;
         "lazylibrarian.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5299";};};
         "deemix.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6595";};};
         "transmission.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9091"; proxyWebsockets = true;};};

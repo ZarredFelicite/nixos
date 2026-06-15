@@ -5,7 +5,7 @@
     recommendedProxySettings = false;
     extraConfig = ''
       auth_request /authelia;
-      auth_request_set $target_url $scheme://$http_host$request_uri;
+      auth_request_set $target_url https://$http_host$request_uri;
       auth_request_set $user $upstream_http_remote_user;
       auth_request_set $groups $upstream_http_remote_groups;
       auth_request_set $name $upstream_http_remote_name;

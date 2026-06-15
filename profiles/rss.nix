@@ -1,4 +1,20 @@
-{ pkgs, ... }: {
+{ pkgs, ... }: let
+  funnelHost = "sankara.manticore-lenok.ts.net";
+  freshrssSubpathProxy = {
+    proxyPass = "https://127.0.0.1/";
+    extraConfig = ''
+      proxy_ssl_verify off;
+      proxy_set_header Host freshrss.zar.red;
+      proxy_redirect / /freshrss/;
+      sub_filter_once off;
+      sub_filter_types text/html text/css application/javascript;
+      sub_filter 'href="/' 'href="/freshrss/';
+      sub_filter 'src="/' 'src="/freshrss/';
+      sub_filter 'action="/' 'action="/freshrss/';
+      sub_filter 'url(/' 'url(/freshrss/';
+    '';
+  };
+in {
   #services.postgresql = {
   #  ensureDatabases = [ "tt_rss" ];
   #  identMap = ''
@@ -54,5 +70,15 @@
     enableACME = true;
     forceSSL = true;
     sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+    locations."/freshrss/" = freshrssSubpathProxy;
+    locations."= /freshrss".extraConfig = ''
+      return 302 /freshrss/;
+    '';
+  };
+  services.nginx.virtualHosts.${funnelHost} = {
+    locations."/freshrss/" = freshrssSubpathProxy;
+    locations."= /freshrss".extraConfig = ''
+      return 302 /freshrss/;
+    '';
   };
 }

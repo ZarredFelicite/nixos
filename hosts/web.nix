@@ -352,6 +352,24 @@
   services.ember = {
     enable = true;
   };
+
+  systemd.services.tmuxy = {
+    description = "Tmuxy web UI for zarred's tmux sessions";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.bash pkgs.coreutils pkgs.tmux pkgs.openssl ];
+    serviceConfig = {
+      Type = "simple";
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/tmuxy";
+      ExecStart = "/home/zarred/dev/tmuxy/target/release/tmuxy-server --host 0.0.0.0 --port 9010";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {
   #  image = "rbehzadan/readerlm:latest";

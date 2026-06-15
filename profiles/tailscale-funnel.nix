@@ -34,6 +34,12 @@ let
     ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 http://127.0.0.1:80
   '';
 
+  # Dedicated root-scoped endpoint for tmuxy. Tmuxy currently assumes it is
+  # hosted at /, so avoid the path-based Funnel used for the media apps.
+  tmuxyRouteCommand = ''
+    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=8443 http://127.0.0.1:18090
+  '';
+
   routeCommands = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (name: target: ''
       ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 --set-path=/${name} ${target}
@@ -61,6 +67,7 @@ in
       ${pkgs.tailscale}/bin/tailscale funnel reset || true
 
       ${rootRouteCommand}
+      ${tmuxyRouteCommand}
       ${routeCommands}
 
       ${pkgs.tailscale}/bin/tailscale funnel status

@@ -31,8 +31,8 @@ let
 
     # PHP apps are nginx/php-fpm virtual-host based. These path routes may need
     # app base-url tweaks if the app emits absolute root/subdomain URLs.
-    freshrss = "http://127.0.0.1";
-    ttrss = "http://127.0.0.1";
+    freshrss = "http://127.0.0.1:80";
+    ttrss = "http://127.0.0.1:80";
   };
 
   routeCommands = lib.concatStringsSep "\n" (

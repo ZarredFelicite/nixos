@@ -291,7 +291,7 @@
             proxyWebsockets = true;
           };
         };
-        "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {} [
+        "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate { extraConfig = SSLA.extraConfig; } [
           (funnelPublicSubpath "auth" 9092)
           (funnelSubpath "gotify" 8081)
           (funnelSubpath "jellyfin" 8096)

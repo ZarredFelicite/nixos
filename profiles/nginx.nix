@@ -16,12 +16,21 @@
             policy = "bypass";
           }
           {
+            domain = ["sankara.manticore-lenok.ts.net"];
+            resources = ["^/auth/.*" "^/auth$"];
+            policy = "bypass";
+          }
+          {
             domain = ["ember.zar.red"];
             policy = "two_factor";
             subject = ["user:zarred"];
           }
           {
             domain = ["*.zar.red"];
+            policy = "one_factor";
+          }
+          {
+            domain = ["sankara.manticore-lenok.ts.net"];
             policy = "one_factor";
           }
         ];
@@ -39,6 +48,15 @@
             domain = "zar.red";
             authelia_url = "https://auth.zar.red";
             default_redirection_url = "https://ember.zar.red";
+            expiration = "12h";
+            inactivity = "45m";
+            remember_me = "1M";
+          }
+          {
+            name = "authelia_session_funnel";
+            domain = "sankara.manticore-lenok.ts.net";
+            authelia_url = "https://sankara.manticore-lenok.ts.net/auth";
+            default_redirection_url = "https://sankara.manticore-lenok.ts.net/";
             expiration = "12h";
             inactivity = "45m";
             remember_me = "1M";
@@ -189,7 +207,22 @@
           proxyWebsockets = true;
         };
       };
-      funnelSubpathTarget = path: target: {
+      funnelAuth = {
+        extraConfig = ''
+          auth_request /authelia;
+          auth_request_set $target_url $scheme://$http_host$request_uri;
+          auth_request_set $user $upstream_http_remote_user;
+          auth_request_set $groups $upstream_http_remote_groups;
+          auth_request_set $name $upstream_http_remote_name;
+          auth_request_set $email $upstream_http_remote_email;
+          proxy_set_header Remote-User $user;
+          proxy_set_header Remote-Groups $groups;
+          proxy_set_header Remote-Name $name;
+          proxy_set_header Remote-Email $email;
+          error_page 401 =302 /auth/?rd=$target_url;
+        '';
+      };
+      funnelSubpathTarget = path: target: protected: {
         locations."= /${path}".extraConfig = ''
           return 302 /${path}/;
         '';
@@ -197,7 +230,7 @@
           proxyPass = target;
           proxyWebsockets = true;
           recommendedProxySettings = false;
-          extraConfig = ''
+          extraConfig = (if protected then funnelAuth.extraConfig else "") + ''
             proxy_set_header Host $host;
             proxy_set_header X-Forwarded-Host $host;
             proxy_set_header X-Forwarded-Proto https;
@@ -216,8 +249,9 @@
           '';
         };
       };
-      funnelSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/";
-      funnelBaseSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/${path}/";
+      funnelSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" true;
+      funnelBaseSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/${path}/" true;
+      funnelPublicSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" false;
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -258,7 +292,7 @@
           };
         };
         "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {} [
-          (funnelSubpath "auth" 9092)
+          (funnelPublicSubpath "auth" 9092)
           (funnelSubpath "gotify" 8081)
           (funnelSubpath "jellyfin" 8096)
           (funnelSubpath "homarr" 7575)
@@ -278,7 +312,6 @@
           (funnelSubpath "mainsail" 8001)
           (funnelSubpath "immich" 2283)
           (funnelSubpath "hass" 8123)
-          (funnelSubpath "hotcopper" 8186)
           (funnelSubpath "ocr" 5498)
         ];
         "ember.zar.red" = SSLA // {

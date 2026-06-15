@@ -25,7 +25,6 @@ let
     mainsail = "http://127.0.0.1:80/mainsail";
     immich = "http://127.0.0.1:80/immich";
     hass = "http://127.0.0.1:80/hass";
-    hotcopper = "http://127.0.0.1:80/hotcopper";
     ocr = "http://127.0.0.1:80/ocr";
     freshrss = "http://127.0.0.1:80/freshrss";
     ttrss = "http://127.0.0.1:80/ttrss";

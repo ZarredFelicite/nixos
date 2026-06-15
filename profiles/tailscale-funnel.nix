@@ -11,11 +11,11 @@ let
     jellyfin = "http://127.0.0.1:8096";
     homarr = "http://127.0.0.1:7575";
     dashdot = "http://127.0.0.1:3001";
-    prowlarr = "http://127.0.0.1:9696";
-    sonarr = "http://127.0.0.1:8989";
-    radarr = "http://127.0.0.1:7878";
+    prowlarr = "http://127.0.0.1:9696/prowlarr";
+    sonarr = "http://127.0.0.1:8989/sonarr";
+    radarr = "http://127.0.0.1:7878/radarr";
     lidarr = "http://127.0.0.1:8686";
-    readarr = "http://127.0.0.1:8787";
+    readarr = "http://127.0.0.1:8787/readarr";
     lazylibrarian = "http://127.0.0.1:5299";
     deemix = "http://127.0.0.1:6595";
     transmission = "http://127.0.0.1:9091";

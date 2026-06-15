@@ -2,37 +2,33 @@
 
 let
   # Public paths served at https://sankara.manticore-lenok.ts.net/<name>/
-  # via Tailscale Funnel. These intentionally target loopback services directly
-  # so they do not depend on router port-forwarding, Cloudflare DNS, or nginx
-  # virtual-host matching.
+  # via Tailscale Funnel. Funnel always targets nginx; nginx owns per-app
+  # headers, redirects, cookies, rewrites, and backend routing.
   routes = {
-    auth = "http://127.0.0.1:9092";
+    auth = "http://127.0.0.1:80/auth";
     gotify = "http://127.0.0.1:80/gotify";
     jellyfin = "http://127.0.0.1:80/jellyfin";
-    homarr = "http://127.0.0.1:7575";
-    dashdot = "http://127.0.0.1:3001";
-    prowlarr = "http://127.0.0.1:9696/prowlarr";
-    sonarr = "http://127.0.0.1:8989/sonarr";
-    radarr = "http://127.0.0.1:7878/radarr";
-    lidarr = "http://127.0.0.1:8686";
-    readarr = "http://127.0.0.1:8787/readarr";
-    lazylibrarian = "http://127.0.0.1:5299";
-    deemix = "http://127.0.0.1:6595";
-    transmission = "http://127.0.0.1:9091";
-    nzb = "http://127.0.0.1:6789";
+    homarr = "http://127.0.0.1:80/homarr";
+    dashdot = "http://127.0.0.1:80/dashdot";
+    prowlarr = "http://127.0.0.1:80/prowlarr";
+    sonarr = "http://127.0.0.1:80/sonarr";
+    radarr = "http://127.0.0.1:80/radarr";
+    lidarr = "http://127.0.0.1:80/lidarr";
+    readarr = "http://127.0.0.1:80/readarr";
+    lazylibrarian = "http://127.0.0.1:80/lazylibrarian";
+    deemix = "http://127.0.0.1:80/deemix";
+    transmission = "http://127.0.0.1:80/transmission";
+    nzb = "http://127.0.0.1:80/nzb";
     jellyseerr = "http://127.0.0.1:80/jellyseerr";
-    audiobookshelf = "http://127.0.0.1:13378";
-    pdf = "http://127.0.0.1:8088";
-    mainsail = "http://127.0.0.1:8001";
-    immich = "http://127.0.0.1:2283";
-    hass = "http://127.0.0.1:8123";
-    hotcopper = "http://127.0.0.1:8186";
-    ocr = "http://127.0.0.1:5498";
-
-    # PHP apps are nginx/php-fpm virtual-host based. These path routes may need
-    # app base-url tweaks if the app emits absolute root/subdomain URLs.
+    audiobookshelf = "http://127.0.0.1:80/audiobookshelf";
+    pdf = "http://127.0.0.1:80/pdf";
+    mainsail = "http://127.0.0.1:80/mainsail";
+    immich = "http://127.0.0.1:80/immich";
+    hass = "http://127.0.0.1:80/hass";
+    hotcopper = "http://127.0.0.1:80/hotcopper";
+    ocr = "http://127.0.0.1:80/ocr";
     freshrss = "http://127.0.0.1:80/freshrss";
-    ttrss = "http://127.0.0.1:80";
+    ttrss = "http://127.0.0.1:80/ttrss";
   };
 
   routeCommands = lib.concatStringsSep "\n" (

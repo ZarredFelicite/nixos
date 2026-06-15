@@ -189,12 +189,12 @@
           proxyWebsockets = true;
         };
       };
-      funnelSubpath = path: port: {
+      funnelSubpathTarget = path: target: {
         locations."= /${path}".extraConfig = ''
           return 302 /${path}/;
         '';
         locations."/${path}/" = {
-          proxyPass = "http://127.0.0.1:${toString port}/";
+          proxyPass = target;
           proxyWebsockets = true;
           recommendedProxySettings = false;
           extraConfig = ''
@@ -214,6 +214,8 @@
           '';
         };
       };
+      funnelSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/";
+      funnelBaseSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/${path}/";
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -254,9 +256,28 @@
           };
         };
         "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {} [
+          (funnelSubpath "auth" 9092)
           (funnelSubpath "gotify" 8081)
           (funnelSubpath "jellyfin" 8096)
+          (funnelSubpath "homarr" 7575)
+          (funnelSubpath "dashdot" 3001)
+          (funnelBaseSubpath "prowlarr" 9696)
+          (funnelBaseSubpath "sonarr" 8989)
+          (funnelBaseSubpath "radarr" 7878)
+          (funnelSubpath "lidarr" 8686)
+          (funnelBaseSubpath "readarr" 8787)
+          (funnelSubpath "lazylibrarian" 5299)
+          (funnelSubpath "deemix" 6595)
+          (funnelSubpath "transmission" 9091)
+          (funnelSubpath "nzb" 6789)
           (funnelSubpath "jellyseerr" 5055)
+          (funnelSubpath "audiobookshelf" 13378)
+          (funnelSubpath "pdf" 8088)
+          (funnelSubpath "mainsail" 8001)
+          (funnelSubpath "immich" 2283)
+          (funnelSubpath "hass" 8123)
+          (funnelSubpath "hotcopper" 8186)
+          (funnelSubpath "ocr" 5498)
         ];
         "ember.zar.red" = SSLA // {
           locations."= /manifest.json" = {

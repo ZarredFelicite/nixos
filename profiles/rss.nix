@@ -1,25 +1,27 @@
 { pkgs, ... }: let
   funnelHost = "sankara.manticore-lenok.ts.net";
-  freshrssSubpathProxy = {
+  phpSubpathProxy = path: host: {
     proxyPass = "https://127.0.0.1/";
     recommendedProxySettings = false;
     extraConfig = ''
       proxy_ssl_verify off;
-      proxy_set_header Host freshrss.zar.red;
+      proxy_set_header Host ${host};
       proxy_set_header X-Forwarded-Host $host;
       proxy_set_header X-Forwarded-Proto https;
-      proxy_redirect http://$host/freshrss/ https://$host/freshrss/;
-      proxy_redirect / /freshrss/;
-      proxy_cookie_path /i/ /freshrss/i/;
-      proxy_cookie_path / /freshrss/;
+      proxy_redirect http://$host/${path}/ https://$host/${path}/;
+      proxy_redirect / /${path}/;
+      proxy_cookie_path /i/ /${path}/i/;
+      proxy_cookie_path / /${path}/;
       sub_filter_once off;
       sub_filter_types text/html text/css application/javascript;
-      sub_filter 'href="/' 'href="/freshrss/';
-      sub_filter 'src="/' 'src="/freshrss/';
-      sub_filter 'action="/' 'action="/freshrss/';
-      sub_filter 'url(/' 'url(/freshrss/';
+      sub_filter 'href="/' 'href="/${path}/';
+      sub_filter 'src="/' 'src="/${path}/';
+      sub_filter 'action="/' 'action="/${path}/';
+      sub_filter 'url(/' 'url(/${path}/';
     '';
   };
+  freshrssSubpathProxy = phpSubpathProxy "freshrss" "freshrss.zar.red";
+  ttrssSubpathProxy = phpSubpathProxy "ttrss" "ttrss.zar.red";
 in {
   #services.postgresql = {
   #  ensureDatabases = [ "tt_rss" ];
@@ -85,6 +87,10 @@ in {
     locations."/freshrss/" = freshrssSubpathProxy;
     locations."= /freshrss".extraConfig = ''
       return 302 /freshrss/;
+    '';
+    locations."/ttrss/" = ttrssSubpathProxy;
+    locations."= /ttrss".extraConfig = ''
+      return 302 /ttrss/;
     '';
   };
 }

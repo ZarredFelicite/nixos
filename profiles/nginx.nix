@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }: {
   services.authelia.instances.primary = {
     user = "zarred";
     secrets.jwtSecretFile = config.sops.secrets.authelia-jwtSecret.path;
@@ -189,6 +189,31 @@
           proxyWebsockets = true;
         };
       };
+      funnelSubpath = path: port: {
+        locations."= /${path}".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = {
+          proxyPass = "http://127.0.0.1:${toString port}/";
+          proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Prefix /${path};
+            proxy_redirect / /${path}/;
+            proxy_cookie_path / /${path}/;
+            proxy_set_header Accept-Encoding "";
+            sub_filter_once off;
+            sub_filter_types text/html text/css application/javascript application/json;
+            sub_filter 'href="/' 'href="/${path}/';
+            sub_filter 'src="/' 'src="/${path}/';
+            sub_filter 'action="/' 'action="/${path}/';
+            sub_filter 'url(/' 'url(/${path}/';
+          '';
+        };
+      };
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -228,6 +253,11 @@
             proxyWebsockets = true;
           };
         };
+        "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {} [
+          (funnelSubpath "gotify" 8081)
+          (funnelSubpath "jellyfin" 8096)
+          (funnelSubpath "jellyseerr" 5055)
+        ];
         "ember.zar.red" = SSLA // {
           locations."= /manifest.json" = {
             proxyPass = "http://web:4311/manifest.json";

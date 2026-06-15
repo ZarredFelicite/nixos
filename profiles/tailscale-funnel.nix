@@ -7,8 +7,8 @@ let
   # virtual-host matching.
   routes = {
     auth = "http://127.0.0.1:9092";
-    gotify = "http://127.0.0.1:8081";
-    jellyfin = "http://127.0.0.1:8096";
+    gotify = "http://127.0.0.1:80/gotify";
+    jellyfin = "http://127.0.0.1:80/jellyfin";
     homarr = "http://127.0.0.1:7575";
     dashdot = "http://127.0.0.1:3001";
     prowlarr = "http://127.0.0.1:9696/prowlarr";
@@ -20,7 +20,7 @@ let
     deemix = "http://127.0.0.1:6595";
     transmission = "http://127.0.0.1:9091";
     nzb = "http://127.0.0.1:6789";
-    jellyseerr = "http://127.0.0.1:5055";
+    jellyseerr = "http://127.0.0.1:80/jellyseerr";
     audiobookshelf = "http://127.0.0.1:13378";
     pdf = "http://127.0.0.1:8088";
     mainsail = "http://127.0.0.1:8001";

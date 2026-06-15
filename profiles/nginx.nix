@@ -202,6 +202,8 @@
             proxy_set_header X-Forwarded-Host $host;
             proxy_set_header X-Forwarded-Proto https;
             proxy_set_header X-Forwarded-Prefix /${path};
+            proxy_redirect http://$host/${path}/ https://$host/${path}/;
+            proxy_redirect http://$host/ https://$host/${path}/;
             proxy_redirect / /${path}/;
             proxy_cookie_path / /${path}/;
             proxy_set_header Accept-Encoding "";

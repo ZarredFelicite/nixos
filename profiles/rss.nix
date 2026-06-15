@@ -9,6 +9,7 @@
       proxy_set_header X-Forwarded-Host $host;
       proxy_set_header X-Forwarded-Proto https;
       proxy_redirect http://$host/${path}/ https://$host/${path}/;
+      proxy_redirect http://$host/ https://$host/${path}/;
       proxy_redirect / /${path}/;
       proxy_cookie_path /i/ /${path}/i/;
       proxy_cookie_path / /${path}/;

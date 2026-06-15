@@ -55,7 +55,7 @@
           {
             name = "authelia_session_funnel";
             domain = "sankara.manticore-lenok.ts.net";
-            authelia_url = "https://sankara.manticore-lenok.ts.net/auth";
+            authelia_url = "https://sankara.manticore-lenok.ts.net";
             default_redirection_url = "https://sankara.manticore-lenok.ts.net/";
             expiration = "12h";
             inactivity = "45m";
@@ -219,7 +219,7 @@
           proxy_set_header Remote-Groups $groups;
           proxy_set_header Remote-Name $name;
           proxy_set_header Remote-Email $email;
-          error_page 401 =302 /auth/?rd=$target_url;
+          error_page 401 =302 https://$http_host/?rd=$target_url;
         '';
       };
       funnelSubpathTarget = path: target: protected: {
@@ -291,7 +291,13 @@
             proxyWebsockets = true;
           };
         };
-        "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate { extraConfig = SSLA.extraConfig; } [
+        "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {
+          extraConfig = SSLA.extraConfig;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:9092";
+            proxyWebsockets = true;
+          };
+        } [
           (funnelPublicSubpath "auth" 9092)
           (funnelSubpath "gotify" 8081)
           (funnelSubpath "jellyfin" 8096)

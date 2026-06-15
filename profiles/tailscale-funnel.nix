@@ -30,6 +30,10 @@ let
     ttrss = "http://127.0.0.1:80/ttrss";
   };
 
+  rootRouteCommand = ''
+    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 http://127.0.0.1:80
+  '';
+
   routeCommands = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (name: target: ''
       ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 --set-path=/${name} ${target}
@@ -56,6 +60,7 @@ in
       # Keep the declarative config authoritative.
       ${pkgs.tailscale}/bin/tailscale funnel reset || true
 
+      ${rootRouteCommand}
       ${routeCommands}
 
       ${pkgs.tailscale}/bin/tailscale funnel status

@@ -14,7 +14,7 @@
       proxy_set_header Remote-Groups $groups;
       proxy_set_header Remote-Name $name;
       proxy_set_header Remote-Email $email;
-      error_page 401 =302 /auth/?rd=$target_url;
+      error_page 401 =302 https://$http_host/?rd=$target_url;
       proxy_ssl_verify off;
       proxy_set_header Host ${host};
       proxy_set_header X-Forwarded-Host $host;

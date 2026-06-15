@@ -250,7 +250,27 @@
         };
       };
       funnelSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" true;
-      funnelBaseSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/${path}/" true;
+      funnelBaseSubpath = path: port: {
+        locations."= /${path}".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = {
+          proxyPass = "http://127.0.0.1:${toString port}/${path}/";
+          proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = funnelAuth.extraConfig + ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Prefix /${path};
+            proxy_redirect http://$host/${path}/ https://$host/${path}/;
+            proxy_redirect http://$host/ https://$host/${path}/;
+            proxy_redirect / /${path}/;
+            proxy_cookie_path / /${path}/;
+            proxy_set_header Accept-Encoding "";
+          '';
+        };
+      };
       funnelPublicSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" false;
       in {
         # NON AUTH

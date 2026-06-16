@@ -364,6 +364,10 @@
       User = "zarred";
       Group = "users";
       WorkingDirectory = "/home/zarred/dev/tmuxy";
+      Environment = [
+        "XDG_RUNTIME_DIR=/run/user/1000"
+        "TMUX_TMPDIR=/run/user/1000"
+      ];
       ExecStart = "/home/zarred/dev/tmuxy/target/release/tmuxy-server --host 0.0.0.0 --port 9010";
       Restart = "on-failure";
       RestartSec = "5s";

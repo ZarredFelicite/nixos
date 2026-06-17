@@ -155,6 +155,12 @@ in {
       set-hook -g client-attached[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
       set-hook -g client-focus-in[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
 
+      # tmuxy control-mode clients force manual/browser-sized windows. When a
+      # real terminal client attaches or resizes, fit windows back to that client
+      # so kitty does not show unused dotted background around shrunken panes.
+      set-hook -g client-attached[9921] 'if -F "#{==:#{client_control_mode},0}" "resize-window -A"'
+      set-hook -g client-resized[9921] 'if -F "#{==:#{client_control_mode},0}" "resize-window -A"'
+
       # Catppuccin status modules were set here after the plugin loaded.
       # set -g status-left-length 100
       # set -g status-right-length 100

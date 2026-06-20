@@ -109,6 +109,7 @@ in {
     extraConfig = ''
       set-option -sa terminal-features ',xterm-256color:RGB'
       set-option -sa terminal-features ',xterm-kitty:RGB'
+      set-option -sa terminal-features ',xterm-kitty:extkeys'
       set-option -ga terminal-overrides ",xterm-256color:Tc"
       set-option -ga terminal-overrides ",xterm-kitty:Tc"
       set -g allow-passthrough all

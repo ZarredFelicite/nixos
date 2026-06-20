@@ -78,7 +78,9 @@
     layerrule = match:namespace anyrun, blur on
     layerrule = match:namespace notifications, ignore_alpha 0
     layerrule = match:namespace waybar, ignore_alpha 0
-    layerrule = match:namespace primary-bar, ignore_alpha 0.1
+    layerrule = match:namespace primary-bar, ignore_alpha 0.45
+    layerrule = match:namespace primary-brain-fade, blur on
+    layerrule = match:namespace primary-brain-fade, ignore_alpha 0.1
     layerrule = match:namespace ignis_bar_0, ignore_alpha 0
     layerrule = match:namespace ignis_bar_1, ignore_alpha 0
     layerrule = match:namespace ignis_bar_2, ignore_alpha 0

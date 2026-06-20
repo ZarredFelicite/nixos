@@ -26,6 +26,7 @@ let
     immich = "http://127.0.0.1:80/immich";
     hass = "http://127.0.0.1:80/hass";
     ocr = "http://127.0.0.1:80/ocr";
+    ember = "http://127.0.0.1:80/ember";
     freshrss = "http://127.0.0.1:80/freshrss";
     ttrss = "http://127.0.0.1:80/ttrss";
   };

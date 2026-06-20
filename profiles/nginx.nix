@@ -360,6 +360,50 @@
             proxyPass = "http://127.0.0.1:9092";
             proxyWebsockets = true;
           };
+          # Ember is served at /ember, but its client currently calls some
+          # root-relative endpoints. Keep these on the Funnel host pointed at
+          # Ember so authenticated /ember works without rebuilding the app.
+          locations."/api/" = {
+            proxyPass = "http://web:4311/api/";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = funnelAuth.extraConfig + ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Proto https;
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+          locations."= /log/stream" = {
+            proxyPass = "http://web:4311/log/stream";
+            recommendedProxySettings = false;
+            extraConfig = funnelAuth.extraConfig + ''
+              proxy_http_version 1.1;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Proto https;
+              proxy_set_header Connection "";
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
         } [
           (funnelPublicSubpath "auth" 9092)
           (funnelSubpath "gotify" 8081)
@@ -382,6 +426,7 @@
           (funnelSubpath "immich" 2283)
           (funnelSubpath "hass" 8123)
           (funnelSubpath "ocr" 5498)
+          (funnelSubpathTarget "ember" "http://web:4311/" true)
         ];
         "ember.zar.red" = SSLA // {
           locations."= /manifest.json" = {

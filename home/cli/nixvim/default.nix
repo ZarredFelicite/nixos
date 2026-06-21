@@ -545,8 +545,8 @@ imports = [
       src = pkgs.fetchFromGitHub {
         owner = "MeanderingProgrammer";
         repo = "render-markdown.nvim";
-        rev = "07d088bf8bdadd159eb807b90eaee86a4778383f"; # NOTE: UPDATE
-        hash = "sha256-A7pm8sBQWsZl3Kc7JBh3gBUyKb6GfJ5J0zfn3mSGjKs="; # NOTE: UPDATE
+        rev = "76b6602a88f9c4f31e73fab4c94d0a168055e990";
+        hash = "sha256-ukJUaqEYI60o/lyLM5GaKsRdMW/24IZnzVzPB9/Q/zo=";
       };
     })];
   };

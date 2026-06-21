@@ -12,6 +12,7 @@
       dynamic_background_opacity = true;
       share_connections = true;
       enabled_layouts = "vertical,tall,grid";
+      bell_on_tab = "none";
     };
     keybindings = {
       "ctrl+c" = "copy_or_interrupt";
@@ -24,8 +25,9 @@
       "ctrl+shift+." = "move_tab_forward";
       "ctrl+shift+," = "move_tab_backward";
       "ctrl+shift+e" = "open_url_with_hints";
-      "ctrl+shift+p>f" = "kitten hints --type path --program -";
-      "ctrl+shift+p>shift+f" = "kitten hints --type path";
+      "ctrl+s>f" = "kitten hints --type path --program -";
+      "ctrl+s>shift+f" = "kitten hints --type path";
+      "ctrl+s>t" = "launch --type overlay /home/zarred/scripts/kitty/kitty-tmux-tab";
     };
     extraConfig = ''
       color8 #555169

@@ -15,16 +15,19 @@
     user = "media";
     group = "users";
     dataDir = "/var/lib/radarr";
+    settings.server.urlbase = "/radarr";
   };
   services.sonarr = {
     user = "media";
     group = "users";
     dataDir = "/var/lib/sonarr";
+    settings.server.urlbase = "/sonarr";
   };
   services.readarr = {
     user = "media";
     group = "users";
     dataDir = "/var/lib/readarr";
+    settings.server.urlbase = "/readarr";
   };
   virtualisation.oci-containers.containers."lidarr" = {
     image = "youegraillot/lidarr-on-steroids";
@@ -108,6 +111,7 @@
     ];
   };
   services.prowlarr = {
+    settings.server.urlbase = "/prowlarr";
   };
   services.nzbget = {
     user = "media";

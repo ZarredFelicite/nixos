@@ -56,6 +56,31 @@ in {
       Restart = "always";
     };
   };
+
+  systemd.user.services.wayvnc = mkHyprlandService {
+    Unit.Description = "Wayland VNC server";
+    Service = {
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+  systemd.user.services.trayscale = mkHyprlandService {
+    Unit.Description = "Trayscale tray app";
+    Service = {
+      ExecStart = "${pkgs.trayscale}/bin/trayscale --hide-window";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+  systemd.user.services.discord = mkHyprlandService {
+    Unit.Description = "Discord desktop client";
+    Service = {
+      ExecStart = "/etc/profiles/per-user/zarred/bin/discord";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
   wayland.windowManager.hyprland = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "nano") {
         settings.monitor = [
@@ -104,9 +129,6 @@ in {
         "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.hyprlock}/bin/hyprlock --immediate --immediate-render"
         "${pkgs.polychromatic}/bin/polychromatic-cli -o none"
-        "${pkgs.wayvnc}/bin/wayvnc"
-        "${pkgs.trayscale}/bin/trayscale --hide-window"
-        "/etc/profiles/per-user/zarred/bin/discord"
       ];
       monitor = [",preferred,auto,1"];
       xwayland.force_zero_scaling = true;

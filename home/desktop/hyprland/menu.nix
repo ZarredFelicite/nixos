@@ -52,15 +52,15 @@ in {
   systemd.user.services.hyprlauncher = {
     Unit = {
       Description = "hyprlauncher";
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
+      After = [ "hyprland-session.target" ];
+      PartOf = [ "hyprland-session.target" ];
     };
     Service = {
       ExecStart = "${lib.getExe pkgs-unstable.hyprlauncher} -d";
       Restart = "on-failure";
-      RestartSec = "10";
+      RestartSec = "5s";
     };
-    Install.WantedBy = [ "graphical-session.target" ];
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
 
   programs.rofi.enable = true;

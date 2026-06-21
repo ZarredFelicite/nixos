@@ -50,6 +50,7 @@ in {
     # libva-utils (kept in home.nix as it's often a dep for GUI media players too)
     pkgs.expect # A tool for automating interactive applications (provides unbuffer)
     pkgs.tio # Serial console TTY
+    pkgs.home-assistant-cli # hass-cli for Home Assistant control
 
     # stress-testing / benchmarking (CLI)
     pkgs.stress-ng
@@ -80,6 +81,7 @@ in {
     pkgs.nb # Command line note-taking, bookmarking, archiving, and knowledge base application
     pkgs.glow # Render markdown on the CLI, with pizzazz
     pkgs.gum # Tasty Bubble Gum for your shell
+    pkgs.ov # Feature-rich terminal-based text viewer
 
     # backup/recovery (CLI)
     pkgs.testdisk # Data recovery utilities

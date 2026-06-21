@@ -89,9 +89,43 @@
     #nameservers = [ "192.168.8.1" "1.1.1.1" "1.0.0.1" ];
     useNetworkd = true;
     useDHCP = false;
-    wg-quick.interfaces.proton = {
-      configFile = "/etc/wireguard/proton.conf";
-      autostart = false;
+    wg-quick.interfaces = {
+      proton = {
+        configFile = "/etc/wireguard/proton.conf";
+        autostart = false;
+      };
+      proton-au = {
+        configFile = "/etc/wireguard/proton-au.conf";
+        autostart = false;
+      };
+      proton-nz = {
+        configFile = "/etc/wireguard/proton-nz.conf";
+        autostart = false;
+      };
+      proton-us = {
+        configFile = "/etc/wireguard/proton-us.conf";
+        autostart = false;
+      };
+      proton-uk = {
+        configFile = "/etc/wireguard/proton-uk.conf";
+        autostart = false;
+      };
+      proton-jp = {
+        configFile = "/etc/wireguard/proton-jp.conf";
+        autostart = false;
+      };
+      proton-nl = {
+        configFile = "/etc/wireguard/proton-nl.conf";
+        autostart = false;
+      };
+      proton-de = {
+        configFile = "/etc/wireguard/proton-de.conf";
+        autostart = false;
+      };
+      proton-sg = {
+        configFile = "/etc/wireguard/proton-sg.conf";
+        autostart = false;
+      };
     };
     #dhcpcd.enable = false;
     #interfaces.wlan0.wakeOnLan.enable = true;
@@ -173,6 +207,7 @@
         shell = pkgs.zsh;
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN+Xu5vJqXmgaWKHIp+4IsorATOO61u5X5ECanN3dn31 openpgp:0xD8C648AB"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKW184b6s77NZqEMDS2t6f6oSGi7wJcTa2kWqLj3YJV2 web"
         ];
       };
       nixremote = {
@@ -224,10 +259,16 @@
           var unit = action.lookup("unit");
           var verb = action.lookup("verb");
 
-          if (unit == "wg-quick-proton.service" &&
+          if (unit && unit.indexOf("wg-quick-proton") == 0 && unit.slice(-8) == ".service" &&
               (verb == "start" || verb == "stop" || verb == "restart")) {
             return polkit.Result.YES;
           }
+        }
+
+        if (action.id == "org.freedesktop.policykit.exec" &&
+            subject.user == "zarred" &&
+            action.lookup("program") == "/run/current-system/sw/bin/set-cpu-max-freq") {
+          return polkit.Result.YES;
         }
       });
     '';
@@ -289,6 +330,22 @@
     };
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb", ATTR{power/wakeup}="enabled"
+
+      # Qudelix-5K USB HID control interface (Chrome WebHID / hidapi)
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4003", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4004", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4005", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4006", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4007", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4125", GROUP="users", MODE="0660", TAG+="uaccess"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="0a12", ATTR{idProduct}=="4126", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4003", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4004", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4005", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4006", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4007", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4125", GROUP="users", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", ATTRS{idVendor}=="0a12", ATTRS{idProduct}=="4126", GROUP="users", MODE="0660", TAG+="uaccess"
     '';
   };
   programs.ssh = {
@@ -326,6 +383,39 @@
       impala
       iwgtk
       portaudio
+      (writeShellScriptBin "set-cpu-max-freq" ''
+        set -euo pipefail
+
+        usage() {
+          echo "Usage: set-cpu-max-freq <freq-khz|profile>" >&2
+          echo "Profiles: saver=3401000, cool=3800000, balanced=4200000, max=5086181" >&2
+        }
+
+        arg="''${1:-}"
+        case "$arg" in
+          saver|power-saver) freq=3401000 ;;
+          cool) freq=3800000 ;;
+          balanced|mid) freq=4200000 ;;
+          max|performance) freq=5086181 ;;
+          ""|*[!0-9]*) usage; exit 2 ;;
+          *) freq="$arg" ;;
+        esac
+
+        first_policy="/sys/devices/system/cpu/cpufreq/policy0"
+        min_freq="$(cat "$first_policy/cpuinfo_min_freq")"
+        max_freq="$(cat "$first_policy/cpuinfo_max_freq")"
+
+        if (( freq < min_freq || freq > max_freq )); then
+          echo "Frequency ''${freq} kHz outside allowed range ''${min_freq}-''${max_freq} kHz" >&2
+          exit 2
+        fi
+
+        for max_file in /sys/devices/system/cpu/cpufreq/policy*/scaling_max_freq; do
+          echo "$freq" > "$max_file"
+        done
+
+        printf 'Set CPU max frequency to %s kHz\n' "$freq"
+      '')
     ])
     # ++ ( with pkgs-unstable; [ ])
     ;

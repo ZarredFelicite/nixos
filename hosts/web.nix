@@ -44,7 +44,28 @@
   };
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-amd" "nct6775" "i2c-dev" "ddcci_backlight" "iwlwifi" "iwlmvm" ];
+    # Keep the NVIDIA driver available, but don't eagerly load it during boot;
+    # the display is on AMD and NVIDIA can autoload when CUDA/NVML needs it.
+    kernelModules = lib.mkForce [
+      "atkbd"
+      "br_netfilter"
+      "bridge"
+      "cpufreq_powersave"
+      "ddcci_backlight"
+      "i2c-dev"
+      "i2c-piix4"
+      "iwlmvm"
+      "iwlwifi"
+      "kvm-amd"
+      "loop"
+      "nct6775"
+      "snd-aloop"
+      "tun"
+      "uinput"
+      "v4l2loopback"
+      "veth"
+      "xt_nat"
+    ];
     kernelParams = [ "modprobe.blacklist=nova,nova_core" "rd.driver.blacklist=nova,nova_core" "nova.modeset=0" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" ];
     blacklistedKernelModules = [ "nouveau" "nova" "nova_core" ];
     extraModprobeConfig = ''
@@ -226,22 +247,6 @@
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = ["multi-user.target"];
 
-  # Help avoid long NFS shutdown stalls by stopping mpd and killing stale users
-  # of /mnt/gargantua early in shutdown, before unmount starts.
-  systemd.services.gargantua-shutdown-prep = {
-    description = "Pre-shutdown cleanup for /mnt/gargantua";
-    wantedBy = [ "shutdown.target" ];
-    before = [ "shutdown.target" "umount.target" "mnt-gargantua.mount" ];
-    unitConfig.DefaultDependencies = false;
-    serviceConfig = {
-      Type = "oneshot";
-      TimeoutStartSec = "15s";
-    };
-    script = ''
-      ${pkgs.systemd}/bin/systemctl stop --no-block mpd.service || true
-      ${pkgs.psmisc}/bin/fuser -km /mnt/gargantua || true
-    '';
-  };
   environment.systemPackages = [
     pkgs.polychromatic
     pkgs.lact
@@ -271,8 +276,15 @@
   #      ]
   #  }
   #'';
+  systemd.timers.nvidia-oc-delayed = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5min";
+      Unit = "nvidia-oc.service";
+    };
+  };
+
   systemd.services.nvidia-oc = {
-    wantedBy = [ "multi-user.target" ];
     description = "Set nvidia GPU settings with python wrapper of NVML";
     serviceConfig = {
       Type = "simple";
@@ -322,6 +334,14 @@
     kokoro = {
       image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.1.5-pre";
       ports = [ "8880:8880" ];
+      autoStart = false;
+    };
+  };
+  systemd.timers.kokoro-delayed-start = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "3min";
+      Unit = "podman-kokoro.service";
     };
   };
   services.docling-server = {
@@ -332,6 +352,28 @@
   services.ember = {
     enable = true;
   };
+
+  systemd.services.tmuxy = {
+    description = "Tmuxy web UI for zarred's tmux sessions";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.bash pkgs.coreutils pkgs.tmux pkgs.openssl ];
+    serviceConfig = {
+      Type = "simple";
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/tmuxy";
+      Environment = [
+        "XDG_RUNTIME_DIR=/run/user/1000"
+        "TMUX_TMPDIR=/run/user/1000"
+      ];
+      ExecStart = "/home/zarred/dev/tmuxy/target/release/tmuxy-server --host 0.0.0.0 --port 9010";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+
   # TODO: not working
   #virtualisation.oci-containers.containers.readerlm = {
   #  image = "rbehzadan/readerlm:latest";

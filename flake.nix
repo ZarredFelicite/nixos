@@ -4,7 +4,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";
-    nixpkgs-brave-origin.url = "github:WitteShadovv/nixpkgs/cfc309238360a9f5e5e7612b87df8083fb69ef09";
+    nixpkgs-brave-origin.url = "github:Daniel-42-z/brave-origin-flake/bbe5b55e46d3f842ef52a2db961eb0244ec2cbd4";
     #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
@@ -19,10 +19,10 @@
     flake-compat.url = "github:nix-community/flake-compat";
     vigiland.url = "github:jappie3/vigiland";
     ignis = { url = "github:ignis-sh/ignis"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
-    astal.url = "github:aylur/astal";
-    ags.url = "github:aylur/ags";
+    # astal.url = "github:aylur/astal";
+    # ags.url = "github:aylur/ags";
 
-    nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
+    # nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
 
@@ -33,6 +33,11 @@
     qmd = { url = "github:tobi/qmd"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
     vicinae.url = "path:/home/zarred/dev/vicinae";
+    recall = {
+      url = "path:/home/zarred/dev/recall";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
   outputs = {
     self, nixpkgs,
@@ -52,17 +57,14 @@
           inherit permittedInsecurePackages;
         };
         overlays = [
-          inputs.nix-vscode-extensions.overlays.default
+          # inputs.nix-vscode-extensions.overlays.default
         ];
       };
       pkgs-quickshell = import nixpkgs-quickshell {
         inherit system;
         config.allowUnfree = true;
       };
-      pkgs-brave-origin = import nixpkgs-brave-origin {
-        inherit system;
-        config.allowUnfree = true;
-      };
+      pkgs-brave-origin = nixpkgs-brave-origin.packages.${system};
       #pkgs-master = import nixpkgs-master {
       #  inherit system;
       #  config.allowUnfree = true;

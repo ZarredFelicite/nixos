@@ -2,6 +2,11 @@
   wayland.windowManager.hyprland.extraConfig = ''
     # Window rules for v0.53
     windowrule = match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$, float on
+    # Hover Lens is a transparent selection overlay; keep compositor effects off
+    # so the cutout remains readable and input focus stays on the overlay.
+    windowrule = match:title ^(hover-lens-overlay)$, no_blur on
+    windowrule = match:title ^(hover-lens-overlay)$, animation none
+    windowrule = match:title ^(hover-lens-overlay)$, stay_focused on
     # hyprpin adds the static tag `pin` after the window is created.
     # Only dynamic effects will re-evaluate on tag changes, so keep tag-based
     # rules limited to dynamic properties and let `hyprpin` handle float/pin/move/size.
@@ -48,6 +53,9 @@
     windowrule = match:workspace special:server, fullscreen_state -1 2
 
     # Layer rules for v0.53
+    layerrule = match:namespace hover-lens, animation none
+    layerrule = match:namespace hover-lens-bubble, animation none
+    layerrule = match:namespace hover-lens-bubble, ignore_alpha 0
     layerrule = match:namespace notifications, blur on
     layerrule = match:namespace notifications, above_lock 1
     layerrule = match:namespace waybar, blur on
@@ -71,6 +79,8 @@
     layerrule = match:namespace notifications, ignore_alpha 0
     layerrule = match:namespace waybar, ignore_alpha 0
     layerrule = match:namespace primary-bar, ignore_alpha 0.45
+    layerrule = match:namespace primary-brain-fade, blur on
+    layerrule = match:namespace primary-brain-fade, ignore_alpha 0.99
     layerrule = match:namespace ignis_bar_0, ignore_alpha 0
     layerrule = match:namespace ignis_bar_1, ignore_alpha 0
     layerrule = match:namespace ignis_bar_2, ignore_alpha 0

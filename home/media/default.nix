@@ -1,4 +1,10 @@
-{ config, pkgs, pkgs-unstable, inputs, ... }: {
+{ config, pkgs, pkgs-unstable, inputs, ... }:
+let
+  beetsXtractor = pkgs-unstable.python313Packages.callPackage ../../pkgs/python/beets-xtractor { };
+  beetsWithXtractor = pkgs-unstable.beets.overridePythonAttrs (old: {
+    propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ beetsXtractor ];
+  });
+in {
   imports = [
     ./mpd_clients.nix
     ./mpv
@@ -33,8 +39,10 @@
       theme = spicePkgs.themes.text;
       colorScheme = "RosePine";
   };
+  # CVE-2026-42052 is fixed in beets >= 2.10.0; stable nixpkgs is still on 2.5.1.
   programs.beets = {
     enable = true;
+    package = beetsWithXtractor;
     mpdIntegration = {
       enableStats = true;
       enableUpdate = true;
@@ -53,7 +61,7 @@
         singleton = "%lower{$artist}/%lower{$title} - %left{$year,4}/01 - %lower{$title}";
         comp = "compilations/%lower{$album}%aunique{}-%left{$year,4}/$track-%lower{$title}";
       };
-      plugins = [ "fetchart" "edit" "scrub" "lyrics" "acousticbrainz" "zero" "info" ];
+      plugins = [ "musicbrainz" "fetchart" "edit" "scrub" "lyrics" "zero" "info" "xtractor" ];
       zero = {
         auto = false;
         fields = [ "albumtype" "albumtypes" ];
@@ -64,6 +72,25 @@
         #musicbrainz:
         #   enabled: no
         #   source_weight: 0.8
+      };
+      xtractor = {
+        auto = false;
+        "dry-run" = false;
+        write = true;
+        threads = 1;
+        force = false;
+        keep_output = false;
+        keep_profiles = false;
+        output_path = "/mnt/gargantua/media/music/data/xtractor";
+        essentia_extractor = "${pkgs-unstable.essentia-extractor}/bin/streaming_extractor_music";
+        # nixpkgs essentia-extractor is built without Gaia, so high-level SVM
+        # models fail. Keep xtractor on low-level features: bpm, loudness,
+        # danceability, and beat count.
+        high_level_targets = { };
+        extractor_profile.highlevel = {
+          compute = 0;
+          svm_models = [ ];
+        };
       };
     };
   };

@@ -1,8 +1,9 @@
 { config, pkgs, ... }: {
   virtualisation.docker = {
     enable = true;
-    enableOnBoot = true;
+    enableOnBoot = false;
     storageDriver = "btrfs";
+    package = pkgs.docker_29;
     #rootless = {
     #  enable = true;
     #  setSocketVariable = true;
@@ -11,10 +12,22 @@
     #  data-root = "/home/zarred/.local/share/docker";
     #};
   };
-  environment.systemPackages = [ pkgs.docker-compose pkgs.docker-client ];
+  environment.systemPackages = [
+    pkgs.docker-compose
+    (pkgs.docker_29.override { clientOnly = true; })
+  ];
   hardware.nvidia-container-toolkit = {
     enable = if config.networking.hostName == "nano" then false else true;
   };
   users.users.zarred.extraGroups = [ "docker" ];
+
+  systemd.timers.docker-delayed-start = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "2min";
+      Unit = "docker.service";
+    };
+  };
+
   # windows in docker https://github.com/dockur/windows
 }

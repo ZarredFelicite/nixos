@@ -3,6 +3,10 @@
   ... }:
 let
   hyprland = pkgs-unstable.hyprland;
+  # dmemcg-booster enables the DRM device-memory cgroup controller for AMDGPU
+  # VRAM accounting/protection. This is a mitigation for ROCm/ML workloads that
+  # can otherwise starve Hyprland/display allocations on the shared display GPU.
+  dmemcg-booster = pkgs.callPackage ../pkgs/dmemcg-booster.nix {};
   linkDeepfilterInput = pkgs.writeShellScript "link-deepfilter-input" ''
     set -euo pipefail
 
@@ -11,7 +15,7 @@ let
     grep=${pkgs.gnugrep}/bin/grep
     awk=${pkgs.gawk}/bin/awk
 
-    raw_port="alsa_input.usb-0c76_USB_PnP_Audio_Device-00.mono-fallback:capture_MONO"
+    pnp_port="alsa_input.usb-0c76_USB_PnP_Audio_Device-00.mono-fallback:capture_MONO"
 
     for _ in {1..40}; do
       filter_inputs="$($pw_link -i 2>/dev/null | $grep '^input\.filter-chain-.*:input_' || true)"
@@ -22,12 +26,31 @@ let
           if (match($0, /([0-9]+)\./, m)) { print m[1]; exit }
         }
       ')"
+      pnp_available="$($pw_link -o 2>/dev/null | $grep -Fx "$pnp_port" || true)"
 
       if [ -n "$filter_inputs" ] && [ -n "$filter_source_id" ]; then
-        while IFS= read -r dst; do
-          [ -n "$dst" ] && $pw_link "$raw_port" "$dst" 2>/dev/null || true
-        done <<< "$filter_inputs"
+        if [ -n "$pnp_available" ]; then
+          while IFS= read -r dst; do
+            [ -z "$dst" ] && continue
 
+            # DeepFilter can auto-link to the highest-priority source (for example
+            # the Creative Live cam). Remove those links so only the USB PnP mic
+            # feeds the filter when it is present.
+            existing_sources="$($pw_link -l 2>/dev/null | $awk -v dst="$dst" '
+              $0 == dst { in_dst=1; next }
+              in_dst && $1 == "|<-" { print $2; next }
+              in_dst && $0 !~ /^  \|<-/ { in_dst=0 }
+            ')"
+            while IFS= read -r src; do
+              [ -n "$src" ] && $pw_link -d "$src" "$dst" 2>/dev/null || true
+            done <<< "$existing_sources"
+
+            $pw_link "$pnp_port" "$dst" 2>/dev/null || true
+          done <<< "$filter_inputs"
+        fi
+
+        # If the USB PnP mic is unavailable, leave WirePlumber's existing
+        # auto-link in place as the fallback source.
         $wpctl set-default "$filter_source_id" 2>/dev/null || true
         exit 0
       fi
@@ -68,7 +91,7 @@ in {
       # Match `nh os boot -u`: refresh all flake inputs, not just nixpkgs/home-manager.
       "--recreate-lock-file"
       "-L" # print build logs
-      "--impure"
+      # "--impure"
       "--builders"
       "''"
       #"--option"
@@ -79,6 +102,19 @@ in {
     randomizedDelaySec = "45min";
     persistent = true;
     allowReboot = false;
+  };
+
+  # Refuse automatic upgrades when the dry-run would build known huge packages
+  # locally (e.g. Electron/Chromium) instead of downloading substitutes.
+  systemd.services.nixos-upgrade = {
+    path = [ pkgs.gawk pkgs.gnugrep pkgs.gnused pkgs.coreutils pkgs.nix ];
+    preStart = ''
+      ${pkgs.bash}/bin/bash /home/zarred/scripts/nix/nixos-dry-build-check \
+        --host ${lib.escapeShellArg config.networking.hostName} \
+        --rebuild-flag --recreate-lock-file \
+        --rebuild-flag --refresh \
+        --rebuild-flag --upgrade
+    '';
   };
   #stylix.targets.plymouth.enable = false;
   systemd.user.services.deepfilter-input-link = {
@@ -98,6 +134,30 @@ in {
       OnBootSec = "10s";
       OnCalendar = "*:0/30";
       Unit = "deepfilter-input-link.service";
+    };
+  };
+
+  # System instance: root has to enable/delegate the `dmem` cgroup controller
+  # high in the hierarchy before user services can set useful dmem.low values.
+  systemd.services.dmemcg-booster = {
+    description = "Enable DRM device-memory cgroups system-wide";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "dbus.service" ];
+    serviceConfig = {
+      ExecStart = "${lib.getExe dmemcg-booster} --use-system-bus";
+      Restart = "on-failure";
+    };
+  };
+
+  # User instance: applies dmem.low protection to user/app slices so desktop
+  # workloads get VRAM protection. This is not a hard VRAM cap, just priority.
+  systemd.user.services.dmemcg-booster = {
+    description = "Enable DRM device-memory cgroups for user units";
+    wantedBy = [ "graphical-session-pre.target" ];
+    after = [ "dbus.service" ];
+    serviceConfig = {
+      ExecStart = lib.getExe dmemcg-booster;
+      Restart = "on-failure";
     };
   };
 
@@ -380,7 +440,7 @@ in {
     user = "zarred";
     group = "users";
     #playlistDirectory = "/mnt/gargantua/media/music/data/playlists";
-    dataDir = "/mnt/gargantua/media/music/data";
+    dataDir = if config.networking.hostName == "sankara" then "/mnt/gargantua/media/music/data" else "/var/lib/mpd";
     musicDirectory = "/mnt/gargantua/media/music";
     dbFile = null;
     network.listenAddress = "any";
@@ -428,6 +488,17 @@ in {
     };
   };
   services.flatpak.enable = false;
+
+  # If greetd falls back to a plain TTY/login shell, start Hyprland the same way
+  # greetd does. This also covers tty1 autologin paths that reach a shell first.
+  environment.loginShellInit = lib.mkAfter ''
+    if [ -z "''${WAYLAND_DISPLAY:-}" ] && [ -z "''${DISPLAY:-}" ] \
+       && [ "''${XDG_VTNR:-}" = "1" ] \
+       && [ "''${USER:-}" = "zarred" ]; then
+      exec ${hyprland}/bin/start-hyprland
+    fi
+  '';
+
   environment.gnome.excludePackages = (with pkgs; [
     gnome-photos
     gnome-tour

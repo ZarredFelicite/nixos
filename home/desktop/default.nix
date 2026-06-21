@@ -11,9 +11,9 @@ in {
     ./swaync
     ./notifications.nix
     ./waybar
-    ./vscode.nix
+    # ./vscode.nix
     #../../modules/quickshell.nix
-    inputs.ags.homeManagerModules.default
+    # inputs.ags.homeManagerModules.default
   ];
 
   # Content merged from home/desktop.nix (the file)
@@ -22,14 +22,14 @@ in {
   programs.password-store.enable = true; # From home/desktop.nix
   services.hypridle.enable = true; # From home/desktop.nix
 
-  programs.ags = {
-    enable = true;
-    extraPackages = with pkgs; [
-      inputs.astal.packages.${pkgs.system}.battery
-      inputs.astal.packages.${pkgs.system}.hyprland
-      fzf
-    ];
-  };
+  # programs.ags = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [
+  #     inputs.astal.packages.${pkgs.system}.battery
+  #     inputs.astal.packages.${pkgs.system}.hyprland
+  #     fzf
+  #   ];
+  # };
 
   home.packages = [
     pkgs.slurp
@@ -177,9 +177,74 @@ in {
     };
   };
   services.playerctld.enable = true; # From home/desktop.nix
+
+  # Desktop/Wayland-bound user services should follow Hyprland restarts, not just
+  # the broader graphical session target.
+  systemd.user.services.hypridle = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.playerctld = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.foot = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.udiskie = mkHyprlandService {
+    Unit.After = [ "tray.target" ];
+    Unit.Requires = [ "tray.target" ];
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.syncthingtray = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.mppv_watcher = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.vicinae = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+
   services.kdeconnect = { # From home/desktop.nix
     enable = true;
     indicator = true;
+  };
+
+  # KDE Connect exits when Hyprland/Wayland disappears; tie it to the Hyprland
+  # session and restart on compositor-related failures.
+  systemd.user.services.kdeconnect = mkHyprlandService {
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
+  };
+  systemd.user.services.kdeconnect-indicator = mkHyprlandService {
+    Unit.After = [ "tray.target" ];
+    Unit.Requires = [ "tray.target" ];
+    Service = {
+      Restart = lib.mkForce "on-failure";
+      RestartSec = lib.mkForce "5s";
+    };
   };
 
   # XDG entries merged from home/desktop.nix (the file)

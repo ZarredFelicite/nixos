@@ -1,4 +1,7 @@
-{ ... }:
+{ pkgs-unstable, ... }:
+let
+  quickshellBin = "${pkgs-unstable.quickshell}/bin";
+in
 {
   wayland.windowManager.hyprland.extraConfig = ''
     bind   =  $mod,      I,    submap, dropdowns
@@ -57,6 +60,7 @@
       #"$mod, U, hy3:makegroup, opposite"
       #"$mod CTRL, U, hy3:changegroup, opposite"
       "$mod, H, togglefloating,"
+      "$mod, B, exec, ~/scripts/launcher/rofi_programs gui"
       "$mod, K, killactive,"
       #"$mod, X, hyprexpo:expo, toggle"
       "$mod CTRL, P, pseudo,"
@@ -75,9 +79,8 @@
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"
-      "$mod, U, exec, ~/scripts/stt/record-transcribe.py --agent --deliver"
-      "$mod, CTRL, U, exec, ~/scripts/stt/record-transcribe.py --type"
-      "$mod, SHIFT, U, exec, pkill record-transcribe.py"
+      "$mod, U, exec, ~/scripts/stt/stt --ember"
+      "$mod CTRL, U, exec, ~/scripts/stt/stt --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
       "$mod, L, exec, vicinae toggle"
       "$mod, Space, exec, vicinae toggle"
@@ -94,7 +97,7 @@
       "$mod, S, exec, ~/scripts/nova/nova_window"
       "$mod SHIFT, S, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
       "$mod CTRL, S, exec, ~/scripts/screencapture/screenshot screenshot region &> /tmp/screenshot_log"
-      "$mod, P, exec, ~/scripts/launcher/rofi_programs gui"
+      "$mod, P, exec, cd /home/zarred/dev/hover-lens && PATH=${quickshellBin}:$PATH /run/current-system/sw/bin/python3 -m hover_lens.main"
       "$mod, F, exec, firefox"
       " , PRINT, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
 

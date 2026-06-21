@@ -84,14 +84,21 @@ in {
   home.packages = [ pkgs.wttrbar ];
   stylix.targets.waybar.enable = false;
   systemd.user.services.zmk_battery = {
-    Unit.Description = "Get ZMK Keyboard battery";
+    Unit = {
+      Description = "Get ZMK Keyboard battery";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
+    };
     Service.ExecStart = "/home/zarred/scripts/waybar/zmk-battery.py json";
     Service.Restart = "always";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
   systemd.user.services.airpods_battery = {
-    Unit.Description = "Get AirPods battery";
+    Unit = {
+      Description = "Get AirPods battery";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
+    };
     Service.ExecStart = "/home/zarred/scripts/waybar/airpods_battery_data.py";
       #Service.ExecStart = pkgs.writers.writePython3 "airpods_battery_python" {
       #  libraries = with pkgs.python3Packages; [ bleak ];
@@ -99,15 +106,17 @@ in {
       #  doCheck = false;
       #  } (builtins.readFile ./scripts/airpods_battery.py);
     Service.Restart = "always";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
   systemd.user.services.airpods_battery_icons = {
-    Unit.Description = "Get AirPods battery icons";
+    Unit = {
+      Description = "Get AirPods battery icons";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
+    };
     Service.ExecStart = "/home/zarred/scripts/waybar/battery_icons.sh";
     Service.Restart = "always";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
   programs.waybar = {
     systemd.enable = true;

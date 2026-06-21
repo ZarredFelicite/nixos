@@ -122,6 +122,7 @@
         "dotnet-sdk-6.0.428" # sonarr
         "aspnetcore-runtime-6.0.36" # sonarr
         "openclaw-2026.2.26"
+        "python3.13-vllm-0.11.2"
       ];
     };
   };

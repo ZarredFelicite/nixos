@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   environment.systemPackages = [
+    pkgs.ffmpeg
   ];
   services.home-assistant = {
     enable = true;
@@ -16,6 +17,9 @@
       "isal"
       "lifx"
       "matter"
+      "generic"
+      "stream"
+      "ffmpeg"
     ];
     configWritable = true; # configuration.yaml writable from web ui but will be overwritten on startup
     config = {

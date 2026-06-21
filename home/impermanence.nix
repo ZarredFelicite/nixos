@@ -39,6 +39,7 @@
       ".crawl4ai"
       ".tmux"
       ".Trash-1000"
+      ".mcporter"
       # PERSISTENT .CONF
       ".config/skills"
       ".config/kdeconnect"
@@ -80,9 +81,14 @@
       ".config/comfy-ui"
       ".config/Antigravity"
       ".config/rncbc.org" # qpwgraph
+      ".config/recall"
       ".config/tasknotes-cli"
       ".config/qmd"
       ".config/ibkr"
+      ".config/FreeCAD"
+      ".config/gotify"
+      ".config/gotify-desktop"
+      ".config/tmuxy"
       # PERSISTENT .CACHE
       ".cache"
       ".cache/thunderbird"
@@ -94,6 +100,7 @@
       ".claude.json"
       ".config/nvtop/interface.ini"
       ".config/vicinae/settings.json"
+      ".bash_history"
     ];
   };
 }

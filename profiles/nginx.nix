@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }: {
   services.authelia.instances.primary = {
     user = "zarred";
     secrets.jwtSecretFile = config.sops.secrets.authelia-jwtSecret.path;
@@ -16,12 +16,21 @@
             policy = "bypass";
           }
           {
+            domain = ["sankara.manticore-lenok.ts.net"];
+            resources = ["^/auth/.*" "^/auth$" "^/freshrss/api/.*"];
+            policy = "bypass";
+          }
+          {
             domain = ["ember.zar.red"];
             policy = "two_factor";
             subject = ["user:zarred"];
           }
           {
             domain = ["*.zar.red"];
+            policy = "one_factor";
+          }
+          {
+            domain = ["sankara.manticore-lenok.ts.net"];
             policy = "one_factor";
           }
         ];
@@ -39,6 +48,15 @@
             domain = "zar.red";
             authelia_url = "https://auth.zar.red";
             default_redirection_url = "https://ember.zar.red";
+            expiration = "12h";
+            inactivity = "45m";
+            remember_me = "1M";
+          }
+          {
+            name = "authelia_session_funnel";
+            domain = "sankara.manticore-lenok.ts.net";
+            authelia_url = "https://sankara.manticore-lenok.ts.net";
+            default_redirection_url = "https://sankara.manticore-lenok.ts.net/";
             expiration = "12h";
             inactivity = "45m";
             remember_me = "1M";
@@ -81,6 +99,9 @@
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     statusPage = true; # reachable from localhost on http://127.0.0.1/nginx_status
+    # Tailscale Funnel binds :443 on tailscale0; avoid nginx wildcard binds
+    # so both can coexist. Funnel still reaches nginx over 127.0.0.1:80.
+    defaultListenAddresses = [ "127.0.0.1" "192.168.8.200" ];
     commonHttpConfig = ''
       map $http_upgrade $connection_upgrade {
           default      keep-alive;
@@ -137,10 +158,10 @@
             # Basic Proxy Config
             client_body_buffer_size 128k;
             proxy_set_header Host $host;
-            proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+            proxy_set_header X-Original-URL https://$http_host$request_uri;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $remote_addr;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
             proxy_set_header X-Forwarded-Host $http_host;
             proxy_set_header X-Forwarded-Uri $request_uri;
             proxy_set_header X-Forwarded-Ssl on;
@@ -168,7 +189,7 @@
       AUTH = {
         extraConfig = ''
           auth_request /authelia;
-          auth_request_set $target_url $scheme://$http_host$request_uri;
+          auth_request_set $target_url https://$http_host$request_uri;
           auth_request_set $user $upstream_http_remote_user;
           auth_request_set $groups $upstream_http_remote_groups;
           auth_request_set $name $upstream_http_remote_name;
@@ -180,6 +201,80 @@
           error_page 401 =302 https://auth.zar.red/?rd=$target_url;
         '';
       };
+      servarrHost = path: port: SSLA // {
+        locations."= /".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = AUTH // {
+          proxyPass = "http://127.0.0.1:${toString port}/${path}/";
+          proxyWebsockets = true;
+        };
+      };
+      funnelAuth = {
+        extraConfig = ''
+          auth_request /authelia;
+          auth_request_set $target_url https://$http_host$request_uri;
+          auth_request_set $user $upstream_http_remote_user;
+          auth_request_set $groups $upstream_http_remote_groups;
+          auth_request_set $name $upstream_http_remote_name;
+          auth_request_set $email $upstream_http_remote_email;
+          proxy_set_header Remote-User $user;
+          proxy_set_header Remote-Groups $groups;
+          proxy_set_header Remote-Name $name;
+          proxy_set_header Remote-Email $email;
+          error_page 401 =302 https://$http_host/?rd=$target_url;
+        '';
+      };
+      funnelSubpathTarget = path: target: protected: {
+        locations."= /${path}".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = {
+          proxyPass = target;
+          proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = (if protected then funnelAuth.extraConfig else "") + ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Prefix /${path};
+            proxy_redirect http://$host/${path}/ https://$host/${path}/;
+            proxy_redirect http://$host/ https://$host/${path}/;
+            proxy_redirect / /${path}/;
+            proxy_cookie_path / /${path}/;
+            proxy_set_header Accept-Encoding "";
+            sub_filter_once off;
+            sub_filter_types text/html text/css application/javascript application/json;
+            sub_filter 'href="/' 'href="/${path}/';
+            sub_filter 'src="/' 'src="/${path}/';
+            sub_filter 'action="/' 'action="/${path}/';
+            sub_filter 'url(/' 'url(/${path}/';
+          '';
+        };
+      };
+      funnelSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" true;
+      funnelBaseSubpath = path: port: {
+        locations."= /${path}".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = {
+          proxyPass = "http://127.0.0.1:${toString port}/${path}/";
+          proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = funnelAuth.extraConfig + ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Prefix /${path};
+            proxy_redirect http://$host/${path}/ https://$host/${path}/;
+            proxy_redirect http://$host/ https://$host/${path}/;
+            proxy_redirect / /${path}/;
+            proxy_cookie_path / /${path}/;
+            proxy_set_header Accept-Encoding "";
+          '';
+        };
+      };
+      funnelPublicSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" false;
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -199,11 +294,11 @@
         "gotify.zar.red" = SSL//{locations."/" = {proxyPass = "http://127.0.0.1:8081"; proxyWebsockets = true;};}; #TODO remove auth if not working with app
         "homarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7575";};};
         "dashdot.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:3001";};};
-        "prowlarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9696";};};
-        "sonarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8989";};};
-        "radarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:7878";};};
+        "prowlarr.zar.red" = servarrHost "prowlarr" 9696;
+        "sonarr.zar.red" = servarrHost "sonarr" 8989;
+        "radarr.zar.red" = servarrHost "radarr" 7878;
         "lidarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8686";};};
-        "readarr.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:8787";};};
+        "readarr.zar.red" = servarrHost "readarr" 8787;
         "lazylibrarian.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:5299";};};
         "deemix.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:6595";};};
         "transmission.zar.red" = SSLA//{locations."/" = AUTH//{proxyPass = "http://127.0.0.1:9091"; proxyWebsockets = true;};};
@@ -219,6 +314,134 @@
             proxyWebsockets = true;
           };
         };
+        "tmuxy-funnel.sankara.local" = {
+          serverName = "sankara.manticore-lenok.ts.net";
+          listen = [ { addr = "127.0.0.1"; port = 18090; } ];
+          extraConfig = SSLA.extraConfig;
+          locations."/" = {
+            proxyPass = "http://web:9010";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = ''
+              auth_request /authelia;
+              auth_request_set $target_url https://$http_host$request_uri;
+              auth_request_set $user $upstream_http_remote_user;
+              auth_request_set $groups $upstream_http_remote_groups;
+              auth_request_set $name $upstream_http_remote_name;
+              auth_request_set $email $upstream_http_remote_email;
+              proxy_set_header Remote-User $user;
+              proxy_set_header Remote-Groups $groups;
+              proxy_set_header Remote-Name $name;
+              proxy_set_header Remote-Email $email;
+              error_page 401 =302 https://sankara.manticore-lenok.ts.net/?rd=$target_url;
+
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Proto https;
+              proxy_set_header Connection $connection_upgrade;
+              proxy_set_header Upgrade $http_upgrade;
+
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+        };
+        "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {
+          extraConfig = SSLA.extraConfig;
+          # Ember is served at /ember, but its client currently calls some
+          # root-relative endpoints. Proxy only Ember's concrete API prefixes;
+          # do not claim all /api/* because Authelia's login UI uses /api/state.
+          locations = {
+            "/" = {
+              proxyPass = "http://127.0.0.1:9092";
+              proxyWebsockets = true;
+            };
+          } // lib.genAttrs [
+            "/api/help"
+            "/api/event"
+            "/api/session"
+            "/api/provider"
+            "/api/command"
+            "/api/cron"
+            "/api/subagent"
+            "/api/heartbeat"
+            "/api/gateway"
+            "/api/injected-file"
+            "/api/voice"
+          ] (_: {
+            proxyPass = "http://web:4311";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = funnelAuth.extraConfig + ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Proto https;
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          }) // {
+            "= /log/stream" = {
+              proxyPass = "http://web:4311/log/stream";
+              recommendedProxySettings = false;
+              extraConfig = funnelAuth.extraConfig + ''
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Proto https;
+                proxy_set_header Connection "";
+                proxy_buffering off;
+                proxy_cache off;
+                proxy_request_buffering off;
+                gzip off;
+                add_header X-Accel-Buffering no;
+                add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+                proxy_read_timeout 1h;
+                proxy_send_timeout 1h;
+              '';
+            };
+          };
+        } [
+          (funnelPublicSubpath "auth" 9092)
+          (funnelSubpath "gotify" 8081)
+          (funnelSubpath "jellyfin" 8096)
+          (funnelSubpath "homarr" 7575)
+          (funnelSubpath "dashdot" 3001)
+          (funnelBaseSubpath "prowlarr" 9696)
+          (funnelBaseSubpath "sonarr" 8989)
+          (funnelBaseSubpath "radarr" 7878)
+          (funnelSubpath "lidarr" 8686)
+          (funnelBaseSubpath "readarr" 8787)
+          (funnelSubpath "lazylibrarian" 5299)
+          (funnelSubpath "deemix" 6595)
+          (funnelSubpath "transmission" 9091)
+          (funnelSubpath "nzb" 6789)
+          (funnelSubpath "jellyseerr" 5055)
+          (funnelSubpath "audiobookshelf" 13378)
+          (funnelSubpath "pdf" 8088)
+          (funnelSubpath "mainsail" 8001)
+          (funnelSubpath "immich" 2283)
+          (funnelSubpath "hass" 8123)
+          (funnelSubpath "ocr" 5498)
+          (funnelSubpathTarget "ember" "http://web:4311/" true)
+        ];
         "ember.zar.red" = SSLA // {
           locations."= /manifest.json" = {
             proxyPass = "http://web:4311/manifest.json";

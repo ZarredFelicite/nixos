@@ -1,5 +1,20 @@
-{ inputs, self, pkgs, lib, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
 
+let
+  audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
+  deepfacePython = pkgs.python313.withPackages (ps: [
+    ps.deepface
+    ps.fastapi
+    ps.numpy
+    ps.opencv4
+    ps.pgvector
+    ps.psycopg
+    ps.python-multipart
+    ps.tensorflow
+    ps.ultralytics
+    ps.uvicorn
+  ]);
+in
 {
   imports = [
     ../core-settings.nix
@@ -20,7 +35,36 @@
     ../terminal
     ../security.nix
     ../impermanence.nix
+    inputs.recall.homeManagerModules.default
   ];
+
+  xdg.configFile."home-assistant/config.json".source =
+    config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;
+
+  services.recall = {
+    enable = true;
+    intervalSeconds = 60;
+    debounceSeconds = 1;
+  };
+
+  systemd.user.services.audio-summary-obsidian = {
+    Unit = {
+      Description = "Watch audio recordings and create Obsidian summaries";
+      After = [ "network-online.target" "load-api-keys.service" ];
+      Wants = [ "network-online.target" "load-api-keys.service" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${audioSummaryPython}/bin/python3 /home/zarred/scripts/stt/stt --watch --llm-intelligence low --recent-days 7";
+      Restart = "always";
+      RestartSec = "60s";
+      WorkingDirectory = "/home/zarred/scripts/stt";
+      Environment = [
+        "PATH=${lib.makeBinPath [ audioSummaryPython pkgs.bash pkgs.coreutils pkgs.ffmpeg pkgs.curl pkgs.jq pkgs.pass pkgs.gnupg ]}"
+      ];
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 
   systemd.user.services.stocks = {
     Unit.Description = "Get stock prices from yfinance";
@@ -57,6 +101,7 @@
     Unit.Description = "Server for computer vision inference";
     Service.User = "zarred";
     Service.ExecStart = "/home/zarred/dev/computer-vision/run.sh";
+    Service.Environment = [ "COMPUTER_VISION_PYTHON=${deepfacePython}/bin/python" ];
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "5";
@@ -75,7 +120,7 @@
       "HIP_VISIBLE_DEVICES="
       "ROCR_VISIBLE_DEVICES="
     ];
-    Service.ExecStart = "/run/current-system/sw/bin/python -m uvicorn api.main:app --app-dir /home/zarred/dev/deepface --host 0.0.0.0 --port 5005";
+    Service.ExecStart = "${deepfacePython}/bin/python -m uvicorn api.main:app --app-dir /home/zarred/dev/deepface --host 0.0.0.0 --port 5005";
     Service.Restart = "always";
     Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "0";
@@ -84,9 +129,15 @@
     Unit.After = [ "graphical-session.target" ];
   };
   systemd.user.services.speech-enhancement = {
-    Unit.Description = "Server for streaming audio for speech enhancement";
-    Service.User = "zarred";
-    Service.ExecStart = "/run/current-system/sw/bin/nix develop --command ./entry.sh";
+    Unit.Description = "MossGAN audio enhancement server";
+    Service.Environment = [
+      "AUDIO_ENHANCE_BACKEND=mossgan"
+      "CLEARVOICE_PYTHON=/persist/home/zarred/.venvs/clearvoice/bin/python"
+      "HF_HOME=/persist/home/zarred/.cache/huggingface"
+      "LD_LIBRARY_PATH=/run/opengl-driver/lib"
+      "PATH=/run/current-system/sw/bin:/etc/profiles/per-user/zarred/bin:/home/zarred/.nix-profile/bin"
+    ];
+    Service.ExecStart = "/run/current-system/sw/bin/python server_onnx.py --port 8649";
     Service.Restart = "always";
     Service.RestartSec = "300s";
     Service.StartLimitIntervalSec = "5";
@@ -120,7 +171,7 @@
   systemd.user.services.crawl4ai-api = {
     Unit.Description = "Crawl4AI FastAPI server";
     Service.User = "zarred";
-    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'uvicorn server:app --host 0.0.0.0 --port 11235'";
+    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'env -u WAYLAND_DISPLAY -u HYPRLAND_INSTANCE_SIGNATURE XDG_SESSION_TYPE=x11 xvfb-run -a -s \"-screen 0 1920x1080x24\" uvicorn server:app --host 0.0.0.0 --port 11235'";
     Service.Restart = "always";
     Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "0";

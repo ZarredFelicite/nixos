@@ -43,6 +43,28 @@
       '';
       owner = "zarred";
     };
+    templates."mpv-jellyfin.conf" = {
+      content = ''
+        hide_images=off
+        hide_spoilers=off
+        image_path=/tmp/mpv-jellyfin
+        password=${config.sops.placeholder.jellyfin-zarred}
+        show_by_default=off
+        show_on_idle=off
+        url=http://sankara:8096
+        use_playlist=on
+        username=zarred
+      '';
+      owner = "zarred";
+      mode = "0400";
+    };
+    templates."home-assistant-config.json" = {
+      content = ''
+        {"url":"http://sankara:8123","token":"${config.sops.placeholder.home-assistant-token}"}
+      '';
+      owner = "zarred";
+      mode = "0400";
+    };
     templates."transmission-credentials.json" = lib.mkIf (config.networking.hostName == "sankara") {
       content = ''
         { "rpc-password": "${config.sops.placeholder.transmission-rpc}" }
@@ -78,6 +100,7 @@
         transmission-rpc = { owner = "zarred"; };
         jellyfin-zarred = { owner = "zarred"; };
         freshrss = { owner = "zarred"; };
+        home-assistant-token = { owner = "zarred"; };
         twitch-api-token = {
           sopsFile = ../secrets/twitch-api-token.json;
           format = "binary";
@@ -105,6 +128,7 @@
         firecrawl-api = { owner = "zarred"; };
         opencode-api = { owner = "zarred"; };
         brave-api = { owner = "zarred"; };
+        immich-api = { owner = "zarred"; };
       }
     ];
   };

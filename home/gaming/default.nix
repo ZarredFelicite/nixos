@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   home.packages = [
-    pkgs.lutris
+    # NOTE: Build is failing.
+    # pkgs.lutris
     pkgs.protonup-qt
     #pkgs.wineWowPackages.waylandFull
     pkgs.samba

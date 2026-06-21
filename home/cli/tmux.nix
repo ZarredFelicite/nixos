@@ -11,7 +11,15 @@ let
       sleep 0.3
 
       cmd="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_current_command}' 2>/dev/null || true)"
-      [ "$cmd" = "pi" ] || exit 0
+      if [ "$cmd" != "pi" ]; then
+        owned="$(${pkgs.tmux}/bin/tmux show-option -wqv -t "$target" @pi_window_name_owned 2>/dev/null || true)"
+        if [ "$owned" = "1" ]; then
+          ${pkgs.tmux}/bin/tmux set-option -wu -t "$target" @pi_window_name_owned 2>/dev/null || true
+          ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @tmux_window_name_enabled 1
+          ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" automatic-rename on
+        fi
+        exit 0
+      fi
 
       title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
       [ -n "$title" ] || exit 0
@@ -30,6 +38,28 @@ let
       [ -n "$title" ] || exit 0
 
       ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
+      ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @pi_window_name_owned 1
+      ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @tmux_window_name_enabled 0
+      ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" automatic-rename off
+    '';
+  };
+  tmuxTilishOverrides = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-tilish-overrides";
+    version = "unstable-2026-06-08";
+    rtpFilePath = "tmux-tilish-overrides.tmux";
+    src = pkgs.runCommand "tmux-tilish-overrides-src" { } ''
+      mkdir -p "$out"
+      install -m 0755 ${pkgs.writeShellScript "tmux-tilish-overrides.tmux" ''
+        # Load after tilish so these bindings are deterministic, not sleep-raced.
+        tmux bind-key -n M-C-Up swap-pane -s "{up-of}"
+        tmux bind-key -n M-C-Down swap-pane -s "{down-of}"
+        tmux bind-key -n M-C-Left swap-pane -s "{left-of}"
+        tmux bind-key -n M-C-Right swap-pane -s "{right-of}"
+        tmux bind-key -n M-S-Up swap-window -t :-1
+        tmux bind-key -n M-S-Down swap-window -t :+1
+        tmux bind-key -n M-S-Left previous-window
+        tmux bind-key -n M-S-Right next-window
+      ''} "$out/tmux-tilish-overrides.tmux"
     '';
   };
   tmuxWindowName = pkgs.tmuxPlugins.mkTmuxPlugin {
@@ -79,6 +109,7 @@ in {
     extraConfig = ''
       set-option -sa terminal-features ',xterm-256color:RGB'
       set-option -sa terminal-features ',xterm-kitty:RGB'
+      set-option -sa terminal-features ',xterm-kitty:extkeys'
       set-option -ga terminal-overrides ",xterm-256color:Tc"
       set-option -ga terminal-overrides ",xterm-kitty:Tc"
       set -g allow-passthrough all
@@ -91,7 +122,8 @@ in {
       set -g pane-border-format "#P: #{pane_current_command}"
       set -g pane-border-status top
       set-option -g display-time 1000
-      set-option -g status-interval 5
+      # Keep status redraws infrequent; status-right includes shell commands.
+      set-option -g status-interval 60
 
       # Faster window switching without prefix.
       bind-key -n M-Tab last-window
@@ -107,11 +139,28 @@ in {
       # set-option -g detach-on-destroy off
 
       # Pi sets useful terminal titles; prefer those over tmux-window-name's
-      # process/directory naming for Pi windows. The status hook is invisible;
-      # it keeps Pi window names synced when Pi updates its session title.
+      # process/directory naming for Pi windows. Keep this out of status-right:
+      # status commands run once per client redraw and can spawn storms.
+      set-hook -g pane-title-changed[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-select-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
-      set -g @rose_pine_status_right_prepend_section '#(${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id})'
+
+      # Reflect explicit tmux bells in matching kitty tab colors. Tabs are matched by tmux session name.
+      # Do not monitor generic activity: Pi renders frequent status/progress output, which otherwise
+      # makes inactive windows look highlighted on normal terminal updates.
+      set -g monitor-activity off
+      set -g visual-activity off
+      set -g visual-bell off
+      set-hook -g alert-bell[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} bell"'
+      set-hook -g after-select-window[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
+      set-hook -g client-attached[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
+      set-hook -g client-focus-in[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
+
+      # tmuxy control-mode clients force manual/browser-sized windows. When a
+      # real terminal client attaches or resizes, fit windows back to that client
+      # so kitty does not show unused dotted background around shrunken panes.
+      set-hook -g client-attached[9921] 'if -F "#{==:#{client_control_mode},0}" "resize-window -A"'
+      set-hook -g client-resized[9921] 'if -F "#{==:#{client_control_mode},0}" "resize-window -A"'
 
       # Catppuccin status modules were set here after the plugin loaded.
       # set -g status-left-length 100
@@ -167,17 +216,24 @@ in {
           set -g @tmux_window_name_max_name_len "24"
           set -g @tmux_window_name_icon_style "'name'"
           set -g @tmux_window_name_show_program_args "False"
-          set -g @tmux_window_name_dir_programs "['git', 'pi']"
+          set -g @tmux_window_name_dir_programs "['git']"
         ''; }
       { plugin = tmuxPlugins.resurrect;
         extraConfig = ''
           set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-capture-pane-contents 'on'
+          set -g @resurrect-processes 'pi'
+          set -g @resurrect-hook-post-save-layout '/home/zarred/scripts/tmux/pi-resurrect-enrich-save'
+          set -g @resurrect-hook-post-restore-all '/home/zarred/scripts/tmux/pi-resurrect-post-restore'
           set -g @resurrect-save 'S'
           # Keep restore away from plain r/R so reload muscle memory doesn't
           # accidentally restore old sessions.
           set -g @resurrect-restore 'C-r' ''; }
       { plugin = tmuxPlugins.continuum;
-        extraConfig = " set -g @continuum-restore 'on' "; }
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '60'
+        ''; }
       { plugin = tmuxPlugins.yank;
         extraConfig = "set -g @yank_selection 'primary'"; }
       { plugin = tmuxPlugins.tmux-fzf;
@@ -194,6 +250,7 @@ in {
           set -g @tilish-default 'even-vertical'
           set -g @tilish-easymode 'on'
         '';}
+      tmuxTilishOverrides
       #   -------------------------------------------------
       #   Alt + 0-9 	Switch to workspace number 0-9
       #   Alt + Shift + 0-9 	Move pane to workspace 0-9

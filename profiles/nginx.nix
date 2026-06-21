@@ -421,7 +421,8 @@
         } [
           (funnelPublicSubpath "auth" 9092)
           (funnelSubpath "gotify" 8081)
-          (funnelSubpath "jellyfin" 8096)
+          # Jellyfin has its own auth and native clients cannot pass Authelia.
+          (funnelPublicSubpath "jellyfin" 8096)
           (funnelSubpath "homarr" 7575)
           (funnelSubpath "dashdot" 3001)
           (funnelBaseSubpath "prowlarr" 9696)

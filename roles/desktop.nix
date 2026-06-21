@@ -103,6 +103,19 @@ in {
     persistent = true;
     allowReboot = false;
   };
+
+  # Refuse automatic upgrades when the dry-run would build known huge packages
+  # locally (e.g. Electron/Chromium) instead of downloading substitutes.
+  systemd.services.nixos-upgrade = {
+    path = [ pkgs.gawk pkgs.gnugrep pkgs.gnused pkgs.coreutils pkgs.nix ];
+    preStart = ''
+      ${pkgs.bash}/bin/bash /home/zarred/scripts/nix/nixos-dry-build-check \
+        --host ${lib.escapeShellArg config.networking.hostName} \
+        --rebuild-flag --recreate-lock-file \
+        --rebuild-flag --refresh \
+        --rebuild-flag --upgrade
+    '';
+  };
   #stylix.targets.plymouth.enable = false;
   systemd.user.services.deepfilter-input-link = {
     description = "Link USB microphone into DeepFilter";
@@ -475,6 +488,17 @@ in {
     };
   };
   services.flatpak.enable = false;
+
+  # If greetd falls back to a plain TTY/login shell, start Hyprland the same way
+  # greetd does. This also covers tty1 autologin paths that reach a shell first.
+  environment.loginShellInit = lib.mkAfter ''
+    if [ -z "''${WAYLAND_DISPLAY:-}" ] && [ -z "''${DISPLAY:-}" ] \
+       && [ "''${XDG_VTNR:-}" = "1" ] \
+       && [ "''${USER:-}" = "zarred" ]; then
+      exec ${hyprland}/bin/start-hyprland
+    fi
+  '';
+
   environment.gnome.excludePackages = (with pkgs; [
     gnome-photos
     gnome-tour

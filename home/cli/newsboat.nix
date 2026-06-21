@@ -33,7 +33,7 @@
       text-width 200
 
       urls-source "freshrss"
-      freshrss-url "https://freshrss.zar.red/api/greader.php"
+      freshrss-url "https://sankara.manticore-lenok.ts.net/freshrss/api/greader.php"
       freshrss-login "admin"
       freshrss-passwordeval "gpg -d sync/password-store/server/freshrss-api.gpg"
       freshrss-min-items 100

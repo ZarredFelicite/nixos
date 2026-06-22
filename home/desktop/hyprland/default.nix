@@ -224,6 +224,8 @@ in {
       ];
       group = {
         insert_after_current = true;
+        merge_groups_on_drag = false;
+        merge_groups_on_groupbar = false;
         "col.border_active" = lib.mkForce "rgba(9ccfd899)";
         "col.border_inactive" = lib.mkForce "rgba(31748f99)";
          groupbar = {

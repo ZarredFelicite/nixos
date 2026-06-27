@@ -34,7 +34,7 @@
       RemainAfterExit = true;
       ExecStart = "${pkgs.writeShellScript "load-api-keys" ''
         args=()
-        for key in OPENAI_API_KEY:openai-api GEMINI_API_KEY:gemini-api OPENROUTER_API_KEY:openrouter-api; do
+        for key in OPENAI_API_KEY:openai-api GEMINI_API_KEY:gemini-api OPENROUTER_API_KEY:openrouter-api FRESHRSS_API_KEY:freshrss-api; do
           name="''${key%%:*}"
           secret="/run/secrets/''${key#*:}"
           if [ -r "$secret" ]; then

@@ -2,6 +2,7 @@
 
 let
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
+  rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
   deepfacePython = pkgs.python313.withPackages (ps: [
     ps.deepface
     ps.fastapi
@@ -84,6 +85,36 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+
+  systemd.user.services.rss-news-cache = {
+    Unit = {
+      Description = "Refresh FreshRSS news cache and AI-mark noisy stories read";
+      After = [ "network-online.target" "load-api-keys.service" ];
+      Wants = [ "network-online.target" "load-api-keys.service" ];
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/rss/rss-news-cache-refresh";
+      WorkingDirectory = "/home/zarred/scripts/rss";
+      StandardOutput = "null";
+      StandardError = "journal";
+      Environment = [
+        "PATH=${lib.makeBinPath [ rssNewsPython pkgs.bash pkgs.coreutils ]}"
+        "PYTHONUNBUFFERED=1"
+      ];
+    };
+  };
+
+  systemd.user.timers.rss-news-cache = {
+    Unit.Description = "Refresh FreshRSS news cache every 30 minutes";
+    Timer = {
+      OnBootSec = "2m";
+      OnUnitActiveSec = "30m";
+      Persistent = true;
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
+
   systemd.user.services.ibkr = {
     Unit.Description = "Serve IBKR web UI with in-process refresh";
     Service.EnvironmentFile = [

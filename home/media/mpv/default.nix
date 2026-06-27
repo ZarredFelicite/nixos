@@ -182,7 +182,7 @@
       c                 = "script-binding easy_crop";
       "ctrl+c"          = "script-binding save_cropped_video";
       #C                 = "script-message-to toggle-acompressor toggle_acompressor";
-      f                 = "no-osd set fs-screen 1; cycle fullscreen; cycle-values panscan 0.0 1.0";
+      f                 = "no-osd set fs-screen current; cycle fullscreen; cycle-values panscan 0.0 1.0";
       "ctrl+s"          = "async screenshot                       #! Utils > Screenshot";
       "ctrl+shift+s"    = "script-message toggle_sponsorblock";
       "ctrl+I"          = "no-osd cycle-values glsl-shaders '~~/shaders/invert.glsl' '' ; show-text 'Invert Shader'";

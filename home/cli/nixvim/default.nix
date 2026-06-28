@@ -201,7 +201,7 @@ imports = [
       })
 
       local image_ok, image = pcall(require, 'image')
-      if image_ok then
+      if image_ok and #vim.api.nvim_list_uis() > 0 then
         image.setup({
           backend = 'ueberzug',
           integrations = {

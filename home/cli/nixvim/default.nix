@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }: {
+{ config, pkgs, inputs, ... }: {
 imports = [
   inputs.nixvim.homeModules.nixvim
   ./conform.nix
@@ -196,6 +196,44 @@ imports = [
           end
         end,
       })
+
+      local image_ok, image = pcall(require, 'image')
+      if image_ok then
+        image.setup({
+          backend = 'kitty',
+          integrations = {
+            markdown = { enabled = true },
+            typst = { enabled = true },
+            neorg = { enabled = true },
+            syslang = { enabled = true },
+            html = { enabled = false },
+            css = { enabled = false },
+          },
+          max_width_window_percentage = 90,
+          max_height_window_percentage = 50,
+          window_overlap_clear_enabled = true,
+          tmux_show_only_in_active_window = true,
+        })
+      end
+
+      local img_clip_ok, img_clip = pcall(require, 'img-clip')
+      if img_clip_ok then
+        img_clip.setup({
+          default = {
+            dir_path = 'attachments',
+            file_name = '%Y-%m-%d-%H-%M-%S',
+            use_absolute_path = false,
+            relative_to_current_file = false,
+          },
+          filetypes = {
+            markdown = {
+              template = '![$CURSOR]($FILE_PATH)',
+              url_encode_path = true,
+              download_images = true,
+            },
+          },
+        })
+      end
     '';
     autoGroups = {
       kickstart-highlight-yank = {
@@ -654,52 +692,22 @@ imports = [
         #texLivePackage = nixpkgs.texlive.combined.scheme-basic;
         #viewMethod = "zathura";
       };
-      image = {
-        enable = true;
-        settings = {
-          backend = "kitty";
-          integrations = {
-            markdown.enabled = true;
-            typst.enabled = true;
-            neorg.enabled = true;
-            syslang.enabled = true;
-            html.enabled = false;
-            css.enabled = false;
-          };
-          max_width_window_percentage = 90;
-          max_height_window_percentage = 50;
-          window_overlap_clear_enabled = true;
-          tmux_show_only_in_active_window = true;
-        };
-      };
-      img-clip = {
-        enable = true;
-        settings = {
-          default = {
-            dir_path = "attachments";
-            file_name = "%Y-%m-%d-%H-%M-%S";
-            use_absolute_path = false;
-            relative_to_current_file = false;
-          };
-          filetypes.markdown = {
-            template = "![$CURSOR]($FILE_PATH)";
-            url_encode_path = true;
-            download_images = true;
-          };
-        };
-      };
       web-devicons.enable = true;
       mini.enable = true;
     };
-    extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
-      name = "render-markdown.nvim";
-      src = pkgs.fetchFromGitHub {
-        owner = "MeanderingProgrammer";
-        repo = "render-markdown.nvim";
-        rev = "76b6602a88f9c4f31e73fab4c94d0a168055e990";
-        hash = "sha256-ukJUaqEYI60o/lyLM5GaKsRdMW/24IZnzVzPB9/Q/zo=";
-      };
-    })];
+    extraPlugins = [
+      config.programs.nixvim.plugins.image.package
+      config.programs.nixvim.plugins.img-clip.package
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "render-markdown.nvim";
+        src = pkgs.fetchFromGitHub {
+          owner = "MeanderingProgrammer";
+          repo = "render-markdown.nvim";
+          rev = "76b6602a88f9c4f31e73fab4c94d0a168055e990";
+          hash = "sha256-ukJUaqEYI60o/lyLM5GaKsRdMW/24IZnzVzPB9/Q/zo=";
+        };
+      })
+    ];
   };
 }
 

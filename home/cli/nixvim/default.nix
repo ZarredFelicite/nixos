@@ -72,6 +72,7 @@ imports = [
       { mode = "v"; key = "<S-Down>"; action = ":m '>+1<CR>gv=gv"; }
       { mode = "v"; key = "<leader>p"; action = "\"_dP"; } # paste over selection and keep clipboard
       { mode = "v"; key = "<leader>y"; action = "\"+y"; }
+      { mode = "n"; key = "<leader>pi"; action = "<cmd>PasteImage<CR>"; options.desc = "Paste image from clipboard"; }
     ];
     colorschemes = {
       poimandres = {
@@ -669,6 +670,22 @@ imports = [
           max_height_window_percentage = 50;
           window_overlap_clear_enabled = true;
           tmux_show_only_in_active_window = true;
+        };
+      };
+      img-clip = {
+        enable = true;
+        settings = {
+          default = {
+            dir_path = "attachments";
+            file_name = "%Y-%m-%d-%H-%M-%S";
+            use_absolute_path = false;
+            relative_to_current_file = false;
+          };
+          filetypes.markdown = {
+            template = "![$CURSOR]($FILE_PATH)";
+            url_encode_path = true;
+            download_images = true;
+          };
         };
       };
       web-devicons.enable = true;

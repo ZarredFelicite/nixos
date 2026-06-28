@@ -197,9 +197,10 @@ imports = [
         end,
       })
 
-      local image_ok, image = pcall(require, 'image')
-      if image_ok and #vim.api.nvim_list_uis() > 0 then
-        image.setup({
+      if #vim.api.nvim_list_uis() > 0 then
+        local image_ok, image = pcall(require, 'image')
+        if image_ok then
+          image.setup({
           backend = 'kitty',
           kitty_method = 'unicode-placeholders',
           integrations = {
@@ -273,7 +274,8 @@ imports = [
           end,
         })
 
-        vim.schedule(render_obsidian_image_embeds)
+          vim.schedule(render_obsidian_image_embeds)
+        end
       end
 
       local img_clip_ok, img_clip = pcall(require, 'img-clip')

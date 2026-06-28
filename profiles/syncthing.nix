@@ -40,68 +40,58 @@
 	        path = "/home/zarred/sync";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ];
-	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "notes" = {
           enable = true;
 	        path = "/home/zarred/notes";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ];
-	        versioning = { type = "simple"; params = { keep = "3"; }; };
 	      };
         "scripts" = {
           enable = true;
           path = "/home/zarred/scripts";
           type = "sendreceive"; # "sendreceive", "sendonly", "receiveonly", "receiveencrypted"
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "documents" = {
           enable = true;
 	        path = "/home/zarred/documents";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "videos" = {
           enable = true;
 	        path = "/home/zarred/videos";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "3"; }; };
 	      };
         "pictures" = {
           enable = true;
 	        path = "/home/zarred/pictures";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "2"; }; };
 	      };
         "audio" = {
           enable = true;
 	        path = "/home/zarred/audio";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ];
-	        versioning = { type = "simple"; params = { keep = "3"; }; };
 	      };
         "dev" = {
           enable = false;
 	        path = "/home/zarred/dev";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "5"; }; };
 	      };
         "newsboat" = {
 	        path = "/home/zarred/.local/share/newsboat";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "3"; }; };
 	      };
         "databases" = {
 	        path = "/home/zarred/.local/share/databases";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" ];
-	        versioning = { type = "simple"; params = { keep = "3"; }; };
 	      };
       };
     };

@@ -7,9 +7,6 @@ imports = [
   programs.nixvim = {
     nixpkgs.config.allowUnfree = true;
     defaultEditor = true;
-    extraPackages = with pkgs; [
-      ueberzugpp
-    ];
     globals = {
       mapleader = " ";
       maplocalleader = " ";
@@ -203,7 +200,7 @@ imports = [
       local image_ok, image = pcall(require, 'image')
       if image_ok and #vim.api.nvim_list_uis() > 0 then
         image.setup({
-          backend = 'ueberzug',
+          backend = 'kitty',
           integrations = {
             markdown = { enabled = true },
             typst = { enabled = true },
@@ -214,8 +211,8 @@ imports = [
           },
           max_width_window_percentage = 90,
           max_height_window_percentage = 50,
-          window_overlap_clear_enabled = false,
-          tmux_show_only_in_active_window = false,
+          window_overlap_clear_enabled = true,
+          tmux_show_only_in_active_window = true,
         })
 
         local function render_obsidian_image_embeds()

@@ -105,17 +105,16 @@ imports = [
         local muted = '#6e6a86'
         local text = '#e0def4'
         local love = '#eb6f92'
-        local gold = '#f6c177'
         local rose = '#ebbcba'
         local pine = '#31748f'
         local foam = '#9ccfd8'
         local iris = '#c4a7e7'
-        local h1_bg = '#393552'
-        local h2_bg = '#263a46'
-        local h3_bg = '#403033'
-        local h4_bg = '#453a2b'
-        local h5_bg = '#233a42'
-        local h6_bg = '#2a2837'
+        local h1_bg = '#2a273f'
+        local h2_bg = '#1d3038'
+        local h3_bg = '#33262b'
+        local h4_bg = '#352d2b'
+        local h5_bg = '#1d3036'
+        local h6_bg = '#252331'
 
         set(0, 'RenderMarkdownCode', { bg = surface })
         set(0, 'RenderMarkdownCodeInfo', { fg = muted, bg = surface })
@@ -126,13 +125,13 @@ imports = [
         set(0, 'RenderMarkdownH1', { fg = iris, bold = true })
         set(0, 'RenderMarkdownH2', { fg = foam, bold = true })
         set(0, 'RenderMarkdownH3', { fg = rose, bold = true })
-        set(0, 'RenderMarkdownH4', { fg = gold, bold = true })
+        set(0, 'RenderMarkdownH4', { fg = love, bold = true })
         set(0, 'RenderMarkdownH5', { fg = pine, bold = true })
         set(0, 'RenderMarkdownH6', { fg = muted, bold = true })
         set(0, 'RenderMarkdownH1Bg', { fg = iris, bg = h1_bg, bold = true })
         set(0, 'RenderMarkdownH2Bg', { fg = foam, bg = h2_bg, bold = true })
         set(0, 'RenderMarkdownH3Bg', { fg = rose, bg = h3_bg, bold = true })
-        set(0, 'RenderMarkdownH4Bg', { fg = gold, bg = h4_bg, bold = true })
+        set(0, 'RenderMarkdownH4Bg', { fg = love, bg = h4_bg, bold = true })
         set(0, 'RenderMarkdownH5Bg', { fg = pine, bg = h5_bg, bold = true })
         set(0, 'RenderMarkdownH6Bg', { fg = muted, bg = h6_bg, bold = true })
 
@@ -145,23 +144,28 @@ imports = [
         set(0, 'RenderMarkdownWikiLink', { fg = iris })
         set(0, 'RenderMarkdownUnchecked', { fg = muted })
         set(0, 'RenderMarkdownChecked', { fg = foam })
-        set(0, 'RenderMarkdownTodo', { fg = gold })
+        set(0, 'RenderMarkdownTodo', { fg = rose })
         set(0, 'RenderMarkdownTableHead', { fg = text, bg = overlay, bold = true })
         set(0, 'RenderMarkdownTableRow', { fg = text })
         set(0, 'RenderMarkdownSign', { bg = base })
         set(0, 'RenderMarkdownSuccess', { fg = foam })
         set(0, 'RenderMarkdownInfo', { fg = pine })
         set(0, 'RenderMarkdownHint', { fg = iris })
-        set(0, 'RenderMarkdownWarn', { fg = gold })
+        set(0, 'RenderMarkdownWarn', { fg = love })
         set(0, 'RenderMarkdownError', { fg = love })
 
         -- Make YAML/frontmatter values stand out from keys.
         set(0, '@property.yaml', { fg = iris })
         set(0, '@field.yaml', { fg = iris })
         set(0, '@string.yaml', { fg = foam })
-        set(0, '@number.yaml', { fg = gold })
+        set(0, '@number.yaml', { fg = foam })
         set(0, '@boolean.yaml', { fg = rose })
         set(0, '@constant.yaml', { fg = rose })
+
+        -- URLs should be visually distinct from normal links and wiki links.
+        set(0, '@markup.link.url.markdown_inline', { fg = pine, underline = true, italic = true })
+        set(0, '@markup.link.url.markdown', { fg = pine, underline = true, italic = true })
+        set(0, '@string.special.url', { fg = pine, underline = true, italic = true })
       end
 
       set_render_markdown_rose_pine_hl()

@@ -328,9 +328,7 @@ imports = [
             resize_timer = vim.loop.new_timer()
             resize_timer:start(350, 0, vim.schedule_wrap(function()
               local images = image.get_images({})
-              for _, img in ipairs(images) do
-                img:clear(false)
-              end
+              pcall(image.clear)
               vim.cmd('redraw!')
               for _, img in ipairs(images) do
                 pcall(function()

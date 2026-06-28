@@ -197,12 +197,10 @@ imports = [
         end,
       })
 
-      if #vim.api.nvim_list_uis() > 0 then
-        local image_ok, image = pcall(require, 'image')
-        if image_ok then
-          image.setup({
+      local image_ok, image = pcall(require, 'image')
+      if image_ok and #vim.api.nvim_list_uis() > 0 then
+        image.setup({
           backend = 'kitty',
-          kitty_method = 'unicode-placeholders',
           integrations = {
             markdown = { enabled = true },
             typst = { enabled = true },
@@ -213,8 +211,8 @@ imports = [
           },
           max_width_window_percentage = 90,
           max_height_window_percentage = 50,
-          window_overlap_clear_enabled = false,
-          tmux_show_only_in_active_window = false,
+          window_overlap_clear_enabled = true,
+          tmux_show_only_in_active_window = true,
         })
 
         local function render_obsidian_image_embeds()
@@ -274,8 +272,7 @@ imports = [
           end,
         })
 
-          vim.schedule(render_obsidian_image_embeds)
-        end
+        vim.schedule(render_obsidian_image_embeds)
       end
 
       local img_clip_ok, img_clip = pcall(require, 'img-clip')

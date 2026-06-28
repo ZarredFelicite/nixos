@@ -214,6 +214,63 @@ imports = [
           window_overlap_clear_enabled = true,
           tmux_show_only_in_active_window = true,
         })
+
+        local function render_obsidian_image_embeds()
+          if vim.bo.filetype ~= 'markdown' then
+            return
+          end
+
+          local bufnr = vim.api.nvim_get_current_buf()
+          local win = vim.api.nvim_get_current_win()
+          local doc = vim.api.nvim_buf_get_name(bufnr)
+          if doc == "" then
+            return
+          end
+
+          for _, img in ipairs(image.get_images({ window = win, buffer = bufnr, namespace = 'obsidian-wikilink' })) do
+            img:clear()
+          end
+
+          local doc_dir = vim.fn.fnamemodify(doc, ':h')
+          for row, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+            local start = 1
+            while true do
+              local s, e, target = line:find('!%[%[([^%]]+)%]%]', start)
+              if not s then
+                break
+              end
+
+              target = target:gsub('|.*$', "")
+              local lower_target = target:lower()
+              if lower_target:match('%.png$') or lower_target:match('%.jpg$') or lower_target:match('%.jpeg$') or lower_target:match('%.gif$') or lower_target:match('%.webp$') or lower_target:match('%.avif$') then
+                local path = target
+                if not path:match('^/') and not path:match('^~') then
+                  path = vim.fn.fnamemodify(doc_dir .. '/' .. path, ':p')
+                end
+
+                local img = image.from_file(path, {
+                  id = ('obsidian-wikilink:%d:%s'):format(row, path),
+                  window = win,
+                  buffer = bufnr,
+                  with_virtual_padding = true,
+                  namespace = 'obsidian-wikilink',
+                })
+                if img then
+                  img:render({ x = s - 1, y = row - 1 })
+                end
+              end
+
+              start = e + 1
+            end
+          end
+        end
+
+        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'TextChanged', 'TextChangedI', 'WinScrolled' }, {
+          pattern = '*.md',
+          callback = function()
+            vim.schedule(render_obsidian_image_embeds)
+          end,
+        })
       end
 
       local img_clip_ok, img_clip = pcall(require, 'img-clip')

@@ -221,6 +221,40 @@ imports = [
             tmux_show_only_in_active_window = false,
           })
 
+          local term_ok, image_term = pcall(require, 'image/utils/term')
+          if term_ok and vim.env.TMUX then
+            local original_get_size = image_term.get_size
+            image_term.get_size = function()
+              if vim.fn.executable('tmux') == 1 then
+                local out = vim.fn.systemlist({
+                  'tmux',
+                  'display-message',
+                  '-p',
+                  '#{pane_width} #{pane_height} #{client_cell_width} #{client_cell_height}',
+                })
+                if vim.v.shell_error == 0 and out[1] then
+                  local cols, rows, cell_width, cell_height = out[1]:match('^(%d+)%s+(%d+)%s+(%d+)%s+(%d+)')
+                  cols = tonumber(cols)
+                  rows = tonumber(rows)
+                  cell_width = tonumber(cell_width)
+                  cell_height = tonumber(cell_height)
+                  if cols and rows and cell_width and cell_height and cell_width > 0 and cell_height > 0 then
+                    return {
+                      screen_x = cols * cell_width,
+                      screen_y = rows * cell_height,
+                      screen_cols = cols,
+                      screen_rows = rows,
+                      cell_width = cell_width,
+                      cell_height = cell_height,
+                    }
+                  end
+                end
+              end
+
+              return original_get_size()
+            end
+          end
+
           local function render_obsidian_image_embeds()
           if vim.bo.filetype ~= 'markdown' then
             return

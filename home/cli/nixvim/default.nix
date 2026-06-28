@@ -201,6 +201,7 @@ imports = [
       if image_ok and #vim.api.nvim_list_uis() > 0 then
         image.setup({
           backend = 'kitty',
+          kitty_method = 'unicode-placeholders',
           integrations = {
             markdown = { enabled = true },
             typst = { enabled = true },

@@ -7,6 +7,9 @@ imports = [
   programs.nixvim = {
     nixpkgs.config.allowUnfree = true;
     defaultEditor = true;
+    extraPackages = with pkgs; [
+      imagemagick
+    ];
     globals = {
       mapleader = " ";
       maplocalleader = " ";
@@ -197,25 +200,28 @@ imports = [
         end,
       })
 
-      local image_ok, image = pcall(require, 'image')
-      if image_ok and #vim.api.nvim_list_uis() > 0 then
-        image.setup({
-          backend = 'kitty',
-          integrations = {
-            markdown = { enabled = true },
-            typst = { enabled = true },
-            neorg = { enabled = true },
-            syslang = { enabled = true },
-            html = { enabled = false },
-            css = { enabled = false },
-          },
-          max_width_window_percentage = 90,
-          max_height_window_percentage = 50,
-          window_overlap_clear_enabled = true,
-          tmux_show_only_in_active_window = true,
-        })
+      if #vim.api.nvim_list_uis() > 0 then
+        local image_ok, image = pcall(require, 'image')
+        if image_ok then
+          image.setup({
+            backend = 'kitty',
+            processor = 'magick_cli',
+            kitty_direct_chunk_size = 4096,
+            integrations = {
+              markdown = { enabled = true },
+              typst = { enabled = true },
+              neorg = { enabled = true },
+              syslang = { enabled = true },
+              html = { enabled = false },
+              css = { enabled = false },
+            },
+            max_width_window_percentage = 90,
+            max_height_window_percentage = 50,
+            window_overlap_clear_enabled = false,
+            tmux_show_only_in_active_window = false,
+          })
 
-        local function render_obsidian_image_embeds()
+          local function render_obsidian_image_embeds()
           if vim.bo.filetype ~= 'markdown' then
             return
           end
@@ -265,14 +271,15 @@ imports = [
           end
         end
 
-        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'FileType', 'TextChanged', 'TextChangedI', 'WinScrolled' }, {
-          pattern = { '*.md', 'markdown' },
-          callback = function()
-            vim.schedule(render_obsidian_image_embeds)
-          end,
-        })
+          vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'FileType', 'TextChanged', 'TextChangedI', 'WinScrolled' }, {
+            pattern = { '*.md', 'markdown' },
+            callback = function()
+              vim.schedule(render_obsidian_image_embeds)
+            end,
+          })
 
-        vim.schedule(render_obsidian_image_embeds)
+          vim.schedule(render_obsidian_image_embeds)
+        end
       end
 
       local img_clip_ok, img_clip = pcall(require, 'img-clip')
@@ -755,7 +762,17 @@ imports = [
       mini.enable = true;
     };
     extraPlugins = [
-      config.programs.nixvim.plugins.image.package
+      (pkgs.vimUtils.buildVimPlugin {
+        pname = "image.nvim";
+        version = "2026-06-13";
+        src = pkgs.fetchFromGitHub {
+          owner = "3rd";
+          repo = "image.nvim";
+          rev = "88351f1f7d9dbae286e671ce3690a49660dd8a5c";
+          sha256 = "0dy0nw7gvw408v2smw29jsbbs3r7lziinsvj96i7cf7k4lrj49lz";
+        };
+        nvimSkipModules = [ "minimal-setup" ];
+      })
       config.programs.nixvim.plugins.img-clip.package
       (pkgs.vimUtils.buildVimPlugin {
         name = "render-markdown.nvim";

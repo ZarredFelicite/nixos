@@ -235,7 +235,7 @@ imports = [
           for row, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
             local start = 1
             while true do
-              local s, e, target = line:find('!%[%[([^%]]+)%]%]', start)
+              local s, e, target = line:find('!%[%[(.-)%]%]', start)
               if not s then
                 break
               end
@@ -265,12 +265,14 @@ imports = [
           end
         end
 
-        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'TextChanged', 'TextChangedI', 'WinScrolled' }, {
-          pattern = '*.md',
+        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'FileType', 'TextChanged', 'TextChangedI', 'WinScrolled' }, {
+          pattern = { '*.md', 'markdown' },
           callback = function()
             vim.schedule(render_obsidian_image_embeds)
           end,
         })
+
+        vim.schedule(render_obsidian_image_embeds)
       end
 
       local img_clip_ok, img_clip = pcall(require, 'img-clip')

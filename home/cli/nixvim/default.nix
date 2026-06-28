@@ -519,6 +519,9 @@ imports = [
           };
           legacy_commands = false;
           new_notes_location = "current_dir";
+          ui = {
+            enable = false;
+          };
           workspaces = [
             {
               name = "home";

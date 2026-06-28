@@ -110,6 +110,12 @@ imports = [
         local pine = '#31748f'
         local foam = '#9ccfd8'
         local iris = '#c4a7e7'
+        local h1_bg = '#393552'
+        local h2_bg = '#263a46'
+        local h3_bg = '#403033'
+        local h4_bg = '#453a2b'
+        local h5_bg = '#233a42'
+        local h6_bg = '#2a2837'
 
         set(0, 'RenderMarkdownCode', { bg = surface })
         set(0, 'RenderMarkdownCodeInfo', { fg = muted, bg = surface })
@@ -123,12 +129,12 @@ imports = [
         set(0, 'RenderMarkdownH4', { fg = gold, bold = true })
         set(0, 'RenderMarkdownH5', { fg = pine, bold = true })
         set(0, 'RenderMarkdownH6', { fg = muted, bold = true })
-        set(0, 'RenderMarkdownH1Bg', { fg = iris, bg = overlay, bold = true })
-        set(0, 'RenderMarkdownH2Bg', { fg = foam, bg = overlay, bold = true })
-        set(0, 'RenderMarkdownH3Bg', { fg = rose, bg = overlay, bold = true })
-        set(0, 'RenderMarkdownH4Bg', { fg = gold, bg = overlay, bold = true })
-        set(0, 'RenderMarkdownH5Bg', { fg = pine, bg = overlay, bold = true })
-        set(0, 'RenderMarkdownH6Bg', { fg = muted, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownH1Bg', { fg = iris, bg = h1_bg, bold = true })
+        set(0, 'RenderMarkdownH2Bg', { fg = foam, bg = h2_bg, bold = true })
+        set(0, 'RenderMarkdownH3Bg', { fg = rose, bg = h3_bg, bold = true })
+        set(0, 'RenderMarkdownH4Bg', { fg = gold, bg = h4_bg, bold = true })
+        set(0, 'RenderMarkdownH5Bg', { fg = pine, bg = h5_bg, bold = true })
+        set(0, 'RenderMarkdownH6Bg', { fg = muted, bg = h6_bg, bold = true })
 
         set(0, 'RenderMarkdownBullet', { fg = iris })
         set(0, 'RenderMarkdownDash', { fg = muted })
@@ -148,6 +154,14 @@ imports = [
         set(0, 'RenderMarkdownHint', { fg = iris })
         set(0, 'RenderMarkdownWarn', { fg = gold })
         set(0, 'RenderMarkdownError', { fg = love })
+
+        -- Make YAML/frontmatter values stand out from keys.
+        set(0, '@property.yaml', { fg = iris })
+        set(0, '@field.yaml', { fg = iris })
+        set(0, '@string.yaml', { fg = foam })
+        set(0, '@number.yaml', { fg = gold })
+        set(0, '@boolean.yaml', { fg = rose })
+        set(0, '@constant.yaml', { fg = rose })
       end
 
       set_render_markdown_rose_pine_hl()

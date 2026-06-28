@@ -94,6 +94,68 @@ imports = [
         };
       };
     };
+    extraConfigLua = ''
+      local function set_render_markdown_rose_pine_hl()
+        local set = vim.api.nvim_set_hl
+
+        -- Rose Pine palette.
+        local base = '#191724'
+        local surface = '#1f1d2e'
+        local overlay = '#26233a'
+        local muted = '#6e6a86'
+        local text = '#e0def4'
+        local love = '#eb6f92'
+        local gold = '#f6c177'
+        local rose = '#ebbcba'
+        local pine = '#31748f'
+        local foam = '#9ccfd8'
+        local iris = '#c4a7e7'
+
+        set(0, 'RenderMarkdownCode', { bg = surface })
+        set(0, 'RenderMarkdownCodeInfo', { fg = muted, bg = surface })
+        set(0, 'RenderMarkdownCodeBorder', { fg = overlay, bg = surface })
+        set(0, 'RenderMarkdownCodeInline', { fg = rose, bg = surface })
+        set(0, 'RenderMarkdownInlineHighlight', { bg = overlay })
+
+        set(0, 'RenderMarkdownH1', { fg = iris, bold = true })
+        set(0, 'RenderMarkdownH2', { fg = foam, bold = true })
+        set(0, 'RenderMarkdownH3', { fg = rose, bold = true })
+        set(0, 'RenderMarkdownH4', { fg = gold, bold = true })
+        set(0, 'RenderMarkdownH5', { fg = pine, bold = true })
+        set(0, 'RenderMarkdownH6', { fg = muted, bold = true })
+        set(0, 'RenderMarkdownH1Bg', { fg = iris, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownH2Bg', { fg = foam, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownH3Bg', { fg = rose, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownH4Bg', { fg = gold, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownH5Bg', { fg = pine, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownH6Bg', { fg = muted, bg = overlay, bold = true })
+
+        set(0, 'RenderMarkdownBullet', { fg = iris })
+        set(0, 'RenderMarkdownDash', { fg = muted })
+        set(0, 'RenderMarkdownQuote', { fg = muted, italic = true })
+        set(0, 'RenderMarkdownIndent', { fg = overlay })
+        set(0, 'RenderMarkdownLink', { fg = foam })
+        set(0, 'RenderMarkdownLinkTitle', { fg = iris, underline = true })
+        set(0, 'RenderMarkdownWikiLink', { fg = iris })
+        set(0, 'RenderMarkdownUnchecked', { fg = muted })
+        set(0, 'RenderMarkdownChecked', { fg = foam })
+        set(0, 'RenderMarkdownTodo', { fg = gold })
+        set(0, 'RenderMarkdownTableHead', { fg = text, bg = overlay, bold = true })
+        set(0, 'RenderMarkdownTableRow', { fg = text })
+        set(0, 'RenderMarkdownSign', { bg = base })
+        set(0, 'RenderMarkdownSuccess', { fg = foam })
+        set(0, 'RenderMarkdownInfo', { fg = pine })
+        set(0, 'RenderMarkdownHint', { fg = iris })
+        set(0, 'RenderMarkdownWarn', { fg = gold })
+        set(0, 'RenderMarkdownError', { fg = love })
+      end
+
+      set_render_markdown_rose_pine_hl()
+      vim.api.nvim_create_autocmd({ 'ColorScheme', 'VimEnter', 'FileType' }, {
+        pattern = '*',
+        callback = set_render_markdown_rose_pine_hl,
+      })
+    '';
     autoGroups = {
       kickstart-highlight-yank = {
         clear = true;

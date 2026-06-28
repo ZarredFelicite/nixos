@@ -122,18 +122,26 @@ imports = [
         set(0, 'RenderMarkdownCodeInline', { fg = rose, bg = surface })
         set(0, 'RenderMarkdownInlineHighlight', { bg = overlay })
 
-        set(0, 'RenderMarkdownH1', { fg = iris, bold = true })
-        set(0, 'RenderMarkdownH2', { fg = foam, bold = true })
+        set(0, 'RenderMarkdownH1', { fg = rose, bold = true })
+        set(0, 'RenderMarkdownH2', { fg = rose, bold = true })
         set(0, 'RenderMarkdownH3', { fg = rose, bold = true })
-        set(0, 'RenderMarkdownH4', { fg = love, bold = true })
-        set(0, 'RenderMarkdownH5', { fg = pine, bold = true })
-        set(0, 'RenderMarkdownH6', { fg = muted, bold = true })
-        set(0, 'RenderMarkdownH1Bg', { fg = iris, bg = h1_bg, bold = true })
-        set(0, 'RenderMarkdownH2Bg', { fg = foam, bg = h2_bg, bold = true })
+        set(0, 'RenderMarkdownH4', { fg = rose, bold = true })
+        set(0, 'RenderMarkdownH5', { fg = rose, bold = true })
+        set(0, 'RenderMarkdownH6', { fg = rose, bold = true })
+        set(0, 'RenderMarkdownH1Bg', { fg = rose, bg = h1_bg, bold = true })
+        set(0, 'RenderMarkdownH2Bg', { fg = rose, bg = h2_bg, bold = true })
         set(0, 'RenderMarkdownH3Bg', { fg = rose, bg = h3_bg, bold = true })
-        set(0, 'RenderMarkdownH4Bg', { fg = love, bg = h4_bg, bold = true })
-        set(0, 'RenderMarkdownH5Bg', { fg = pine, bg = h5_bg, bold = true })
-        set(0, 'RenderMarkdownH6Bg', { fg = muted, bg = h6_bg, bold = true })
+        set(0, 'RenderMarkdownH4Bg', { fg = rose, bg = h4_bg, bold = true })
+        set(0, 'RenderMarkdownH5Bg', { fg = rose, bg = h5_bg, bold = true })
+        set(0, 'RenderMarkdownH6Bg', { fg = rose, bg = h6_bg, bold = true })
+
+        set(0, '@markup.heading.markdown', { fg = rose, bold = true })
+        set(0, '@markup.heading.1.markdown', { fg = rose, bold = true })
+        set(0, '@markup.heading.2.markdown', { fg = rose, bold = true })
+        set(0, '@markup.heading.3.markdown', { fg = rose, bold = true })
+        set(0, '@markup.heading.4.markdown', { fg = rose, bold = true })
+        set(0, '@markup.heading.5.markdown', { fg = rose, bold = true })
+        set(0, '@markup.heading.6.markdown', { fg = rose, bold = true })
 
         set(0, 'RenderMarkdownBullet', { fg = iris })
         set(0, 'RenderMarkdownDash', { fg = muted })
@@ -163,15 +171,29 @@ imports = [
         set(0, '@constant.yaml', { fg = rose })
 
         -- URLs should be visually distinct from normal links and wiki links.
-        set(0, '@markup.link.url.markdown_inline', { fg = pine, underline = true, italic = true })
-        set(0, '@markup.link.url.markdown', { fg = pine, underline = true, italic = true })
-        set(0, '@string.special.url', { fg = pine, underline = true, italic = true })
+        set(0, 'MarkdownUrl', { fg = love, underline = true, italic = true })
+        set(0, '@markup.link.url.markdown_inline', { fg = love, underline = true, italic = true })
+        set(0, '@markup.link.url.markdown', { fg = love, underline = true, italic = true })
+        set(0, '@string.special.url', { fg = love, underline = true, italic = true })
       end
 
       set_render_markdown_rose_pine_hl()
       vim.api.nvim_create_autocmd({ 'ColorScheme', 'VimEnter', 'FileType' }, {
         pattern = '*',
         callback = set_render_markdown_rose_pine_hl,
+      })
+
+      vim.api.nvim_create_autocmd({ 'FileType', 'BufEnter', 'ColorScheme' }, {
+        pattern = { 'markdown', '*' },
+        callback = function()
+          set_render_markdown_rose_pine_hl()
+          if vim.bo.filetype == 'markdown' then
+            if vim.w.markdown_url_match then
+              pcall(vim.fn.matchdelete, vim.w.markdown_url_match)
+            end
+            vim.w.markdown_url_match = vim.fn.matchadd('MarkdownUrl', [[https\?://\S\+]], 200)
+          end
+        end,
       })
     '';
     autoGroups = {

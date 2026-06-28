@@ -285,8 +285,21 @@ imports = [
               redraw_timer:close()
             end
             redraw_timer = vim.loop.new_timer()
-            redraw_timer:start(75, 0, vim.schedule_wrap(function()
+            redraw_timer:start(100, 0, vim.schedule_wrap(function()
               pcall(vim.cmd, 'redraw!')
+
+              local function rerender_visible_images()
+                for _, img in ipairs(image.get_images({})) do
+                  pcall(function()
+                    img:render()
+                  end)
+                end
+                render_obsidian_image_embeds()
+                pcall(vim.cmd, 'redraw!')
+              end
+
+              vim.defer_fn(rerender_visible_images, 50)
+              vim.defer_fn(rerender_visible_images, 500)
             end))
           end
 

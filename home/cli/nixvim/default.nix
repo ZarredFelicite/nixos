@@ -215,10 +215,8 @@ imports = [
               html = { enabled = false },
               css = { enabled = false },
             },
-            max_width = 80,
-            max_height = 20,
             max_width_window_percentage = 90,
-            max_height_window_percentage = 40,
+            max_height_window_percentage = 50,
             window_overlap_clear_enabled = false,
             tmux_show_only_in_active_window = false,
           })
@@ -278,6 +276,29 @@ imports = [
             callback = function()
               vim.schedule(render_obsidian_image_embeds)
             end,
+          })
+
+          local resize_timer = nil
+          local function rerender_images_after_resize()
+            if resize_timer then
+              resize_timer:stop()
+              resize_timer:close()
+            end
+            resize_timer = vim.loop.new_timer()
+            resize_timer:start(150, 0, vim.schedule_wrap(function()
+              local images = image.get_images({})
+              for _, img in ipairs(images) do
+                img:clear(true)
+              end
+              for _, img in ipairs(images) do
+                img:render()
+              end
+              render_obsidian_image_embeds()
+            end))
+          end
+
+          vim.api.nvim_create_autocmd({ 'VimResized', 'WinResized' }, {
+            callback = rerender_images_after_resize,
           })
 
           vim.schedule(render_obsidian_image_embeds)

@@ -109,12 +109,12 @@ imports = [
         local pine = '#31748f'
         local foam = '#9ccfd8'
         local iris = '#c4a7e7'
-        local h1_bg = '#2a273f'
-        local h2_bg = '#1d3038'
-        local h3_bg = '#33262b'
-        local h4_bg = '#352d2b'
-        local h5_bg = '#1d3036'
-        local h6_bg = '#252331'
+        local h1_bg = overlay
+        local h2_bg = surface
+        local h3_bg = base
+        local h4_bg = overlay
+        local h5_bg = surface
+        local h6_bg = base
 
         set(0, 'RenderMarkdownCode', { bg = surface })
         set(0, 'RenderMarkdownCodeInfo', { fg = muted, bg = surface })

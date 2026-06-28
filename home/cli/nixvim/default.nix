@@ -215,8 +215,10 @@ imports = [
               html = { enabled = false },
               css = { enabled = false },
             },
+            max_width = 80,
+            max_height = 20,
             max_width_window_percentage = 90,
-            max_height_window_percentage = 50,
+            max_height_window_percentage = 40,
             window_overlap_clear_enabled = false,
             tmux_show_only_in_active_window = false,
           })

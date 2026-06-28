@@ -519,6 +519,15 @@ imports = [
           };
           legacy_commands = false;
           new_notes_location = "current_dir";
+          picker.name = "telescope.nvim";
+          sort_by = "modified";
+          sort_reversed = true;
+          templates.folder = "templates";
+          daily_notes = {
+            folder = "daily";
+            date_format = "%Y-%m-%d";
+          };
+          attachments.img_folder = "attachments";
           ui = {
             enable = false;
           };

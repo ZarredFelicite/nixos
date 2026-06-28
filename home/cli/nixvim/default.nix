@@ -221,47 +221,6 @@ imports = [
             tmux_show_only_in_active_window = false,
           })
 
-          local term_ok, image_term = pcall(require, 'image/utils/term')
-          if term_ok then
-            local original_get_size = image_term.get_size
-            local ffi_ok, ffi = pcall(require, 'ffi')
-            if ffi_ok then
-              pcall(ffi.cdef, [[
-                typedef struct {
-                  unsigned short row;
-                  unsigned short col;
-                  unsigned short xpixel;
-                  unsigned short ypixel;
-                } winsize;
-                int ioctl(int, int, ...);
-              ]])
-
-              image_term.get_size = function()
-                local TIOCGWINSZ = 0x5413
-                local sz = ffi.new('winsize')
-                if ffi.C.ioctl(1, TIOCGWINSZ, sz) ~= 0 or sz.row == 0 or sz.col == 0 then
-                  return original_get_size()
-                end
-
-                local xpixel = sz.xpixel
-                local ypixel = sz.ypixel
-                if xpixel == 0 or ypixel == 0 then
-                  xpixel = sz.col * 8
-                  ypixel = sz.row * 16
-                end
-
-                return {
-                  screen_x = xpixel,
-                  screen_y = ypixel,
-                  screen_cols = sz.col,
-                  screen_rows = sz.row,
-                  cell_width = xpixel / sz.col,
-                  cell_height = ypixel / sz.row,
-                }
-              end
-            end
-          end
-
           local function render_obsidian_image_embeds()
           if vim.bo.filetype ~= 'markdown' then
             return
@@ -319,28 +278,20 @@ imports = [
             end,
           })
 
-          local resize_timer = nil
-          local function rerender_images_after_resize()
-            if resize_timer then
-              resize_timer:stop()
-              resize_timer:close()
+          local redraw_timer = nil
+          local function redraw_images_after_layout_change()
+            if redraw_timer then
+              redraw_timer:stop()
+              redraw_timer:close()
             end
-            resize_timer = vim.loop.new_timer()
-            resize_timer:start(350, 0, vim.schedule_wrap(function()
-              local images = image.get_images({})
-              pcall(image.clear)
-              vim.cmd('redraw!')
-              for _, img in ipairs(images) do
-                pcall(function()
-                  img:render()
-                end)
-              end
-              render_obsidian_image_embeds()
+            redraw_timer = vim.loop.new_timer()
+            redraw_timer:start(75, 0, vim.schedule_wrap(function()
+              pcall(vim.cmd, 'redraw!')
             end))
           end
 
-          vim.api.nvim_create_autocmd({ 'VimResized', 'WinResized' }, {
-            callback = rerender_images_after_resize,
+          vim.api.nvim_create_autocmd({ 'VimResized', 'WinResized', 'WinEnter', 'BufEnter' }, {
+            callback = redraw_images_after_layout_change,
           })
 
           vim.schedule(render_obsidian_image_embeds)

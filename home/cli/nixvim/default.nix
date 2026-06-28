@@ -221,6 +221,47 @@ imports = [
             tmux_show_only_in_active_window = false,
           })
 
+          local term_ok, image_term = pcall(require, 'image/utils/term')
+          if term_ok then
+            local original_get_size = image_term.get_size
+            local ffi_ok, ffi = pcall(require, 'ffi')
+            if ffi_ok then
+              pcall(ffi.cdef, [[
+                typedef struct {
+                  unsigned short row;
+                  unsigned short col;
+                  unsigned short xpixel;
+                  unsigned short ypixel;
+                } winsize;
+                int ioctl(int, int, ...);
+              ]])
+
+              image_term.get_size = function()
+                local TIOCGWINSZ = 0x5413
+                local sz = ffi.new('winsize')
+                if ffi.C.ioctl(1, TIOCGWINSZ, sz) ~= 0 or sz.row == 0 or sz.col == 0 then
+                  return original_get_size()
+                end
+
+                local xpixel = sz.xpixel
+                local ypixel = sz.ypixel
+                if xpixel == 0 or ypixel == 0 then
+                  xpixel = sz.col * 8
+                  ypixel = sz.row * 16
+                end
+
+                return {
+                  screen_x = xpixel,
+                  screen_y = ypixel,
+                  screen_cols = sz.col,
+                  screen_rows = sz.row,
+                  cell_width = xpixel / sz.col,
+                  cell_height = ypixel / sz.row,
+                }
+              end
+            end
+          end
+
           local function render_obsidian_image_embeds()
           if vim.bo.filetype ~= 'markdown' then
             return
@@ -285,13 +326,16 @@ imports = [
               resize_timer:close()
             end
             resize_timer = vim.loop.new_timer()
-            resize_timer:start(150, 0, vim.schedule_wrap(function()
+            resize_timer:start(350, 0, vim.schedule_wrap(function()
               local images = image.get_images({})
               for _, img in ipairs(images) do
-                img:clear(true)
+                img:clear(false)
               end
+              vim.cmd('redraw!')
               for _, img in ipairs(images) do
-                img:render()
+                pcall(function()
+                  img:render()
+                end)
               end
               render_obsidian_image_embeds()
             end))

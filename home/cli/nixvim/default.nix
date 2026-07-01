@@ -464,6 +464,38 @@ imports = [
         };
       };
       cmp-treesitter.enable = true;
+      minuet = {
+        enable = true;
+        settings = {
+          provider = "openai";
+          n_completions = 1;
+          context_window = 16000;
+          request_timeout = 3;
+          throttle = 1000;
+          debounce = 400;
+          provider_options = {
+            openai = {
+              # Uses OPENAI_API_KEY from the environment; do not put secrets in Nix.
+              model = "gpt-5.4-nano";
+              optional = {
+                max_completion_tokens = 128;
+                reasoning_effort = "none";
+              };
+            };
+          };
+          virtualtext = {
+            auto_trigger_ft = [ "*" ];
+            keymap = {
+              accept = "<A-y>";
+              accept_line = "<A-a>";
+              accept_n_lines = "<A-z>";
+              next = "<A-]>";
+              prev = "<A-[>";
+              dismiss = "<A-e>";
+            };
+          };
+        };
+      };
       # TODO: invgestigate blink.cmp, newer and simpler completion system
       cmp = {
         enable = true;

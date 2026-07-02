@@ -102,11 +102,16 @@ in {
     keyMode = "vi";
     prefix = "C-a";
     customPaneNavigationAndResize = false;
-    newSession = true;
+    # Avoid an unconditional top-level `new-session` in generated tmux.conf:
+    # tmuxy sources the normal config for theme/status, and control-mode clients
+    # would otherwise create/attach to fresh numbered sessions instead of the
+    # requested ?session= target.
+    newSession = false;
     terminal = "tmux-256color";
     focusEvents = true;
     tmuxinator.enable = true;
     extraConfig = ''
+      if -F "#{==:#{client_control_mode},0}" "new-session"
       set-option -sa terminal-features ',xterm-256color:RGB'
       set-option -sa terminal-features ',xterm-kitty:RGB'
       set-option -sa terminal-features ',xterm-kitty:extkeys'

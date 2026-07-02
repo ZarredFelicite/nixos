@@ -16,6 +16,7 @@ in {
   home.packages = [
     #(pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.lowfi
+    pkgs-unstable.spotify-player
     pkgs-unstable.streamrip
   ];
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;

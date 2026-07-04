@@ -59,6 +59,7 @@
       ".config/android-studio"
       ".config/sunshine"
       ".config/spotify"
+      ".config/spotify-player"
       ".config/GIMP"
       ".config/discord"
       ".config/Vencord"

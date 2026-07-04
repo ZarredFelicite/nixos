@@ -19,6 +19,21 @@ in {
     pkgs-unstable.spotify-player
     pkgs-unstable.streamrip
   ];
+
+  systemd.user.services.spotify-player = {
+    Unit = {
+      Description = "Spotify Player daemon";
+      After = [ "network-online.target" ];
+    };
+    Service = {
+      Type = "forking";
+      ExecStart = "${pkgs-unstable.spotify-player}/bin/spotify_player --daemon";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {
     enable = false;

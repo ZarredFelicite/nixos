@@ -17,6 +17,25 @@ in {
     #(pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.lowfi
     pkgs-unstable.spotify-player
+    (pkgs.writeShellScriptBin "spotify_player_tui" ''
+      set -euo pipefail
+
+      service=spotify-player.service
+      was_active=0
+      if systemctl --user --quiet is-active "$service"; then
+        was_active=1
+        systemctl --user stop "$service"
+      fi
+
+      restart_service() {
+        if [ "$was_active" -eq 1 ]; then
+          systemctl --user start "$service"
+        fi
+      }
+      trap restart_service EXIT INT TERM
+
+      ${pkgs-unstable.spotify-player}/bin/spotify_player "$@"
+    '')
     pkgs-unstable.streamrip
   ];
 

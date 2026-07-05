@@ -195,7 +195,7 @@
   };
   systemd.services.systemd-oomd-notify = {
     description = "Desktop notifications for systemd-oomd actions";
-    after = [ "systemd-oomd.service" "graphical.target" ];
+    after = [ "systemd-oomd.service" ];
     wants = [ "systemd-oomd.service" ];
     wantedBy = [ "multi-user.target" ];
     path = [ pkgs.systemd pkgs.libnotify pkgs.gnugrep pkgs.coreutils ];

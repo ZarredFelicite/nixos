@@ -202,11 +202,18 @@ in {
         };
         sensitivity = 0;
       };
-      device = {
-        name = "tpps/2-elan-trackpoint";
-        sensitivity = -0.25;
-        natural_scroll = false;
-      };
+      device = [
+        {
+          name = "tpps/2-elan-trackpoint";
+          sensitivity = -0.25;
+          natural_scroll = false;
+        }
+        {
+          # Ignore Qudelix multipoint AVRCP media-key events from phone playback.
+          name = "qudelix-5k-(avrcp)";
+          enabled = false;
+        }
+      ];
       #  "elan0670:00-04f3:3150-touchpad" = {
       #    sensitivity = 0.1;
       #    natural_scroll = true;

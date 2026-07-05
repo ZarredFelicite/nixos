@@ -193,6 +193,32 @@
     freeSwapKillThreshold = 1;
     enableNotifications = true;
   };
+  systemd.services.systemd-oomd-notify = {
+    description = "Desktop notifications for systemd-oomd actions";
+    after = [ "systemd-oomd.service" "graphical.target" ];
+    wants = [ "systemd-oomd.service" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.systemd pkgs.libnotify pkgs.gnugrep pkgs.coreutils ];
+    serviceConfig = {
+      Type = "simple";
+      User = "zarred";
+      Group = "users";
+      Restart = "always";
+      RestartSec = "5s";
+      Environment = [
+        "DISPLAY=:0"
+        "XDG_RUNTIME_DIR=/run/user/${toString config.users.users.zarred.uid}"
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${toString config.users.users.zarred.uid}/bus"
+      ];
+      ExecStart = pkgs.writeShellScript "systemd-oomd-notify" ''
+        journalctl -f -n 0 -u systemd-oomd.service -o short-iso | while IFS= read -r line; do
+          if printf '%s\n' "$line" | grep -Eiq 'killed|killing|memory pressure|swap'; then
+            notify-send -u critical -a systemd-oomd "systemd-oomd action" "$line"
+          fi
+        done
+      '';
+    };
+  };
 
   environment.variables = {
     # Necessary to correctly enable va-api (video codec hardware

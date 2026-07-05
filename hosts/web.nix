@@ -172,6 +172,28 @@
     device = "/swap/swapfile";
     size = 65568;
   }];
+
+  # Prefer systemd-oomd for normal cgroup-aware memory pressure handling.
+  # Keep earlyoom as a last-resort fallback when RAM and swap are both nearly exhausted.
+  systemd.oomd = {
+    enable = true;
+    enableUserSlices = true;
+    enableSystemSlice = true;
+    settings.OOM = {
+      DefaultMemoryPressureDurationSec = "20s";
+      DefaultMemoryPressureLimit = "60%";
+      SwapUsedLimit = "95%";
+    };
+  };
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 2;
+    freeSwapThreshold = 3;
+    freeMemKillThreshold = 1;
+    freeSwapKillThreshold = 1;
+    enableNotifications = true;
+  };
+
   environment.variables = {
     # Necessary to correctly enable va-api (video codec hardware
     # acceleration). If this isn't set, the libvdpau backend will be

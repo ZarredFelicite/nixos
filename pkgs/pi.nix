@@ -26,17 +26,6 @@ buildNpmPackage (finalAttrs: {
     typescript-go
     makeBinaryWrapper
   ];
-  postPatch = ''
-    substituteInPlace packages/coding-agent/src/core/tools/bash.ts \
-      --replace-fail 'timeout: Type.Optional(Type.Number({ description: "Timeout in seconds (optional, no default timeout)" })),' \
-                     'timeout: Type.Optional(Type.Number({ description: "Timeout in seconds (optional, default: 15)" })),' \
-      --replace-fail 'exec: async (command, cwd, { onData, signal, timeout, env }) => {' \
-                     'exec: async (command, cwd, { onData, signal, timeout = 15, env }) => {' \
-      --replace-fail 'const timeout = args?.timeout as number | undefined;' \
-                     'const timeout = (args?.timeout ?? 15) as number;' \
-      --replace-fail $'\t\t\t\t\t\ttimeout,\n' \
-                     $'\t\t\t\t\t\ttimeout: timeout ?? 15,\n'
-  '';
   # Build workspace dependencies in order, then the coding-agent.
   # We invoke tsgo directly for workspace deps to skip pi-ai's
   # generate-models script which requires network access

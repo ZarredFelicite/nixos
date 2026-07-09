@@ -29,6 +29,9 @@
     dataDir = "/var/lib/readarr";
     settings.server.urlbase = "/readarr";
   };
+  systemd.services.sonarr.path = [ pkgs.servarr-ffmpeg ];
+  systemd.services.radarr.path = [ pkgs.servarr-ffmpeg ];
+  systemd.services.readarr.path = [ pkgs.servarr-ffmpeg ];
   virtualisation.oci-containers.containers."lidarr" = {
     image = "youegraillot/lidarr-on-steroids";
     ports = [

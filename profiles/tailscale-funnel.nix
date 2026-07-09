@@ -59,10 +59,26 @@ in
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      Restart = "on-failure";
+      RestartSec = "15s";
     };
 
     script = ''
       set -euo pipefail
+
+      for attempt in $(seq 1 60); do
+        if ${pkgs.tailscale}/bin/tailscale status --json | ${pkgs.gnugrep}/bin/grep -q '"BackendState": "Running"'; then
+          break
+        fi
+
+        if [ "$attempt" -eq 60 ]; then
+          echo "tailscaled did not reach BackendState=Running" >&2
+          ${pkgs.tailscale}/bin/tailscale status || true
+          exit 1
+        fi
+
+        sleep 2
+      done
 
       # Keep the declarative config authoritative.
       ${pkgs.tailscale}/bin/tailscale funnel reset || true

@@ -301,7 +301,6 @@
     pkgs.polychromatic
     pkgs.lact
   ];
-  environment.etc.machine-id.text = "b7608440568f4ffb8d26dcadf1eb28d6";
   #environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.txt".text = ''
   #  {
   #      "rules": [

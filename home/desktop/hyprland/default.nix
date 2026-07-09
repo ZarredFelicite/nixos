@@ -259,7 +259,8 @@ in {
          enable_swallow = false;
          swallow_regex = "^(kitty)$";
          swallow_exception_regex = "^(cava|wev)$";
-         vfr = true;
+         # Removed in Hyprland 0.55; invalid config prevents startup.
+         # vfr = true;
          vrr = true;
          on_focus_under_fullscreen = 2;
          initial_workspace_tracking = 0; # NOTE: 2 causing new windows to be created on previous workspaces
@@ -275,7 +276,8 @@ in {
       };
       #experimental.xx_color_management_v4 = true; # Removed in v0.53
       dwindle = {
-        pseudotile = true;
+        # Removed in Hyprland 0.55; use the pseudo dispatcher per-window instead.
+        # pseudotile = true;
         force_split = 2;
         #smart_split = true;
         #smart_resizing = true;

@@ -26,8 +26,9 @@
     windowrule = match:initial_title Picture-in-Picture|cctv, group deny
     windowrule = match:class ^(nova)$, size 1200 800
     windowrule = match:title nova, size 1200 800
-    windowrule = match:class ^(nova|obsidian)$, dimaround on
-    windowrule = match:title nova, dimaround on
+    # dimaround is invalid in Hyprland 0.55 window rules.
+    # windowrule = match:class ^(nova|obsidian)$, dimaround on
+    # windowrule = match:title nova, dimaround on
     #windowrule = match:class ^(nova)$, center on
     #windowrule = match:class ^(nova)$, pin on
     #windowrule = match:class ^(nova)$, stay_focused on

@@ -1,6 +1,6 @@
 { config, pkgs, pkgs-unstable, inputs, ... }:
 let
-  beetsXtractor = pkgs-unstable.python313Packages.callPackage ../../pkgs/python/beets-xtractor { };
+  beetsXtractor = pkgs-unstable.python3Packages.callPackage ../../pkgs/python/beets-xtractor { };
   beetsWithXtractor = pkgs-unstable.beets.overridePythonAttrs (old: {
     propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ beetsXtractor ];
   });

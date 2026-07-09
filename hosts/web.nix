@@ -45,7 +45,7 @@
     ensureDatabases = [ "deepface" ];
   };
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_7_0;
     # Keep the NVIDIA driver available, but don't eagerly load it during boot;
     # the display is on AMD and NVIDIA can autoload when CUDA/NVML needs it.
     kernelModules = lib.mkForce [

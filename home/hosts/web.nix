@@ -3,6 +3,17 @@
 let
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
+  audioSummaryPath = lib.makeBinPath [
+    audioSummaryPython
+    pkgs.bash
+    pkgs.coreutils
+    pkgs.ffmpeg
+    pkgs.curl
+    pkgs.jq
+    pkgs.pass
+    pkgs.gnupg
+    pkgs.linuxPackages.nvidia_x11
+  ];
   deepfacePython = pkgs.python313.withPackages (ps: [
     ps.deepface
     ps.fastapi
@@ -61,7 +72,7 @@ in
       RestartSec = "60s";
       WorkingDirectory = "/home/zarred/scripts/stt";
       Environment = [
-        "PATH=${lib.makeBinPath [ audioSummaryPython pkgs.bash pkgs.coreutils pkgs.ffmpeg pkgs.curl pkgs.jq pkgs.pass pkgs.gnupg ]}"
+        "PATH=${audioSummaryPath}"
       ];
     };
     Install.WantedBy = [ "default.target" ];

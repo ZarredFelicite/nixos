@@ -352,8 +352,9 @@
   programs.ssh = {
     extraConfig = ''
       Host nixremote-web
-        # Keep Nix cache and builders on the dedicated wired web <-> nano link.
-        HostName 192.168.86.150
+        # Tailscale prefers the dedicated wired underlay when available and
+        # automatically falls back to another path when it is disconnected.
+        HostName 100.64.1.150
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
     '';

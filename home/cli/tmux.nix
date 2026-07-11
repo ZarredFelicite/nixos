@@ -21,21 +21,27 @@ let
         exit 0
       fi
 
-      title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
-      [ -n "$title" ] || exit 0
+      # session-name-tool records explicit names in a tmux window option. Prefer
+      # that durable value over pane_title, which can contain transient terminal
+      # protocol output while Pi redraws.
+      title="$(${pkgs.tmux}/bin/tmux show-option -wqv -t "$target" @pi_session_name 2>/dev/null || true)"
+      if [ -z "$title" ]; then
+        title="$(${pkgs.tmux}/bin/tmux display-message -p -t "$target" '#{pane_title}' 2>/dev/null || true)"
+        [ -n "$title" ] || exit 0
 
-      # Pi core decorates terminal titles as "π - <session> - <cwd>".
-      # Use just the session segment for tmux window names.
-      case "$title" in
-        "π - "*" - "*)
-          title="''${title#π - }"
-          title="''${title% - *}"
-          ;;
-        "π - "*)
-          title="''${title#π - }"
-          ;;
-      esac
-      [ -n "$title" ] || exit 0
+        # Pi core decorates terminal titles as "π - <session> - <cwd>".
+        # Use just the session segment for tmux window names.
+        case "$title" in
+          "π - "*" - "*)
+            title="''${title#π - }"
+            title="''${title% - *}"
+            ;;
+          "π - "*)
+            title="''${title#π - }"
+            ;;
+        esac
+        [ -n "$title" ] || exit 0
+      fi
 
       ${pkgs.tmux}/bin/tmux rename-window -t "$target" "$title"
       ${pkgs.tmux}/bin/tmux set-option -wq -t "$target" @pi_window_name_owned 1

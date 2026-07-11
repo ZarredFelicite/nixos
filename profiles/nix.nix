@@ -43,7 +43,9 @@
     distributedBuilds = if config.networking.hostName == "web" then false else true;
     buildMachines = [
       {
-        hostName = "web";
+        # Uses the nixremote-web SSH alias for wired-first connectivity with
+        # automatic Tailscale fallback.
+        hostName = "nixremote-web";
         sshUser = "nixremote";
         sshKey = config.sops.secrets.nixremote-private.path;
         system = "x86_64-linux";

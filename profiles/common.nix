@@ -352,11 +352,12 @@
   programs.ssh = {
     extraConfig = ''
       Host nixremote-web
-        # Tailscale prefers the dedicated wired underlay when available and
-        # automatically falls back to another path when it is disconnected.
         HostName 100.64.1.150
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
+        # Prefer the dedicated web <-> nano Ethernet link. If web's SSH port is
+        # unavailable there, transparently fall back to its Tailscale address.
+        ProxyCommand ${pkgs.bash}/bin/bash -c 'if ${pkgs.netcat}/bin/nc -z -w 1 192.168.86.150 22; then exec ${pkgs.netcat}/bin/nc 192.168.86.150 22; else exec ${pkgs.netcat}/bin/nc 100.64.1.150 22; fi'
     '';
     knownHosts = {
       #web = {

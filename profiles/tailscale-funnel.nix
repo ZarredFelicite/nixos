@@ -42,7 +42,7 @@ let
   '';
 
   immichRouteCommand = ''
-    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=9443 http://127.0.0.1:2283
+    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=9443 http://127.0.0.1:18091
   '';
 
   routeCommands = lib.concatStringsSep "\n" (

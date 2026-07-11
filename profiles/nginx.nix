@@ -314,6 +314,26 @@
             proxyWebsockets = true;
           };
         };
+        # Immich must be served at /, but Funnel itself does not provide
+        # authentication. Keep it behind the same Authelia check as Funnel
+        # subpath services, using a dedicated root-scoped listener.
+        "immich-funnel.sankara.local" = {
+          serverName = "sankara.manticore-lenok.ts.net";
+          listen = [ { addr = "127.0.0.1"; port = 18091; } ];
+          extraConfig = SSLA.extraConfig;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:2283";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = funnelAuth.extraConfig + ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $http_host;
+              proxy_set_header X-Forwarded-Proto https;
+            '';
+          };
+        };
         "tmuxy-funnel.sankara.local" = {
           serverName = "sankara.manticore-lenok.ts.net";
           listen = [ { addr = "127.0.0.1"; port = 18090; } ];

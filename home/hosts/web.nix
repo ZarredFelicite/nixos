@@ -145,7 +145,7 @@ in
     Service.ExecStart = "/home/zarred/dev/computer-vision/run.sh";
     Service.Environment = [ "COMPUTER_VISION_PYTHON=${deepfacePython}/bin/python" ];
     Service.Restart = "always";
-    Service.RestartSec = "300s";
+    Service.RestartSec = "5s";
     Service.StartLimitIntervalSec = "5";
     Service.WorkingDirectory = "/home/zarred/dev/computer-vision";
     Install.WantedBy = [ "graphical-session.target" ];

@@ -38,6 +38,31 @@ in {
     };
   };
 
+  systemd.services.nfs-automount-recovery = {
+    description = "Recover failed NFS automount units";
+    after = [ "tailscaled.service" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      for mount in mnt-gargantua mnt-ceres mnt-eros mnt-turing; do
+        if ${pkgs.systemd}/bin/systemctl is-failed --quiet "''${mount}.mount" \
+          || ${pkgs.systemd}/bin/systemctl is-failed --quiet "''${mount}.automount"; then
+          ${pkgs.systemd}/bin/systemctl reset-failed "''${mount}.mount" "''${mount}.automount"
+          ${pkgs.systemd}/bin/systemctl restart "''${mount}.automount"
+        fi
+      done
+    '';
+  };
+
+  systemd.timers.nfs-automount-recovery = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "3min";
+      OnUnitActiveSec = "5min";
+      Persistent = true;
+      Unit = "nfs-automount-recovery.service";
+    };
+  };
+
   systemd.services.nfs-client-cleanup = {
     description = "Stop local NFS users and detach NFS mounts before sleep/shutdown";
     wantedBy = [ "sleep.target" "shutdown.target" ];

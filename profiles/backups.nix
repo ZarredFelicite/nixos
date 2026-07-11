@@ -22,6 +22,7 @@
       ];
       exclude = [
         "/home/zarred/.cache"
+        "/home/zarred/mnt/hil-fs001-data"
         "/home/zarred/games"
         "/home/zarred/downloads/games"
         "/home/zarred/.local/share/micromamba"

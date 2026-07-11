@@ -23,7 +23,6 @@ let
     audiobookshelf = "http://127.0.0.1:80/audiobookshelf";
     pdf = "http://127.0.0.1:80/pdf";
     mainsail = "http://127.0.0.1:80/mainsail";
-    immich = "http://127.0.0.1:80/immich";
     hass = "http://127.0.0.1:80/hass";
     ocr = "http://127.0.0.1:80/ocr";
     ember = "http://127.0.0.1:80/ember";
@@ -35,10 +34,15 @@ let
     ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 http://127.0.0.1:80
   '';
 
-  # Dedicated root-scoped endpoint for tmuxy. Tmuxy currently assumes it is
-  # hosted at /, so avoid the path-based Funnel used for the media apps.
+  # Dedicated root-scoped endpoints for applications that do not support
+  # path-prefix hosting. Immich emits root-relative frontend and API paths,
+  # so it must not be exposed through /immich.
   tmuxyRouteCommand = ''
     ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=8443 http://127.0.0.1:18090
+  '';
+
+  immichRouteCommand = ''
+    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=9443 http://127.0.0.1:2283
   '';
 
   routeCommands = lib.concatStringsSep "\n" (
@@ -85,6 +89,7 @@ in
 
       ${rootRouteCommand}
       ${tmuxyRouteCommand}
+      ${immichRouteCommand}
       ${routeCommands}
 
       ${pkgs.tailscale}/bin/tailscale funnel status

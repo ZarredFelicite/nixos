@@ -438,7 +438,6 @@
           (funnelSubpath "audiobookshelf" 13378)
           (funnelSubpath "pdf" 8088)
           (funnelSubpath "mainsail" 8001)
-          (funnelSubpath "immich" 2283)
           (funnelSubpath "hass" 8123)
           (funnelSubpath "ocr" 5498)
           (funnelSubpathTarget "ember" "http://web:4311/" true)

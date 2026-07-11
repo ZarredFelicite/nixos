@@ -16,6 +16,7 @@ in {
   home.packages = [
     #(pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.lowfi
+    pkgs.tplay
     pkgs-unstable.spotify-player
     pkgs-unstable.streamrip
   ];

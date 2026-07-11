@@ -13,6 +13,7 @@
       # API keys are loaded conditionally from sops in shell/systemd hooks.
       PI_CODING_AGENT_DIR = "~/.config/pi/agent";
       PI_SKIP_VERSION_CHECK = "1";
+      SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
     };
 
     # A few truly core packages. Most packages will be in other profiles.
@@ -98,6 +99,7 @@
         controlMaster = "auto";
         controlPath = "~/.ssh/controlmasters/%r@%h:%p";
         controlPersist = "1h";
+        extraOptions.IdentityAgent = "/run/user/1000/gnupg/S.gpg-agent.ssh";
       };
       sankara = {
         hostname = "sankara";

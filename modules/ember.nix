@@ -25,34 +25,52 @@ in
   };
 
   config = mkIf cfg.enable {
-    systemd.user.services.ember = let
+    systemd.user.services = let
       qmdPkg = pkgs.callPackage ../pkgs/qmd/package.nix {};
-      emberPackage = pkgs.callPackage ../pkgs/ember.nix {
-        projectDir = cfg.projectDir;
-      };
-      emberStart = pkgs.writeShellScript "ember-start" ''
-        export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
-        exec ${lib.getExe emberPackage} --daemon --web-port=${toString cfg.port}
-      '';
     in {
-      description = "Ember Web Server";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      wantedBy = [ "default.target" ];
+      qmd-mcp = {
+        description = "Persistent qmd MCP server";
+        partOf = [ "ember.service" ];
+        wantedBy = [ "default.target" ];
 
-      serviceConfig = {
-        Type = "simple";
-        WorkingDirectory = cfg.projectDir;
-        Environment = [
-          "HOME=%h"
-          "PATH=${qmdPkg}/bin:%h/.nix-profile/bin:%h/.local/state/nix/profile/bin:/etc/profiles/per-user/%u/bin:/nix/profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
-        ];
-        ExecStart = "${emberStart}";
-        Restart = "on-failure";
-        RestartSec = "10s";
+        serviceConfig = {
+          Type = "simple";
+          Environment = [ "HOME=%h" ];
+          ExecStart = "${lib.getExe qmdPkg} mcp --http --port 8181";
+          Restart = "on-failure";
+          RestartSec = "5s";
+        };
       };
 
-      path = [ qmdPkg "/run/current-system/sw" ];
+      ember = let
+        emberPackage = pkgs.callPackage ../pkgs/ember.nix {
+          projectDir = cfg.projectDir;
+        };
+        emberStart = pkgs.writeShellScript "ember-start" ''
+          export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
+          exec ${lib.getExe emberPackage} --daemon --web-port=${toString cfg.port}
+        '';
+      in {
+        description = "Ember Web Server";
+        after = [ "network-online.target" "qmd-mcp.service" ];
+        wants = [ "network-online.target" "qmd-mcp.service" ];
+        wantedBy = [ "default.target" ];
+
+        serviceConfig = {
+          Type = "simple";
+          WorkingDirectory = cfg.projectDir;
+          Environment = [
+            "HOME=%h"
+            "QMD_MCP_URL=http://localhost:8181/mcp"
+            "PATH=${qmdPkg}/bin:%h/.nix-profile/bin:%h/.local/state/nix/profile/bin:/etc/profiles/per-user/%u/bin:/nix/profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
+          ];
+          ExecStart = "${emberStart}";
+          Restart = "on-failure";
+          RestartSec = "10s";
+        };
+
+        path = [ qmdPkg "/run/current-system/sw" ];
+      };
     };
   };
 }

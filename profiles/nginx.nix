@@ -314,6 +314,40 @@
             proxyWebsockets = true;
           };
         };
+        # Immich must be served at /, but Funnel itself does not provide
+        # authentication. Keep it behind the same Authelia check as Funnel
+        # subpath services, using a dedicated root-scoped listener.
+        "immich-funnel.sankara.local" = {
+          serverName = "sankara.manticore-lenok.ts.net";
+          listen = [ { addr = "127.0.0.1"; port = 18091; } ];
+          extraConfig = SSLA.extraConfig;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:2283";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = ''
+              auth_request /authelia;
+              auth_request_set $target_url https://$http_host$request_uri;
+              auth_request_set $user $upstream_http_remote_user;
+              auth_request_set $groups $upstream_http_remote_groups;
+              auth_request_set $name $upstream_http_remote_name;
+              auth_request_set $email $upstream_http_remote_email;
+              proxy_set_header Remote-User $user;
+              proxy_set_header Remote-Groups $groups;
+              proxy_set_header Remote-Name $name;
+              proxy_set_header Remote-Email $email;
+              # The Authelia UI is at the normal Funnel origin. Do not send an
+              # unauthenticated request back to this protected port, or it loops.
+              error_page 401 =302 https://sankara.manticore-lenok.ts.net/?rd=$target_url;
+
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $http_host;
+              proxy_set_header X-Forwarded-Proto https;
+            '';
+          };
+        };
         "tmuxy-funnel.sankara.local" = {
           serverName = "sankara.manticore-lenok.ts.net";
           listen = [ { addr = "127.0.0.1"; port = 18090; } ];
@@ -438,7 +472,6 @@
           (funnelSubpath "audiobookshelf" 13378)
           (funnelSubpath "pdf" 8088)
           (funnelSubpath "mainsail" 8001)
-          (funnelSubpath "immich" 2283)
           (funnelSubpath "hass" 8123)
           (funnelSubpath "ocr" 5498)
           (funnelSubpathTarget "ember" "http://web:4311/" true)

@@ -27,7 +27,6 @@ in {
     ./newsboat.nix
     ./nnn/default.nix
     ./tmux.nix
-    ./llm-api.nix
     ./glow.nix
     ./ueberzugpp.nix
     ./fzf.nix

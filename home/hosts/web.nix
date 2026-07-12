@@ -1,6 +1,8 @@
 { inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
 
 let
+  piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
   audioSummaryPath = lib.makeBinPath [
@@ -57,6 +59,26 @@ in
     enable = true;
     intervalSeconds = 60;
     debounceSeconds = 1;
+  };
+
+  systemd.user.services.llm-api-daemon = {
+    Unit.Description = "Persistent subscription-backed LLM API daemon";
+    Service = {
+      Type = "simple";
+      ExecStart = "${lib.getExe pkgs.nodejs} /home/zarred/scripts/ai/llm-api-daemon.mjs";
+      Restart = "on-failure";
+      RestartSec = 1;
+      RuntimeDirectory = "llm-api";
+      RuntimeDirectoryMode = "0700";
+      Environment = [
+        "PI_CODING_AGENT_DIR=${config.xdg.configHome}/pi/agent"
+        "PI_SDK_PATH=${piSdkPath}"
+      ];
+      UMask = "0077";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+    };
+    Install.WantedBy = [ "default.target" ];
   };
 
   systemd.user.services.audio-summary-obsidian = {

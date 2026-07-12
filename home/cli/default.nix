@@ -135,7 +135,7 @@ in {
     # ai (CLI focus)
     # TODO: broken - pkgs-unstable.aider-chat # AI pair programming in your terminal
     pkgs-unstable.claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
-    pkgs.codex # Lightweight coding agent that runs in your terminal
+    pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama
     pkgs-unstable.gemini-cli
     emberPackage

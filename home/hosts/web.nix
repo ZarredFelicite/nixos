@@ -1,7 +1,9 @@
-{ inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, pkgs-unstable, lib, config, osConfig, ... }: # Added osConfig
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  ollamaCudaPackage = pkgs-unstable.ollama-cuda;
+  ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
@@ -75,6 +77,35 @@ in
         "PI_SDK_PATH=${piSdkPath}"
       ];
       UMask = "0077";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
+  systemd.user.services.gemma4-e4b-server = {
+    Unit.Description = "Low-latency Gemma 4 E4B QAT CUDA server";
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/ai/gemma4-e4b-server";
+      Restart = "on-failure";
+      RestartSec = 2;
+      TimeoutStartSec = 30;
+      Environment = [
+        "LLAMA_SERVER_BIN=${ollamaCudaLib}/llama-server"
+        "GGML_BACKEND_PATH=${ollamaCudaLib}/cuda_v12/libggml-cuda.so"
+        "LD_LIBRARY_PATH=${ollamaCudaLib}:${ollamaCudaLib}/cuda_v12"
+        "GEMMA4_MODEL=/home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf"
+        "GEMMA4_HOST=127.0.0.1"
+        "GEMMA4_PORT=8083"
+        "GEMMA4_DEVICE=CUDA0"
+        "GEMMA4_CONTEXT_SIZE=4096"
+        "GEMMA4_PARALLEL=1"
+        "GEMMA4_CHAT_TEMPLATE=chatml"
+        "GEMMA4_BATCH_SIZE=512"
+        "GEMMA4_UBATCH_SIZE=512"
+        "CUDA_VISIBLE_DEVICES=0"
+      ];
       NoNewPrivileges = true;
       PrivateTmp = true;
     };

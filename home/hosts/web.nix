@@ -245,15 +245,47 @@ in
   };
 
   systemd.user.services.crawl4ai-api = {
-    Unit.Description = "Crawl4AI FastAPI server";
-    Service.User = "zarred";
-    Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'env -u WAYLAND_DISPLAY -u HYPRLAND_INSTANCE_SIGNATURE XDG_SESSION_TYPE=x11 xvfb-run -a -s \"-screen 0 1920x1080x24\" uvicorn server:app --host 0.0.0.0 --port 11235'";
-    Service.Restart = "always";
-    Service.RestartSec = "5s";
-    Service.StartLimitIntervalSec = "0";
-    Service.WorkingDirectory = "/home/zarred/scripts/scrapers/crawl4ai";
+    Unit = {
+      Description = "Crawl4AI FastAPI server";
+      After = [ "graphical-session.target" ];
+      StartLimitIntervalSec = 0;
+    };
+    Service = {
+      User = "zarred";
+      ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/scrapers/crawl4ai/shell.nix --run 'env -u WAYLAND_DISPLAY -u HYPRLAND_INSTANCE_SIGNATURE XDG_SESSION_TYPE=x11 xvfb-run -a -s \"-screen 0 1920x1080x24\" uvicorn server:app --host 0.0.0.0 --port 11235'";
+      Restart = "always";
+      RestartSec = "5s";
+      RuntimeMaxSec = "6h";
+      TimeoutStopSec = "30s";
+      KillMode = "control-group";
+      MemoryMax = "3G";
+      MemorySwapMax = "1G";
+      WorkingDirectory = "/home/zarred/scripts/scrapers/crawl4ai";
+    };
     Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.crawl4ai-health-check = {
+    Unit.Description = "Restart Crawl4AI when its health endpoint is unavailable";
+    Service = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "crawl4ai-health-check" ''
+        if ! ${pkgs.curl}/bin/curl --fail --silent --show-error \
+          --connect-timeout 3 --max-time 10 http://127.0.0.1:11235/health >/dev/null; then
+          ${pkgs.systemd}/bin/systemctl --user restart crawl4ai-api.service
+        fi
+      '';
+    };
+  };
+
+  systemd.user.timers.crawl4ai-health-check = {
+    Unit.Description = "Check Crawl4AI health every two minutes";
+    Timer = {
+      OnBootSec = "2m";
+      OnUnitActiveSec = "2m";
+      Unit = "crawl4ai-health-check.service";
+    };
+    Install.WantedBy = [ "timers.target" ];
   };
 
   systemd.user.services.lwake-multi-listen = {

@@ -7,6 +7,35 @@ let
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
+  gemma4ModelsPreset = pkgs.writeText "gemma4-models.ini" ''
+    version = 1
+
+    [gemma4-e4b-it-qat]
+    model = /home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf
+    ctx-size = 65536
+    n-gpu-layers = 99
+    device = CUDA0
+    parallel = 1
+    reasoning = off
+    reasoning-format = none
+    flash-attn = auto
+    batch-size = 512
+    ubatch-size = 512
+    load-on-startup = false
+
+    [gemma4-12b-heretic]
+    model = /home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf
+    ctx-size = 32768
+    n-gpu-layers = 99
+    device = CUDA0
+    parallel = 1
+    reasoning = off
+    reasoning-format = deepseek
+    flash-attn = auto
+    batch-size = 512
+    ubatch-size = 512
+    load-on-startup = false
+  '';
   audioSummaryPath = lib.makeBinPath [
     audioSummaryPython
     pkgs.bash
@@ -84,27 +113,16 @@ in
   };
 
   systemd.user.services.gemma4-e4b-server = {
-    Unit.Description = "Low-latency Gemma 4 12B Heretic Q4_K_M CUDA server";
+    Unit.Description = "On-demand Gemma 4 CUDA model router";
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/ai/gemma4-e4b-server";
+      ExecStart = "${ollamaCudaLib}/llama-server --host 127.0.0.1 --port 8083 --no-webui --offline --models-preset ${gemma4ModelsPreset} --models-max 1 --models-autoload --metrics";
       Restart = "on-failure";
       RestartSec = 2;
       TimeoutStartSec = 30;
       Environment = [
-        "LLAMA_SERVER_BIN=${ollamaCudaLib}/llama-server"
         "GGML_BACKEND_PATH=${ollamaCudaLib}/cuda_v12/libggml-cuda.so"
         "LD_LIBRARY_PATH=${ollamaCudaLib}:${ollamaCudaLib}/cuda_v12"
-        "GEMMA4_MODEL=/home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf"
-        "GEMMA4_HOST=127.0.0.1"
-        "GEMMA4_PORT=8083"
-        "GEMMA4_DEVICE=CUDA0"
-        "GEMMA4_CONTEXT_SIZE=32768"
-        "GEMMA4_PARALLEL=1"
-        "GEMMA4_REASONING=off"
-        "GEMMA4_REASONING_FORMAT=deepseek"
-        "GEMMA4_BATCH_SIZE=512"
-        "GEMMA4_UBATCH_SIZE=512"
         "CUDA_VISIBLE_DEVICES=0"
       ];
       NoNewPrivileges = true;

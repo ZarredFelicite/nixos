@@ -84,7 +84,7 @@ in
   };
 
   systemd.user.services.gemma4-e4b-server = {
-    Unit.Description = "Low-latency Gemma 4 E4B QAT CUDA server";
+    Unit.Description = "Low-latency Gemma 4 12B Heretic Q4_K_M CUDA server";
     Service = {
       Type = "simple";
       ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/ai/gemma4-e4b-server";
@@ -95,14 +95,14 @@ in
         "LLAMA_SERVER_BIN=${ollamaCudaLib}/llama-server"
         "GGML_BACKEND_PATH=${ollamaCudaLib}/cuda_v12/libggml-cuda.so"
         "LD_LIBRARY_PATH=${ollamaCudaLib}:${ollamaCudaLib}/cuda_v12"
-        "GEMMA4_MODEL=/home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf"
+        "GEMMA4_MODEL=/home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf"
         "GEMMA4_HOST=127.0.0.1"
         "GEMMA4_PORT=8083"
         "GEMMA4_DEVICE=CUDA0"
-        "GEMMA4_CONTEXT_SIZE=65536"
+        "GEMMA4_CONTEXT_SIZE=32768"
         "GEMMA4_PARALLEL=1"
         "GEMMA4_REASONING=off"
-        "GEMMA4_REASONING_FORMAT=none"
+        "GEMMA4_REASONING_FORMAT=deepseek"
         "GEMMA4_BATCH_SIZE=512"
         "GEMMA4_UBATCH_SIZE=512"
         "CUDA_VISIBLE_DEVICES=0"

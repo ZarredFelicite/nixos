@@ -113,6 +113,27 @@ body,
   background-image: none !important;
 }
 
+/* Firefox-Mod-Blur's WebRender workaround establishes a filter layer on the
+ * content stack, allowing a chrome overlay to sample it as its backdrop. */
+.browserContainer .browserStack {
+  backdrop-filter: blur(0) !important;
+}
+
+#sidebar-main[data-gjoa-compact] {
+  background: transparent !important;
+}
+
+#sidebar-main[data-gjoa-compact]::before {
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  background: rgba(12, 14, 20, 0.30) !important;
+  backdrop-filter: blur(32px) saturate(140%) !important;
+}
+
 /* Web content and transparent internal pages retain an opaque backdrop. */
 #appcontent,
 #tabbrowser-tabpanels,
@@ -144,7 +165,7 @@ with zipfile.ZipFile(archive, "r") as source:
                 data += chrome_overrides
                 css_patches += 1
             elif entry.filename.endswith("defaults/preferences/firefox.js"):
-                data += b'\n// UI-only Linux transparency prerequisites.\npref("browser.tabs.inTitlebar", 1);\npref("gjoa.sidebar.compact", false);\n'
+                data += b'\n// UI-only Linux transparency prerequisites.\npref("browser.tabs.inTitlebar", 1);\npref("gjoa.sidebar.compact", true);\n'
                 preference_patches += 1
             target.writestr(entry, data)
 if uri_replacements != 1:

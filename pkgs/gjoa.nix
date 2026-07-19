@@ -89,6 +89,12 @@ chrome_overrides = b"""
   --tabpanel-background-color: transparent !important;
   --lwt-accent-color: transparent !important;
   --lwt-accent-color-inactive: transparent !important;
+  --inactive-titlebar-opacity: 1 !important;
+  --inactive-window-transition: 0s !important;
+}
+
+.browser-titlebar:-moz-window-inactive {
+  opacity: 1 !important;
 }
 
 /* Keep non-zero alpha on the top-level GTK/Wayland surface. Fully transparent

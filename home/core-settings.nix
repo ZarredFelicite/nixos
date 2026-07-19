@@ -21,6 +21,7 @@
       fd # A simple, fast and user-friendly alternative to find
       ripgrep # recursively searches directories for a regex pattern
       jq # A lightweight and flexible command-line JSON processor
+      (callPackage ../pkgs/usbeehive { }) # USB and USB-C capability diagnostics
     ];
   };
 

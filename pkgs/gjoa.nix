@@ -157,6 +157,7 @@ with zipfile.ZipFile(archive, "r") as source:
     os.close(fd)
     uri_replacements = 0
     sidebar_browser_replacements = 0
+    sidebar_focus_replacements = 0
     preference_patches = 0
     css_patches = 0
     with zipfile.ZipFile(patched, "w") as target:
@@ -166,6 +167,14 @@ with zipfile.ZipFile(archive, "r") as source:
                 old = b"resource:///modules/CustomizableUI.sys.mjs"
                 new = b"moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs"
                 uri_replacements += data.count(old)
+                data = data.replace(old, new)
+
+                # Gjoa checks inputs in the selected tab, but Firefox sidebars
+                # use a separate browser. Do not steal Vim-style letter keys
+                # while that browser owns focus.
+                old = b"(!contentFocus.contentInputFocused()) && (!current_host_blacklisted())"
+                new = old + b' && (!(a && (a.id === "sidebar")))'
+                sidebar_focus_replacements += data.count(old)
                 data = data.replace(old, new)
             elif entry.filename.endswith("browser/browser.xhtml"):
                 old = b'<browser id="sidebar" autoscroll="false"'
@@ -183,6 +192,8 @@ if uri_replacements != 1:
     raise SystemExit(f"expected one CustomizableUI URI, found {uri_replacements}")
 if sidebar_browser_replacements != 1:
     raise SystemExit(f"expected one sidebar browser element, found {sidebar_browser_replacements}")
+if sidebar_focus_replacements != 1:
+    raise SystemExit(f"expected one Gjoa sidebar focus guard, found {sidebar_focus_replacements}")
 if css_patches != 1:
     raise SystemExit(f"expected one Gjoa chrome stylesheet, found {css_patches}")
 if preference_patches != 1:

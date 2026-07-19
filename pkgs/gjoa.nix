@@ -158,6 +158,7 @@ with zipfile.ZipFile(archive, "r") as source:
     uri_replacements = 0
     sidebar_browser_replacements = 0
     sidebar_focus_replacements = 0
+    sidebar_shortcut_replacements = 0
     preference_patches = 0
     css_patches = 0
     with zipfile.ZipFile(patched, "w") as target:
@@ -175,6 +176,23 @@ with zipfile.ZipFile(archive, "r") as source:
                 old = b"(!contentFocus.contentInputFocused()) && (!current_host_blacklisted())"
                 new = old + b' && (!(a && (a.id === "sidebar")))'
                 sidebar_focus_replacements += data.count(old)
+                data = data.replace(old, new)
+            elif entry.filename.endswith("gjoa-drawer.uc.js"):
+                old = b'    const state = {urlbar_api: null};'
+                new = old + b"""
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey &&
+          e.key.toLowerCase() === "s" && compact.isCompactVertical()) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (sidebar_main.hasAttribute("gjoa-has-hover")) {
+          sidebar_main.dispatchEvent(new CustomEvent("gjoa-dismiss"));
+        } else {
+          compact.pinSidebar();
+        }
+      }
+    }, true);"""
+                sidebar_shortcut_replacements += data.count(old)
                 data = data.replace(old, new)
             elif entry.filename.endswith("browser/browser.xhtml"):
                 old = b'<browser id="sidebar" autoscroll="false"'
@@ -194,6 +212,8 @@ if sidebar_browser_replacements != 1:
     raise SystemExit(f"expected one sidebar browser element, found {sidebar_browser_replacements}")
 if sidebar_focus_replacements != 1:
     raise SystemExit(f"expected one Gjoa sidebar focus guard, found {sidebar_focus_replacements}")
+if sidebar_shortcut_replacements != 1:
+    raise SystemExit(f"expected one Gjoa drawer shortcut target, found {sidebar_shortcut_replacements}")
 if css_patches != 1:
     raise SystemExit(f"expected one Gjoa chrome stylesheet, found {css_patches}")
 if preference_patches != 1:

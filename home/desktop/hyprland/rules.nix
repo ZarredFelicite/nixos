@@ -40,9 +40,9 @@
     #windowrule = match:class ^(mpv)$, keepaspectratio on
     windowrule = match:class ^(mpv)$, match:float true, match:fullscreen false, no_blur on
     windowrule = match:class ^(firefox)$, suppress_event maximize
-    # Firefox's native alpha surface remains opaque on this Wayland stack, so
-    # apply compositor-level transparency to Gjoa while retaining Hyprland blur.
-    windowrule = match:class ^(gjoa-default)$, opacity 0.80 override 0.80 override 0.80 override
+    # A near-opaque multiplier activates Hyprland's blur pass without visibly
+    # fading webpages; Gjoa itself supplies per-pixel alpha only for its UI.
+    windowrule = match:class ^(gjoa-default)$, opacity 0.999 override 0.999 override 0.999 override
     windowrule = match:class ^(OrcaSlicer)$, suppress_event activatefocus
     windowrule = match:title ^(ripdrag)$, pin on
     windowrule = match:title ^(Enter name of file to save to…)$, match:class xdg-desktop-portal-gtk, size 60% 50%

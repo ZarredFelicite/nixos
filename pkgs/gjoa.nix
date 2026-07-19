@@ -71,9 +71,10 @@ stdenv.mkDerivation rec {
     # Patch release-bundle incompatibilities without rebuilding Firefox:
     # - Firefox 152 moved CustomizableUI to moz-src://.
     # - Gjoa registers its chrome CSS as an AGENT_SHEET, which overrides
-    #   userChrome.css and paints opaque surfaces. Append the Linux transparency
-    #   overrides at the same origin and make Gjoa's privileged new-tab page
-    #   transparent as well.
+    #   userChrome.css and paints opaque surfaces. Append UI-only Linux
+    #   transparency at the same origin while keeping the content viewport
+    #   opaque. The root/body alpha technique is adapted from WaveFox commit
+    #   cdb4d9ce857c3fe8e34c0958849216b76fd912c5.
     python3 - <<PY
 import os
 import tempfile
@@ -82,40 +83,45 @@ import zipfile
 archive = os.path.join("$out", "libexec", "gjoa", "browser", "omni.ja")
 chrome_overrides = b"""
 
-/* Nix package: transparent Linux/Wayland chrome for Latin Accent. */
+/* Nix package: WaveFox-derived per-pixel alpha for Linux/Wayland chrome. */
+:root,
+body,
+#main-window {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
 :root {
   --gjoa-bg: transparent !important;
   --toolbar-bgcolor: transparent !important;
-  --tabpanel-background-color: transparent !important;
   --lwt-accent-color: transparent !important;
   --lwt-accent-color-inactive: transparent !important;
   --toolbox-background-color-inactive: var(--toolbox-background-color) !important;
   --toolbox-text-color-inactive: var(--toolbox-text-color) !important;
 }
 
-/* Keep non-zero alpha on the top-level GTK/Wayland surface. Fully transparent
- * roots can be cleared through Firefox's opaque fallback instead. */
-#main-window {
-  background: #00000066 !important;
-  background-color: #00000066 !important;
-  background-image: none !important;
-}
-
-#browser,
-#appcontent,
+/* Only browser chrome is transparent. */
 #navigator-toolbox,
 #TabsToolbar,
 #nav-bar,
 #PersonalToolbar,
+#sidebar-main,
+#sidebar-box {
+  background: rgba(12, 14, 20, 0.30) !important;
+  background-color: rgba(12, 14, 20, 0.30) !important;
+  background-image: none !important;
+}
+
+/* Web content and transparent internal pages retain an opaque backdrop. */
+#appcontent,
 #tabbrowser-tabpanels,
 #tabbrowser-tabbox,
 #tabbrowser-tabpanels > .deck-selected,
-#sidebar-main,
-#sidebar-box,
 .browserContainer,
 .browserStack {
-  background: transparent !important;
-  background-color: transparent !important;
+  background: #1c1b22 !important;
+  background-color: #1c1b22 !important;
   background-image: none !important;
 }
 """
@@ -124,7 +130,7 @@ with zipfile.ZipFile(archive, "r") as source:
     fd, patched = tempfile.mkstemp(dir=os.path.dirname(archive))
     os.close(fd)
     uri_replacements = 0
-    newtab_replacements = 0
+    preference_patches = 0
     css_patches = 0
     with zipfile.ZipFile(patched, "w") as target:
         for entry in source.infolist():
@@ -137,17 +143,16 @@ with zipfile.ZipFile(archive, "r") as source:
             elif entry.filename.endswith("gjoa/styles/gjoa.uc.css"):
                 data += chrome_overrides
                 css_patches += 1
-            elif entry.filename.endswith("gjoa-newtab/newtab.html"):
-                old = b"--bg: #1c1b22;"
-                newtab_replacements += data.count(old)
-                data = data.replace(old, b"--bg: transparent;")
+            elif entry.filename.endswith("defaults/preferences/firefox.js"):
+                data += b'\n// UI-only Linux transparency prerequisites.\npref("browser.tabs.inTitlebar", 1);\npref("gjoa.sidebar.compact", false);\n'
+                preference_patches += 1
             target.writestr(entry, data)
 if uri_replacements != 1:
     raise SystemExit(f"expected one CustomizableUI URI, found {uri_replacements}")
 if css_patches != 1:
     raise SystemExit(f"expected one Gjoa chrome stylesheet, found {css_patches}")
-if newtab_replacements != 1:
-    raise SystemExit(f"expected one Gjoa new-tab background, found {newtab_replacements}")
+if preference_patches != 1:
+    raise SystemExit(f"expected one Firefox default preference file, found {preference_patches}")
 os.replace(patched, archive)
 PY
 

@@ -118,6 +118,14 @@ chrome_overrides = b"""
   background-color: transparent !important;
   background-image: none !important;
 }
+
+/* Give Gjoa's overlay drawers a tinted glass surface. The CSS backdrop filter
+ * blurs page content below the drawer; Hyprland handles desktop blur. */
+#sidebar-main,
+#sidebar-box {
+  background: rgba(12, 14, 20, 0.58) !important;
+  backdrop-filter: blur(24px) saturate(1.15) !important;
+}
 """
 
 with zipfile.ZipFile(archive, "r") as source:

@@ -158,10 +158,11 @@
       ];
     };
   };
+  # Keep the old Parakeet service available for manual use, but do not load its
+  # model at boot now that Nemotron 3.5 is the default STT backend.
   systemd.services.parakeet-devenv = {
     description = "Devenv service parakeet";
     after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       User = "zarred";
       Group = "users";

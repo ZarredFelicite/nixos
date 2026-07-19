@@ -84,7 +84,6 @@ chrome_overrides = b"""
 
 /* Nix package: transparent Linux/Wayland chrome for Latin Accent. */
 :root {
-  background: transparent !important;
   --gjoa-bg: transparent !important;
   --toolbar-bgcolor: transparent !important;
   --tabpanel-background-color: transparent !important;
@@ -92,7 +91,14 @@ chrome_overrides = b"""
   --lwt-accent-color-inactive: transparent !important;
 }
 
-#main-window,
+/* Keep non-zero alpha on the top-level GTK/Wayland surface. Fully transparent
+ * roots can be cleared through Firefox's opaque fallback instead. */
+#main-window {
+  background: #00000066 !important;
+  background-color: #00000066 !important;
+  background-image: none !important;
+}
+
 #browser,
 #appcontent,
 #navigator-toolbox,

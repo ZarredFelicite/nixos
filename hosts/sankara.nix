@@ -172,6 +172,25 @@
     };
   };
 
+  systemd.services.nemotron-asr = {
+    description = "Persistent Nemotron 3.5 streaming ASR service";
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    environment = {
+      HF_HOME = "/home/zarred/.cache/huggingface";
+      HF_HUB_DISABLE_XET = "1";
+      PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
+    };
+    serviceConfig = {
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
+      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python nemotron_stream_runner.py --listen 0.0.0.0:5002 --lookahead-tokens 0 --device auto --dtype auto'";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+
   systemd.services.ocr-server = {
     description = "OCR HTTP + MCP server";
     after = [ "network-online.target" ];

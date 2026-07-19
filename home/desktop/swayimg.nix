@@ -11,7 +11,7 @@
   };
   viewer = {
     window = "#00000000";
-    transparency = "grid";
+    transparency = "#00000000";
     scale = "optimal";
     position = "center";
     antialiasing = "mks13";

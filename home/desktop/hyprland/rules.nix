@@ -40,6 +40,9 @@
     #windowrule = match:class ^(mpv)$, keepaspectratio on
     windowrule = match:class ^(mpv)$, match:float true, match:fullscreen false, no_blur on
     windowrule = match:class ^(firefox)$, suppress_event maximize
+    # Force Hyprland to composite Gjoa's transparent Wayland surface instead of
+    # occlusion-culling it as opaque. 0.99 is the upstream-recommended workaround.
+    windowrule = match:class ^(gjoa-default)$, opacity 0.99 override 0.99 override 1.0 override
     windowrule = match:class ^(OrcaSlicer)$, suppress_event activatefocus
     windowrule = match:title ^(ripdrag)$, pin on
     windowrule = match:title ^(Enter name of file to save to…)$, match:class xdg-desktop-portal-gtk, size 60% 50%

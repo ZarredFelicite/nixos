@@ -134,8 +134,13 @@ body,
   backdrop-filter: blur(32px) saturate(140%) !important;
 }
 
+/* Firefox's classic chatbot uses an opaque remote page canvas. Blend only
+ * that sidebar browser over the transparent backing; normal tabs stay opaque. */
+#sidebar-box[sidebarcommand="viewGenaiChatSidebar"] #sidebar {
+  opacity: 0.65 !important;
+}
+
 /* Web content and transparent internal pages retain an opaque backdrop. */
-#appcontent,
 #tabbrowser-tabpanels,
 #tabbrowser-tabbox,
 #tabbrowser-tabpanels > .deck-selected,
@@ -151,6 +156,7 @@ with zipfile.ZipFile(archive, "r") as source:
     fd, patched = tempfile.mkstemp(dir=os.path.dirname(archive))
     os.close(fd)
     uri_replacements = 0
+    sidebar_browser_replacements = 0
     preference_patches = 0
     css_patches = 0
     with zipfile.ZipFile(patched, "w") as target:
@@ -161,15 +167,22 @@ with zipfile.ZipFile(archive, "r") as source:
                 new = b"moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs"
                 uri_replacements += data.count(old)
                 data = data.replace(old, new)
+            elif entry.filename.endswith("browser/browser.xhtml"):
+                old = b'<browser id="sidebar" autoscroll="false"'
+                new = b'<browser id="sidebar" transparent="true" autoscroll="false"'
+                sidebar_browser_replacements += data.count(old)
+                data = data.replace(old, new)
             elif entry.filename.endswith("gjoa/styles/gjoa.uc.css"):
                 data += chrome_overrides
                 css_patches += 1
             elif entry.filename.endswith("defaults/preferences/firefox.js"):
-                data += b'\n// UI-only Linux transparency prerequisites.\npref("browser.tabs.inTitlebar", 1);\npref("gjoa.sidebar.compact", true);\n'
+                data += b'\n// UI-only Linux transparency prerequisites.\npref("browser.tabs.allow_transparent_browser", true);\npref("browser.tabs.inTitlebar", 1);\npref("gjoa.sidebar.compact", true);\n'
                 preference_patches += 1
             target.writestr(entry, data)
 if uri_replacements != 1:
     raise SystemExit(f"expected one CustomizableUI URI, found {uri_replacements}")
+if sidebar_browser_replacements != 1:
+    raise SystemExit(f"expected one sidebar browser element, found {sidebar_browser_replacements}")
 if css_patches != 1:
     raise SystemExit(f"expected one Gjoa chrome stylesheet, found {css_patches}")
 if preference_patches != 1:

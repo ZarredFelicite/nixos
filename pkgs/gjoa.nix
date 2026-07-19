@@ -4,6 +4,7 @@
 , makeWrapper
 , copyDesktopItems
 , makeDesktopItem
+, python3
 , alsa-lib
 , atk
 , cairo
@@ -40,7 +41,7 @@ stdenv.mkDerivation rec {
 
   sourceRoot = "gjoa";
 
-  nativeBuildInputs = [ makeWrapper copyDesktopItems ];
+  nativeBuildInputs = [ makeWrapper copyDesktopItems python3 ];
 
   desktopItems = [
     (makeDesktopItem {
@@ -66,6 +67,34 @@ stdenv.mkDerivation rec {
 
     mkdir -p "$out/libexec/gjoa"
     cp -r ./. "$out/libexec/gjoa/"
+
+    # Firefox 152 exposes CustomizableUI through moz-src:// rather than the
+    # older resource:///modules/ alias used by the v0.4.0 release bundle.
+    # Patch the bundled toolbar migration without rebuilding Firefox.
+    python3 - <<PY
+import os
+import tempfile
+import zipfile
+
+archive = os.path.join("$out", "libexec", "gjoa", "browser", "omni.ja")
+with zipfile.ZipFile(archive, "r") as source:
+    fd, patched = tempfile.mkstemp(dir=os.path.dirname(archive))
+    os.close(fd)
+    replacements = 0
+    with zipfile.ZipFile(patched, "w") as target:
+        for entry in source.infolist():
+            data = source.read(entry.filename)
+            if entry.filename.endswith("gjoa-tabs.uc.js"):
+                old = b"resource:///modules/CustomizableUI.sys.mjs"
+                new = b"moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs"
+                replacements += data.count(old)
+                data = data.replace(old, new)
+            target.writestr(entry, data)
+if replacements != 1:
+    raise SystemExit(f"expected one CustomizableUI URI, found {replacements}")
+os.replace(patched, archive)
+PY
+
     chmod +x "$out/libexec/gjoa/gjoa" "$out/libexec/gjoa/gjoa-bin"
 
     mkdir -p "$out/bin"

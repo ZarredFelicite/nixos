@@ -290,15 +290,21 @@ in
   };
 
   systemd.user.services.lwake-multi-listen = {
-    Unit.Description = "Listen for local wake words and trigger phrase actions";
-    Unit.After = [ "graphical-session.target" ];
+    Unit = {
+      Description = "Listen for local wake words and trigger phrase actions";
+      After = [ "graphical-session.target" ];
+      StartLimitIntervalSec = 0;
+    };
     Install.WantedBy = [ "graphical-session.target" ];
 
     Service = {
       ExecStart = "/home/zarred/scripts/stt/lwake-multi-listen.sh /home/zarred/audio/wake-words";
       Restart = "always";
       RestartSec = "2s";
-      StartLimitIntervalSec = "0";
+      OOMPolicy = "kill";
+      MemoryHigh = "1800M";
+      MemoryMax = "2G";
+      MemorySwapMax = "512M";
     };
   };
 

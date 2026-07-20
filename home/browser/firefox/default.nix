@@ -25,7 +25,7 @@ let
     user_pref("sidebar.revamp", true);
     user_pref("sidebar.verticalTabs", true);
     user_pref("sidebar.expandOnHover", true);
-    user_pref("sidebar.visibility", "expand-on-hover");
+    user_pref("sidebar.visibility", "always-show");
     user_pref("ultima.tabs.tabbar.autohide", false);
     user_pref("ultima.tabs.tabbar.autohide+compact", false);
     user_pref("ultima.tabs.tabbar.hide.buttonstrip", true);
@@ -40,8 +40,8 @@ let
     user_pref("ultima.navbar.float.fullsize", false);
     user_pref("ultima.navbar.hide.buttons", true);
     user_pref("ultima.navbar.bookmarks.autohide", true);
-    user_pref("ultima.urlbar.transparent", true);
-    user_pref("ultima.urlbar.float", true);
+    user_pref("ultima.urlbar.transparent", false);
+    user_pref("ultima.urlbar.float", false);
     user_pref("ultima.urlbar.animate.open", false);
     user_pref("ultima.urlbar.hide.buttons", true);
     user_pref("ultima.urlbar.hide.searchsuggestions", true);
@@ -106,6 +106,35 @@ let
       display: none !important;
     }
 
+    /* FF Ultima checks Firefox's old empty focused attribute. Firefox 152 uses
+     * focused="true", so reveal the toolbar and keep the input above results. */
+    #main-window:has(#urlbar[focused="true"], #urlbar[open]) #navigator-toolbox {
+      top: 14px !important;
+    }
+
+    #main-window:has(#urlbar[focused="true"], #urlbar[open]) #urlbar[open] .urlbarView {
+      margin-top: calc(var(--urlbar-min-height) + 38px) !important;
+    }
+
+    #main-window:has(#urlbar[focused="true"], #urlbar[open]) #urlbar .urlbar-input-container {
+      position: fixed !important;
+      z-index: 100 !important;
+      top: 20px !important;
+      left: 50% !important;
+      width: min(520px, 46vw) !important;
+      min-height: var(--urlbar-min-height) !important;
+      transform: translateX(-50%) !important;
+      background: rgba(13, 27, 46, 0.92) !important;
+      border: 1px solid rgba(151, 205, 235, 0.14) !important;
+      border-radius: 11px !important;
+    }
+
+    #main-window:has(#urlbar[focused="true"], #urlbar[open]) #urlbar-input {
+      display: block !important;
+      opacity: 1 !important;
+      color: white !important;
+    }
+
     :root {
       --sidebar-launcher-collapsed-width: 44px !important;
       --tab-collapsed-background-width: 32px !important;
@@ -134,6 +163,44 @@ let
       background: rgba(8, 18, 32, 0.62) !important;
       box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38) !important;
       backdrop-filter: blur(32px) saturate(140%) !important;
+    }
+
+    /* Keep a reliable trigger rail on Wayland and expand it from hovered tab
+     * descendants; #sidebar-main:hover itself is not updated consistently. */
+    #main-window #sidebar-main:not(:has(.tabbrowser-tab:hover, #vertical-tabs-newtab-button:hover, .tools-and-extensions:hover)) {
+      width: 44px !important;
+      min-width: 44px !important;
+    }
+
+    #main-window #sidebar-main:has(.tabbrowser-tab:hover, #vertical-tabs-newtab-button:hover, .tools-and-extensions:hover) {
+      width: 285px !important;
+      min-width: 285px !important;
+      margin: 10px !important;
+      max-height: calc(100vh - 20px) !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(151, 205, 235, 0.12) !important;
+      border-radius: 16px !important;
+      background: rgba(8, 18, 32, 0.62) !important;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38) !important;
+      backdrop-filter: blur(32px) saturate(140%) !important;
+
+      #tabbrowser-tabs[orient="vertical"] {
+        --tab-inline-padding: 12px !important;
+      }
+
+      .tabbrowser-tab {
+        width: auto !important;
+        max-width: none !important;
+      }
+
+      .tab-background {
+        width: auto !important;
+      }
+
+      .tab-label-container,
+      #vertical-tabs-newtab-button .toolbarbutton-text {
+        display: flex !important;
+      }
     }
   '';
   ultima-content-css = ''

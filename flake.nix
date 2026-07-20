@@ -5,6 +5,10 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";
     nixpkgs-brave-origin.url = "github:Daniel-42-z/brave-origin-flake/bbe5b55e46d3f842ef52a2db961eb0244ec2cbd4";
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };

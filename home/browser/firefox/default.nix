@@ -9,6 +9,12 @@ let
       url = "https://github.com/Tagggar/Firefox-Alpha";
       rev = "78bf9a9ea57538b0a58212731e81dea80d490105"; # NOTE: UPDATE
     } + "/chrome/userChrome.css" );
+  ff-ultima = pkgs.fetchFromGitHub {
+    owner = "soulhotel";
+    repo = "FF-ULTIMA";
+    rev = "d5ce77f5948db13393939208757d08ae1fc4fb90";
+    hash = "sha256-Cua5pPq55cTo7OSITUzPWpweZ5pqmSQ5DEsm1hQ/fuQ=";
+  };
 in {
   imports = [
     ./tridactyl.nix
@@ -93,7 +99,24 @@ in {
           "browser.urlbar.clickSelectsAll" = true;
         };
       };
+      ultima = {
+        id = 4;
+        bookmarks = {};
+        userChrome = builtins.readFile "${ff-ultima}/userChrome.css";
+        userContent = builtins.readFile "${ff-ultima}/userContent.css";
+        extraConfig = builtins.readFile "${ff-ultima}/user.js";
+      };
     };
+  };
+  home.file.".mozilla/firefox/ultima/chrome/theme".source = "${ff-ultima}/theme";
+  xdg.desktopEntries.firefox-ultima = {
+    name = "Firefox Ultima";
+    comment = "Firefox with the FF Ultima theme";
+    icon = "firefox";
+    exec = "firefox --no-remote -P ultima %U";
+    terminal = false;
+    categories = [ "Network" "WebBrowser" ];
+    mimeType = [ "text/html" "text/xml" "application/xhtml+xml" "x-scheme-handler/http" "x-scheme-handler/https" ];
   };
   home.packages = with pkgs; [
     buku # Private cmdline bookmark manager

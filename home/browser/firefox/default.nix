@@ -24,9 +24,11 @@ let
 
     user_pref("sidebar.revamp", true);
     user_pref("sidebar.verticalTabs", true);
-    user_pref("sidebar.expandOnHover", true);
+    # Ultima's vertical-tab autohide requires Firefox's native
+    # expand-on-hover behavior to be disabled.
+    user_pref("sidebar.expandOnHover", false);
     user_pref("sidebar.visibility", "always-show");
-    user_pref("ultima.tabs.tabbar.autohide", false);
+    user_pref("ultima.tabs.tabbar.autohide", true);
     user_pref("ultima.tabs.tabbar.autohide+compact", false);
     user_pref("ultima.tabs.tabbar.hide.buttonstrip", true);
     user_pref("ultima.tabs.disable.scrollbar", true);

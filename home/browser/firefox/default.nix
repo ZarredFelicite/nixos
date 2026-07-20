@@ -24,10 +24,10 @@ let
 
     user_pref("sidebar.revamp", true);
     user_pref("sidebar.verticalTabs", true);
-    user_pref("sidebar.expandOnHover", false);
-    user_pref("sidebar.visibility", "always-show");
-    user_pref("ultima.tabs.tabbar.autohide", true);
-    user_pref("ultima.tabs.tabbar.autohide+compact", true);
+    user_pref("sidebar.expandOnHover", true);
+    user_pref("sidebar.visibility", "expand-on-hover");
+    user_pref("ultima.tabs.tabbar.autohide", false);
+    user_pref("ultima.tabs.tabbar.autohide+compact", false);
     user_pref("ultima.tabs.tabbar.hide.buttonstrip", true);
     user_pref("ultima.tabs.disable.scrollbar", true);
     user_pref("ultima.tabs.pinned.transparent.background", true);
@@ -99,6 +99,57 @@ let
         overflow: hidden !important;
         border: 1px solid rgba(151, 205, 235, 0.10) !important;
         box-shadow: 0 12px 38px rgba(0, 0, 0, 0.26) !important;
+      }
+    }
+
+    #PersonalToolbar {
+      display: none !important;
+    }
+
+    :root {
+      --sidebar-launcher-collapsed-width: 44px !important;
+      --tab-collapsed-background-width: 32px !important;
+    }
+
+    #main-window[sidebar-expand-on-hover=""] #sidebar-main:not(:has(#tabbrowser-tabs[expanded])) :is(
+      #tabs-newtab-button,
+      #vertical-tabs-newtab-button,
+      .tools-and-extensions.actions-list
+    ) {
+      opacity: 0 !important;
+    }
+
+    .tools-and-extensions.actions-list moz-button[view="viewCustomizeSidebar"] {
+      display: none !important;
+    }
+
+    #main-window[sidebar-expand-on-hover=""] #sidebar-main:has(#tabbrowser-tabs[expanded]) {
+      width: 285px !important;
+      min-width: 285px !important;
+      margin: 10px !important;
+      max-height: calc(100vh - 20px) !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(151, 205, 235, 0.12) !important;
+      border-radius: 16px !important;
+      background: rgba(8, 18, 32, 0.62) !important;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38) !important;
+      backdrop-filter: blur(32px) saturate(140%) !important;
+    }
+  '';
+  ultima-content-css = ''
+    @-moz-document url-prefix("about:newtab"), url-prefix("about:home"), url("about:blank") {
+      :root {
+        --uc-browser-color: rgba(5, 12, 23, 0.52) !important;
+        --newtab-background-color: rgba(5, 12, 23, 0.52) !important;
+      }
+
+      body {
+        background-color: rgba(5, 12, 23, 0.52) !important;
+      }
+
+      .logo-and-wordmark,
+      .personalize-button {
+        display: none !important;
       }
     }
   '';
@@ -190,7 +241,7 @@ in {
         id = 4;
         bookmarks = {};
         userChrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-glass-css;
-        userContent = builtins.readFile "${ff-ultima}/userContent.css";
+        userContent = builtins.readFile "${ff-ultima}/userContent.css" + ultima-content-css;
         extraConfig = builtins.readFile "${ff-ultima}/user.js" + ultima-prefs;
       };
     };

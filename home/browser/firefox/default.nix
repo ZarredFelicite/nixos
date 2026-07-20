@@ -29,7 +29,7 @@ let
     user_pref("sidebar.expandOnHover", false);
     user_pref("sidebar.visibility", "always-show");
     user_pref("ultima.tabs.tabbar.autohide", true);
-    user_pref("ultima.tabs.tabbar.autohide+compact", false);
+    user_pref("ultima.tabs.tabbar.autohide+compact", true);
     user_pref("ultima.tabs.tabbar.hide.buttonstrip", true);
     user_pref("ultima.tabs.disable.scrollbar", true);
     user_pref("ultima.tabs.pinned.transparent.background", true);

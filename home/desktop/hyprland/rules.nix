@@ -39,10 +39,10 @@
     windowrule = match:title ^(Hyprland Polkit Agent)$, stay_focused on
     #windowrule = match:class ^(mpv)$, keepaspectratio on
     windowrule = match:class ^(mpv)$, match:float true, match:fullscreen false, no_blur on
-    windowrule = match:class ^(firefox)$, suppress_event maximize
+    windowrule = match:class ^(firefox|firefox-ultima)$, suppress_event maximize
     # A near-opaque multiplier activates Hyprland's blur pass without visibly
-    # fading webpages; Gjoa itself supplies per-pixel alpha only for its UI.
-    windowrule = match:class ^(gjoa-default)$, opacity 0.999 override 0.999 override 0.999 override
+    # fading webpages; each browser supplies per-pixel alpha only for its UI.
+    windowrule = match:class ^(gjoa-default|firefox-ultima)$, opacity 0.999 override 0.999 override 0.999 override
     windowrule = match:class ^(OrcaSlicer)$, suppress_event activatefocus
     windowrule = match:title ^(ripdrag)$, pin on
     windowrule = match:title ^(Enter name of file to save to…)$, match:class xdg-desktop-portal-gtk, size 60% 50%

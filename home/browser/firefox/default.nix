@@ -15,6 +15,93 @@ let
     rev = "d5ce77f5948db13393939208757d08ae1fc4fb90";
     hash = "sha256-Cua5pPq55cTo7OSITUzPWpweZ5pqmSQ5DEsm1hQ/fuQ=";
   };
+  ultima-prefs = ''
+    // Zarred's minimal dark glass configuration. These follow upstream's
+    // documented about:config settings and intentionally override user.js.
+    user_pref("user.theme.0.default", false);
+    user_pref("user.theme.transparent", true);
+    user_pref("browser.tabs.allow_transparent_browser", true);
+
+    user_pref("sidebar.revamp", true);
+    user_pref("sidebar.verticalTabs", true);
+    user_pref("sidebar.expandOnHover", false);
+    user_pref("sidebar.visibility", "always-show");
+    user_pref("ultima.tabs.tabbar.autohide", true);
+    user_pref("ultima.tabs.tabbar.autohide+compact", true);
+    user_pref("ultima.tabs.tabbar.hide.buttonstrip", true);
+    user_pref("ultima.tabs.disable.scrollbar", true);
+    user_pref("ultima.tabs.pinned.transparent.background", true);
+    user_pref("ultima.tabs.tabCounter", false);
+    user_pref("ultima.tabs.not.a.progress.bar", false);
+    user_pref("ultima.sidebar.hide.header", true);
+
+    user_pref("ultima.navbar.autohide", false);
+    user_pref("ultima.navbar.float", true);
+    user_pref("ultima.navbar.float.fullsize", false);
+    user_pref("ultima.navbar.hide.buttons", true);
+    user_pref("ultima.navbar.bookmarks.autohide", true);
+    user_pref("ultima.urlbar.transparent", true);
+    user_pref("ultima.urlbar.float", true);
+    user_pref("ultima.urlbar.animate.open", false);
+    user_pref("ultima.urlbar.hide.buttons", true);
+    user_pref("ultima.urlbar.hide.searchsuggestions", true);
+    user_pref("ultima.urlbar.focus.blur", true);
+    user_pref("ultima.urlbar.focus.blur.all", false);
+
+    user_pref("ultima.spacing.compact", false);
+    user_pref("ultima.spacing.relaxed", false);
+    user_pref("ultima.spacing.compact.contextmenu", true);
+    user_pref("ultima.contextmenu.reduce.options", true);
+    user_pref("ultima.navbar.theme.extensionspanel", true);
+    user_pref("ultima.xstyle.private", true);
+    user_pref("user.theme.xtension.newtab.rounded", true);
+    user_pref("user.theme.xtension.newtab.compact", true);
+
+    user_pref("browser.newtabpage.activity-stream.showSearch", false);
+    user_pref("browser.newtabpage.activity-stream.feeds.topsites", false);
+    user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
+    user_pref("browser.newtabpage.activity-stream.showSponsored", false);
+    user_pref("browser.newtabpage.activity-stream.showSponsoredTopSites", false);
+    user_pref("browser.newtabpage.activity-stream.showWeather", false);
+    user_pref("browser.newtabpage.activity-stream.newtabWallpapers.customWallpaper.enabled", false);
+    user_pref("browser.tabs.hoverPreview.enabled", false);
+  '';
+  ultima-glass-css = ''
+    /* Dark navy glass overrides layered on FF Ultima's transparent scheme. */
+    @media -moz-pref("user.theme.transparent") {
+      :root {
+        --uc-browser-color: rgba(5, 11, 21, 0.24) !important;
+        --uc-layered-background: rgba(9, 20, 36, 0.48) !important;
+        --uc-blur-layer: rgba(8, 18, 33, 0.34) !important;
+        --uc-navbar-background: rgba(8, 17, 31, 0.54) !important;
+        --uc-urlbar-background: rgba(13, 27, 46, 0.62) !important;
+        --uc-sidebar-background: rgba(8, 18, 32, 0.58) !important;
+        --uc-tab-selected: rgba(43, 74, 104, 0.58) !important;
+        --uc-button-selected: rgba(45, 78, 108, 0.64) !important;
+        --uc-panel-background: rgba(7, 15, 28, 0.90) !important;
+        --uc-panel-border: rgba(151, 205, 235, 0.14) !important;
+        --uc-accent-color-1: #9bd9f4 !important;
+        --uc-accent-color-2: #527fa5 !important;
+        --uc-accent-color-5: #a8def5 !important;
+        --uc-all-border-radius: 16px !important;
+        --uc-content-border-radius: 16px !important;
+        --uc-sidebar-border-radius: 16px !important;
+        --uc-button-border-radius: 11px !important;
+        --uc-box-shadow: 0 16px 44px rgba(0, 0, 0, 0.34) !important;
+        --uc-box-shadow-panel: 0 20px 54px rgba(0, 0, 0, 0.46) !important;
+      }
+
+      #main-window:not([lwtheme]) :is(#navigator-toolbox, #sidebar-main, #sidebar-box) {
+        backdrop-filter: blur(32px) saturate(140%) !important;
+      }
+
+      #main-window:not([lwtheme]) #tabbrowser-tabbox {
+        overflow: hidden !important;
+        border: 1px solid rgba(151, 205, 235, 0.10) !important;
+        box-shadow: 0 12px 38px rgba(0, 0, 0, 0.26) !important;
+      }
+    }
+  '';
 in {
   imports = [
     ./tridactyl.nix
@@ -102,9 +189,9 @@ in {
       ultima = {
         id = 4;
         bookmarks = {};
-        userChrome = builtins.readFile "${ff-ultima}/userChrome.css";
+        userChrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-glass-css;
         userContent = builtins.readFile "${ff-ultima}/userContent.css";
-        extraConfig = builtins.readFile "${ff-ultima}/user.js";
+        extraConfig = builtins.readFile "${ff-ultima}/user.js" + ultima-prefs;
       };
     };
   };
@@ -113,7 +200,7 @@ in {
     name = "Firefox Ultima";
     comment = "Firefox with the FF Ultima theme";
     icon = "firefox";
-    exec = "firefox --no-remote -P ultima %U";
+    exec = "firefox --name firefox-ultima --no-remote -P ultima %U";
     terminal = false;
     categories = [ "Network" "WebBrowser" ];
     mimeType = [ "text/html" "text/xml" "application/xhtml+xml" "x-scheme-handler/http" "x-scheme-handler/https" ];

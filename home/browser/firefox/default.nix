@@ -307,8 +307,10 @@ in {
       ultima = {
         id = 4;
         bookmarks = {};
-        userChrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-glass-css;
-        userContent = builtins.readFile "${ff-ultima}/userContent.css" + ultima-content-css;
+        # Use only FF Ultima's supplied styles. The previous custom overrides
+        # are preserved by Git tag backup/ultima-custom-2026-07-20.
+        userChrome = builtins.readFile "${ff-ultima}/userChrome.css";
+        userContent = builtins.readFile "${ff-ultima}/userContent.css";
         extraConfig = builtins.readFile "${ff-ultima}/user.js" + ultima-prefs;
       };
     };

@@ -233,6 +233,10 @@ let
         width: 40px !important;
         min-width: 40px !important;
         opacity: 0 !important;
+        transition:
+          width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+          min-width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 120ms ease 100ms !important;
       }
 
       #main-window:not([sidebar-expand-on-hover=""]) #sidebar-main:has(
@@ -243,6 +247,10 @@ let
         width: 340px !important;
         min-width: 340px !important;
         opacity: 1 !important;
+        transition:
+          width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+          min-width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 100ms ease !important;
       }
     }
   '';

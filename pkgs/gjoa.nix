@@ -181,8 +181,8 @@ with zipfile.ZipFile(archive, "r") as source:
                 old = b'    const state = {urlbar_api: null};'
                 new = old + b"""
     document.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey &&
-          e.key.toLowerCase() === "s" && compact.isCompactVertical()) {
+      if (e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey &&
+          e.code === "Space" && compact.isCompactVertical()) {
         e.preventDefault();
         e.stopImmediatePropagation();
         if (sidebar_main.hasAttribute("gjoa-has-hover")) {

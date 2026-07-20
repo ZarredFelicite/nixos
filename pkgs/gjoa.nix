@@ -130,8 +130,89 @@ body,
   inset: 0 !important;
   z-index: -1 !important;
   pointer-events: none !important;
-  background: rgba(12, 14, 20, 0.30) !important;
+  background: rgba(12, 14, 20, 0.46) !important;
   backdrop-filter: blur(32px) saturate(140%) !important;
+  border-radius: inherit !important;
+}
+
+/* Detached glass panels matching Gjoa's reference composition. Keep the
+ * compact drawer off-canvas until invoked, but give it an inset card shape. */
+:root {
+  --gjoa-panel-gap: 10px;
+  --gjoa-panel-radius: 16px;
+  --gjoa-sidebar-inset: 14px !important;
+}
+
+#sidebar-main[data-gjoa-compact] {
+  top: var(--gjoa-panel-gap) !important;
+  width: 285px !important;
+  min-width: 285px !important;
+  max-width: 285px !important;
+  height: calc(100vh - (2 * var(--gjoa-panel-gap))) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: var(--gjoa-panel-radius) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.34) !important;
+}
+
+@media -moz-pref("sidebar.position_start") {
+  #sidebar-main[data-gjoa-compact] {
+    left: var(--gjoa-panel-gap) !important;
+    right: auto !important;
+    transform: translateX(calc(-100% - var(--gjoa-panel-gap))) !important;
+  }
+}
+
+@media not -moz-pref("sidebar.position_start") {
+  #sidebar-main[data-gjoa-compact] {
+    left: auto !important;
+    right: var(--gjoa-panel-gap) !important;
+    transform: translateX(calc(100% + var(--gjoa-panel-gap))) !important;
+  }
+}
+
+#sidebar-main[data-gjoa-compact][gjoa-has-hover] {
+  transform: translateX(0) !important;
+}
+
+/* In persistent expanded mode the sidebar participates in layout, so margins
+ * create the matching detached card without changing compact slide-over flow. */
+#sidebar-main:not([data-gjoa-compact]) {
+  margin-block: var(--gjoa-panel-gap) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background: rgba(12, 14, 20, 0.46) !important;
+  backdrop-filter: blur(32px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: var(--gjoa-panel-radius) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.34) !important;
+}
+
+@media -moz-pref("sidebar.position_start") {
+  #sidebar-main:not([data-gjoa-compact]) {
+    margin-inline-start: var(--gjoa-panel-gap) !important;
+  }
+}
+
+@media not -moz-pref("sidebar.position_start") {
+  #sidebar-main:not([data-gjoa-compact]) {
+    margin-inline-end: var(--gjoa-panel-gap) !important;
+  }
+}
+
+#sidebar-main[data-gjoa-compact] :is(#navigator-toolbox, #nav-bar, #TabsToolbar, #PersonalToolbar),
+#sidebar-main:not([data-gjoa-compact]) :is(#navigator-toolbox, #nav-bar, #TabsToolbar, #PersonalToolbar) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+#sidebar-main:not([data-gjoa-compact]) ~ #tabbrowser-tabbox {
+  margin: var(--gjoa-panel-gap) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--gjoa-panel-radius) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24) !important;
 }
 
 /* Firefox's classic chatbot uses an opaque remote page canvas. Blend only

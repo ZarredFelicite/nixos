@@ -222,6 +222,15 @@ let
       }
     }
   '';
+  ultima-autohide-hitbox-css = ''
+    /* FF Ultima uses 3px here, which is hidden behind Hyprland's border. */
+    @media -moz-pref("ultima.tabs.tabbar.autohide") {
+      #main-window:not([sidebar-expand-on-hover=""]) #sidebar-main:not(:hover) {
+        width: 12px !important;
+        min-width: 12px !important;
+      }
+    }
+  '';
 in {
   imports = [
     ./tridactyl.nix
@@ -309,9 +318,9 @@ in {
       ultima = {
         id = 4;
         bookmarks = {};
-        # Use only FF Ultima's supplied styles. The previous custom overrides
-        # are preserved by Git tag backup/ultima-custom-2026-07-20.
-        userChrome = builtins.readFile "${ff-ultima}/userChrome.css";
+        # Keep upstream styling except for a wider Wayland-compatible autohide
+        # target. Previous custom styling is preserved by the backup tag.
+        userChrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-autohide-hitbox-css;
         userContent = builtins.readFile "${ff-ultima}/userContent.css";
         extraConfig = builtins.readFile "${ff-ultima}/user.js" + ultima-prefs;
       };

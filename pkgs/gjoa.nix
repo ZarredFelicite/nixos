@@ -215,6 +215,34 @@ body,
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24) !important;
 }
 
+/* The secondary Firefox sidebar (history, bookmarks, AI) is a sibling of the
+ * tabbox, not part of it. Give it its own panel and gap in expanded mode. */
+#sidebar-main:not([data-gjoa-compact]) ~ #sidebar-box:not([hidden]) {
+  margin-block: var(--gjoa-panel-gap) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background: rgba(12, 14, 20, 0.46) !important;
+  backdrop-filter: blur(32px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: var(--gjoa-panel-radius) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24) !important;
+}
+
+#sidebar-main:not([data-gjoa-compact]) ~ #sidebar-box:not([sidebar-positionend]):not([hidden]) {
+  margin-inline-start: var(--gjoa-panel-gap) !important;
+}
+
+#sidebar-main:not([data-gjoa-compact]) ~ #sidebar-box[sidebar-positionend]:not([hidden]) {
+  margin-inline-end: var(--gjoa-panel-gap) !important;
+}
+
+/* Clip the actual site viewport too; rounding only the outer tabbox leaves the
+ * inner content's top-left corner square when a secondary sidebar is open. */
+#sidebar-main:not([data-gjoa-compact]) ~ #tabbrowser-tabbox :is(#appcontent, #tabbrowser-tabpanels) {
+  overflow: hidden !important;
+  border-radius: var(--gjoa-panel-radius) !important;
+}
+
 /* Firefox's classic chatbot uses an opaque remote page canvas. Blend only
  * that sidebar browser over the transparent backing; normal tabs stay opaque. */
 #sidebar-box[sidebarcommand="viewGenaiChatSidebar"] #sidebar {

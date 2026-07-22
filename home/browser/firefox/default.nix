@@ -254,6 +254,25 @@ let
       }
     }
   '';
+  ultima-user-chrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-hover-rail-css;
+  ultima-user-content = builtins.readFile "${ff-ultima}/userContent.css";
+  ultima-ui-prefs = builtins.readFile ./ultima-ui/ui-prefs.js;
+  primary-extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+    ublock-origin
+    darkreader
+    redirector
+    firemonkey
+    tridactyl
+    videospeed
+    adaptive-tab-bar-colour
+    imagus
+    fx_cast
+    rsspreview
+    promnesia
+    steam-database
+    stylus
+    simple-tab-groups
+  ];
 in {
   imports = [
     ./tridactyl.nix
@@ -283,33 +302,7 @@ in {
         #bookmarks = import ./bookmarks.nix ;
         bookmarks = {};
         userChrome = (onebar-css + builtins.readFile ./firefox_css.css);
-        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-          # INFO: bypass-paywalls-clean removed?
-          #bpc-pkg = bypass-paywalls-clean.override rec {
-          #  version = "4.0.7.0";
-          #  url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/?file=bypass_paywalls_clean-${version}.xpi&branch=main";
-          #  sha256 = "sha256-c9IWMgkpk21nItNpdscs+aCEzmvlrFSNeFr3MepV/c8="; # NOTE: UPDATE
-          #}; in [
-          #bpc-pkg
-          ublock-origin
-          darkreader
-          redirector
-          #tampermonkey
-          firemonkey
-          tridactyl
-          #consent-o-matic
-          #browserpass
-          videospeed
-          adaptive-tab-bar-colour
-          # TODO: unavailable - video-downloadhelper
-          imagus
-          fx_cast
-          rsspreview
-          promnesia
-          steam-database
-          stylus
-          simple-tab-groups
-        ];
+        extensions.packages = primary-extensions;
       };
       private = {
         id = 1;
@@ -343,13 +336,28 @@ in {
         bookmarks = {};
         # Keep upstream styling except for the validated Wayland hover rail.
         # Previous custom styling is preserved by the backup tag.
-        userChrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-hover-rail-css;
-        userContent = builtins.readFile "${ff-ultima}/userContent.css";
+        userChrome = ultima-user-chrome;
+        userContent = ultima-user-content;
         extraConfig = builtins.readFile "${ff-ultima}/user.js" + ultima-prefs;
+      };
+      primary-ultima-preview = {
+        id = 5;
+        bookmarks = {};
+        search = import ./search.nix;
+        settings = import ./settings.nix;
+        userChrome = ultima-user-chrome;
+        userContent = ultima-user-content;
+        extraConfig = ultima-ui-prefs;
+        extensions.packages = primary-extensions;
       };
     };
   };
-  home.file.".mozilla/firefox/ultima/chrome/theme".source = "${ff-ultima}/theme";
+  home.file = {
+    ".mozilla/firefox/ultima/chrome/theme".source = "${ff-ultima}/theme";
+    ".mozilla/firefox/primary-ultima-preview/chrome/theme".source = "${ff-ultima}/theme";
+    ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
+    ".mozilla/firefox/primary-ultima-preview/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
+  };
   xdg.desktopEntries.firefox-ultima = {
     name = "Firefox Ultima";
     comment = "Firefox with the FF Ultima theme";

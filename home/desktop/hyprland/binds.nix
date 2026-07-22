@@ -1,6 +1,14 @@
-{ pkgs-unstable, ... }:
+{ pkgs, pkgs-unstable, ... }:
 let
   quickshellBin = "${pkgs-unstable.quickshell}/bin";
+  screenshotNoAnimations = pkgs.writeShellScript "hyprland-screenshot-no-animations" ''
+    restore_animations() {
+      hyprctl keyword animations:enabled true >/dev/null 2>&1 || true
+    }
+    trap restore_animations EXIT INT TERM
+    hyprctl keyword animations:enabled false >/dev/null
+    /home/zarred/scripts/screencapture/screenshot "$@"
+  '';
 in
 {
   wayland.windowManager.hyprland.extraConfig = ''
@@ -95,11 +103,11 @@ in
       "$mod SHIFT, N, exec, swaync-client --close-latest"
       "$mod, Q, exec, loginctl lock-session"
       "$mod, S, exec, ~/scripts/nova/nova_window"
-      "$mod SHIFT, S, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
-      "$mod CTRL, S, exec, ~/scripts/screencapture/screenshot screenshot region &> /tmp/screenshot_log"
+      "$mod SHIFT, S, exec, ${screenshotNoAnimations} screenshot --selector-arg gui &> /tmp/screenshot_log"
+      "$mod CTRL, S, exec, ${screenshotNoAnimations} screenshot region &> /tmp/screenshot_log"
       "$mod, P, exec, cd /home/zarred/dev/hover-lens && PATH=${quickshellBin}:$PATH /run/current-system/sw/bin/python3 -m hover_lens.main"
       "$mod, F, exec, firefox"
-      " , PRINT, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
+      " , PRINT, exec, ${screenshotNoAnimations} screenshot --selector-arg gui &> /tmp/screenshot_log"
 
       "$mod CTRL SHIFT, $NAVU, movetoworkspace, r+1"
       "$mod CTRL SHIFT, $NAVD, movetoworkspace, r-1"

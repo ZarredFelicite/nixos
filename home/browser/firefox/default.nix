@@ -301,7 +301,9 @@ in {
         settings = import ./settings.nix ;
         #bookmarks = import ./bookmarks.nix ;
         bookmarks = {};
-        userChrome = (onebar-css + builtins.readFile ./firefox_css.css);
+        userChrome = ultima-user-chrome;
+        userContent = ultima-user-content;
+        extraConfig = ultima-ui-prefs;
         extensions.packages = primary-extensions;
       };
       private = {
@@ -354,6 +356,9 @@ in {
   };
   home.file = {
     ".mozilla/firefox/ultima/chrome/theme".source = "${ff-ultima}/theme";
+    ".mozilla/firefox/primary/chrome/theme".source = "${ff-ultima}/theme";
+    ".mozilla/firefox/primary/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
+    ".mozilla/firefox/primary/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/theme".source = "${ff-ultima}/theme";
     ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;

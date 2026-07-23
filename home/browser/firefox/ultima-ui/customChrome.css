@@ -75,6 +75,11 @@
 /* Compact mode: Firefox's Expand sidebar on hover setting selects the custom
  * overlay implementation. Always show leaves this block inactive and uses the
  * fixed, in-flow expanded sidebar instead. */
+@keyframes zarred-compact-fullscreen-reflow {
+  from { padding-inline-end: 1px; }
+  to { padding-inline-end: 0; }
+}
+
 @media -moz-pref("sidebar.visibility", "expand-on-hover") {
   /* Native expand-on-hover owns hover state, debounce, and animation. */
   #main-window[sidebar-expand-on-hover] #browser {
@@ -172,6 +177,13 @@
     width: 100% !important;
     max-width: none !important;
     margin-inline: 0 !important;
+  }
+
+  /* Pulse the remote browser widget by one pixel after Firefox has completed
+   * its DOM-fullscreen transition. This replaces the manual window resize
+   * otherwise needed to refresh the video surface in compact mode. */
+  #main-window[inDOMFullscreen][sidebar-expand-on-hover] #tabbrowser-tabpanels {
+    animation: zarred-compact-fullscreen-reflow 1ms steps(1, end) 120ms both !important;
   }
 }
 

@@ -49,7 +49,6 @@
     windowrule = match:title ^(mpd_cover)$, size 1000 1000
     windowrule = match:class swayimg.*, pseudo on
     windowrule = match:class swayimg.*, float on
-    windowrule = match:class swayimg.*, animation none
     windowrule = match:class ^(kdeconnect.sms)$, tile on
     windowrule = match:workspace special:browser-tradingview, fullscreen_state -1 2
     windowrule = match:workspace special:browser-chatgpt, fullscreen_state -1 2

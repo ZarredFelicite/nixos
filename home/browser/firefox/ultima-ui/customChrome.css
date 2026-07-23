@@ -17,13 +17,6 @@
   backdrop-filter: blur(0) !important;
 }
 
-/* Recreate the content layer at its fullscreen dimensions. Keeping the blur
- * workaround active here can leave video painted at the pre-fullscreen size
- * until the window receives a resize event. */
-#main-window[inDOMFullscreen] .browserContainer .browserStack {
-  backdrop-filter: none !important;
-}
-
 :root {
   --zarred-native-glass-tint: rgba(31, 29, 46, 0.5);
   --zarred-topbar-glass-tint: rgba(31, 29, 46, 0.6);
@@ -75,11 +68,6 @@
 /* Compact mode: Firefox's Expand sidebar on hover setting selects the custom
  * overlay implementation. Always show leaves this block inactive and uses the
  * fixed, in-flow expanded sidebar instead. */
-@keyframes zarred-compact-fullscreen-reflow {
-  from { padding-inline-end: 1px; }
-  to { padding-inline-end: 0; }
-}
-
 @media -moz-pref("sidebar.visibility", "expand-on-hover") {
   /* Native expand-on-hover owns hover state, debounce, and animation. */
   #main-window[sidebar-expand-on-hover] #browser {
@@ -160,30 +148,6 @@
   #main-window[sidebar-expand-on-hover] #sidebar-main[sidebar-launcher-expanded] #vertical-tabs {
     box-sizing: border-box !important;
     padding-block: 10px !important;
-  }
-
-  /* DOM fullscreen must bypass the compact overlay completely. Hiding its
-   * absolute sidebar forces an immediate content-width reflow instead of
-   * retaining the pre-fullscreen compositor width until a window resize. */
-  #main-window[inDOMFullscreen][sidebar-expand-on-hover] :is(
-    #sidebar-main,
-    #sidebar-launcher-splitter
-  ) {
-    display: none !important;
-  }
-
-  #main-window[inDOMFullscreen][sidebar-expand-on-hover] #tabbrowser-tabbox {
-    box-sizing: border-box !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin-inline: 0 !important;
-  }
-
-  /* Pulse the remote browser widget by one pixel after Firefox has completed
-   * its DOM-fullscreen transition. This replaces the manual window resize
-   * otherwise needed to refresh the video surface in compact mode. */
-  #main-window[inDOMFullscreen][sidebar-expand-on-hover] #tabbrowser-tabpanels {
-    animation: zarred-compact-fullscreen-reflow 1ms steps(1, end) 120ms both !important;
   }
 }
 

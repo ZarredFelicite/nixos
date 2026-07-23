@@ -2,6 +2,15 @@
 
 @import url(latinAccentUI.css);
 
+/* Keep Ultima's floating navbar visible while its URL field has focus.
+ * Firefox 152 no longer reliably matches Ultima's [focused=""] selector. */
+@media -moz-pref("ultima.navbar.float") {
+  #main-window:has(#urlbar:is(:focus-within, [focused="true"], [open="true"]))
+    #navigator-toolbox {
+    top: 14px !important;
+  }
+}
+
 /* Firefox-Mod-Blur WebRender workaround: expose OOP web content to chrome
  * backdrop filters. Removing this makes ordinary webpages unblurred. */
 .browserContainer .browserStack {

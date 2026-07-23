@@ -218,6 +218,7 @@ in
       Description = "Summarize held-company ASX announcements and route urgent events to Ember";
       After = [ "network-online.target" "ember.service" ];
       Wants = [ "network-online.target" "ember.service" ];
+      StartLimitIntervalSec = 0;
     };
     Service = {
       Type = "simple";
@@ -232,7 +233,6 @@ in
       Restart = "on-failure";
       RestartSec = "60s";
       TimeoutStartSec = "20m";
-      StartLimitIntervalSec = 0;
     };
     Install.WantedBy = [ "default.target" ];
   };

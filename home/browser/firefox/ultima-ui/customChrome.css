@@ -156,6 +156,23 @@
     box-sizing: border-box !important;
     padding-block: 10px !important;
   }
+
+  /* DOM fullscreen must bypass the compact overlay completely. Hiding its
+   * absolute sidebar forces an immediate content-width reflow instead of
+   * retaining the pre-fullscreen compositor width until a window resize. */
+  #main-window[inDOMFullscreen][sidebar-expand-on-hover] :is(
+    #sidebar-main,
+    #sidebar-launcher-splitter
+  ) {
+    display: none !important;
+  }
+
+  #main-window[inDOMFullscreen][sidebar-expand-on-hover] #tabbrowser-tabbox {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+  }
 }
 
 /* Fixed/pinned mode removes the window's sidebar-expand-on-hover attribute.

@@ -255,9 +255,7 @@ let
     }
   '';
   ultima-user-chrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-hover-rail-css;
-  ultima-user-content =
-    builtins.readFile "${ff-ultima}/userContent.css"
-    + builtins.readFile ./ultima-ui/customContent.css;
+  ultima-user-content = builtins.readFile "${ff-ultima}/userContent.css";
   ultima-ui-prefs = builtins.readFile ./ultima-ui/ui-prefs.js;
   primary-extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     ublock-origin

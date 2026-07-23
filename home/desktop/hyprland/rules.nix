@@ -49,6 +49,7 @@
     windowrule = match:title ^(mpd_cover)$, size 1000 1000
     windowrule = match:class swayimg.*, pseudo on
     windowrule = match:class swayimg.*, float on
+    windowrule = match:class swayimg.*, animation none
     windowrule = match:class ^(kdeconnect.sms)$, tile on
     windowrule = match:workspace special:browser-tradingview, fullscreen_state -1 2
     windowrule = match:workspace special:browser-chatgpt, fullscreen_state -1 2
@@ -75,8 +76,7 @@
     layerrule = match:namespace ignis_bar_3, above_lock 1
     layerrule = match:namespace rofi, blur on
     layerrule = match:namespace vicinae, blur on
-    # The screenshot helper uses rofi for selection; do not animate its overlay.
-    layerrule = match:namespace rofi, animation none
+    layerrule = match:namespace rofi, animation popin
     layerrule = match:namespace wlroots, blur on
     layerrule = match:namespace gtk-layer-shell, blur on
     layerrule = match:namespace anyrun, blur on

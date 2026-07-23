@@ -75,7 +75,8 @@
     layerrule = match:namespace ignis_bar_3, above_lock 1
     layerrule = match:namespace rofi, blur on
     layerrule = match:namespace vicinae, blur on
-    layerrule = match:namespace rofi, animation popin
+    # The screenshot helper uses rofi for selection; do not animate its overlay.
+    layerrule = match:namespace rofi, animation none
     layerrule = match:namespace wlroots, blur on
     layerrule = match:namespace gtk-layer-shell, blur on
     layerrule = match:namespace anyrun, blur on

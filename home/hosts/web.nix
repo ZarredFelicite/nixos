@@ -6,6 +6,7 @@ let
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
+  announcementWatcherPython = pkgs.python313.withPackages (ps: [ ps.requests ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
   gemma4ModelsPreset = pkgs.writeText "gemma4-models.ini" ''
     version = 1
@@ -210,6 +211,30 @@ in
     Service.StartLimitIntervalSec = "0";
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.ibkr-announcement-watcher = {
+    Unit = {
+      Description = "Summarize held-company ASX announcements and route urgent events to Ember";
+      After = [ "network-online.target" "ember.service" ];
+      Wants = [ "network-online.target" "ember.service" ];
+    };
+    Service = {
+      Type = "simple";
+      WorkingDirectory = "/home/zarred/scripts/finances/ibkr";
+      EnvironmentFile = [ "-/home/zarred/.config/ibkr/announcement-watcher.env" ];
+      Environment = [
+        "PYTHONUNBUFFERED=1"
+        "PATH=${lib.makeBinPath [ announcementWatcherPython pkgs.coreutils pkgs.curl ]}:/run/current-system/sw/bin"
+      ];
+      ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once";
+      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5";
+      Restart = "on-failure";
+      RestartSec = "60s";
+      TimeoutStartSec = "20m";
+      StartLimitIntervalSec = 0;
+    };
+    Install.WantedBy = [ "default.target" ];
   };
   systemd.user.services.computer-vision = {
     Unit.Description = "Server for computer vision inference";

@@ -275,6 +275,42 @@
         };
       };
       funnelPublicSubpath = path: port: funnelSubpathTarget path "http://127.0.0.1:${toString port}/" false;
+
+      # Private HTTP adapters for Tailscale Serve. These intentionally omit
+      # Authelia: tailnet identity and ACLs are the access boundary.
+      tailnetSubpathTarget = path: target: {
+        locations."= /${path}".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = {
+          proxyPass = target;
+          proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto http;
+            proxy_set_header X-Forwarded-Prefix /${path};
+            proxy_redirect http://$host/${path}/ http://$host/${path}/;
+            proxy_redirect http://$host/ http://$host/${path}/;
+            proxy_redirect / /${path}/;
+            proxy_cookie_path / /${path}/;
+            proxy_set_header Accept-Encoding "";
+            sub_filter_once off;
+            sub_filter_types text/html text/css application/javascript application/json;
+            sub_filter 'href="/' 'href="/${path}/';
+            sub_filter 'src="/' 'src="/${path}/';
+            sub_filter 'action="/' 'action="/${path}/';
+            sub_filter 'url(/' 'url(/${path}/';
+          '';
+        };
+      };
+      tailnetSubpath = path: port:
+        tailnetSubpathTarget path "http://127.0.0.1:${toString port}/";
+      tailnetBaseSubpath = path: port:
+        tailnetSubpathTarget path "http://127.0.0.1:${toString port}/${path}/";
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -348,6 +384,93 @@
             '';
           };
         };
+        "sankara-tailnet.local" = lib.foldl' lib.recursiveUpdate {
+          serverName = "sankara";
+          default = true;
+          listen = [ { addr = "127.0.0.1"; port = 18080; } ];
+          locations = {
+            "/".extraConfig = ''
+              return 404;
+            '';
+            # Ember still uses these root-relative API endpoints when mounted.
+          } // lib.genAttrs [
+            "/api/help"
+            "/api/event"
+            "/api/session"
+            "/api/provider"
+            "/api/command"
+            "/api/cron"
+            "/api/subagent"
+            "/api/heartbeat"
+            "/api/gateway"
+            "/api/injected-file"
+            "/api/voice"
+          ] (_: {
+            proxyPass = "http://web:4311";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto http;
+              proxy_buffering off;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          }) // {
+            "= /log/stream" = {
+              proxyPass = "http://web:4311/log/stream";
+              recommendedProxySettings = false;
+              extraConfig = ''
+                proxy_http_version 1.1;
+                proxy_set_header Connection "";
+                proxy_buffering off;
+                proxy_read_timeout 1h;
+              '';
+            };
+            # FastAPI's Swagger UI uses this root-relative schema URL.
+            "= /openapi.json" = {
+              proxyPass = "http://127.0.0.1:5001/openapi.json";
+            };
+          };
+        } [
+          (tailnetSubpath "auth" 9092)
+          (tailnetSubpath "gotify" 8081)
+          (tailnetSubpath "jellyfin" 8096)
+          (tailnetSubpath "homarr" 7575)
+          (tailnetSubpath "dashdot" 3001)
+          (tailnetBaseSubpath "prowlarr" 9696)
+          (tailnetBaseSubpath "sonarr" 8989)
+          (tailnetBaseSubpath "radarr" 7878)
+          (tailnetSubpath "lidarr" 8686)
+          (tailnetBaseSubpath "readarr" 8787)
+          (tailnetSubpath "lazylibrarian" 5299)
+          (tailnetSubpath "deemix" 6595)
+          (tailnetBaseSubpath "transmission" 9091)
+          (tailnetSubpath "nzb" 6789)
+          (tailnetSubpath "pdf" 8088)
+          (tailnetSubpath "mainsail" 8001)
+          (tailnetSubpath "ocr" 5498)
+          (tailnetSubpathTarget "ember" "http://web:4311/")
+          (tailnetSubpath "searx" 8888)
+          (tailnetSubpath "hotcopper" 8186)
+          (tailnetSubpath "asr" 5001)
+          {
+            locations."= /syncthing".extraConfig = ''
+              return 302 /syncthing/;
+            '';
+            locations."/syncthing/" = {
+              proxyPass = "http://127.0.0.1:8384/";
+              proxyWebsockets = true;
+              extraConfig = ''
+                proxy_set_header Host 127.0.0.1:8384;
+                proxy_read_timeout 600s;
+                proxy_send_timeout 600s;
+              '';
+            };
+          }
+        ];
         "tmuxy-funnel.sankara.local" = {
           serverName = "sankara.manticore-lenok.ts.net";
           listen = [ { addr = "127.0.0.1"; port = 18090; } ];

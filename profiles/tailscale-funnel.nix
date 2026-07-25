@@ -30,6 +30,36 @@ let
     ttrss = "http://127.0.0.1:80/ttrss";
   };
 
+  # Private HTTP routes are available only on Sankara's tailnet addresses.
+  # Each target includes its mount path because Tailscale replaces the matched
+  # Serve prefix with the target URL's path before proxying to nginx.
+  privateRoutes = lib.genAttrs [
+    "auth"
+    "gotify"
+    "jellyfin"
+    "homarr"
+    "dashdot"
+    "prowlarr"
+    "sonarr"
+    "radarr"
+    "lidarr"
+    "readarr"
+    "lazylibrarian"
+    "deemix"
+    "transmission"
+    "nzb"
+    "pdf"
+    "mainsail"
+    "ocr"
+    "ember"
+    "freshrss"
+    "ttrss"
+    "searx"
+    "syncthing"
+    "hotcopper"
+    "asr"
+  ] (name: "http://127.0.0.1:18080/${name}");
+
   rootRouteCommand = ''
     ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 http://127.0.0.1:80
   '';
@@ -50,10 +80,20 @@ let
       ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 --set-path=/${name} ${target}
     '') routes
   );
+
+  privateRootRouteCommand = ''
+    ${pkgs.tailscale}/bin/tailscale serve --bg --yes --http=80 --set-path=/ http://127.0.0.1:18080
+  '';
+
+  privateRouteCommands = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList (name: target: ''
+      ${pkgs.tailscale}/bin/tailscale serve --bg --yes --http=80 --set-path=/${name} ${target}
+    '') privateRoutes
+  );
 in
 {
   systemd.services.tailscale-funnel-routes = {
-    description = "Expose sankara services through Tailscale Funnel";
+    description = "Configure Sankara Tailscale Funnel and private Serve routes";
     after = [ "tailscaled.service" "network-online.target" ];
     wants = [ "tailscaled.service" "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
@@ -84,15 +124,20 @@ in
         sleep 2
       done
 
-      # Keep the declarative config authoritative.
+      # Funnel and Serve share one serve-config document. Funnel reset clears
+      # both kinds of listeners, so reset exactly once and then restore the
+      # unchanged public routes before adding private HTTP routes.
       ${pkgs.tailscale}/bin/tailscale funnel reset || true
 
       ${rootRouteCommand}
       ${tmuxyRouteCommand}
       ${immichRouteCommand}
       ${routeCommands}
+      ${privateRootRouteCommand}
+      ${privateRouteCommands}
 
       ${pkgs.tailscale}/bin/tailscale funnel status
+      ${pkgs.tailscale}/bin/tailscale serve status
     '';
 
     preStop = ''

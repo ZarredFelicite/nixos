@@ -34,6 +34,30 @@
   };
   freshrssSubpathProxy = phpSubpathProxy "freshrss" "freshrss.zar.red";
   ttrssSubpathProxy = phpSubpathProxy "ttrss" "ttrss.zar.red";
+  tailnetPhpSubpathProxy = path: host: {
+    proxyPass = "https://127.0.0.1/";
+    recommendedProxySettings = false;
+    extraConfig = ''
+      proxy_ssl_verify off;
+      proxy_set_header Host ${host};
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Proto http;
+      proxy_redirect https://${host}/ http://sankara/${path}/;
+      proxy_redirect http://${host}/ http://sankara/${path}/;
+      proxy_redirect / /${path}/;
+      proxy_cookie_path /i/ /${path}/i/;
+      proxy_cookie_path / /${path}/;
+      proxy_set_header Accept-Encoding "";
+      sub_filter_once off;
+      sub_filter_types text/html text/css application/javascript application/json;
+      sub_filter 'https://${host}/' 'http://sankara/${path}/';
+      sub_filter 'http://${host}/' 'http://sankara/${path}/';
+      sub_filter 'href="/' 'href="/${path}/';
+      sub_filter 'src="/' 'src="/${path}/';
+      sub_filter 'action="/' 'action="/${path}/';
+      sub_filter 'url(/' 'url(/${path}/';
+    '';
+  };
 in {
   #services.postgresql = {
   #  ensureDatabases = [ "tt_rss" ];
@@ -93,6 +117,16 @@ in {
     locations."/freshrss/" = freshrssSubpathProxy;
     locations."= /freshrss".extraConfig = ''
       return 302 /freshrss/;
+    '';
+  };
+  services.nginx.virtualHosts."sankara-tailnet.local" = {
+    locations."/freshrss/" = tailnetPhpSubpathProxy "freshrss" "freshrss.zar.red";
+    locations."= /freshrss".extraConfig = ''
+      return 302 /freshrss/;
+    '';
+    locations."/ttrss/" = tailnetPhpSubpathProxy "ttrss" "ttrss.zar.red";
+    locations."= /ttrss".extraConfig = ''
+      return 302 /ttrss/;
     '';
   };
   services.nginx.virtualHosts.${funnelHost} = {

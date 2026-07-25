@@ -21,6 +21,7 @@
       server = {
         bind_address = "0.0.0.0";
         port = 8888;
+        base_url = "http://sankara/searx/";
       };
       search.formats = [
         "html"

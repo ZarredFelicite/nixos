@@ -4,6 +4,7 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
+    ../profiles/searxng.nix
     ../profiles/tailscale-funnel.nix
   ];
   home-manager = {

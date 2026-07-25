@@ -458,15 +458,12 @@
             };
           };
         } [
-          (tailnetSubpath "auth" 9092)
           (tailnetSubpath "gotify" 8081)
           (tailnetSubpath "jellyfin" 8096)
-          (tailnetSubpath "homarr" 7575)
           (tailnetSubpath "dashdot" 3001)
           (tailnetBaseSubpath "prowlarr" 9696)
           (tailnetBaseSubpath "sonarr" 8989)
           (tailnetBaseSubpath "radarr" 7878)
-          (tailnetSubpath "lidarr" 8686)
           (tailnetBaseSubpath "readarr" 8787)
           (tailnetSubpath "lazylibrarian" 5299)
           (tailnetSubpath "deemix" 6595)

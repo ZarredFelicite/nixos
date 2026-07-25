@@ -34,15 +34,12 @@ let
   # Each target includes its mount path because Tailscale replaces the matched
   # Serve prefix with the target URL's path before proxying to nginx.
   privateRoutes = lib.genAttrs [
-    "auth"
     "gotify"
     "jellyfin"
-    "homarr"
     "dashdot"
     "prowlarr"
     "sonarr"
     "radarr"
-    "lidarr"
     "readarr"
     "lazylibrarian"
     "deemix"

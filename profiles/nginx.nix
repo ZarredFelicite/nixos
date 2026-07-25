@@ -309,8 +309,26 @@
       };
       tailnetSubpath = path: port:
         tailnetSubpathTarget path "http://127.0.0.1:${toString port}/";
+      tailnetNativeSubpathTarget = path: target: {
+        locations."= /${path}".extraConfig = ''
+          return 302 /${path}/;
+        '';
+        locations."/${path}/" = {
+          proxyPass = target;
+          proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = ''
+            proxy_set_header Host sankara;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host sankara;
+            proxy_set_header X-Forwarded-Proto http;
+            proxy_set_header X-Forwarded-Prefix /${path};
+          '';
+        };
+      };
       tailnetBaseSubpath = path: port:
-        tailnetSubpathTarget path "http://127.0.0.1:${toString port}/${path}/";
+        tailnetNativeSubpathTarget path "http://127.0.0.1:${toString port}/${path}/";
       in {
         # NON AUTH
         "auth.zar.red" = SSL//{locations."/".proxyPass = "http://127.0.0.1:9092"; locations."/".proxyWebsockets = true;};
@@ -458,7 +476,7 @@
           (tailnetSubpath "mainsail" 8001)
           (tailnetSubpath "ocr" 5498)
           (tailnetSubpathTarget "ember" "http://web:4311/")
-          (tailnetSubpath "searx" 8888)
+          (tailnetNativeSubpathTarget "searx" "http://127.0.0.1:8888/")
           (tailnetSubpath "hotcopper" 8186)
           (tailnetSubpath "asr" 5001)
           {
@@ -468,8 +486,12 @@
             locations."/syncthing/" = {
               proxyPass = "http://127.0.0.1:8384/";
               proxyWebsockets = true;
+              recommendedProxySettings = false;
               extraConfig = ''
                 proxy_set_header Host 127.0.0.1:8384;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto http;
                 proxy_read_timeout 600s;
                 proxy_send_timeout 600s;
               '';

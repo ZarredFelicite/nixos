@@ -6,6 +6,24 @@ let
     Install.WantedBy = ["hyprland-session.target"];
   };
   monitor = if osConfig.networking.hostName == "web" then "HDMI-A-1" else "eDP-1";
+  hyprpaperByMonitorIdentity = pkgs.writeShellScript "hyprpaper-by-monitor-identity" ''
+    set -eu
+
+    monitors="$(${pkgs-unstable.hyprland}/bin/hyprctl -j monitors)"
+    left="$(${pkgs.jq}/bin/jq -r '.[] | select(.description == "Dell Inc. AW3423DWF 2ZVC2S3") | .name' <<< "$monitors")"
+    right="$(${pkgs.jq}/bin/jq -r '.[] | select(.description == "Xiaomi Corporation Mi Monitor") | .name' <<< "$monitors")"
+    runtime_config="$XDG_RUNTIME_DIR/hyprpaper-monitor-identity.conf"
+
+    {
+      echo 'preload = /home/zarred/pictures/wallpapers/tarantula_nebula_web_left_darker.png'
+      echo 'preload = /home/zarred/pictures/wallpapers/tarantula_nebula_web_right_darker.png'
+      [ -z "$left" ] || echo "wallpaper = $left,/home/zarred/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
+      [ -z "$right" ] || echo "wallpaper = $right,/home/zarred/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
+      echo 'ipc = on'
+    } > "$runtime_config"
+
+    exec ${pkgs.hyprpaper}/bin/hyprpaper --config "$runtime_config"
+  '';
 in {
   imports = [
     ./rules.nix
@@ -32,8 +50,6 @@ in {
       wallpaper = [
         ",~/pictures/wallpapers/tarantula_nebula_nano.png"
         "eDP-1,~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
-        "HDMI-A-1,~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
-        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
       ];
       ipc = "on";
     };
@@ -46,6 +62,8 @@ in {
       ExecStartPre = [
         "${pkgs.coreutils}/bin/sleep 2"
       ];
+      ExecStart = lib.mkIf (osConfig.networking.hostName == "web")
+        (lib.mkForce hyprpaperByMonitorIdentity);
     };
   };
 

@@ -287,14 +287,14 @@
           proxyWebsockets = true;
           recommendedProxySettings = false;
           extraConfig = ''
-            proxy_set_header Host $host;
+            proxy_set_header Host sankara;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Host sankara;
             proxy_set_header X-Forwarded-Proto http;
             proxy_set_header X-Forwarded-Prefix /${path};
-            proxy_redirect http://$host/${path}/ http://$host/${path}/;
-            proxy_redirect http://$host/ http://$host/${path}/;
+            proxy_redirect http://sankara/${path}/ http://sankara/${path}/;
+            proxy_redirect http://sankara/ http://sankara/${path}/;
             proxy_redirect / /${path}/;
             proxy_cookie_path / /${path}/;
             proxy_set_header Accept-Encoding "";
@@ -388,6 +388,11 @@
           serverName = "sankara";
           default = true;
           listen = [ { addr = "127.0.0.1"; port = 18080; } ];
+          # Tailscale proxies with the backend address in Host. Keep nginx's
+          # local redirect responses relative so clients remain on port 80.
+          extraConfig = ''
+            absolute_redirect off;
+          '';
           locations = {
             "/".extraConfig = ''
               return 404;

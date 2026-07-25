@@ -5,7 +5,7 @@ let
     Unit.After = ["hyprland-session.target"];
     Install.WantedBy = ["hyprland-session.target"];
   };
-  monitor = if osConfig.networking.hostName == "web" then "DP-3" else "eDP-1";
+  monitor = if osConfig.networking.hostName == "web" then "HDMI-A-1" else "eDP-1";
 in {
   imports = [
     ./rules.nix
@@ -32,8 +32,8 @@ in {
       wallpaper = [
         ",~/pictures/wallpapers/tarantula_nebula_nano.png"
         "eDP-1,~/pictures/wallpapers/nasa-eye-nano-wallpaper.jpg"
-        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
-        "DP-2,~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
+        "HDMI-A-1,~/pictures/wallpapers/tarantula_nebula_web_left_darker.png"
+        "DP-3,~/pictures/wallpapers/tarantula_nebula_web_right_darker.png"
       ];
       ipc = "on";
     };
@@ -93,11 +93,10 @@ in {
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [
-            "DP-3,3440x1440@99.98,0x853,1"
-            "DP-2,3440x1440@100.00,3440x0,1,transform,3"
+            "desc:Dell Inc. AW3423DWF 2ZVC2S3,3440x1440@99.98,0x853,1"
+            "desc:Xiaomi Corporation Mi Monitor,3440x1440@100.00,3440x0,1,transform,3"
             #"desc:ViewSonic Corporation XG2703-GS,2560x1440@120.0,3440x0,1,transform,3"
             "sunshine,1920x1080,auto,1"
-            "HDMI-A-1,1920x1280@60.00,880x0,1.5,transform,2"
             "HDMI-A-2,1920x1280@60.00,2160x0,1.5,transform,2"
             "Unknown-1,disable"
           ];

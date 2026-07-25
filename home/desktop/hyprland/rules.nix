@@ -104,8 +104,8 @@
   '';
   wayland.windowManager.hyprland.settings = {
     workspace = [
-      "1, monitor:DP-3, default:true"
-      "5, monitor:DP-2, default:true"
+      "1, monitor:desc:Dell Inc. AW3423DWF 2ZVC2S3, default:true"
+      "5, monitor:desc:Xiaomi Corporation Mi Monitor, default:true"
       "special:obsidian, on-created-empty:obsidian, gapsout:40, gapsin:40"
       "special:stats, on-created-empty:kitty --class stats zsh -c 'btop', gapsout:40, gapsin:40"
       "special:volume, on-created-empty:pavucontrol, gapsout:40, gapsin:40"

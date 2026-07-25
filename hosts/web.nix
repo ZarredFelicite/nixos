@@ -46,6 +46,15 @@
   };
   boot = {
     kernelPackages = pkgs.linuxPackages_7_0;
+    kernelPatches = [
+      {
+        name = "amdgpu-hmm-null-dereference";
+        patch = pkgs.fetchpatch {
+          url = "https://github.com/torvalds/linux/commit/631849ff5d603841e74f19f4a5e30fe1f7d7cf30.patch";
+          hash = "sha256-MlaeGPk0dC+IjUxZSaz2m5IANHlkvt/cKnzKdanpLPw=";
+        };
+      }
+    ];
     # Keep the NVIDIA driver available, but don't eagerly load it during boot;
     # the display is on AMD and NVIDIA can autoload when CUDA/NVML needs it.
     kernelModules = lib.mkForce [

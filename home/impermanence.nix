@@ -40,6 +40,7 @@
       ".tmux"
       ".Trash-1000"
       ".mcporter"
+      ".pi"
       # PERSISTENT .CONF
       ".config/skills"
       ".config/kdeconnect"

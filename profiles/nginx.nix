@@ -539,6 +539,27 @@
           serverName = "sankara.manticore-lenok.ts.net";
           listen = [ { addr = "127.0.0.1"; port = 18092; } ];
           extraConfig = SSLA.extraConfig;
+          # Chrome fetches PWA metadata without the Authelia session cookie.
+          # Keep only install metadata public; the app, API, and WebSocket stay
+          # behind the authenticated catch-all below.
+          locations."= /manifest.json" = {
+            proxyPass = "http://web:8000/manifest.json";
+            extraConfig = ''
+              add_header Cache-Control "no-store, must-revalidate" always;
+            '';
+          };
+          locations."= /sw.js" = {
+            proxyPass = "http://web:8000/sw.js";
+            extraConfig = ''
+              add_header Cache-Control "no-store, must-revalidate" always;
+            '';
+          };
+          locations."= /icon-192.png" = {
+            proxyPass = "http://web:8000/icon-192.png";
+          };
+          locations."= /icon-512.png" = {
+            proxyPass = "http://web:8000/icon-512.png";
+          };
           locations."/" = {
             proxyPass = "http://web:8000";
             proxyWebsockets = true;

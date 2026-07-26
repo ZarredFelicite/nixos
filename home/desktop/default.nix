@@ -82,6 +82,7 @@ in {
   home.sessionVariables = { # From home/desktop.nix
     MOZ_ENABLE_WAYLAND = 1;
     XDG_CURRENT_DESKTOP = "hyprland";
+    PI_DASHBOARD_URL = "ws://100.64.1.150:9999";
     MOZ_USE_XINPUT2 = "1";
     GDK_SCALE = 1;
     GDK_DPI_SCALE = 1;

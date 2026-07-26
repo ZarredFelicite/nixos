@@ -39,7 +39,7 @@
       engines = [
         {
           name = "brave";
-          inactive = true;
+          disabled = true;
         }
         {
           name = "braveapi";
@@ -52,7 +52,7 @@
         }
         {
           name = "google";
-          inactive = true;
+          disabled = true;
         }
       ];
     };

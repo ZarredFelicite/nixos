@@ -128,6 +128,7 @@
         firecrawl-api = { owner = "zarred"; };
         opencode-api = { owner = "zarred"; };
         brave-api = { owner = "zarred"; };
+        brave-api-free = { owner = "zarred"; };
         immich-api = { owner = "zarred"; };
       }
     ];

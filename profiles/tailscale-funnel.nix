@@ -72,6 +72,10 @@ let
     ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=9443 http://127.0.0.1:18091
   '';
 
+  piDashboardRouteCommand = ''
+    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=10443 http://127.0.0.1:18092
+  '';
+
   routeCommands = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (name: target: ''
       ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 --set-path=/${name} ${target}
@@ -129,6 +133,7 @@ in
       ${rootRouteCommand}
       ${tmuxyRouteCommand}
       ${immichRouteCommand}
+      ${piDashboardRouteCommand}
       ${routeCommands}
       ${privateRootRouteCommand}
       ${privateRouteCommands}

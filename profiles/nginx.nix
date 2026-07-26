@@ -535,6 +535,46 @@
             '';
           };
         };
+        "pi-dashboard-funnel.sankara.local" = {
+          serverName = "sankara.manticore-lenok.ts.net";
+          listen = [ { addr = "127.0.0.1"; port = 18092; } ];
+          extraConfig = SSLA.extraConfig;
+          locations."/" = {
+            proxyPass = "http://web:8000";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = ''
+              auth_request /authelia;
+              auth_request_set $target_url https://$http_host$request_uri;
+              auth_request_set $user $upstream_http_remote_user;
+              auth_request_set $groups $upstream_http_remote_groups;
+              auth_request_set $name $upstream_http_remote_name;
+              auth_request_set $email $upstream_http_remote_email;
+              proxy_set_header Remote-User $user;
+              proxy_set_header Remote-Groups $groups;
+              proxy_set_header Remote-Name $name;
+              proxy_set_header Remote-Email $email;
+              error_page 401 =302 https://sankara.manticore-lenok.ts.net/?rd=$target_url;
+
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Host $http_host;
+              proxy_set_header X-Forwarded-Proto https;
+              proxy_set_header Connection $connection_upgrade;
+              proxy_set_header Upgrade $http_upgrade;
+
+              proxy_buffering off;
+              proxy_cache off;
+              proxy_request_buffering off;
+              gzip off;
+              add_header X-Accel-Buffering no;
+              add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+        };
         "sankara.manticore-lenok.ts.net" = lib.foldl' lib.recursiveUpdate {
           extraConfig = SSLA.extraConfig;
           # Ember is served at /ember, but its client currently calls some

@@ -73,7 +73,7 @@ let
   '';
 
   piDashboardRouteCommand = ''
-    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=10443 http://127.0.0.1:18092
+    ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=10000 http://127.0.0.1:18092
   '';
 
   routeCommands = lib.concatStringsSep "\n" (

@@ -567,6 +567,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-ollama": {
+      "locked": {
+        "lastModified": 1783564090,
+        "narHash": "sha256-ajlPoJbp28hK8Zgua3n+g4LuzGVGlKfs94jA2VVUa3Q=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "9ab0784f4b4b98a4f100d4cb2245d791cdccf70a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "9ab0784f4b4b98a4f100d4cb2245d791cdccf70a",
+        "type": "github"
+      }
+    },
     "nixpkgs-quickshell": {
       "locked": {
         "lastModified": 1770720068,
@@ -952,6 +968,7 @@
         "impermanence": "impermanence",
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-brave-origin": "nixpkgs-brave-origin",
+        "nixpkgs-ollama": "nixpkgs-ollama",
         "nixpkgs-quickshell": "nixpkgs-quickshell",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",

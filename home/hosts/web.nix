@@ -1,8 +1,8 @@
-{ inputs, self, pkgs, pkgs-unstable, lib, config, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, pkgs-unstable, pkgs-ollama, lib, config, osConfig, ... }: # Added osConfig
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
-  ollamaCudaPackage = pkgs-unstable.ollama-cuda;
+  ollamaCudaPackage = pkgs-ollama.ollama-cuda;
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);

@@ -35,7 +35,7 @@ in {
   stylix.targets.hyprlock.enable = false;
   home.packages = [
     inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.vigiland.packages.${pkgs.system}.vigiland
+    inputs.vigiland.packages.${pkgs.stdenv.hostPlatform.system}.vigiland
   ];
   services.hyprpaper = {
     enable = true;

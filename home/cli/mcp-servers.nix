@@ -3,7 +3,7 @@
 let
   mcp-servers-nix = inputs.mcp-servers-nix;
 
-  playwright-mcp-fixed = mcp-servers-nix.packages.${pkgs.system}.playwright-mcp.overrideAttrs (old: {
+  playwright-mcp-fixed = mcp-servers-nix.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp.overrideAttrs (old: {
     doInstallCheck = false;
   });
 

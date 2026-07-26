@@ -73,7 +73,7 @@ in {
     pkgs.gimp
     pkgs.pinta
     pkgs.code-cursor
-    inputs.paseo.packages.${pkgs.system}.desktop
+    inputs.paseo.packages.${pkgs.stdenv.hostPlatform.system}.desktop
     #pkgs-master.antigravity
     #pkgs-unstable.libsForQt5.qt5.qtgraphicaleffects
     #inputs.claude-desktop.packages.${pkgs.system}.claude-desktop # Corrected system reference

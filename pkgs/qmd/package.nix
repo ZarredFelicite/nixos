@@ -46,7 +46,7 @@ let
     '';
     dontPatchShebangs = true;
     dontFixup = true;
-    outputHash = pin."${stdenv.system}";
+    outputHash = pin."${stdenv.hostPlatform.system}";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };

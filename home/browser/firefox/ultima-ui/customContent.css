@@ -1,0 +1,7 @@
+/* Preserve transparent internal pages without leaking the desktop through
+ * ordinary sites that rely on Firefox's default canvas background. */
+@-moz-document regexp("^https?://.*") {
+  :root {
+    background-color: Canvas !important;
+  }
+}

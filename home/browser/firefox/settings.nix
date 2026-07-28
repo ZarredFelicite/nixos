@@ -204,7 +204,7 @@
 
   # CUSTOM
   ## UI
-  "browser.tabs.allow_transparent_browser" = true;
+  "browser.tabs.allow_transparent_browser" = false;
   ## typeahead find
   "accessibility.typeaheadfind" = false;
   "accessibility.typeaheadfind.autostart" = true;

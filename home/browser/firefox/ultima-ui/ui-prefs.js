@@ -1,7 +1,7 @@
 // UI-only preferences captured from the validated Ultima profile.
 // Keep general browsing, privacy, extension, and sidebar-tool preferences in
 // the primary profile's existing settings.
-user_pref("browser.tabs.allow_transparent_browser", true);
+user_pref("browser.tabs.allow_transparent_browser", false);
 user_pref("full-screen-api.ignore-widgets", true);
 user_pref("layout.css.has-selector.enabled", true);
 user_pref("sidebar.animation.expand-on-hover.delay-duration-ms", 400);

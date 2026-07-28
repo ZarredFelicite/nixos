@@ -20,7 +20,7 @@ let
     // documented about:config settings and intentionally override user.js.
     user_pref("user.theme.0.default", false);
     user_pref("user.theme.transparent", true);
-    user_pref("browser.tabs.allow_transparent_browser", true);
+    user_pref("browser.tabs.allow_transparent_browser", false);
 
     user_pref("sidebar.revamp", true);
     user_pref("sidebar.verticalTabs", true);
@@ -356,23 +356,11 @@ in {
   };
   home.file = {
     ".mozilla/firefox/ultima/chrome/theme".source = "${ff-ultima}/theme";
-    ".mozilla/firefox/ultima/chrome/customContent.css" = {
-      source = ./ultima-ui/customContent.css;
-      force = true;
-    };
     ".mozilla/firefox/primary/chrome/theme".source = "${ff-ultima}/theme";
     ".mozilla/firefox/primary/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
-    ".mozilla/firefox/primary/chrome/customContent.css" = {
-      source = ./ultima-ui/customContent.css;
-      force = true;
-    };
     ".mozilla/firefox/primary/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/theme".source = "${ff-ultima}/theme";
     ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
-    ".mozilla/firefox/primary-ultima-preview/chrome/customContent.css" = {
-      source = ./ultima-ui/customContent.css;
-      force = true;
-    };
     ".mozilla/firefox/primary-ultima-preview/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
   };
   xdg.desktopEntries.firefox-ultima = {

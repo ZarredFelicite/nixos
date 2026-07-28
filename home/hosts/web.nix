@@ -39,6 +39,7 @@ let
   '';
   audioSummaryPath = lib.makeBinPath [
     audioSummaryPython
+    piPackage
     pkgs.bash
     pkgs.coreutils
     pkgs.ffmpeg
@@ -146,6 +147,8 @@ in
       WorkingDirectory = "/home/zarred/scripts/stt";
       Environment = [
         "PATH=${audioSummaryPath}"
+        "PI_CODING_AGENT_DIR=/home/zarred/.config/pi/agent"
+        "PI_SKIP_VERSION_CHECK=1"
       ];
     };
     Install.WantedBy = [ "default.target" ];

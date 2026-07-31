@@ -65,6 +65,7 @@ in
       #"$mod, X, hyprexpo:expo, toggle"
       "$mod CTRL, P, pseudo,"
       "$mod SHIFT, P, exec, ~/scripts/hyprland/hyprpin"
+      "$mod SHIFT, slash, exec, quickshell ipc -c primary call bar toggleShortcuts"
       "$mod, E, exec, ~/scripts/hyprland/hyprfull"
       "$mod, W, exec, ~/scripts/hyprland/hyprwindow"
       "$mod SHIFT, E, fullscreenstate, -1 2"

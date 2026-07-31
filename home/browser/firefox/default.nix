@@ -310,11 +310,9 @@ in {
         id = 1;
         bookmarks = {};
         userChrome = onebar-css;
-        extraConfig = builtins.readFile(builtins.fetchGit {
-          url = "https://codeberg.org/Narsil/user.js";
-          rev = "2f6ca400f65d947699e4b7f8e3234c5ca67fb00e"; # NOTE: UPDATE
-        }
-          + "/desktop/user.js") ;
+        # Vendored at the pinned upstream revision so builds do not depend on
+        # Codeberg being available during Nix evaluation.
+        extraConfig = builtins.readFile ./private-user.js;
       };
       tracking = {
         id = 2;

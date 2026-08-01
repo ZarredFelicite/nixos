@@ -124,13 +124,14 @@ in {
       set-option -ga terminal-overrides ",xterm-256color:Tc"
       set-option -ga terminal-overrides ",xterm-kitty:Tc"
       set -g allow-passthrough all
+      set -g allow-set-title on
       set -g extended-keys on
       set -g extended-keys-format csi-u
       set -g window-style bg=default
       set -g window-active-style bg=default
       bind r source-file ~/.config/tmux/tmux.conf
       bind -n M-C source-file ~/.config/tmux/tmux.conf \; display-message "Reloaded config"
-      set -g pane-border-format "#P: #{pane_current_command}"
+      set -g pane-border-format " #{pane_title} "
       set -g pane-border-status top
       set-option -g display-time 1000
       # Keep status redraws infrequent; status-right includes shell commands.

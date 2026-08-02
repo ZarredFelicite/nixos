@@ -35,6 +35,8 @@
 
   # AP6256 Wi-Fi/BT needs its reset provider early, board calibration data,
   # and a short delay after SDIO power-on.
+  hardware.enableRedistributableFirmware = true;
+
   hardware.deviceTree.overlays = [
     {
       name = "rock4c-wifi-power-sequence";

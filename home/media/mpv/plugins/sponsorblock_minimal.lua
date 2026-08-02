@@ -8,6 +8,12 @@ local utils = require 'mp.utils'
 
 local ON = false
 local ranges = nil
+local active_segment_end = nil
+local speed_before_segment = nil
+local skip_binding_active = false
+
+local SPONSOR_SPEED = 3.5
+local SKIP_BINDING = "sponsorblock-skip-current"
 
 local options = {
 	server = "https://sponsor.ajay.app/api/skipSegments",
@@ -34,23 +40,59 @@ function dump(o)
    end
 end
 
-function skip_ads(name,pos)
-	if pos then
-		for _, i in pairs(ranges) do
-			v = i.segment[2]
-			if i.segment[1] <= pos and v > pos and ON then
-				mp.osd_message(("[sponsorblock] skipping forward %ds"):format(math.floor(v-mp.get_property("time-pos"))))
-        mp.set_property("speed", 3.5)
-				return
-      else
-        if mp.get_property_number("speed") == 3.5 then
-          mp.set_property("speed", speed)
-        else
-          speed = mp.get_property_number("speed")
-        end
+local function clear_active_segment()
+	if skip_binding_active then
+		mp.remove_key_binding(SKIP_BINDING)
+		skip_binding_active = false
+	end
+
+	active_segment_end = nil
+	if speed_before_segment ~= nil then
+		if mp.get_property_number("speed") == SPONSOR_SPEED then
+			mp.set_property_number("speed", speed_before_segment)
+		end
+		speed_before_segment = nil
+	end
+end
+
+local function skip_active_segment()
+	if active_segment_end == nil then return end
+
+	local segment_end = active_segment_end
+	clear_active_segment()
+	mp.commandv("seek", tostring(segment_end), "absolute", "exact")
+	mp.osd_message("[sponsorblock] segment skipped")
+end
+
+local function activate_segment(segment_end, pos)
+	if active_segment_end == segment_end then return end
+
+	clear_active_segment()
+	active_segment_end = segment_end
+	speed_before_segment = mp.get_property_number("speed", 1)
+	mp.add_forced_key_binding("s", SKIP_BINDING, skip_active_segment)
+	skip_binding_active = true
+	mp.osd_message(("[sponsorblock] speeding forward %ds (s to skip)"):format(math.floor(segment_end - pos)))
+end
+
+function skip_ads(name, pos)
+	if not pos or not ranges or not ON then
+		clear_active_segment()
+		return
+	end
+
+	for _, item in pairs(ranges) do
+		local segment = item.segment
+		if segment and segment[1] <= pos and segment[2] > pos then
+			activate_segment(segment[2], pos)
+			if mp.get_property_number("speed") ~= SPONSOR_SPEED then
+				mp.set_property_number("speed", SPONSOR_SPEED)
 			end
+			return
 		end
 	end
+
+	clear_active_segment()
 end
 
 function time_sort(a, b)
@@ -144,8 +186,10 @@ function file_loaded()
 end
 
 function end_file()
-	if not ON then return end
-	mp.unobserve_property(skip_ads)
+	if ON then
+		mp.unobserve_property(skip_ads)
+	end
+	clear_active_segment()
 	ranges = nil
 	ON = false
 end
@@ -153,6 +197,7 @@ end
 function toggle()
 	if ON then
 		mp.unobserve_property(skip_ads)
+		clear_active_segment()
 		mp.osd_message("[sponsorblock] off")
 		ON = false
 	else

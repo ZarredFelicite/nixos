@@ -15,8 +15,9 @@
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
     flake-utils.url = "github:numtide/flake-utils";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/662bd6e312d2c8b212e32cb377abaee190749320";
 
-    # nixos-hardware removed; x1 nano settings are now vendored locally.
+    # X1 Nano settings are vendored locally; nixos-hardware is only used for ROCK 4C+.
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:danth/stylix/release-25.11";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -135,6 +136,16 @@
             inputs.stylix.nixosModules.stylix
             ./hosts/nano_minimal.nix
             ./profiles/common.nix
+          ];
+        };
+        rock4c = lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = {
+            inherit inputs self;
+          };
+          modules = [
+            inputs.nixos-hardware.nixosModules.rock-4c-plus
+            ./hosts/rock4c.nix
           ];
         };
         liveIso = lib.nixosSystem {

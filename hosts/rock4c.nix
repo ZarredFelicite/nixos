@@ -50,7 +50,6 @@
 
         &sdio_pwrseq {
           post-power-on-delay-ms = <200>;
-          power-off-delay-us = <2000000>;
         };
       '';
     }
@@ -90,6 +89,35 @@
       allowedTCPPorts = [ 22 ];
       trustedInterfaces = [ "tailscale0" ];
     };
+  };
+
+  # AP6256 initialization is intermittent on a warm boot. Rebinding its SDIO
+  # host reproduces the reliable recovery sequence before networking starts.
+  systemd.services.rock4c-wifi-reset = {
+    description = "Reset ROCK 4C+ AP6256 SDIO Wi-Fi";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "NetworkManager.service" ];
+    after = [ "systemd-modules-load.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      set -eu
+      driver=/sys/bus/platform/drivers/dwmmc_rockchip
+      device=fe310000.mmc
+
+      if [ ! -e "$driver/$device" ]; then
+        exit 0
+      fi
+
+      ${pkgs.kmod}/bin/modprobe -r brcmfmac_wcc brcmfmac || true
+      printf '%s' "$device" > "$driver/unbind"
+      ${pkgs.coreutils}/bin/sleep 2
+      printf '%s' "$device" > "$driver/bind"
+      ${pkgs.coreutils}/bin/sleep 1
+      ${pkgs.kmod}/bin/modprobe brcmfmac
+    '';
   };
 
   services = {

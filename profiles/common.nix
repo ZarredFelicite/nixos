@@ -31,21 +31,22 @@
       timeout = 0;
     };
     networks = {
+      # Dedicated point-to-point Ethernet link: web <-> nano.
       "10-wired" = {
         matchConfig.Name = "enp38s0";
-        #networkConfig.IPv6AcceptRA = true;
-        networkConfig.DHCP = "yes";
-        dhcpV4Config.RouteMetric = 10;
-        #linkConfig.RequiredForOnline = "routable";
-        routes = [ { Metric = 10; } ];
+        networkConfig = {
+          Address = "192.168.86.150/24";
+          DHCP = "no";
+          LinkLocalAddressing = "no";
+        };
       };
       "20-wired" = {
         matchConfig.MACAddress = "00:e0:4c:68:2a:68";
-        #networkConfig.IPv6AcceptRA = true;
-        networkConfig.DHCP = "yes";
-        dhcpV4Config.RouteMetric = 10;
-        #linkConfig.RequiredForOnline = "routable";
-        routes = [ { Metric = 10; } ];
+        networkConfig = {
+          Address = "192.168.86.125/24";
+          DHCP = "no";
+          LinkLocalAddressing = "no";
+        };
       };
       "30-wired" = {
         matchConfig.Name = "enp4s0";
@@ -354,6 +355,9 @@
         HostName 100.64.1.150
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
+        # Prefer the dedicated web <-> nano Ethernet link. If web's SSH port is
+        # unavailable there, transparently fall back to its Tailscale address.
+        ProxyCommand ${pkgs.bash}/bin/bash -c 'if ${pkgs.netcat}/bin/nc -z -w 1 192.168.86.150 22; then exec ${pkgs.netcat}/bin/nc 192.168.86.150 22; else exec ${pkgs.netcat}/bin/nc 100.64.1.150 22; fi'
     '';
     knownHosts = {
       #web = {

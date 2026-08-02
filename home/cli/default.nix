@@ -21,12 +21,14 @@
 in {
   imports = [
     ./zsh
-    ./nixvim
+    ../shared/nixvim
+    ./nixvim-stylix.nix
+    ../shared/tmux.nix
+    ../shared/starship.nix
     ./nb.nix
     ./sys_monitors.nix
     ./newsboat.nix
     ./nnn/default.nix
-    ./tmux.nix
     ./glow.nix
     ./ueberzugpp.nix
     ./fzf.nix
@@ -169,7 +171,6 @@ in {
   programs = {
     # Original programs from home/cli/default.nix
     zsh.enable = true;
-    nixvim.enable = true;
     nnn.enable = true;
     yazi = {
       enable = true;
@@ -252,7 +253,6 @@ in {
         }
       '';
     };
-    tmux.enable = true;
     direnv = {
       enable = true;
       enableZshIntegration = true;

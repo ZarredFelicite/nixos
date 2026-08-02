@@ -1,21 +1,29 @@
-{ config, pkgs, inputs, ... }: {
+{ config, pkgs, inputs, lib, headless ? false, ... }:
+let
+  # Headless boards have no Wayland/graphical terminal. Keep those optional
+  # integrations out of their closure while preserving desktop/server defaults.
+  graphicalNixvim = !headless;
+in {
 imports = [
   inputs.nixvim.homeModules.nixvim
   ./conform.nix
 ];
-  stylix.targets.nixvim.enable = false;
   programs.nixvim = {
+    enable = true;
     nixpkgs.config.allowUnfree = true;
     defaultEditor = true;
-    extraPackages = with pkgs; [
+    waylandSupport = graphicalNixvim;
+    viAlias = true;
+    vimAlias = true;
+    extraPackages = lib.optionals graphicalNixvim (with pkgs; [
       imagemagick
-    ];
+    ]);
     globals = {
       mapleader = " ";
       maplocalleader = " ";
       have_nerd_font = true;
     };
-    clipboard.providers.wl-copy.enable = true;
+    clipboard.providers.wl-copy.enable = graphicalNixvim;
     opts = {
       undofile = true;
       spell = true;
@@ -75,8 +83,12 @@ imports = [
       { mode = "v"; key = "<S-Down>"; action = ":m '>+1<CR>gv=gv"; }
       { mode = "v"; key = "<leader>p"; action = "\"_dP"; } # paste over selection and keep clipboard
       { mode = "v"; key = "<leader>y"; action = "\"+y"; }
-      { mode = "n"; key = "<leader>pi"; action = "<cmd>PasteImage<CR>"; options.desc = "Paste image from clipboard"; }
-    ];
+    ] ++ lib.optional graphicalNixvim {
+      mode = "n";
+      key = "<leader>pi";
+      action = "<cmd>PasteImage<CR>";
+      options.desc = "Paste image from clipboard";
+    };
     colorschemes = {
       poimandres = {
         enable = false;
@@ -534,7 +546,7 @@ imports = [
         servers = {
           nil_ls.enable = true;
           lua_ls.enable = true;
-          texlab.enable = true;
+          texlab.enable = graphicalNixvim;
           bashls.enable = true;
           # python
           pyright.enable = true;
@@ -704,7 +716,7 @@ imports = [
           };
         };
         folding.enable = true;
-        nixGrammars = true;
+        nixGrammars = graphicalNixvim;
         #grammarPackages = [
         #  # Default: config.plugins.treesitter.package.passthru.allGrammars
         #  pkgs.vimPlugins.nvim-treesitter-parsers.python
@@ -842,7 +854,7 @@ imports = [
           ];
         };
       };
-      vimtex = {
+      vimtex = lib.mkIf graphicalNixvim {
         enable = true;
         settings = {
           compiler_enabled = true;
@@ -855,7 +867,7 @@ imports = [
       web-devicons.enable = true;
       mini.enable = true;
     };
-    extraPlugins = [
+    extraPlugins = lib.optionals graphicalNixvim [
       (pkgs.vimUtils.buildVimPlugin {
         pname = "image.nvim";
         version = "2026-06-13";
@@ -868,6 +880,7 @@ imports = [
         nvimSkipModules = [ "minimal-setup" ];
       })
       config.programs.nixvim.plugins.img-clip.package
+    ] ++ [
       (pkgs.vimUtils.buildVimPlugin {
         name = "render-markdown.nvim";
         src = pkgs.fetchFromGitHub {
@@ -880,4 +893,3 @@ imports = [
     ];
   };
 }
-

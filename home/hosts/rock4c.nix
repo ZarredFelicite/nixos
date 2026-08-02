@@ -1,5 +1,12 @@
 { pkgs, ... }:
 {
+  imports = [
+    ../shared/core.nix
+    ../shared/starship.nix
+    ../shared/tmux.nix
+    ../shared/nixvim
+  ];
+
   home = {
     username = "zarred";
     homeDirectory = "/home/zarred";
@@ -7,9 +14,6 @@
     packages = with pkgs; [
       btop
       dnsutils
-      fd
-      jq
-      ripgrep
       tree
       unzip
       zip
@@ -23,39 +27,7 @@
 
   programs = {
     home-manager.enable = true;
-
-    git = {
-      enable = true;
-      lfs.enable = true;
-      settings = {
-        user = {
-          name = "ZarredFelicite";
-          email = "zarred.f@gmail.com";
-        };
-        core.editor = "nvim";
-        init.defaultBranch = "main";
-      };
-    };
-
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-    };
-
-    tmux = {
-      enable = true;
-      clock24 = true;
-      keyMode = "vi";
-      mouse = true;
-      terminal = "screen-256color";
-      historyLimit = 50000;
-      extraConfig = ''
-        set -g focus-events on
-        set -g set-clipboard on
-      '';
-    };
+    git.settings.init.defaultBranch = "main";
 
     zsh = {
       enable = true;
@@ -76,16 +48,6 @@
       };
     };
 
-    starship = {
-      enable = true;
-      settings = {
-        add_newline = false;
-        aws.disabled = true;
-        gcloud.disabled = true;
-      };
-    };
-
-    bat.enable = true;
     direnv = {
       enable = true;
       nix-direnv.enable = true;

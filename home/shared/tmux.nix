@@ -1,5 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, lib, headless ? false, ... }:
 let
+  desktopIntegrations = !headless;
   tmuxWindowNamePython = pkgs.python3.withPackages (ps: [ ps.libtmux ]);
   tmuxRenamePiWindow = pkgs.writeShellApplication {
     name = "tmux-rename-pi-window";
@@ -87,8 +88,8 @@ let
     '';
   };
 in {
-  stylix.targets.tmux.enable = false;
-  xdg.configFile."tmuxinator/home.yml".text = builtins.toJSON {
+  xdg.configFile."tmuxinator/home.yml" = lib.mkIf desktopIntegrations {
+    text = builtins.toJSON {
     name = "home";
     root = "~/";
     windows = [
@@ -97,8 +98,10 @@ in {
       { tickrs = "tickrs"; }
       { ticker = "ticker"; }
     ];
+    };
   };
   programs.tmux = {
+    enable = true;
     mouse = true;
     aggressiveResize = true;
     baseIndex = 1;  # recommended by tilish plugin
@@ -115,14 +118,16 @@ in {
     newSession = false;
     terminal = "tmux-256color";
     focusEvents = true;
-    tmuxinator.enable = true;
+    tmuxinator.enable = desktopIntegrations;
     extraConfig = ''
       if -F "#{==:#{client_control_mode},0}" "new-session"
       set-option -sa terminal-features ',xterm-256color:RGB'
+      ${lib.optionalString desktopIntegrations ''
       set-option -sa terminal-features ',xterm-kitty:RGB'
       set-option -sa terminal-features ',xterm-kitty:extkeys'
-      set-option -ga terminal-overrides ",xterm-256color:Tc"
       set-option -ga terminal-overrides ",xterm-kitty:Tc"
+      ''}
+      set-option -ga terminal-overrides ",xterm-256color:Tc"
       set -g allow-passthrough all
       set -g allow-set-title on
       set -g extended-keys on
@@ -153,9 +158,11 @@ in {
       # Pi sets useful terminal titles; prefer those over tmux-window-name's
       # process/directory naming for Pi windows. Keep this out of status-right:
       # status commands run once per client redraw and can spawn storms.
+      ${lib.optionalString desktopIntegrations ''
       set-hook -g pane-title-changed[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-select-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
       set-hook -g after-new-window[8922] 'run-shell -b "${tmuxRenamePiWindow}/bin/tmux-rename-pi-window #{window_id}"'
+      ''}
 
       # Reflect explicit tmux bells in matching kitty tab colors. Tabs are matched by tmux session name.
       # Do not monitor generic activity: Pi renders frequent status/progress output, which otherwise
@@ -163,16 +170,20 @@ in {
       set -g monitor-activity off
       set -g visual-activity off
       set -g visual-bell off
+      ${lib.optionalString desktopIntegrations ''
       set-hook -g alert-bell[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} bell"'
       set-hook -g after-select-window[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
       set-hook -g client-attached[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
       set-hook -g client-focus-in[7731] 'run-shell -b "/home/zarred/scripts/kitty/kitty-tmux-tab-color #{session_name} reset"'
+      ''}
 
       # tmuxy control-mode clients force manual/browser-sized windows. When a
       # real terminal client attaches or resizes, fit windows back to that client
       # so kitty does not show unused dotted background around shrunken panes.
+      ${lib.optionalString desktopIntegrations ''
       set-hook -g client-attached[9921] 'if -F "#{==:#{client_control_mode},0}" "resize-window -A"'
       set-hook -g client-resized[9921] 'if -F "#{==:#{client_control_mode},0}" "resize-window -A"'
+      ''}
 
       # Catppuccin status modules were set here after the plugin loaded.
       # set -g status-left-length 100
@@ -235,8 +246,10 @@ in {
           set -g @resurrect-strategy-nvim 'session'
           set -g @resurrect-capture-pane-contents 'on'
           set -g @resurrect-processes 'pi'
+          ${lib.optionalString desktopIntegrations ''
           set -g @resurrect-hook-post-save-layout '/home/zarred/scripts/tmux/pi-resurrect-enrich-save'
           set -g @resurrect-hook-post-restore-all '/home/zarred/scripts/tmux/pi-resurrect-post-restore'
+          ''}
           set -g @resurrect-save 'S'
           # Keep restore away from plain r/R so reload muscle memory doesn't
           # accidentally restore old sessions.

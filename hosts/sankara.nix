@@ -10,7 +10,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit self inputs outputs pkgs-unstable pkgs-quickshell pkgs-brave-origin; };
+    extraSpecialArgs = {
+      inherit self inputs outputs pkgs-unstable pkgs-quickshell pkgs-brave-origin;
+      headless = false;
+    };
     users.zarred = import ../home/hosts/sankara.nix;
   };
   nixpkgs.hostPlatform = "x86_64-linux";

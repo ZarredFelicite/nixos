@@ -1,6 +1,8 @@
 { pkgs, lib, config, ... }:
 
 {
+  imports = [ ./shared/core.nix ];
+
   home = {
     username = "zarred";
     homeDirectory = "/home/zarred";
@@ -16,12 +18,10 @@
       SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
     };
 
-    # A few truly core packages. Most packages will be in other profiles.
+    # Keep this legacy host package out of shared/core.nix so ROCK does not
+    # build it while existing desktop/server hosts retain it.
     packages = with pkgs; [
-      fd # A simple, fast and user-friendly alternative to find
-      ripgrep # recursively searches directories for a regex pattern
-      jq # A lightweight and flexible command-line JSON processor
-      (callPackage ../pkgs/usbeehive { }) # USB and USB-C capability diagnostics
+      (callPackage ../pkgs/usbeehive { })
     ];
   };
 
@@ -53,46 +53,12 @@
     };
   };
 
-  programs.git = {
-    enable = true;
-    lfs.enable = true;
-    settings.user.name = "ZarredFelicite";
-    settings.user.email = "zarred.f@gmail.com";
-    signing = {
-      format = "openpgp";
-      key = "0xD276AC444633E146";
-      signByDefault = true;
-    };
-    settings = {
-      core = {
-        editor ="nvim";
-      };
-    };
+  programs.git.signing = {
+    format = "openpgp";
+    key = "0xD276AC444633E146";
+    signByDefault = true;
   };
 
-  programs.delta = {
-    # https://dandavison.github.io/delta/introduction.html
-    enable = true;
-    enableGitIntegration = true;
-    options = {
-      dark = true;
-      hyperlinks = true; # makes file paths clickable in the terminal
-      hyperlinks-file-link-format = "vscode://file/{path}:{line}"; # opens links in vscode
-      features = "decorations interactive";
-      syntax-theme = "ansi";
-      minus-style = "red";
-      plus-style = "green";
-      zero-style = "normal";
-      decorations = {
-        commit-decoration-style = "bold yellow box ul";
-        file-style = "bold yellow ul";
-        file-decoration-style = "none";
-      };
-      whitespace-error-style = "22 reverse";
-      #side-by-side = true;
-      line-numbers = true;
-    };
-  };
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -185,108 +151,5 @@
     };
   };
 
-  programs.gh = {
-    enable = true;
-    #gitCredentialHelper.enable = true;
-    settings = {
-      git_protocol = "ssh";
-      prompt = "enabled";
-      version = "1";
-      aliases = {
-        co = "pr checkout";
-        pv = "pr view";
-      };
-    };
-  };
 
-  programs.starship = {
-    enable = true;
-    settings = {
-      add_newline = false;
-      aws.disabled = true;
-      gcloud.disabled = true;
-      line_break.disabled = true;
-      package.disabled = true;
-      nix_shell.format = "$symbol ";
-      nix_shell.symbol = "";
-      #nix_shell.disabled = true;
-      python.symbol = " ";
-      python.format = "[\${symbol}\${pyenv_prefix}(\${version} )(\($virtualenv\) )]($style)";
-      git_branch.format = "[$symbol$branch(:$remote_branch)]($style)";
-    };
-  };
-
-  programs.bat = {
-    enable = true;
-    config = {
-      style = "numbers,changes,header";
-      color = "always";
-      decorations = "always";
-      italic-text = "always";
-    };
-  };
-
-  programs.tealdeer = {
-    enable = true;
-    settings = {
-      display = {
-        compact = true;
-        use_pager = false;
-      };
-      updates = {
-        auto_update = true;
-      };
-    };
-  };
-
-  editorconfig = {
-    enable = true;
-    settings = {
-      "*" = {
-        charset = "utf-8";
-        end_of_line = "lf";
-        insert_final_newline = true;
-        indent_size = 2;
-        indent_style = "space";
-        trim_trailing_whitespace = true;
-      };
-      "*.md" = {
-        indent_style = "tab";
-        trim_trailing_whitespace = false;
-      };
-      "Makefile" = {
-        indent_style = "tab";
-        indent_size = 4;
-      };
-      "*.html" = {
-        indent_style = "tab";
-        indent_size = 4;
-      };
-      "*.go" = {
-        indent_style = "tab";
-        indent_size = 4;
-      };
-      "*.rs" = {
-        indent_style = "space";
-        indent_size = 4;
-      };
-    };
-  };
-
-  xdg.configFile."/home/zarred/.jq".text = ''
-    def pad_left($len; $chr):
-        (tostring | length) as $l
-        | "\($chr * ([$len - $l, 0] | max) // "")\(.)"
-        ;
-    def pad_left($len):
-        pad_left($len; " ")
-        ;
-    def pad_right($len; $chr):
-        (tostring | length) as $l
-        | "\(.)\($chr * ([$len - $l, 0] | max) // "")"
-        ;
-    def pad_right($len):
-        pad_right($len; " ")
-        ;
-  '';
 }

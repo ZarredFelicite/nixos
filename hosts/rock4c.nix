@@ -10,7 +10,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit inputs self; };
+    extraSpecialArgs = {
+      inherit inputs self;
+      headless = true;
+    };
     users.zarred = import ../home/hosts/rock4c.nix;
   };
 

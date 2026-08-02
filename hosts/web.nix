@@ -12,6 +12,7 @@
     useUserPackages = true;
     extraSpecialArgs = {
       inherit self inputs outputs pkgs-unstable pkgs-ollama pkgs-quickshell pkgs-brave-origin;
+      headless = false;
     };
     users.zarred = import ../home/hosts/web.nix;
   };

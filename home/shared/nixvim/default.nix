@@ -212,6 +212,7 @@ imports = [
         end,
       })
 
+      ${lib.optionalString graphicalNixvim ''
       if #vim.api.nvim_list_uis() > 0 then
         local image_ok, image = pcall(require, 'image')
         if image_ok then
@@ -375,6 +376,7 @@ imports = [
           },
         })
       end
+      ''}
     '';
     autoGroups = {
       kickstart-highlight-yank = {
@@ -824,7 +826,7 @@ imports = [
           signs = true;
         };
       };
-      obsidian = {
+      obsidian = lib.mkIf graphicalNixvim {
         enable = true;
         settings = {
           completion = {

@@ -20,6 +20,7 @@
   xdg.configFile."mpv/scripts/history.lua".source = ./plugins/mpvhistory.lua;
   xdg.configFile."mpv/scripts/jellyfin.lua".source = ./plugins/jellyfin.lua;
   xdg.configFile."mpv/scripts/easycrop.lua".source = ./plugins/easycrop.lua;
+  xdg.configFile."mpv/scripts/clipper.lua".source = ./plugins/clipper.lua;
   xdg.configFile."mpv/scripts/clear-old-buffers.lua".source = ./plugins/clear-old-buffers.lua;
   xdg.configFile."mpv/script-opts/jellyfin.conf".source =
     config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."mpv-jellyfin.conf".path;
@@ -171,6 +172,8 @@
       n                 = "seek -5; script-binding uosc/flash-timeline";
       o                 = "seek 5; script-binding uosc/flash-timeline";
       y                 = "cycle-values video-aspect '0' '-1' '16:9' '4:3' '2:1' '2.21:1' '1.6:1'";
+      t                 = "script-binding clipper/mark-or-export #! Utils > Clip video";
+      T                 = "script-binding clipper/reset #! Utils > Clear clip markers";
       R                 = "cycle-values video-rotate '90' '180' '270' '0'";
       b                 = "cycle-values deband 'yes' 'no'";
       B                 = "cycle-values deband-iterations '1' '2' '3'; cycle-values deband-threshold '35' '60' '100'; cycle-values deband-range '16' '20' '25'; cycle-values deband-grain '5' '24' '48'; show-text 'Deband: \${deband-iterations}:\${deband-threshold}:\${deband-range}:\${deband-grain}'";

@@ -543,25 +543,25 @@
           # Keep only install metadata public; the app, API, and WebSocket stay
           # behind the authenticated catch-all below.
           locations."= /manifest.json" = {
-            proxyPass = "http://web:8000/manifest.json";
+            proxyPass = "http://web:9998/manifest.json";
             extraConfig = ''
               add_header Cache-Control "no-store, must-revalidate" always;
             '';
           };
           locations."= /sw.js" = {
-            proxyPass = "http://web:8000/sw.js";
+            proxyPass = "http://web:9998/sw.js";
             extraConfig = ''
               add_header Cache-Control "no-store, must-revalidate" always;
             '';
           };
           locations."= /icon-192.png" = {
-            proxyPass = "http://web:8000/icon-192.png";
+            proxyPass = "http://web:9998/icon-192.png";
           };
           locations."= /icon-512.png" = {
-            proxyPass = "http://web:8000/icon-512.png";
+            proxyPass = "http://web:9998/icon-512.png";
           };
           locations."/" = {
-            proxyPass = "http://web:8000";
+            proxyPass = "http://web:9998";
             proxyWebsockets = true;
             recommendedProxySettings = false;
             extraConfig = ''

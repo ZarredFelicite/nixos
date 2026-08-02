@@ -165,7 +165,7 @@ in
           Environment = [
             "HOME=%h"
             "QMD_MCP_URL=http://localhost:8181/mcp"
-            "PATH=${qmdPkg}/bin:%h/.nix-profile/bin:%h/.local/state/nix/profile/bin:/etc/profiles/per-user/%u/bin:/nix/profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
+            "PATH=/run/wrappers/bin:${qmdPkg}/bin:%h/.nix-profile/bin:%h/.local/state/nix/profile/bin:/etc/profiles/per-user/%u/bin:/nix/profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
           ];
           ExecStart = "${emberStart}";
           Restart = "on-failure";

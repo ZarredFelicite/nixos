@@ -27,6 +27,8 @@
       timeout = 2;
     };
     supportedFilesystems = lib.mkForce [ "ext4" "vfat" ];
+    # 7.1.2 loads the AP6256 firmware but times out on SDIO control requests.
+    kernelPackages = inputs.rock4c-nixpkgs.legacyPackages.aarch64-linux.linuxPackages_latest;
     initrd.kernelModules = [ "reset-gpio" ];
     kernelModules = [ "reset-gpio" ];
     kernelParams = [ "console=ttyS2,1500000n8" ];

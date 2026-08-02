@@ -3,8 +3,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
-    # Kernel 7.1.3 is the known-good AP6256 baseline for the ROCK 4C+.
-    rock4c-nixpkgs.url = "github:nixos/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
     # Keep Ollama CUDA on the last known-good revision until the 0.32.x nvcc regression is fixed.
     nixpkgs-ollama.url = "github:nixos/nixpkgs/9ab0784f4b4b98a4f100d4cb2245d791cdccf70a";
     nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";

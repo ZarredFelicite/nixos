@@ -142,7 +142,7 @@
         Settings.AutoConnect = true;
         General.EnableNetworkConfiguration = true;
         Rank.BandModifier2_4GHz = 0.5;
-        Rank.BandModifier5GHz = 5.0;
+        Rank.BandModifier5GHz = 20.0;
       };
     };
     firewall = {

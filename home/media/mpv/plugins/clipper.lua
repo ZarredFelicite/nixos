@@ -173,7 +173,6 @@ local function open_filename_prompt()
         footnote = "Enter to export · Esc to cancel",
         search_style = "palette",
         search_debounce = "submit",
-        search_submit = true,
         search_suggestion = suggested_filename(input_path),
         on_search = "callback",
         callback = {"clipper", "filename-event"},

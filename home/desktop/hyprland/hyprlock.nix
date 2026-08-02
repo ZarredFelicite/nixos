@@ -1,6 +1,6 @@
 { osConfig, ... }:
 let
-  monitor = if osConfig.networking.hostName == "web" then "DP-3" else "eDP-1";
+  monitor = if osConfig.networking.hostName == "web" then "HDMI-A-1" else "eDP-1";
 in {
   programs.hyprlock.settings = {
     general = {
@@ -20,7 +20,7 @@ in {
         brightness = 0.7;
       }
       {
-        monitor = "DP-2";
+        monitor = "DP-3";
         path = "/home/zarred/pictures/wallpapers/tarantula_nebula_web_right.png";
         color = "rgba(25, 20, 20, 1.0)";
         blur_passes = 4;
@@ -32,7 +32,7 @@ in {
         #vibrancy_darkness = 0.0
       }
       {
-        monitor = "DP-3";
+        monitor = "HDMI-A-1";
         path = "/home/zarred/pictures/wallpapers/tarantula_nebula_web_left.png";
         color = "rgba(25, 20, 20, 1.0)";
         blur_passes = 4;

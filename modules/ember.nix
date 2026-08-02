@@ -6,6 +6,106 @@ with lib;
 
 let
   cfg = config.services.ember;
+  qmdDevice = pkgs.writeShellApplication {
+    name = "qmd-device";
+    runtimeInputs = [ pkgs.coreutils pkgs.gnugrep pkgs.systemd ];
+    text = ''
+      set -euo pipefail
+
+      readonly service=qmd-mcp.service
+      readonly state_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/qmd"
+      readonly state_file="$state_dir/device.env"
+      readonly default_gpu=cuda
+
+      mode_for_value() {
+        case "$1" in
+          cuda) printf 'cuda' ;;
+          false|off|none|disable|disabled) printf 'cpu' ;;
+          *) printf 'unknown' ;;
+        esac
+      }
+
+      configured_gpu() {
+        local value="$default_gpu"
+        if [[ -r "$state_file" ]]; then
+          while IFS= read -r line; do
+            case "$line" in
+              NODE_LLAMA_CPP_GPU=*) value="''${line#NODE_LLAMA_CPP_GPU=}"; break ;;
+            esac
+          done < "$state_file"
+        fi
+        printf '%s' "$value"
+      }
+
+      print_status() {
+        local configured_value configured_mode active_state sub_state pid runtime_gpu backend
+        configured_value="$(configured_gpu)"
+        configured_mode="$(mode_for_value "$configured_value")"
+        active_state="$(systemctl --user show "$service" -p ActiveState --value 2>/dev/null || printf unknown)"
+        sub_state="$(systemctl --user show "$service" -p SubState --value 2>/dev/null || printf unknown)"
+        pid="$(systemctl --user show "$service" -p MainPID --value 2>/dev/null || printf 0)"
+        runtime_gpu=not-running
+        backend=not-loaded
+
+        if [[ "$pid" =~ ^[1-9][0-9]*$ ]]; then
+          if [[ -r "/proc/$pid/environ" ]]; then
+            runtime_gpu="$(tr '\0' '\n' < "/proc/$pid/environ" | grep '^NODE_LLAMA_CPP_GPU=' | head -n1 | cut -d= -f2- || true)"
+            runtime_gpu="''${runtime_gpu:-unset}"
+          fi
+          if [[ -r "/proc/$pid/maps" ]]; then
+            if grep -qE 'libggml-cuda|libllama\.cuda' "/proc/$pid/maps"; then
+              backend=cuda
+            elif grep -qE 'libggml-cpu|libllama\.' "/proc/$pid/maps"; then
+              backend=cpu
+            fi
+          fi
+        fi
+
+        printf 'configured: %s (NODE_LLAMA_CPP_GPU=%s)\n' "$configured_mode" "$configured_value"
+        printf 'service: %s/%s (pid %s)\n' "$active_state" "$sub_state" "$pid"
+        printf 'service env: NODE_LLAMA_CPP_GPU=%s\n' "$runtime_gpu"
+        printf 'loaded backend: %s\n' "$backend"
+
+        [[ "$active_state" == active ]]
+      }
+
+      usage() {
+        printf 'usage: qmd-device status|cpu|cuda\n' >&2
+        exit 2
+      }
+
+      command="''${1:-status}"
+      case "$command" in
+        status)
+          print_status
+          ;;
+        cpu|cuda)
+          mkdir -p "$state_dir"
+          chmod 700 "$state_dir"
+          temp_file="$(mktemp "$state_dir/device.env.XXXXXX")"
+          trap 'rm -f "$temp_file"' EXIT
+          chmod 600 "$temp_file"
+          if [[ "$command" == cpu ]]; then
+            printf 'NODE_LLAMA_CPP_GPU=false\n' > "$temp_file"
+          else
+            printf 'NODE_LLAMA_CPP_GPU=cuda\n' > "$temp_file"
+          fi
+          mv -f "$temp_file" "$state_file"
+          trap - EXIT
+
+          if ! systemctl --user restart "$service"; then
+            printf 'qmd-mcp.service restart failed; persisted mode is %s\n' "$command" >&2
+            print_status || true
+            exit 1
+          fi
+          print_status
+          ;;
+        *)
+          usage
+          ;;
+      esac
+    '';
+  };
 in
 {
   options.services.ember = {
@@ -25,6 +125,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ qmdDevice ];
+
     systemd.user.services = let
       qmdPkg = pkgs.callPackage ../pkgs/qmd/package.nix {};
     in {
@@ -36,6 +138,7 @@ in
         serviceConfig = {
           Type = "simple";
           Environment = [ "HOME=%h" ];
+          EnvironmentFile = [ "-%h/.config/qmd/device.env" ];
           ExecStart = "${lib.getExe qmdPkg} mcp --http --port 8181";
           Restart = "on-failure";
           RestartSec = "5s";

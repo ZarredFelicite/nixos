@@ -1,6 +1,6 @@
 { pkgs, pkgs-unstable, lib, inputs, ... }:
 let
-  vicinaePackage = inputs.vicinae.packages.${pkgs.system}.default;
+  vicinaePackage = inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default;
   clipboardSelector = pkgs.writeShellScriptBin "clipboardSelector" "cliphist list | rofi -dmenu -matching prefix | cliphist decode | wl-copy ";
   hyprlauncherSettings = {
     general.grab_focus = true;

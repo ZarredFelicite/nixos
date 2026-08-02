@@ -53,6 +53,13 @@
   "browser.uitour.enabled" = false;
   "privacy.globalprivacycontrol.enabled" = true;
   "privacy.globalprivacycontrol.functionality.enabled" = true;
+  # Disable extra tracking channels.
+  "beacon.enabled" = false;
+  "dom.private-attribution.submission.enabled" = false;
+
+  # Reduce referrer leakage to trackers.
+  "network.http.referer.defaultPolicy.trackers" = 1;
+  "network.http.referer.defaultPolicy.trackers.pbmode" = 1;
   ## OCSP & CERTS / HPKP
   "security.OCSP.enabled" = 0;
   "security.remote_settings.crlite_filters.enabled" = true;
@@ -204,7 +211,7 @@
 
   # CUSTOM
   ## UI
-  "browser.tabs.allow_transparent_browser" = true;
+  "browser.tabs.allow_transparent_browser" = false;
   ## typeahead find
   "accessibility.typeaheadfind" = false;
   "accessibility.typeaheadfind.autostart" = true;

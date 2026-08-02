@@ -21,6 +21,7 @@
       fd # A simple, fast and user-friendly alternative to find
       ripgrep # recursively searches directories for a regex pattern
       jq # A lightweight and flexible command-line JSON processor
+      (callPackage ../pkgs/usbeehive { }) # USB and USB-C capability diagnostics
     ];
   };
 
@@ -94,8 +95,16 @@
   };
   programs.ssh = {
     enable = true;
+    enableDefaultConfig = false;
     matchBlocks = {
       "*" = {
+        forwardAgent = false;
+        addKeysToAgent = "no";
+        compression = false;
+        serverAliveInterval = 0;
+        serverAliveCountMax = 3;
+        hashKnownHosts = false;
+        userKnownHostsFile = "~/.ssh/known_hosts";
         controlMaster = "auto";
         controlPath = "~/.ssh/controlmasters/%r@%h:%p";
         controlPersist = "1h";

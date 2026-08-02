@@ -3,8 +3,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    # Keep Ollama CUDA on the last known-good revision until the 0.32.x nvcc regression is fixed.
+    nixpkgs-ollama.url = "github:nixos/nixpkgs/9ab0784f4b4b98a4f100d4cb2245d791cdccf70a";
     nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";
     nixpkgs-brave-origin.url = "github:Daniel-42-z/brave-origin-flake/bbe5b55e46d3f842ef52a2db961eb0244ec2cbd4";
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; inputs.nixpkgs.follows = "nixpkgs"; };
     nur = { url = "github:nix-community/NUR"; };
@@ -25,7 +31,6 @@
     # nix-vscode-extensions = { url = "github:nix-community/nix-vscode-extensions"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     nixvim = { url = "github:nix-community/nixvim"; }; # nixvim needs it's own nixpkgs
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
-
     # INFO:. does not have opencode compat. mcp-servers-nix = { url = "github:natsukium/mcp-servers-nix"; inputs.nixpkgs.follows = "nixpkgs-unstable"; };
 
     #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
@@ -41,7 +46,7 @@
   };
   outputs = {
     self, nixpkgs,
-    nixpkgs-unstable, nixpkgs-quickshell, nixpkgs-brave-origin, #nixpkgs-master,
+    nixpkgs-unstable, nixpkgs-ollama, nixpkgs-quickshell, nixpkgs-brave-origin, #nixpkgs-master,
     home-manager, determinate, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
@@ -59,6 +64,10 @@
         overlays = [
           # inputs.nix-vscode-extensions.overlays.default
         ];
+      };
+      pkgs-ollama = import nixpkgs-ollama {
+        inherit system;
+        config.allowUnfree = true;
       };
       pkgs-quickshell = import nixpkgs-quickshell {
         inherit system;
@@ -78,7 +87,7 @@
           inherit system;
           specialArgs = {
             inherit inputs self;
-            inherit pkgs-unstable pkgs-quickshell pkgs-brave-origin;
+            inherit pkgs-unstable pkgs-ollama pkgs-quickshell pkgs-brave-origin;
             #inherit pkgs-master;
             #inherit pkgs-stable;
           };

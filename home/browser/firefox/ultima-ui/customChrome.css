@@ -1,0 +1,379 @@
+/* Temporary writable motion test; sync only after visual validation. */
+
+@import url(latinAccentUI.css);
+
+/* Keep Ultima's floating navbar visible while its URL field has focus.
+ * Firefox 152 no longer reliably matches Ultima's [focused=""] selector. */
+@media -moz-pref("ultima.navbar.float") {
+  #main-window:has(#urlbar:is(:focus-within, [focused="true"], [open="true"]))
+    #navigator-toolbox {
+    top: 14px !important;
+  }
+}
+
+/* Firefox-Mod-Blur WebRender workaround: expose OOP web content to chrome
+ * backdrop filters. Removing this makes ordinary webpages unblurred. */
+.browserContainer .browserStack {
+  backdrop-filter: blur(0) !important;
+}
+
+:root {
+  --zarred-native-glass-tint: rgba(31, 29, 46, 0.5);
+  --zarred-topbar-glass-tint: rgba(31, 29, 46, 0.6);
+  --zarred-urlbar-glass-tint: rgba(31, 29, 46, 0.5);
+  --zarred-native-glass-filter: blur(32px) saturate(140%);
+  --zarred-pane-radius: 20px;
+  --zarred-fixed-sidebar-half-width: 164px;
+  --zarred-rose-pine-iris: #c4a7e7;
+  --zarred-rose-pine-highlight: rgba(196, 167, 231, 0.24);
+}
+
+#main-window {
+  --uc-accent-color-1: var(--zarred-rose-pine-iris) !important;
+  --uc-accent-color-2: #ebbcba !important;
+  --uc-accent-color-5: var(--zarred-rose-pine-iris) !important;
+  --uc-button-selected: var(--zarred-rose-pine-highlight) !important;
+  --tab-selected-bgcolor: var(--zarred-rose-pine-highlight) !important;
+  --tab-hover-background-color: rgba(196, 167, 231, 0.16) !important;
+  --toolbar-field-focus-border-color: var(--zarred-rose-pine-iris) !important;
+  --urlbarView-highlight-background: var(--zarred-rose-pine-highlight) !important;
+  --urlbarView-hover-background: rgba(196, 167, 231, 0.16) !important;
+  --urlbarView-result-button-selected-background-color: var(--zarred-rose-pine-highlight) !important;
+  accent-color: var(--zarred-rose-pine-iris) !important;
+}
+
+::selection {
+  color: #191724 !important;
+  background-color: var(--zarred-rose-pine-iris) !important;
+}
+
+/* One native glass surface for the top bar; child toolbars stay transparent. */
+#navigator-toolbox {
+  background-color: var(--zarred-topbar-glass-tint) !important;
+  background-image: none !important;
+  border: none !important;
+  backdrop-filter: var(--zarred-native-glass-filter) !important;
+}
+
+#navigator-toolbox > :is(#toolbar-menubar, #TabsToolbar, #nav-bar, #PersonalToolbar) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Avoid nesting backdrop roots: Ctrl-L must sample the webpage directly. */
+#navigator-toolbox:has(#urlbar:is([breakout][open])) {
+  backdrop-filter: none !important;
+}
+
+/* Compact mode: Firefox's Expand sidebar on hover setting selects the custom
+ * overlay implementation. Always show leaves this block inactive and uses the
+ * fixed, in-flow expanded sidebar instead. */
+@media -moz-pref("sidebar.visibility", "expand-on-hover") {
+  /* Native expand-on-hover owns hover state, debounce, and animation. */
+  #main-window[sidebar-expand-on-hover] #browser {
+    position: relative !important;
+    overflow: clip !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #tabbrowser-tabbox {
+    margin-inline: 0 !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-launcher-splitter {
+    display: none !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-main {
+    position: absolute !important;
+    z-index: var(--browser-area-z-index-sidebar-expand-on-hover) !important;
+    inset-inline-start: 0 !important;
+    inset-inline-end: auto !important;
+    top: 10vh !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-main #vertical-tabs,
+  #main-window[sidebar-expand-on-hover] #sidebar-main #tabbrowser-tabs[orient="vertical"] {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-main:not(
+    [sidebar-launcher-expanded],
+    [sidebar-ongoing-animations]
+  ) > sidebar-main {
+    opacity: 0 !important;
+    padding-inline-start: 0 !important;
+    clip-path: none !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-main:is(
+    [sidebar-launcher-expanded],
+    [sidebar-ongoing-animations]
+  ) {
+    width: 360px !important;
+    min-width: 360px !important;
+    padding-inline-start: 0 !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-main:is(
+    [sidebar-launcher-expanded],
+    [sidebar-ongoing-animations]
+  ) > sidebar-main {
+    --tab-pinned-min-width-expanded: 64px !important;
+    --tab-pinned-container-margin-inline-expanded: 9.5px !important;
+    box-sizing: border-box !important;
+    opacity: 1 !important;
+    padding-inline-start: 20px !important;
+    clip-path: inset(0 0 0 20px round var(--zarred-pane-radius)) !important;
+    background-image: none !important;
+    background-color: var(--zarred-native-glass-tint) !important;
+    background-clip: border-box !important;
+    border: none !important;
+    border-radius: var(--zarred-pane-radius) !important;
+    box-shadow: var(--uc-box-shadow) !important;
+    backdrop-filter: var(--zarred-native-glass-filter) !important;
+    overflow: clip !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #sidebar-main[sidebar-launcher-expanded] #vertical-tabs {
+    box-sizing: border-box !important;
+    padding-block: 10px !important;
+  }
+}
+
+/* Fixed/pinned mode removes the window's sidebar-expand-on-hover attribute.
+ * It reserves the native sidebar width while reusing compact mode's card. */
+@media (-moz-pref("sidebar.visibility", "expand-on-hover")) or
+       (-moz-pref("sidebar.visibility", "always-show")) {
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #browser > #sidebar-main {
+    position: relative !important;
+    align-self: stretch !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #sidebar-main > sidebar-main {
+    --tab-pinned-min-width-expanded: 64px !important;
+    --tab-pinned-container-margin-inline-expanded: 9.5px !important;
+    box-sizing: border-box !important;
+    opacity: 1 !important;
+    padding-inline-start: 0 !important;
+    clip-path: none !important;
+    background-image: none !important;
+    background-color: var(--zarred-native-glass-tint) !important;
+    background-clip: border-box !important;
+    border: none !important;
+    border-radius: var(--zarred-pane-radius) !important;
+    box-shadow: var(--uc-box-shadow) !important;
+    backdrop-filter: var(--zarred-native-glass-filter) !important;
+    overflow: clip !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #sidebar-main #vertical-tabs {
+    box-sizing: border-box !important;
+    padding-block: 10px !important;
+  }
+
+  /* Match secondary panels such as History and Bookmarks to the tab card. */
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #sidebar-box:not([hidden]) {
+    box-sizing: border-box !important;
+    margin: 10px 10px 10px 0 !important;
+    padding: 0 !important;
+    background-color: var(--zarred-native-glass-tint) !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: var(--zarred-pane-radius) !important;
+    box-shadow: var(--uc-box-shadow) !important;
+    backdrop-filter: var(--zarred-native-glass-filter) !important;
+    overflow: clip !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #sidebar-box[sidebar-positionend]:not([hidden]) {
+    margin: 10px 0 10px 10px !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #sidebar-box:not([hidden]) > :is(#sidebar-header, #sidebar) {
+    background-color: transparent !important;
+    background-image: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #sidebar-splitter {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  /* Keep the floating top bar centered over the content pane rather than the
+   * full window. This profile's fixed launcher is 338px wide. */
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #navigator-toolbox {
+    left: calc(20% + var(--zarred-fixed-sidebar-half-width)) !important;
+    right: calc(20% - var(--zarred-fixed-sidebar-half-width)) !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+    #urlbar[breakout-extend] {
+    left: 50% !important;
+    width: min(720px, calc(90vw - 338px)) !important;
+    max-width: none !important;
+    translate: var(--zarred-fixed-sidebar-half-width) 0 !important;
+  }
+
+  @media (max-width: 1250px) {
+    #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+      #navigator-toolbox {
+      left: calc(1.5% + var(--zarred-fixed-sidebar-half-width)) !important;
+      right: calc(1.5% - var(--zarred-fixed-sidebar-half-width)) !important;
+    }
+  }
+
+  @media -moz-pref("ultima.navbar.float.fullsize") {
+    #main-window:not([sidebar-expand-on-hover]):has(#sidebar-main[sidebar-launcher-expanded])
+      #navigator-toolbox {
+      left: calc(12px + var(--zarred-fixed-sidebar-half-width)) !important;
+      right: calc(12px - var(--zarred-fixed-sidebar-half-width)) !important;
+    }
+  }
+
+  #main-window:not([sidebar-expand-on-hover], [inDOMFullscreen]):has(
+    #sidebar-main[sidebar-launcher-expanded]
+  ) #tabbrowser-tabpanels browser[type] {
+    margin: 10px 10px 10px 0 !important;
+    border-radius: var(--zarred-pane-radius) !important;
+  }
+
+  /* Never expose Firefox's native icon-only rail if hover-mode state races. */
+  #main-window:not([sidebar-expand-on-hover]):has(
+    #sidebar-main:not([sidebar-launcher-expanded])
+  ) #browser {
+    position: relative !important;
+    overflow: clip !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(
+    #sidebar-main:not([sidebar-launcher-expanded])
+  ) #browser > #sidebar-main {
+    position: absolute !important;
+    z-index: var(--browser-area-z-index-sidebar-expand-on-hover) !important;
+    inset-inline-start: 0 !important;
+    inset-inline-end: auto !important;
+    top: 10vh !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(
+    #sidebar-main:not([sidebar-launcher-expanded])
+  ) #sidebar-main > sidebar-main {
+    opacity: 0 !important;
+    clip-path: none !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover]):has(
+    #sidebar-main:not([sidebar-launcher-expanded])
+  ) #tabbrowser-tabbox {
+    margin-inline: 0 !important;
+  }
+
+  #main-window:not([sidebar-expand-on-hover], [inDOMFullscreen]):has(
+    #sidebar-main:not([sidebar-launcher-expanded])
+  ) #tabbrowser-tabpanels browser[type] {
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+/* Compact mode keeps the webpage fully edge-to-edge beneath its overlay. */
+@media -moz-pref("sidebar.visibility", "expand-on-hover") {
+  #main-window[sidebar-expand-on-hover] #tabbrowser-tabpanels browser[type] {
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+/* Blur Firefox's native Ctrl-L panel rather than adding a duplicate surface. */
+@keyframes zarred-urlbar-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media -moz-pref("ultima.urlbar.float") {
+  #navigator-toolbox #urlbar[breakout-extend] {
+    width: min(720px, 90vw) !important;
+    max-width: none !important;
+    transform-origin: top center !important;
+    transition: none !important;
+    animation: zarred-urlbar-fade-in 180ms ease-out both !important;
+  }
+
+  #navigator-toolbox #urlbar:is([breakout][open]) {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    border-radius: var(--uc-button-border-radius, 12px) !important;
+    box-shadow: var(--uc-box-shadow) !important;
+    backdrop-filter: var(--zarred-native-glass-filter) !important;
+    overflow: clip !important;
+  }
+
+  #navigator-toolbox #urlbar:is([breakout][open]) :is(
+    #urlbar-background,
+    .urlbar-background,
+    .urlbar-input-container,
+    .urlbarView,
+    .urlbarView-body-outer,
+    .urlbarView-body-inner,
+    .urlbarView-results
+  ) {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Firefox Nova paints the popup through this native inset layer. */
+  #main-window #navigator-toolbox #urlbar:is([breakout][open]) > :is(
+    #urlbar-background,
+    .urlbar-background
+  ) {
+    background: var(--zarred-urlbar-glass-tint) !important;
+    opacity: 1 !important;
+  }
+}

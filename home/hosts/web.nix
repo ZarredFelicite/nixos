@@ -1,14 +1,45 @@
-{ inputs, self, pkgs, pkgs-unstable, lib, config, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, pkgs-unstable, pkgs-ollama, lib, config, osConfig, ... }: # Added osConfig
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
-  ollamaCudaPackage = pkgs-unstable.ollama-cuda;
+  ollamaCudaPackage = pkgs-ollama.ollama-cuda;
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
+  announcementWatcherPython = pkgs.python313.withPackages (ps: [ ps.requests ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
+  gemma4ModelsPreset = pkgs.writeText "gemma4-models.ini" ''
+    version = 1
+
+    [gemma4-e4b-it-qat]
+    model = /home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf
+    ctx-size = 65536
+    n-gpu-layers = 99
+    device = CUDA0
+    parallel = 1
+    reasoning = off
+    reasoning-format = none
+    flash-attn = auto
+    batch-size = 512
+    ubatch-size = 512
+    load-on-startup = false
+
+    [gemma4-12b-heretic]
+    model = /home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf
+    ctx-size = 32768
+    n-gpu-layers = 99
+    device = CUDA0
+    parallel = 1
+    reasoning = off
+    reasoning-format = deepseek
+    flash-attn = auto
+    batch-size = 512
+    ubatch-size = 512
+    load-on-startup = false
+  '';
   audioSummaryPath = lib.makeBinPath [
     audioSummaryPython
+    piPackage
     pkgs.bash
     pkgs.coreutils
     pkgs.ffmpeg
@@ -84,27 +115,16 @@ in
   };
 
   systemd.user.services.gemma4-e4b-server = {
-    Unit.Description = "Low-latency Gemma 4 E4B QAT CUDA server";
+    Unit.Description = "On-demand Gemma 4 CUDA model router";
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/ai/gemma4-e4b-server";
+      ExecStart = "${ollamaCudaLib}/llama-server --host 127.0.0.1 --port 8083 --no-webui --offline --models-preset ${gemma4ModelsPreset} --models-max 1 --models-autoload --metrics";
       Restart = "on-failure";
       RestartSec = 2;
       TimeoutStartSec = 30;
       Environment = [
-        "LLAMA_SERVER_BIN=${ollamaCudaLib}/llama-server"
         "GGML_BACKEND_PATH=${ollamaCudaLib}/cuda_v12/libggml-cuda.so"
         "LD_LIBRARY_PATH=${ollamaCudaLib}:${ollamaCudaLib}/cuda_v12"
-        "GEMMA4_MODEL=/home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf"
-        "GEMMA4_HOST=127.0.0.1"
-        "GEMMA4_PORT=8083"
-        "GEMMA4_DEVICE=CUDA0"
-        "GEMMA4_CONTEXT_SIZE=65536"
-        "GEMMA4_PARALLEL=1"
-        "GEMMA4_REASONING=off"
-        "GEMMA4_REASONING_FORMAT=none"
-        "GEMMA4_BATCH_SIZE=512"
-        "GEMMA4_UBATCH_SIZE=512"
         "CUDA_VISIBLE_DEVICES=0"
       ];
       NoNewPrivileges = true;
@@ -127,6 +147,8 @@ in
       WorkingDirectory = "/home/zarred/scripts/stt";
       Environment = [
         "PATH=${audioSummaryPath}"
+        "PI_CODING_AGENT_DIR=/home/zarred/.config/pi/agent"
+        "PI_SKIP_VERSION_CHECK=1"
       ];
     };
     Install.WantedBy = [ "default.target" ];
@@ -192,6 +214,30 @@ in
     Service.StartLimitIntervalSec = "0";
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.ibkr-announcement-watcher = {
+    Unit = {
+      Description = "Summarize held-company ASX announcements and route urgent events to Ember";
+      After = [ "network-online.target" "ember.service" ];
+      Wants = [ "network-online.target" "ember.service" ];
+      StartLimitIntervalSec = 0;
+    };
+    Service = {
+      Type = "simple";
+      WorkingDirectory = "/home/zarred/scripts/finances/ibkr";
+      EnvironmentFile = [ "-/home/zarred/.config/ibkr/announcement-watcher.env" ];
+      Environment = [
+        "PYTHONUNBUFFERED=1"
+        "PATH=${lib.makeBinPath [ announcementWatcherPython pkgs.coreutils pkgs.curl ]}:/run/current-system/sw/bin"
+      ];
+      ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once";
+      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5";
+      Restart = "on-failure";
+      RestartSec = "60s";
+      TimeoutStartSec = "20m";
+    };
+    Install.WantedBy = [ "default.target" ];
   };
   systemd.user.services.computer-vision = {
     Unit.Description = "Server for computer vision inference";

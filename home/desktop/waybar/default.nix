@@ -125,8 +125,8 @@ in {
     #});
     settings = lib.mkMerge [
       (lib.mkIf (osConfig.networking.hostName == "web"){
-        primary.output = "DP-3";
-        secondary.output = "DP-2";
+        primary.output = "HDMI-A-1";
+        secondary.output = "DP-3";
       })
       (lib.mkIf (osConfig.networking.hostName == "nano"){
         primary.output = "eDP-1";

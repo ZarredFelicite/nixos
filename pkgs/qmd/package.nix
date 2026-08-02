@@ -46,7 +46,7 @@ let
     '';
     dontPatchShebangs = true;
     dontFixup = true;
-    outputHash = pin."${stdenv.system}";
+    outputHash = pin."${stdenv.hostPlatform.system}";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -112,6 +112,17 @@ stdenv.mkDerivation (finalAttrs: {
 
     tsc -p tsconfig.build.json
 
+    # qmd 1.0.6 explicitly auto-detects GPUs instead of passing through
+    # node-llama-cpp's NODE_LLAMA_CPP_GPU default. Honor its supported CPU
+    # off-values so the qmd-device toggle can force CPU execution.
+    substituteInPlace dist/llm.js \
+      --replace-fail \
+      '            const gpuTypes = await getLlamaGpuTypes();' \
+      '            const requestedGpu = process.env.NODE_LLAMA_CPP_GPU?.toLowerCase();
+                const gpuOffValues = ["false", "off", "none", "disable", "disabled"];
+                const forceCpu = gpuOffValues.includes(requestedGpu ?? "");
+                const gpuTypes = forceCpu ? [false] : await getLlamaGpuTypes();'
+
     runHook postBuild
   '';
 
@@ -130,7 +141,7 @@ stdenv.mkDerivation (finalAttrs: {
     set -e
 
     export NODE_LLAMA_CPP_LLAMA_DIR="''${XDG_CACHE_HOME:-\$HOME/.cache}/node-llama-cpp/llama"
-    export NODE_LLAMA_CPP_GPU="''${NODE_LLAMA_CPP_GPU:-cuda}"
+    export NODE_LLAMA_CPP_GPU="\''${NODE_LLAMA_CPP_GPU:-cuda}"
     export CUDAToolkit_ROOT="${cudaPackages.cudatoolkit}"
     export CUDA_PATH="${cudaPackages.cudatoolkit}"
     export CPATH="${cudaPackages.cudatoolkit}/include:${cudaPackages.cuda_cudart}/include:''${CPATH:-}"

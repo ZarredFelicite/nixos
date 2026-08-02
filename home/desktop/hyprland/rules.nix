@@ -39,7 +39,9 @@
     windowrule = match:title ^(Hyprland Polkit Agent)$, stay_focused on
     #windowrule = match:class ^(mpv)$, keepaspectratio on
     windowrule = match:class ^(mpv)$, match:float true, match:fullscreen false, no_blur on
-    windowrule = match:class ^(firefox)$, suppress_event maximize
+    windowrule = match:class ^(firefox|firefox-ultima)$, suppress_event maximize
+    # A near-opaque multiplier activates Hyprland's blur pass for Gjoa.
+    windowrule = match:class ^(gjoa-default)$, opacity 0.999 override 0.999 override 0.999 override
     windowrule = match:class ^(OrcaSlicer)$, suppress_event activatefocus
     windowrule = match:title ^(ripdrag)$, pin on
     windowrule = match:title ^(Enter name of file to save to…)$, match:class xdg-desktop-portal-gtk, size 60% 50%
@@ -102,8 +104,8 @@
   '';
   wayland.windowManager.hyprland.settings = {
     workspace = [
-      "1, monitor:DP-3, default:true"
-      "5, monitor:DP-2, default:true"
+      "1, monitor:desc:Dell Inc. AW3423DWF 2ZVC2S3, default:true"
+      "5, monitor:desc:Xiaomi Corporation Mi Monitor, default:true"
       "special:obsidian, on-created-empty:obsidian, gapsout:40, gapsin:40"
       "special:stats, on-created-empty:kitty --class stats zsh -c 'btop', gapsout:40, gapsin:40"
       "special:volume, on-created-empty:pavucontrol, gapsout:40, gapsin:40"

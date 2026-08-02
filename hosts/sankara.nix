@@ -159,16 +159,42 @@
       ];
     };
   };
-  systemd.services.parakeet-devenv = {
-    description = "Devenv service parakeet";
-    after = [ "network.target" ];
+  systemd.services.parakeet-batch = {
+    description = "Persistent internal Parakeet TDT batch ASR worker";
+    after = [ "network.target" "nemotron-asr.service" ];
     wantedBy = [ "multi-user.target" ];
+    environment = {
+      HF_HOME = "/home/zarred/.cache/huggingface";
+      HF_HUB_DISABLE_XET = "1";
+      PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
+    };
     serviceConfig = {
       User = "zarred";
       Group = "users";
       WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
-      ExecStart = "${pkgs.nix}/bin/nix develop --command 'start'";
+      ExecStartPre = "${pkgs.bash}/bin/bash -c 'for attempt in {1..120}; do ${pkgs.curl}/bin/curl -fsS http://127.0.0.1:5001/health >/dev/null && exit 0; sleep 1; done; exit 1'";
+      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python parakeet_batch_server.py --listen 127.0.0.1:5003 --segment-length 60 --chunk-overlap 2 --wait-timeout 30'";
       Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+
+  systemd.services.nemotron-asr = {
+    description = "Persistent Nemotron streaming and hybrid ASR gateway";
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    environment = {
+      HF_HOME = "/home/zarred/.cache/huggingface";
+      HF_HUB_DISABLE_XET = "1";
+      PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
+    };
+    serviceConfig = {
+      User = "zarred";
+      Group = "users";
+      WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
+      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python nemotron_stream_runner.py --listen 0.0.0.0:5002 --http-listen 0.0.0.0:5001 --batch-backend-url http://127.0.0.1:5003 --lookahead-tokens 0 --device auto --dtype auto'";
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
   };
 

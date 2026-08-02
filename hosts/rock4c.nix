@@ -172,6 +172,7 @@
     git
     htop
     iw
+    kitty.terminfo
     pciutils
     rsync
     tmux

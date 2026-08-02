@@ -75,6 +75,10 @@
         config.allowUnfree = true;
       };
       pkgs-brave-origin = nixpkgs-brave-origin.packages.${system};
+      rock4cModules = [
+        inputs.nixos-hardware.nixosModules.rock-4c-plus
+        ./hosts/rock4c.nix
+      ];
       #pkgs-master = import nixpkgs-master {
       #  inherit system;
       #  config.allowUnfree = true;
@@ -143,10 +147,14 @@
           specialArgs = {
             inherit inputs self;
           };
-          modules = [
-            inputs.nixos-hardware.nixosModules.rock-4c-plus
-            ./hosts/rock4c.nix
-          ];
+          modules = rock4cModules;
+        };
+        rock4c-image = lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = {
+            inherit inputs self;
+          };
+          modules = rock4cModules ++ [ ./images/rock4c-sd-image.nix ];
         };
         liveIso = lib.nixosSystem {
           system = "x86_64-linux";

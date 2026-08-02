@@ -2,3 +2,4 @@
 .Trash-*
 .claude
 .worktrees/
+/build/

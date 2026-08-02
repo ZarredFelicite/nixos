@@ -6,7 +6,7 @@
 
   # ROCK 4C+ boots U-Boot from raw Rockchip offsets rather than the FAT
   # partition used by Raspberry Pi firmware.
-  image.fileName = "rock4c-plus-nixos";
+  image.baseName = "rock4c-plus-nixos";
 
   sdImage = {
     compressImage = true;

@@ -35,8 +35,14 @@ and U-Boot installation live in `images/rock4c-sd-image.nix`.
 ./build-rock4c-image.sh
 ```
 
-Images are written under `build/` with mode `0600`. Confirm the target device
-with `lsblk` before flashing:
+The helper only builds images; it never flashes a device. Outputs are written
+under `build/` with mode `0600`:
+
+- `build/rock4c-plus-nixos.img.zst` (`--plain`)
+- `build/rock4c-plus-nixos-wifi.img.zst` (default)
+
+Confirm the target device with `lsblk` before running this destructive command;
+replace `/dev/sdX` only with the whole microSD device, never a partition:
 
 ```bash
 zstdcat build/rock4c-plus-nixos-wifi.img.zst \

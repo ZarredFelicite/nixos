@@ -232,7 +232,7 @@ in
         "PATH=${lib.makeBinPath [ announcementWatcherPython pkgs.coreutils pkgs.curl ]}:/run/current-system/sw/bin"
       ];
       ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once";
-      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5";
+      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5 --subagent-mode canary --subagent-canary-ticker AUE --subagent-cycle-budget 2";
       Restart = "on-failure";
       RestartSec = "60s";
       TimeoutStartSec = "20m";

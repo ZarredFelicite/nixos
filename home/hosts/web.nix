@@ -229,10 +229,13 @@ in
       EnvironmentFile = [ "-/home/zarred/.config/ibkr/announcement-watcher.env" ];
       Environment = [
         "PYTHONUNBUFFERED=1"
+        "IBKR_ANNOUNCEMENT_STATE_DIR=/home/zarred/.local/state/asx-announcement-analysis/announcement-pdfs"
+        "IBKR_STOCK_NOTES_ROOT=/home/zarred/notes/home/finances/stocks"
+        "IBKR_EMBER_SUBAGENT_CYCLE_BUDGET=2"
         "PATH=${lib.makeBinPath [ announcementWatcherPython pkgs.coreutils pkgs.curl ]}:/run/current-system/sw/bin"
       ];
-      ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once";
-      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5 --subagent-mode canary --subagent-canary-ticker AUE --subagent-cycle-budget 2";
+      ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once --subagent-state-dir /home/zarred/.local/state/asx-announcement-analysis/announcement-pdfs --notes-root /home/zarred/notes/home/finances/stocks";
+      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5 --subagent-mode live --subagent-state-dir /home/zarred/.local/state/asx-announcement-analysis/announcement-pdfs --notes-root /home/zarred/notes/home/finances/stocks --subagent-cycle-budget 2";
       Restart = "on-failure";
       RestartSec = "60s";
       TimeoutStartSec = "20m";

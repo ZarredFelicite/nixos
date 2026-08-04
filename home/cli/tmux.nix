@@ -87,25 +87,6 @@ let
     '';
   };
 in {
-  # Versioned tmux-resurrect hooks. Home Manager deploys these to the paths
-  # referenced below; the live copies are not part of the source of truth.
-  home.file."scripts/tmux/pi-resurrect-hooks.py" = {
-    source = ./tmux/pi-resurrect-hooks.py;
-    executable = true;
-  };
-  home.file."scripts/tmux/pi-resurrect-enrich-save" = {
-    source = ./tmux/pi-resurrect-enrich-save;
-    executable = true;
-  };
-  home.file."scripts/tmux/pi-resurrect-post-restore" = {
-    source = ./tmux/pi-resurrect-post-restore;
-    executable = true;
-  };
-  home.file."scripts/tmux/pi-resurrect-restore" = {
-    source = ./tmux/pi-resurrect-restore;
-    executable = true;
-  };
-
   stylix.targets.tmux.enable = false;
   xdg.configFile."tmuxinator/home.yml".text = builtins.toJSON {
     name = "home";
@@ -256,10 +237,6 @@ in {
           set -g @resurrect-processes 'pi'
           set -g @resurrect-hook-post-save-layout '/home/zarred/scripts/tmux/pi-resurrect-enrich-save'
           set -g @resurrect-hook-post-restore-all '/home/zarred/scripts/tmux/pi-resurrect-post-restore'
-          # Resolve a usable `last` before both manual and continuum restore.
-          set -g @pi-resurrect-upstream-restore '${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh'
-          set -g @resurrect-restore-script-path '/home/zarred/scripts/tmux/pi-resurrect-restore'
-          bind-key C-r run-shell -b '/home/zarred/scripts/tmux/pi-resurrect-restore'
           set -g @resurrect-save 'S'
           # Keep restore away from plain r/R so reload muscle memory doesn't
           # accidentally restore old sessions.

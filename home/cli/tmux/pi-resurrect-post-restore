@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-exec python3 "$(dirname "${BASH_SOURCE[0]}")/pi-resurrect-hooks.py" restore "${1:-$HOME/.tmux/resurrect/last}"

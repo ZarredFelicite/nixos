@@ -1,5 +1,9 @@
-{ inputs, self, pkgs, lib, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
 
+let
+  piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
+in
 {
   imports = [
     ../core-settings.nix
@@ -21,6 +25,26 @@
   # Placeholder for any home-manager settings absolutely specific to zarred on sankara
   # that don't fit into a reusable profile.
   home.packages = [ pkgs.firefox ]; # required for web scraping with selenium
+
+  systemd.user.services.llm-api-daemon = {
+    Unit.Description = "Persistent subscription-backed LLM API daemon";
+    Service = {
+      Type = "simple";
+      ExecStart = "${lib.getExe pkgs.nodejs} /home/zarred/scripts/ai/llm-api-daemon.mjs";
+      Restart = "on-failure";
+      RestartSec = 1;
+      RuntimeDirectory = "llm-api";
+      RuntimeDirectoryMode = "0700";
+      Environment = [
+        "PI_CODING_AGENT_DIR=${config.xdg.configHome}/pi/agent"
+        "PI_SDK_PATH=${piSdkPath}"
+      ];
+      UMask = "0077";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";

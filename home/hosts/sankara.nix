@@ -58,7 +58,7 @@ in
       MemoryMax = "3G";
       MemorySwapMax = "4G";
       Environment = [
-        "PATH=${lib.makeBinPath [ pkgs.gnupg pkgs.firefox pkgs.geckodriver ]}:$PATH"
+        "PATH=/run/current-system/sw/bin:${lib.makeBinPath [ pkgs.gnupg pkgs.firefox pkgs.geckodriver ]}:/home/zarred/scripts/ai"
         "FIREFOX_BIN=${pkgs.firefox}/bin/firefox"
         "GECKODRIVER_BIN=${pkgs.geckodriver}/bin/geckodriver"
         "GECKODRIVER_LOG_PATH=/tmp/hotcopper_geckodriver.log"

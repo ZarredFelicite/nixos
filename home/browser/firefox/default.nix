@@ -285,6 +285,7 @@ in {
         pkgs.tridactyl-native
         pkgs.fx-cast-bridge
       ];
+      extraPrefs = builtins.readFile ./mozilla.cfg;
       extraPolicies = {
         Extensions = { Install = [
           #"https://addons.mozilla.org/firefox/downloads/latest/roseppuccin/latest.xpi"

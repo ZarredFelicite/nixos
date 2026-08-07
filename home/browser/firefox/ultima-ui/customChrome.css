@@ -47,7 +47,9 @@
   background-color: var(--zarred-rose-pine-iris) !important;
 }
 
-/* One native glass surface for the top bar; child toolbars stay transparent. */
+/* Keep one continuously rendered glass surface on the actual toolbox. Blur
+ * must not transfer between layers during URL-bar focus changes because
+ * WebRender otherwise exposes an unblurred compositor frame. */
 #navigator-toolbox {
   background-color: var(--zarred-topbar-glass-tint) !important;
   background-image: none !important;
@@ -60,15 +62,75 @@
   background-image: none !important;
 }
 
-/* Avoid nesting backdrop roots: Ctrl-L must sample the webpage directly. */
-#navigator-toolbox:has(#urlbar:is([breakout][open])) {
-  backdrop-filter: none !important;
+@keyframes zarred-sidebar-open {
+  from {
+    transform: translateX(calc(-100% - 10px));
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes zarred-sidebar-close {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(calc(-100% - 10px));
+    opacity: 0;
+  }
+}
+
+@keyframes zarred-content-open {
+  from { transform: translateX(-340px); }
+  to { transform: translateX(0); }
+}
+
+@keyframes zarred-content-close {
+  from { transform: translateX(340px); }
+  to { transform: translateX(0); }
 }
 
 /* Compact mode: Firefox's Expand sidebar on hover setting selects the custom
  * overlay implementation. Always show leaves this block inactive and uses the
  * fixed, in-flow expanded sidebar instead. */
 @media -moz-pref("sidebar.visibility", "expand-on-hover") {
+  /* Keep the transition installed in both native fixed and compact states.
+   * Firefox swaps those states before closing; adding it afterward cannot
+   * interpolate from the visible pane. */
+  #main-window #sidebar-main > sidebar-main {
+    transform: translateX(0);
+    opacity: 1;
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 140ms ease-out !important;
+  }
+
+  #main-window #sidebar-main[sidebar-launcher-expanded][sidebar-ongoing-animations]
+    > sidebar-main {
+    transition: none !important;
+    animation: zarred-sidebar-open 190ms linear both !important;
+  }
+
+  #browser:has(
+    > #sidebar-main[sidebar-launcher-expanded][sidebar-ongoing-animations]
+  ) > #tabbrowser-tabbox {
+    translate: 0 !important;
+    transition: none !important;
+    animation: zarred-content-open 190ms linear both !important;
+  }
+
+  #main-window[sidebar-expand-on-hover] #browser:has(
+    > #sidebar-main[sidebar-ongoing-animations]:not([sidebar-launcher-expanded])
+  ) > #tabbrowser-tabbox {
+    translate: 0 !important;
+    transition: none !important;
+    animation: zarred-content-close 190ms linear both !important;
+  }
+
   /* Native expand-on-hover owns hover state, debounce, and animation. */
   #main-window[sidebar-expand-on-hover] #browser {
     position: relative !important;
@@ -99,6 +161,24 @@
     border-radius: 0 !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
+    overflow: visible !important;
+    transition: none !important;
+  }
+
+  /* Closing starts after Firefox switches back from fixed mode. Preserve the
+   * fixed card's 10px inset and full-height geometry until it has slid away;
+   * the compact 70vh launcher can then return invisibly. */
+  #main-window[sidebar-expand-on-hover] #sidebar-main:is(
+    [sidebar-ongoing-animations]
+  ):not([sidebar-launcher-expanded]) {
+    box-sizing: border-box !important;
+    top: 10px !important;
+    width: 338px !important;
+    min-width: 338px !important;
+    height: calc(100% - 20px) !important;
+    min-height: calc(100% - 20px) !important;
+    max-height: calc(100% - 20px) !important;
+    padding-inline: 10px !important;
   }
 
   #main-window[sidebar-expand-on-hover] #sidebar-main #vertical-tabs,
@@ -107,13 +187,51 @@
     backdrop-filter: none !important;
   }
 
+  /* Firefox otherwise restores the launcher's intrinsic block size as soon as
+   * expanded state clears, making the card abruptly shrink vertically. */
+  #main-window[sidebar-expand-on-hover] #sidebar-main > sidebar-main {
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+  }
+
+  /* Keep the card full-sized while closing. Moving it past the viewport edge
+   * avoids Firefox's native accordion-like width collapse. */
   #main-window[sidebar-expand-on-hover] #sidebar-main:not(
     [sidebar-launcher-expanded],
     [sidebar-ongoing-animations]
   ) > sidebar-main {
+    width: 360px !important;
+    min-width: 360px !important;
     opacity: 0 !important;
+    transform: translateX(-100%) !important;
     padding-inline-start: 0 !important;
     clip-path: none !important;
+    pointer-events: none !important;
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease-out !important;
+  }
+
+  /* Fixed mode stops matching as soon as close begins. Keep its visible card
+   * surface during Firefox's closing interval so the translating element does
+   * not become transparent before it leaves the viewport. */
+  #main-window[sidebar-expand-on-hover]
+    #sidebar-main[sidebar-ongoing-animations]:not(
+      [sidebar-launcher-expanded]
+    ) > sidebar-main {
+    padding-inline-start: 0 !important;
+    clip-path: none !important;
+    background-image: none !important;
+    background-color: var(--zarred-native-glass-tint) !important;
+    background-clip: border-box !important;
+    border: none !important;
+    border-radius: var(--zarred-pane-radius) !important;
+    box-shadow: var(--uc-box-shadow) !important;
+    backdrop-filter: var(--zarred-native-glass-filter) !important;
+    overflow: clip !important;
+    transition: none !important;
+    animation: zarred-sidebar-close 190ms linear both !important;
   }
 
   #main-window[sidebar-expand-on-hover] #sidebar-main:is(
@@ -125,14 +243,15 @@
     padding-inline-start: 0 !important;
   }
 
-  #main-window[sidebar-expand-on-hover] #sidebar-main:is(
-    [sidebar-launcher-expanded],
-    [sidebar-ongoing-animations]
-  ) > sidebar-main {
+  #main-window[sidebar-expand-on-hover]
+    #sidebar-main[sidebar-launcher-expanded] > sidebar-main {
     --tab-pinned-min-width-expanded: 64px !important;
     --tab-pinned-container-margin-inline-expanded: 9.5px !important;
     box-sizing: border-box !important;
+    width: 360px !important;
+    min-width: 360px !important;
     opacity: 1 !important;
+    transform: translateX(0) !important;
     padding-inline-start: 20px !important;
     clip-path: inset(0 0 0 20px round var(--zarred-pane-radius)) !important;
     background-image: none !important;
@@ -143,6 +262,10 @@
     box-shadow: var(--uc-box-shadow) !important;
     backdrop-filter: var(--zarred-native-glass-filter) !important;
     overflow: clip !important;
+    pointer-events: auto !important;
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 120ms ease-out !important;
   }
 
   #main-window[sidebar-expand-on-hover] #sidebar-main[sidebar-launcher-expanded] #vertical-tabs {
@@ -170,6 +293,8 @@
     border-radius: 0 !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
+    translate: 0 !important;
+    transition: none !important;
     opacity: 1 !important;
   }
 
@@ -178,7 +303,8 @@
     --tab-pinned-min-width-expanded: 64px !important;
     --tab-pinned-container-margin-inline-expanded: 9.5px !important;
     box-sizing: border-box !important;
-    opacity: 1 !important;
+    translate: 0 !important;
+    opacity: 1;
     padding-inline-start: 0 !important;
     clip-path: none !important;
     background-image: none !important;
@@ -333,6 +459,13 @@
 }
 
 @media -moz-pref("ultima.urlbar.float") {
+  /* Ultima transitions every URL bar property. When Escape removes the
+   * breakout state, that animates fixed positioning back into toolbar flow
+   * and makes the bar sweep horizontally across the top bar. */
+  #navigator-toolbox #urlbar {
+    transition: none !important;
+  }
+
   #navigator-toolbox #urlbar[breakout-extend] {
     width: min(720px, 90vw) !important;
     max-width: none !important;

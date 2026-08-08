@@ -1,7 +1,16 @@
 {
-  default = "Brave";
+  default = "SearXNG";
   force = true;
   engines = {
+    "SearXNG" = {
+      urls = [{
+        template = "http://sankara/searx/search";
+        params = [
+          { name = "q"; value = "{searchTerms}"; }
+        ];
+      }];
+      definedAliases = [ "sx" ];
+    };
     "Brave" = {
       urls = [{ template = "https://search.brave.com/search?q={searchTerms}"; }];
       definedAliases = [ "b" ];

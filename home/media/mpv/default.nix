@@ -198,7 +198,8 @@
       w                 = "script-binding uosc/stream-quality                                   #! Stream quality";
       p                 = "add panscan -0.1";
       P                 = "add panscan 0.1";
-      q                 = "quit  #!";
+      q                 = "ignore  #! Disabled to prevent accidental quits";
+      "ctrl+q"          = "quit  #! Quit";
       menu              = "script-binding uosc/menu";
       mbtn_right        = "script-binding uosc/menu";
       S                 = "script-binding uosc/subtitles          #! Subtitles";

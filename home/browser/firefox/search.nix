@@ -70,10 +70,6 @@
       urls = [{ template = "https://hotcopper.com.au/asx/{searchTerms}"; }];
       definedAliases = ["hc"];
     };
-    "CMC Charts" = {
-      urls = [{ template = "https://www.cmcmarketsstockbroking.com.au/net/UI/Chart/AdvancedChart.aspx?asxcode={searchTerms}"; }];
-      definedAliases = ["cmc"];
-    };
     "bing".metaData.hidden = true;
     "ddg".metaData.hidden = true;
   };

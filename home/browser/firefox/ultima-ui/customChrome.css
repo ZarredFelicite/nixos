@@ -165,6 +165,15 @@
     transition: none !important;
   }
 
+  /* Keep keyboard toggling available without reserving an invisible pointer
+   * target over the webpage's left edge. */
+  #main-window[sidebar-expand-on-hover] #sidebar-main:not(
+    [sidebar-launcher-expanded],
+    [sidebar-ongoing-animations]
+  ) {
+    pointer-events: none !important;
+  }
+
   /* Closing starts after Firefox switches back from fixed mode. Preserve the
    * fixed card's 10px inset and full-height geometry until it has slid away;
    * the compact 70vh launcher can then return invisibly. */

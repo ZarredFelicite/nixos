@@ -222,39 +222,7 @@ let
       }
     }
   '';
-  ultima-hover-rail-css = ''
-    /* Ultima's 3px edge target is inaccessible behind Hyprland's border. */
-    @media -moz-pref("ultima.tabs.tabbar.autohide") {
-      #main-window:not([sidebar-expand-on-hover=""]) #sidebar-main:not(:has(
-        #tabbrowser-tabs:hover,
-        #vertical-tabs-newtab-button:hover,
-        .tools-and-extensions:hover
-      )) {
-        width: 40px !important;
-        min-width: 40px !important;
-        opacity: 0 !important;
-        transition:
-          width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-          min-width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-          opacity 120ms ease 100ms !important;
-      }
-
-      #main-window:not([sidebar-expand-on-hover=""]) #sidebar-main:has(
-        #tabbrowser-tabs:hover,
-        #vertical-tabs-newtab-button:hover,
-        .tools-and-extensions:hover
-      ) {
-        width: 340px !important;
-        min-width: 340px !important;
-        opacity: 1 !important;
-        transition:
-          width 260ms cubic-bezier(0.22, 1, 0.36, 1),
-          min-width 260ms cubic-bezier(0.22, 1, 0.36, 1),
-          opacity 100ms ease !important;
-      }
-    }
-  '';
-  ultima-user-chrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-hover-rail-css;
+  ultima-user-chrome = builtins.readFile "${ff-ultima}/userChrome.css";
   ultima-user-content = builtins.readFile "${ff-ultima}/userContent.css";
   ultima-ui-prefs = builtins.readFile ./ultima-ui/ui-prefs.js;
   primary-extensions = with pkgs.nur.repos.rycee.firefox-addons; [

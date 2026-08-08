@@ -357,6 +357,19 @@ in
     };
   };
 
+  systemd.user.services.local-new-tab = {
+    Unit.Description = "Local new-tab page";
+    Service = {
+      Type = "simple";
+      WorkingDirectory = "/home/zarred/dev/local-new-tab";
+      ExecStart = "${pkgs.python3}/bin/python3 /home/zarred/dev/local-new-tab/server.py";
+      Restart = "on-failure";
+      RestartSec = 1;
+      NoNewPrivileges = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   # Placeholder for any home-manager settings absolutely specific to zarred on web
   # that don't fit into a reusable profile.
   # home.packages = [ pkgs.some-web-specific-tool ];

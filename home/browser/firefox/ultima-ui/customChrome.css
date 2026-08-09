@@ -539,6 +539,23 @@
     z-index: 0 !important;
   }
 
+  /* Keep the input's border box full-width so short text stays centered on
+   * the glass surface, but give its scroll/paint area a symmetric inset.
+   * Firefox's normal URL-bar controls are one button high; two heights are
+   * the narrow-window floor, while four provide the measured desktop reserve
+   * for the visible site-info/page-action capacity. */
+  #urlbar #urlbar-input {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: clamp(
+      calc(2 * var(--urlbar-min-height)),
+      12vw,
+      calc(4 * var(--urlbar-min-height))
+    ) !important;
+    text-align: center !important;
+  }
+
   #urlbar .urlbar-input-container > :not(.urlbar-input-box) {
     position: relative !important;
     z-index: 1 !important;

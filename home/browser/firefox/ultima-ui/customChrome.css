@@ -519,3 +519,8 @@
     opacity: 1 !important;
   }
 }
+
+/* Keep extension-controlled new tabs at the normal address-bar text size. */
+#urlbar:has(#identity-icon[tooltiptext*="extension"]) #urlbar-input {
+  font-size: inherit !important;
+}

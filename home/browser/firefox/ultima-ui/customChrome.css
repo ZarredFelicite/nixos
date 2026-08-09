@@ -21,6 +21,7 @@
   --zarred-native-glass-tint: rgba(31, 29, 46, 0.5);
   --zarred-topbar-glass-tint: rgba(31, 29, 46, 0.6);
   --zarred-urlbar-glass-tint: rgba(31, 29, 46, 0.5);
+  --zarred-popup-background: rgb(31, 29, 46);
   --zarred-native-glass-filter: blur(32px) saturate(140%);
   --zarred-pane-radius: 20px;
   --zarred-fixed-sidebar-half-width: 164px;
@@ -60,6 +61,18 @@
 #navigator-toolbox > :is(#toolbar-menubar, #TabsToolbar, #nav-bar, #PersonalToolbar) {
   background-color: transparent !important;
   background-image: none !important;
+}
+
+/* Keep anchored browser popups readable over webpages. Ultima's transparent
+ * scheme clears the panel shadow slot after Firefox paints its background. */
+#main-window panel[type="arrow"] {
+  --panel-background-color: var(--zarred-popup-background) !important;
+  --panel-background: var(--zarred-popup-background) !important;
+  --arrowpanel-background: var(--zarred-popup-background) !important;
+}
+
+#main-window panel[type="arrow"]::part(content) {
+  background: var(--zarred-popup-background) !important;
 }
 
 @keyframes zarred-sidebar-open {

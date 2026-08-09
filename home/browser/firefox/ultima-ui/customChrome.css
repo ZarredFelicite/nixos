@@ -521,6 +521,34 @@
   }
 }
 
+/* Center the text against the full URL bar rather than the flex remainder
+ * left after the identity/search controls. Keep those controls in flow above
+ * the full-width input overlay so their layout and hit targets are unchanged. */
+@media -moz-pref("ultima.urlbar.centered") {
+  #urlbar .urlbar-input-container {
+    position: relative !important;
+  }
+
+  #urlbar .urlbar-input-box {
+    position: absolute !important;
+    inset: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    text-align: center !important;
+    z-index: 0 !important;
+  }
+
+  #urlbar .urlbar-input-container > :not(.urlbar-input-box) {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  #urlbar #page-action-buttons {
+    margin-inline-start: auto !important;
+  }
+}
+
 /* Keep extension-controlled new tabs at the normal address-bar text size. */
 #urlbar:has(#identity-icon[tooltiptext*="extension"]) #urlbar-input {
   font-size: inherit !important;

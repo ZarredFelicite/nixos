@@ -171,6 +171,7 @@
     [sidebar-launcher-expanded],
     [sidebar-ongoing-animations]
   ) {
+    visibility: hidden !important;
     pointer-events: none !important;
   }
 

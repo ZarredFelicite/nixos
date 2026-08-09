@@ -234,7 +234,6 @@ let
     videospeed
     adaptive-tab-bar-colour
     imagus
-    fx_cast
     rsspreview
     promnesia
     steam-database
@@ -251,7 +250,6 @@ in {
     package = pkgs.firefox.override {
       nativeMessagingHosts = [
         pkgs.tridactyl-native
-        pkgs.fx-cast-bridge
       ];
       extraPrefs = builtins.readFile ./mozilla.cfg;
       extraPolicies = {

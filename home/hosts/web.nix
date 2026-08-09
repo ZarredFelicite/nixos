@@ -154,15 +154,6 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  systemd.user.services.stocks = {
-    Unit.Description = "Get stock prices from yfinance";
-    Service.ExecStart = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
   systemd.user.services.abc-news = {
     Unit.Description = "Summarize abc news rss feed";
     Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";
@@ -270,16 +261,12 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  # Started by the TTS client only when the Soprano provider is requested.
   systemd.user.services.soprano-streaming-server = {
     Unit.Description = "Soprano low-latency streaming TTS server";
     Service.User = "zarred";
     Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/tts/soprano/shell.nix --run '/home/zarred/.micromamba/envs/soprano/bin/python /home/zarred/scripts/tts/soprano/streaming_server.py --backend lmdeploy --device cuda --host 0.0.0.0 --port 8000'";
-    Service.Restart = "always";
-    Service.RestartSec = "5s";
-    Service.StartLimitIntervalSec = "0";
     Service.WorkingDirectory = "/home/zarred/scripts/tts/soprano";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
   };
 
   systemd.user.services.chatterbox = {

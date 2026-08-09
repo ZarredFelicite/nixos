@@ -195,9 +195,8 @@ in
   systemd.user.timers.rss-news-cache = {
     Unit.Description = "Refresh FreshRSS news cache every 30 minutes";
     Timer = {
-      OnBootSec = "2m";
+      OnActiveSec = "2m";
       OnUnitActiveSec = "30m";
-      Persistent = true;
     };
     Install.WantedBy = [ "timers.target" ];
   };

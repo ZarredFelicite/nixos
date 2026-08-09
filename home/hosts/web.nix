@@ -114,6 +114,28 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
+  systemd.user.services.pi-dashboard = {
+    Unit = {
+      Description = "Pi Dashboard server";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+      StartLimitIntervalSec = 0;
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${lib.getExe pkgs.nodejs} /home/zarred/dev/pi-dashboard/packages/server/bin/pi-dashboard.mjs";
+      WorkingDirectory = "/home/zarred/dev/pi-dashboard";
+      Restart = "on-failure";
+      RestartSec = "3s";
+      Environment = [
+        "PATH=/home/zarred/.config/pi/agent/bin:/home/zarred/.pi/dashboard/openspec-shim:/home/zarred/dev/pi-dashboard/node_modules/.bin:/run/current-system/sw/bin:/etc/profiles/per-user/zarred/bin:/home/zarred/.nix-profile/bin"
+        "PI_CODING_AGENT_DIR=/home/zarred/.config/pi/agent"
+        "PI_SKIP_VERSION_CHECK=1"
+      ];
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   systemd.user.services.gemma4-e4b-server = {
     Unit.Description = "On-demand Gemma 4 CUDA model router";
     Service = {

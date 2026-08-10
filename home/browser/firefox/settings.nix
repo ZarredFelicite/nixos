@@ -326,9 +326,9 @@
   "browser.contentblocking.report.monitor.enabled" = false;
   "browser.contentblocking.report.show_mobile_app" = false;
   "browser.contentblocking.report.vpn-promo.url" = "";
-  ## disable Mozilla/Firefox ML surfaces
-  "browser.ml.enable" = false;
-  "browser.ml.chat.enabled" = false;
+  ## enable Firefox AI chat; keep other ML surfaces disabled
+  "browser.ml.enable" = true;
+  "browser.ml.chat.enabled" = true;
   "browser.ml.linkPreview.enabled" = false;
   "browser.ml.linkPreview.labs" = 0;
   "browser.ml.linkPreview.optin" = false;

@@ -73,6 +73,10 @@ in {
     # inputs.home-manager.nixosModules.home-manager # Removed: Handled by individual host configs
   ];
   # home-manager block removed: Handled by individual host configs
+  # LocalSend uses the same port for discovery and transfers.
+  networking.firewall.allowedTCPPorts = [ 53317 ];
+  networking.firewall.allowedUDPPorts = [ 53317 ];
+
   hardware = {
     bluetooth = {
       enable = true;

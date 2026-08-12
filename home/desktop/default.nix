@@ -64,6 +64,7 @@ in {
     pkgs.dracula-theme
     pkgs.wtype
     pkgs.signal-desktop
+    pkgs.localsend
     #pkgs.telegram-desktop # hydra build not working
     pkgs.zoom-us
     pkgs.v4l-utils
@@ -152,6 +153,18 @@ in {
     Service = {
       ExecStart = "${pkgs.gotify-desktop}/bin/gotify-desktop";
       Restart = "always";
+    };
+  };
+  systemd.user.services.localsend = mkHyprlandService {
+    Unit = {
+      Description = "LocalSend file sharing tray app";
+      After = [ "tray.target" ];
+      Requires = [ "tray.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.localsend}/bin/localsend_app --hidden";
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
   };
   systemd.user.services.nova-cache = mkHyprlandService { # from original

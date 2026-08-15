@@ -180,6 +180,7 @@ in
           projectDir = cfg.projectDir;
         };
         emberStart = pkgs.writeShellScript "ember-start" ''
+          export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai-api.path})"
           export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
           exec ${lib.getExe emberPackage} --daemon --web-host=${cfg.webHost} --web-port=${toString cfg.port}
         '';

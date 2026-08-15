@@ -378,7 +378,40 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  # Placeholder for any home-manager settings absolutely specific to zarred on web
-  # that don't fit into a reusable profile.
-  # home.packages = [ pkgs.some-web-specific-tool ];
+  # Ember's Realtime resolver disables Pi's ambient environment fallback. Keep
+  # the provider mapping declarative while resolving the key only at runtime.
+  home.file.".ember/models.json".text = builtins.toJSON {
+    providers = {
+      openai = {
+        apiKey = "$OPENAI_API_KEY";
+        baseUrl = "https://api.openai.com/v1";
+      };
+      "local-gemma" = {
+        baseUrl = "http://127.0.0.1:8083/v1";
+        api = "openai-completions";
+        apiKey = "local";
+        compat = {
+          supportsDeveloperRole = false;
+          supportsReasoningEffort = false;
+          maxTokensField = "max_tokens";
+        };
+        models = [
+          {
+            id = "gemma4-e4b-it-qat";
+            name = "Gemma 4 E4B IT QAT (local)";
+            reasoning = false;
+            input = [ "text" ];
+            contextWindow = 4096;
+            maxTokens = 4096;
+            cost = {
+              input = 0;
+              output = 0;
+              cacheRead = 0;
+              cacheWrite = 0;
+            };
+          }
+        ];
+      };
+    };
+  };
 }

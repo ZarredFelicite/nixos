@@ -18,8 +18,9 @@
 }
 
 :root {
-  --zarred-native-glass-tint: rgba(31, 29, 46, 0.5);
-  --zarred-topbar-glass-tint: rgba(31, 29, 46, 0.6);
+  --zarred-ui-background: #131119;
+  --zarred-native-glass-tint: var(--zarred-ui-background);
+  --zarred-topbar-glass-tint: var(--zarred-ui-background);
   --zarred-urlbar-glass-tint: rgba(31, 29, 46, 0.5);
   --zarred-popup-background: rgb(31, 29, 46);
   --zarred-native-glass-filter: blur(32px) saturate(140%);

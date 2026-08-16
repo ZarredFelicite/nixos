@@ -93,6 +93,7 @@ in
     enable = true;
     intervalSeconds = 60;
     debounceSeconds = 1;
+    nsfwClassifier.enable = true;
   };
 
   systemd.user.services.llm-api-daemon = {

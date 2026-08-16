@@ -112,9 +112,9 @@ in
       ProtectKernelModules = true;
       ProtectKernelTunables = true;
     };
-    # Deliberately not wanted by graphical-session.target: pairing and an
-    # explicit operator enable are required before this unit can connect.
-    Install.WantedBy = [ ];
+    # This web host is paired explicitly during deployment; reconnect on the
+    # next user session without ever auto-starting a media call.
+    Install.WantedBy = [ "default.target" ];
   };
 
   # Merge only the gateway feature into Ember's existing mutable config. This

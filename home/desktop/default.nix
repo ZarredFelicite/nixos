@@ -57,7 +57,7 @@ in {
     pkgs.decibels
     pkgs.amberol
     pkgs-unstable.obsidian
-    pkgs.orca-slicer
+    pkgs-unstable.orca-slicer
     pkgs.f3d # Lightweight CAD/mesh viewer
     (pkgs.callPackage ../../pkgs/stl-thumb.nix {} )
     pkgs.vtk

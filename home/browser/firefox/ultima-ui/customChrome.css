@@ -22,7 +22,7 @@
   --zarred-native-glass-tint: var(--zarred-ui-background);
   --zarred-topbar-glass-tint: var(--zarred-ui-background);
   --zarred-urlbar-glass-tint: rgba(31, 29, 46, 0.5);
-  --zarred-popup-background: rgb(31, 29, 46);
+  --zarred-popup-background: #131119;
   --zarred-native-glass-filter: blur(32px) saturate(140%);
   --zarred-pane-radius: 20px;
   --zarred-fixed-sidebar-half-width: 164px;
@@ -64,16 +64,27 @@
   background-image: none !important;
 }
 
-/* Keep anchored browser popups readable over webpages. Ultima's transparent
- * scheme clears the panel shadow slot after Firefox paints its background. */
-#main-window panel[type="arrow"] {
+/* Keep Firefox popup surfaces readable over webpages. Ultima's transparent
+ * scheme clears their native backgrounds after Firefox paints them. */
+#main-window :is(panel:not(.autoscroller), menupopup) {
   --panel-background-color: var(--zarred-popup-background) !important;
   --panel-background: var(--zarred-popup-background) !important;
   --arrowpanel-background: var(--zarred-popup-background) !important;
 }
 
-#main-window panel[type="arrow"]::part(content) {
+#main-window :is(panel:not(.autoscroller), menupopup)::part(content) {
   background: var(--zarred-popup-background) !important;
+}
+
+#main-window :is(panelview, .panel-subview-body) {
+  background-color: var(--zarred-popup-background) !important;
+  background-image: none !important;
+}
+
+#main-window tooltip {
+  color: #e0def4 !important;
+  background-color: var(--zarred-popup-background) !important;
+  background-image: none !important;
 }
 
 @keyframes zarred-sidebar-open {

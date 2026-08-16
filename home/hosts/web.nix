@@ -79,6 +79,7 @@ in
     ../cli
     ../mail
     ../finance
+    ../desktop/ember-realtime-companion.nix
     ../media
     ../terminal
     ../security.nix

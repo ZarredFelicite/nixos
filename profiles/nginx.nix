@@ -711,6 +711,31 @@
           locations."= /icon-maskable-512.png" = {
             proxyPass = "http://web:4311/icon-maskable-512.png";
           };
+          # The companion authenticates these two routes with its own scoped
+          # bearer. Keep browser/API routes behind Authelia below.
+          locations."= /ws/desktop-realtime" = {
+            proxyPass = "http://web:4311/ws/desktop-realtime";
+            proxyWebsockets = true;
+            recommendedProxySettings = false;
+            extraConfig = ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto https;
+              proxy_read_timeout 1h;
+              proxy_send_timeout 1h;
+            '';
+          };
+          locations."= /api/realtime/companions/pair" = {
+            proxyPass = "http://web:4311/api/realtime/companions/pair";
+            recommendedProxySettings = false;
+            extraConfig = ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto https;
+            '';
+          };
           locations."= /api/event" = AUTH // {
             proxyPass = "http://web:4311/api/event";
             extraConfig = AUTH.extraConfig + ''

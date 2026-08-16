@@ -44,6 +44,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    ember-realtime-companion.url = "path:/home/zarred/dev/ember/companion";
   };
   outputs = {
     self, nixpkgs,

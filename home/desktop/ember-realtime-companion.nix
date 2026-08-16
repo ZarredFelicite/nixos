@@ -103,6 +103,8 @@ in
       PrivateTmp = true;
       ProtectSystem = "strict";
       ProtectHome = "read-only";
+      StateDirectory = "ember-realtime-companion";
+      StateDirectoryMode = "0700";
       ReadWritePaths = [ "%h/.local/state/ember-realtime-companion" ];
       RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
       LockPersonality = true;

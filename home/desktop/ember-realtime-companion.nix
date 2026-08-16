@@ -1,6 +1,9 @@
-{ config, inputs, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
-  companion = inputs.ember-realtime-companion.packages.${pkgs.system}.default;
+  # Web-only local source. Keeping this out of the top-level flake inputs lets
+  # other hosts (notably sankara) evaluate without the Ember checkout.
+  companionFlake = builtins.getFlake "path:/home/zarred/dev/ember/companion";
+  companion = companionFlake.packages.${pkgs.system}.default;
   clientId = "web-desktop";
   gatewayUrl = "wss://ember.zar.red/ws/desktop-realtime";
   desktopRealtimeConfig = builtins.toJSON {

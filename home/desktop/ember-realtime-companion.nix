@@ -13,7 +13,7 @@ let
     allowClientIds = [ clientId ];
     pairingStore = "realtime/companions.json";
     allowPlainLoopbackWs = false;
-    trustedProxyAddresses = [ "192.168.8.200" ];
+    trustedProxyAddresses = [ "127.0.0.1" "192.168.8.200" ];
   };
   pairCommand = pkgs.writeShellApplication {
     name = "ember-realtime-companion-pair";

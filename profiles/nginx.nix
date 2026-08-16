@@ -714,11 +714,13 @@
           # The companion authenticates these two routes with its own scoped
           # bearer. Keep browser/API routes behind Authelia below.
           locations."= /ws/desktop-realtime" = {
-            proxyPass = "http://web:4311/ws/desktop-realtime";
+            proxyPass = "https://web.manticore-lenok.ts.net/ws/desktop-realtime";
             proxyWebsockets = true;
             recommendedProxySettings = false;
             extraConfig = ''
-              proxy_set_header Host $host;
+              proxy_ssl_server_name on;
+              proxy_ssl_name web.manticore-lenok.ts.net;
+              proxy_set_header Host web.manticore-lenok.ts.net;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
               proxy_set_header X-Forwarded-Proto https;
@@ -727,10 +729,12 @@
             '';
           };
           locations."= /api/realtime/companions/pair" = {
-            proxyPass = "http://web:4311/api/realtime/companions/pair";
+            proxyPass = "https://web.manticore-lenok.ts.net/api/realtime/companions/pair";
             recommendedProxySettings = false;
             extraConfig = ''
-              proxy_set_header Host $host;
+              proxy_ssl_server_name on;
+              proxy_ssl_name web.manticore-lenok.ts.net;
+              proxy_set_header Host web.manticore-lenok.ts.net;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
               proxy_set_header X-Forwarded-Proto https;

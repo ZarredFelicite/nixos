@@ -124,15 +124,27 @@ in
     temp_file="$(mktemp "$HOME/.ember/config.json.XXXXXX")"
     trap 'rm -f "$temp_file"' EXIT
 
+    web_api_token=""
+    if [ -e "$config_file" ]; then
+      web_api_token="$(${pkgs.jq}/bin/jq -r \
+        'if (.webApiToken | type == "string" and length >= 32 and length <= 512) then .webApiToken else empty end' \
+        "$config_file")"
+    fi
+    if [ -z "$web_api_token" ]; then
+      web_api_token="$(${pkgs.openssl}/bin/openssl rand -hex 32)"
+    fi
+
     if [ -e "$config_file" ]; then
       ${pkgs.jq}/bin/jq \
+        --arg webApiToken "$web_api_token" \
         --argjson desktop '${desktopRealtimeConfig}' \
-        '.realtime = ((.realtime // {}) + {desktop: $desktop})' \
+        '.webApiToken = $webApiToken | .realtime = ((.realtime // {}) + {desktop: $desktop})' \
         "$config_file" > "$temp_file"
     else
       ${pkgs.jq}/bin/jq -n \
+        --arg webApiToken "$web_api_token" \
         --argjson desktop '${desktopRealtimeConfig}' \
-        '{realtime: {desktop: $desktop}}' > "$temp_file"
+        '{webApiToken: $webApiToken, realtime: {desktop: $desktop}}' > "$temp_file"
     fi
 
     chmod 600 "$temp_file"

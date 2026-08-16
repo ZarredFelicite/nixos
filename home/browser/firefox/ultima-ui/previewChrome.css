@@ -1,0 +1,29 @@
+/* Test-profile wrapper: keep popup experiments out of the primary profile. */
+@import url(sharedChrome.css);
+
+:root {
+  --zarred-preview-popup-background: #131119;
+}
+
+/* Firefox 152 paints popup surfaces through shadow parts. Ultima's
+ * transparent scheme clears those parts after the native theme paints them. */
+#main-window :is(panel:not(.autoscroller), menupopup) {
+  --panel-background-color: var(--zarred-preview-popup-background) !important;
+  --panel-background: var(--zarred-preview-popup-background) !important;
+  --arrowpanel-background: var(--zarred-preview-popup-background) !important;
+}
+
+#main-window :is(panel:not(.autoscroller), menupopup)::part(content) {
+  background: var(--zarred-preview-popup-background) !important;
+}
+
+#main-window :is(panelview, .panel-subview-body) {
+  background-color: var(--zarred-preview-popup-background) !important;
+  background-image: none !important;
+}
+
+#main-window tooltip {
+  color: #e0def4 !important;
+  background-color: var(--zarred-preview-popup-background) !important;
+  background-image: none !important;
+}

@@ -325,7 +325,8 @@ in {
     ".mozilla/firefox/primary/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
     ".mozilla/firefox/primary/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/theme".source = "${ff-ultima}/theme";
-    ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
+    ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/previewChrome.css;
+    ".mozilla/firefox/primary-ultima-preview/chrome/sharedChrome.css".source = ./ultima-ui/customChrome.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
   };
   xdg.desktopEntries.firefox-ultima = {

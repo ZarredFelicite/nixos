@@ -13,6 +13,7 @@ let
 
     [gemma4-e4b-it-qat]
     model = /home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf
+    mmproj = /home/zarred/.cache/llama-models/gemma-4-E4B-it-mmproj.gguf
     ctx-size = 65536
     n-gpu-layers = 99
     device = CUDA0
@@ -400,7 +401,7 @@ in
             id = "gemma4-e4b-it-qat";
             name = "Gemma 4 E4B IT QAT (local)";
             reasoning = false;
-            input = [ "text" ];
+            input = [ "text" "image" ];
             contextWindow = 4096;
             maxTokens = 4096;
             cost = {

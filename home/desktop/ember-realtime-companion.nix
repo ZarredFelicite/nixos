@@ -5,7 +5,7 @@ let
   companionFlake = builtins.getFlake "path:/home/zarred/dev/ember/companion";
   companion = companionFlake.packages.${pkgs.system}.default;
   clientId = "web-desktop";
-  gatewayUrl = "wss://ember.zar.red/ws/desktop-realtime";
+  gatewayUrl = "wss://web.manticore-lenok.ts.net/ws/desktop-realtime";
   desktopRealtimeConfig = builtins.toJSON {
     enabled = true;
     wssPath = "/ws/desktop-realtime";

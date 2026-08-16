@@ -379,6 +379,24 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
+  # Ember's Pi settings are scoped to ~/.ember; keep standalone Pi's global
+  # compaction defaults unchanged. Preserve the existing settings while
+  # overriding only Ember's recent-token retention.
+  home.file.".ember/settings.json" = {
+    force = true;
+    text = builtins.toJSON {
+      theme = "rose-pine-clear-tools";
+      defaultProvider = "openai-codex";
+      defaultModel = "gpt-5.6-luna";
+      transport = "websocket";
+      lastChangelogVersion = "0.70.0";
+      defaultThinkingLevel = "high";
+      compaction = {
+        keepRecentTokens = 5000;
+      };
+    };
+  };
+
   # Ember's Realtime resolver disables Pi's ambient environment fallback. Keep
   # the provider mapping declarative while resolving the key only at runtime.
   home.file.".ember/models.json".text = builtins.toJSON {

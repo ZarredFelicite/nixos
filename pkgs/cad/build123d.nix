@@ -1,8 +1,8 @@
 { pkgs, lib }:
+assert pkgs.stdenv.hostPlatform.system == "x86_64-linux";
 let
   python = pkgs.python313;
   pyPkgs = python.pkgs;
-  isLinux = pkgs.stdenv.isLinux;
 
   # build123d's OCP binding is only available as a prebuilt CPython 3.13
   # wheel. Keep the wheel and all Python sources pinned here rather than
@@ -35,6 +35,12 @@ let
     doCheck = false;
     installPhase = installWheel;
     pythonImportsCheck = [ "cadquery_ocp_proxy" ];
+    meta = with lib; {
+      description = "Version marker for the CadQuery OpenCASCADE bindings";
+      homepage = "https://github.com/CadQuery/OCP";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   cadqueryOcp = pyPkgs.buildPythonPackage {
@@ -46,16 +52,23 @@ let
     propagatedBuildInputs = [ ocpProxy ];
     dontPatchELF = true;
     dontStrip = true;
-    buildInputs = lib.optionals isLinux [
+    buildInputs = [
       pkgs.libGL
       pkgs.libx11
       pkgs.expat
       pkgs.zlib
       pkgs.stdenv.cc.cc.lib
     ];
-    nativeBuildInputs = lib.optionals isLinux [ pkgs.autoPatchelfHook ];
+    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
     installPhase = installWheel;
     pythonImportsCheck = [ "OCP" ];
+    meta = with lib; {
+      description = "Python bindings for the OpenCASCADE geometry kernel";
+      homepage = "https://github.com/CadQuery/OCP";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+      sourceProvenance = with sourceTypes; [ binaryNativeCode ];
+    };
   };
 
   lib3mf = pyPkgs.buildPythonPackage {
@@ -66,8 +79,19 @@ let
     doCheck = false;
     dontPatchELF = true;
     dontStrip = true;
+    # lib3mf.so has an unbundled libstdc++ dependency. Patch its RUNPATH so
+    # importing lib3mf works before any other extension has loaded libstdc++.
+    buildInputs = [ pkgs.stdenv.cc.cc.lib ];
+    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
     installPhase = installWheel;
     pythonImportsCheck = [ "lib3mf" ];
+    meta = with lib; {
+      description = "Python bindings for the 3MF file format library";
+      homepage = "https://github.com/3MFConsortium/lib3mf";
+      license = licenses.bsd3;
+      platforms = [ "x86_64-linux" ];
+      sourceProvenance = with sourceTypes; [ binaryNativeCode ];
+    };
   };
 
   mkPySdist = {
@@ -78,9 +102,10 @@ let
     build-system ? [ pyPkgs.setuptools pyPkgs.wheel ],
     pythonImportsCheck ? [ pname ],
     postPatch ? "",
+    meta ? { },
   }:
     pyPkgs.buildPythonPackage {
-      inherit pname version src propagatedBuildInputs build-system pythonImportsCheck postPatch;
+      inherit pname version src propagatedBuildInputs build-system pythonImportsCheck postPatch meta;
       pyproject = true;
       doCheck = false;
       dontCheckRuntimeDeps = true;
@@ -96,6 +121,12 @@ let
     };
     build-system = [ pyPkgs.setuptools pyPkgs.wheel pyPkgs."setuptools-scm" ];
     propagatedBuildInputs = [ ocpProxy pyPkgs.svgelements cadqueryOcp ];
+    meta = with lib; {
+      description = "SVG import and export helpers for OCP geometry";
+      homepage = "https://github.com/gumyr/ocpsvg";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   ocpGordon = mkPySdist {
@@ -108,6 +139,12 @@ let
     build-system = [ pyPkgs.setuptools pyPkgs.wheel pyPkgs."setuptools-scm" ];
     propagatedBuildInputs = [ ocpProxy pyPkgs.numpy pyPkgs.scipy cadqueryOcp ];
     pythonImportsCheck = [ "ocp_gordon" ];
+    meta = with lib; {
+      description = "Gordon surface construction for OCP geometry";
+      homepage = "https://github.com/gongfan99/ocp_gordon";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   trianglesolver = pyPkgs.buildPythonPackage {
@@ -121,6 +158,12 @@ let
     nativeBuildInputs = [ pyPkgs.setuptools ];
     doCheck = false;
     pythonImportsCheck = [ "trianglesolver" ];
+    meta = with lib; {
+      description = "Solve triangles from side and angle constraints";
+      homepage = "https://pypi.org/project/trianglesolver/";
+      license = licenses.mit;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   ocpTessellate = mkPySdist {
@@ -138,6 +181,12 @@ let
       pyPkgs.imagesize
     ];
     pythonImportsCheck = [ "ocp_tessellate" ];
+    meta = with lib; {
+      description = "Web tessellation and visualization helpers for OCP";
+      homepage = "https://github.com/bernhard-42/ocp-tessellate";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   threejsMaterials = mkPySdist {
@@ -155,6 +204,12 @@ let
       pyPkgs.numpy
     ];
     pythonImportsCheck = [ "threejs_materials" ];
+    meta = with lib; {
+      description = "Three.js material definitions and utilities";
+      homepage = "https://github.com/bernhard-42/threejs-materials";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   bdMaterials = mkPySdist {
@@ -172,6 +227,13 @@ let
     '';
     propagatedBuildInputs = [ threejsMaterials pyPkgs.webcolors ];
     pythonImportsCheck = [ "bd_materials" ];
+    meta = with lib; {
+      description = "Typical-value engineering materials for build123d";
+      homepage = "https://github.com/bernhard-42/bd_materials";
+      # Upstream 0.2.4 does not declare a license or ship a license file.
+      license = [ ];
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
   build123d = pyPkgs.buildPythonPackage {
@@ -210,12 +272,37 @@ let
       threejsMaterials
     ];
     pythonImportsCheck = [ "build123d" ];
+    meta = with lib; {
+      description = "Python toolkit for parametric CAD modeling";
+      homepage = "https://github.com/gumyr/build123d";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
   };
 
-  build123dEnv = python.withPackages (ps: [ build123d ps.trimesh ]);
-  build123dPython = pkgs.writeShellScriptBin "build123d-python" ''
+  build123dEnv = (python.withPackages (ps: [ build123d ps.trimesh ])).overrideAttrs (_: {
+    pname = "build123d-cad-environment";
+    version = "0.11.1";
+    meta = with lib; {
+      description = "Isolated Python environment for build123d CAD tooling";
+      homepage = "https://github.com/gumyr/build123d";
+      license = licenses.asl20;
+      platforms = [ "x86_64-linux" ];
+    };
+  });
+  build123dPython = (pkgs.writeShellScriptBin "build123d-python" ''
     exec ${build123dEnv}/bin/python3 "$@"
-  '';
+  '').overrideAttrs (_: {
+    meta = with lib; {
+      description = "Run Python with the isolated build123d CAD environment";
+      homepage = "https://github.com/gumyr/build123d";
+      license = licenses.asl20;
+      mainProgram = "build123d-python";
+      platforms = [ "x86_64-linux" ];
+    };
+  });
 
-in
-build123dPython
+in {
+  environment = build123dEnv;
+  wrapper = build123dPython;
+}

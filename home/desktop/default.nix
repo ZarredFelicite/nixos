@@ -11,6 +11,7 @@ in {
     ./swaync
     ./notifications.nix
     ./waybar
+    ./cad.nix
     # ./vscode.nix
     #../../modules/quickshell.nix
     # inputs.ags.homeManagerModules.default
@@ -57,6 +58,7 @@ in {
     pkgs.amberol
     pkgs-unstable.obsidian
     pkgs.orca-slicer
+    pkgs.f3d # Lightweight CAD/mesh viewer
     (pkgs.callPackage ../../pkgs/stl-thumb.nix {} )
     pkgs.vtk
     pkgs.xdg-utils

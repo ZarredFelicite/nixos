@@ -7,7 +7,8 @@ let
   clientId = "web-desktop";
   companionGatewayUrl = "ws://127.0.0.1:4311/ws/desktop-realtime";
   emberPublicBaseUrl = "wss://web.manticore-lenok.ts.net/ws/desktop-realtime";
-  allowPlainLoopbackWsEnabled = true;
+  serverAllowPlainLoopbackWsEnabled = true;
+  companionAllowPlainLoopbackWsEnabled = true;
   credentialFile = "~/.config/ember/realtime-companion/credential";
   credentialName = "gateway-credential";
   desktopRealtimeConfig = builtins.toJSON {
@@ -18,7 +19,7 @@ let
     publicBaseUrl = emberPublicBaseUrl;
     allowClientIds = [ clientId ];
     pairingStore = "realtime/companions.json";
-    allowPlainLoopbackWs = allowPlainLoopbackWsEnabled;
+    allowPlainLoopbackWs = serverAllowPlainLoopbackWsEnabled;
     trustedProxyAddresses = [ "127.0.0.1" "192.168.8.200" ];
   };
   pairCommand = pkgs.writeShellApplication {
@@ -41,8 +42,12 @@ in
       message = "Ember browser-facing desktop realtime endpoint must remain the existing TLS URL";
     }
     {
-      assertion = allowPlainLoopbackWsEnabled;
-      message = "Ember plaintext WebSocket allowance must be explicitly enabled for the loopback companion";
+      assertion = serverAllowPlainLoopbackWsEnabled;
+      message = "Ember server plaintext WebSocket allowance must be explicitly enabled for loopback control";
+    }
+    {
+      assertion = companionAllowPlainLoopbackWsEnabled;
+      message = "Ember companion TOML must explicitly allow plaintext loopback WebSocket control";
     }
     {
       assertion = credentialFile == "~/.config/ember/realtime-companion/credential" && credentialName == "gateway-credential";
@@ -59,6 +64,7 @@ in
       version = 1
       client_id = "${clientId}"
       gateway_url = "${companionGatewayUrl}"
+      allow_plain_loopback_ws = ${if companionAllowPlainLoopbackWsEnabled then "true" else "false"}
       credential_file = "${credentialFile}"
       credential_name = "${credentialName}"
       auto_start = false

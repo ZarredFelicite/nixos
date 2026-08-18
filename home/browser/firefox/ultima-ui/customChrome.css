@@ -81,10 +81,20 @@
   background-image: none !important;
 }
 
-#main-window tooltip {
+#main-window tooltip,
+tooltip[titletip="true"] {
   color: #e0def4 !important;
+  appearance: none !important;
+  -moz-default-appearance: none !important;
   background-color: var(--zarred-popup-background) !important;
   background-image: none !important;
+}
+
+tooltip[titletip="true"]::part(content) {
+  background: var(--zarred-popup-background) !important;
+  background-color: var(--zarred-popup-background) !important;
+  background-image: none !important;
+  color: #e0def4 !important;
 }
 
 @keyframes zarred-sidebar-open {

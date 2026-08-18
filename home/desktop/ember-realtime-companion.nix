@@ -5,14 +5,20 @@ let
   companionFlake = builtins.getFlake "path:/home/zarred/dev/ember/companion";
   companion = companionFlake.packages.${pkgs.system}.default;
   clientId = "web-desktop";
-  gatewayUrl = "wss://web.manticore-lenok.ts.net/ws/desktop-realtime";
+  companionGatewayUrl = "ws://127.0.0.1:4311/ws/desktop-realtime";
+  emberPublicBaseUrl = "wss://web.manticore-lenok.ts.net/ws/desktop-realtime";
+  allowPlainLoopbackWsEnabled = true;
+  credentialFile = "~/.config/ember/realtime-companion/credential";
+  credentialName = "gateway-credential";
   desktopRealtimeConfig = builtins.toJSON {
     enabled = true;
     wssPath = "/ws/desktop-realtime";
-    publicBaseUrl = gatewayUrl;
+    # Keep the browser-facing endpoint on the existing authenticated TLS route;
+    # only the same-host native companion uses plaintext loopback.
+    publicBaseUrl = emberPublicBaseUrl;
     allowClientIds = [ clientId ];
     pairingStore = "realtime/companions.json";
-    allowPlainLoopbackWs = false;
+    allowPlainLoopbackWs = allowPlainLoopbackWsEnabled;
     trustedProxyAddresses = [ "127.0.0.1" "192.168.8.200" ];
   };
   pairCommand = pkgs.writeShellApplication {
@@ -25,6 +31,25 @@ let
   };
 in
 {
+  assertions = [
+    {
+      assertion = companionGatewayUrl == "ws://127.0.0.1:4311/ws/desktop-realtime";
+      message = "Ember companion gateway must remain the authenticated same-host loopback WebSocket";
+    }
+    {
+      assertion = emberPublicBaseUrl == "wss://web.manticore-lenok.ts.net/ws/desktop-realtime";
+      message = "Ember browser-facing desktop realtime endpoint must remain the existing TLS URL";
+    }
+    {
+      assertion = allowPlainLoopbackWsEnabled;
+      message = "Ember plaintext WebSocket allowance must be explicitly enabled for the loopback companion";
+    }
+    {
+      assertion = credentialFile == "~/.config/ember/realtime-companion/credential" && credentialName == "gateway-credential";
+      message = "Ember companion credential source/name must remain unchanged";
+    }
+  ];
+
   home.packages = [ companion pairCommand ];
 
   # This file contains no credentials. The companion creates the referenced
@@ -33,9 +58,9 @@ in
     text = ''
       version = 1
       client_id = "${clientId}"
-      gateway_url = "${gatewayUrl}"
-      credential_file = "~/.config/ember/realtime-companion/credential"
-      credential_name = "gateway-credential"
+      gateway_url = "${companionGatewayUrl}"
+      credential_file = "${credentialFile}"
+      credential_name = "${credentialName}"
       auto_start = false
       start_muted = false
 

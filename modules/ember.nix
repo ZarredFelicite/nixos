@@ -131,6 +131,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.webHost == "127.0.0.1" && cfg.port == 4311;
+        message = "services.ember must remain on the loopback listener and expected desktop realtime port";
+      }
+    ];
+
     environment.systemPackages = [ qmdDevice ];
 
     systemd.user.services = let

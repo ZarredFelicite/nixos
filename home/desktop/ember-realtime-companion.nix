@@ -37,7 +37,7 @@ in
       credential_file = "~/.config/ember/realtime-companion/credential"
       credential_name = "gateway-credential"
       auto_start = false
-      start_muted = true
+      start_muted = false
 
       [input]
       device_id = "default"

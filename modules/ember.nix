@@ -176,13 +176,10 @@ in
       };
 
       ember = let
-        emberPackage = pkgs.callPackage ../pkgs/ember.nix {
-          projectDir = cfg.projectDir;
-        };
         emberStart = pkgs.writeShellScript "ember-start" ''
           export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai-api.path})"
           export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
-          exec ${lib.getExe emberPackage} --daemon --web-host=${cfg.webHost} --web-port=${toString cfg.port}
+          exec ${pkgs.nodejs}/bin/node ${cfg.projectDir}/dist/src/app/main.js --daemon --web-host=${cfg.webHost} --web-port=${toString cfg.port}
         '';
       in {
         description = "Ember Web Server";

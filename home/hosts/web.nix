@@ -87,6 +87,8 @@ in
     inputs.recall.homeManagerModules.default
   ];
 
+  home.packages = [ inputs.herdr.packages.${pkgs.system}.herdr ];
+
   xdg.configFile."home-assistant/config.json".source =
     config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;
 

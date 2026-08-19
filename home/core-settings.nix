@@ -12,6 +12,7 @@
       #PAGER = "bat";
       # API keys are loaded conditionally from sops in shell/systemd hooks.
       PI_CODING_AGENT_DIR = "~/.config/pi/agent";
+      PI_SUBAGENTS_DIR = "${config.xdg.configHome}/pi/agent/session/subagents";
       PI_SKIP_VERSION_CHECK = "1";
       SSH_AUTH_SOCK = "/run/user/1000/gnupg/S.gpg-agent.ssh";
     };

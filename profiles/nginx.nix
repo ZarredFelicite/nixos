@@ -309,6 +309,41 @@
       };
       tailnetSubpath = path: port:
         tailnetSubpathTarget path "http://127.0.0.1:${toString port}/";
+      tailnetAsr = {
+        locations."= /asr".extraConfig = ''
+          return 302 /asr/;
+        '';
+        locations."= /asr/health" = {
+          proxyPass = "http://100.64.1.200:5001/health";
+          recommendedProxySettings = false;
+          extraConfig = ''
+            proxy_connect_timeout 2s;
+            proxy_read_timeout 5s;
+            proxy_set_header Host sankara;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto http;
+          '';
+        };
+        locations."/asr/" = {
+          proxyPass = "http://100.64.1.200:5001/";
+          recommendedProxySettings = false;
+          extraConfig = ''
+            client_max_body_size 100m;
+            if ($http_transfer_encoding != "") { return 400; }
+            proxy_request_buffering on;
+            proxy_connect_timeout 2s;
+            proxy_read_timeout 900s;
+            proxy_send_timeout 900s;
+            proxy_set_header Host sankara;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host sankara;
+            proxy_set_header X-Forwarded-Proto http;
+            proxy_set_header X-Forwarded-Prefix /asr;
+          '';
+        };
+      };
       tailnetNativeSubpathTarget = path: target: {
         locations."= /${path}".extraConfig = ''
           return 302 /${path}/;
@@ -452,10 +487,6 @@
                 proxy_read_timeout 1h;
               '';
             };
-            # FastAPI's Swagger UI uses this root-relative schema URL.
-            "= /openapi.json" = {
-              proxyPass = "http://127.0.0.1:5001/openapi.json";
-            };
           };
         } [
           (tailnetSubpath "gotify" 8081)
@@ -475,7 +506,7 @@
           (tailnetSubpathTarget "ember" "http://web:4311/")
           (tailnetNativeSubpathTarget "searx" "http://127.0.0.1:8888/")
           (tailnetSubpath "hotcopper" 8186)
-          (tailnetSubpath "asr" 5001)
+          tailnetAsr
           {
             locations."= /syncthing".extraConfig = ''
               return 302 /syncthing/;

@@ -4,6 +4,7 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     inputs.home-manager.nixosModules.home-manager
+    ../modules/private-asr-services.nix
     ../profiles/searxng.nix
     ../profiles/tailscale-funnel.nix
   ];
@@ -162,53 +163,17 @@
       ];
     };
   };
-  systemd.services.parakeet-batch = {
-    description = "Persistent internal Parakeet TDT batch ASR worker";
-    after = [ "network.target" "nemotron-asr.service" ];
-    wantedBy = [ "multi-user.target" ];
-    environment = {
-      HF_HOME = "/home/zarred/.cache/huggingface";
-      HF_HUB_DISABLE_XET = "1";
-      PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
-    };
-    serviceConfig = {
-      User = "zarred";
-      Group = "users";
-      WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
-      ExecStartPre = "${pkgs.bash}/bin/bash -c 'for attempt in {1..120}; do ${pkgs.curl}/bin/curl -fsS http://100.64.1.200:5001/health >/dev/null && exit 0; sleep 1; done; exit 1'";
-      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python parakeet_batch_server.py --listen 127.0.0.1:5003 --segment-length 60 --chunk-overlap 2 --wait-timeout 30 --media-timeout 600 --max-media-duration 1800 --max-upload-bytes 104857600 --request-timeout 900 --max-requests 2'";
-      Restart = "on-failure";
-      RestartSec = "5s";
-      TimeoutStopSec = "20s";
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectSystem = "strict";
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
-    };
-  };
-
-  systemd.services.nemotron-asr = {
-    description = "Persistent Nemotron streaming and hybrid ASR gateway";
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    environment = {
-      HF_HOME = "/home/zarred/.cache/huggingface";
-      HF_HUB_DISABLE_XET = "1";
-      PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
-    };
-    serviceConfig = {
-      User = "zarred";
-      Group = "users";
-      WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
-      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python nemotron_stream_runner.py --listen 100.64.1.200:5002 --http-listen 100.64.1.200:5001 --allow-network 100.64.0.0/10 --batch-backend-url http://127.0.0.1:5003 --lookahead-tokens 0 --device auto --dtype auto --max-clients 8 --max-message-bytes 65536 --max-audio-frame-bytes 32000 --max-stream-duration 300 --audio-queue-capacity 64 --client-idle-timeout 30 --cleanup-timeout 10 --media-timeout 600 --max-media-duration 1800 --max-upload-bytes 104857600 --request-timeout 900 --max-http-requests 2'";
-      Restart = "on-failure";
-      RestartSec = "5s";
-      TimeoutStopSec = "20s";
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectSystem = "strict";
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
-    };
+  services.privateAsr = {
+    enable = true;
+    sourceRevision = "caa44cec2b3904b00f646904526926fe42cbc3b8";
+    serviceVersion = "2026-08-23.2";
+    bindAddress = "100.64.1.200";
+    allowedNetworks = [ "100.64.0.0/10" ];
+    nemotronEnvironmentRoot = "/persist/home/zarred/.local/share/asr-envs/nemotron35-v1";
+    parakeetEnvironmentRoot = "/persist/home/zarred/.local/share/asr-envs/parakeet-v1";
+    # Authentication is prepared but intentionally disabled until the SOPS key
+    # is created and activation is explicitly approved.
+    auth.enable = false;
   };
 
   systemd.services.ocr-server = {

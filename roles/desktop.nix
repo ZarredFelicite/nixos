@@ -93,6 +93,7 @@ in {
     flake = "path:/home/zarred/dots";
     flags = [
       # Match `nh os boot -u`: refresh all flake inputs, not just nixpkgs/home-manager.
+      # Leave the daemon's configured substitutes and remote builders enabled.
       "--recreate-lock-file"
       "-L" # print build logs
       # "--impure"

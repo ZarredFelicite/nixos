@@ -1,9 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 let
-  # Web-only local source. Keeping this out of the top-level flake inputs lets
-  # other hosts (notably sankara) evaluate without the Ember checkout.
-  companionFlake = builtins.getFlake "path:/home/zarred/dev/ember/companion";
-  companion = companionFlake.packages.${pkgs.system}.default;
+  companion = inputs.ember-companion.packages.${pkgs.system}.default;
   clientId = "web-desktop";
   companionGatewayUrl = "ws://127.0.0.1:4311/ws/desktop-realtime";
   emberPublicBaseUrl = "wss://web.manticore-lenok.ts.net/ws/desktop-realtime";

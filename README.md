@@ -52,7 +52,7 @@ For local inspection, use commands such as `nix eval --json .#nixosConfiguration
 -   **surface**: Laptop system
 -   **rock4c**: Radxa ROCK 4C+ headless system
 
-The flake exposes these host configurations under `nixosConfigurations`; host-specific hardware and Home Manager entry points live under `hosts/` and `home/hosts/`.
+The flake exposes these host configurations under `nixosConfigurations` (including `nano`, `web`, `sankara`, `nano_minimal`, and `rock4c`). Host-specific hardware and Home Manager entry points live under `hosts/` and `home/hosts/`.
 
 ## ROCK 4C+ SD image
 

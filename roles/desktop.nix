@@ -96,7 +96,7 @@ in {
       # Leave the daemon's configured substitutes and remote builders enabled.
       "--recreate-lock-file"
       "-L" # print build logs
-      # "--impure"
+      "--impure"
       #"--option"
       #"substituters"
       #"'https://cache.nixos.org'"

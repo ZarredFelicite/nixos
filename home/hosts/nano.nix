@@ -1,4 +1,4 @@
-{ inputs, self, pkgs, lib, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
 
 {
   imports = [
@@ -24,6 +24,9 @@
 
   #systemd.user.services.airpods_battery.Install.WantedBy = lib.mkForce [];
   #systemd.user.services.zmk_battery.Install.WantedBy = lib.mkForce [];
+
+  xdg.configFile."home-assistant/config.json".source =
+    config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;
 
   # Placeholder for any home-manager settings absolutely specific to zarred on nano
   # that don't fit into a reusable profile.

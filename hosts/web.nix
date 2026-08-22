@@ -318,9 +318,13 @@
     enable = true;
     motherboard = "amd";
   };
+  # The RX 9070 can fail to resume from s2idle with an unrecoverable SMU -62
+  # error. Use S3/deep and restrict systemd to `mem` so it cannot fall back to
+  # s2idle after a failed suspend attempt.
   # HibernateDelaySec=1h
   systemd.sleep.extraConfig = ''
-    MemorySleepMode=s2idle
+    MemorySleepMode=deep
+    SuspendState=mem
   '';
   nixpkgs.config.nvidia.acceptLicense = true;
   hardware = {

@@ -228,16 +228,15 @@ let
   primary-extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     ublock-origin
     darkreader
-    redirector
     firemonkey
     tridactyl
     videospeed
-    adaptive-tab-bar-colour
+    #adaptive-tab-bar-colour
     imagus
     rsspreview
     promnesia
     steam-database
-    stylus
+    #stylus
     simple-tab-groups
   ];
 in {

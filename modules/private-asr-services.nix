@@ -25,9 +25,20 @@ let
     PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
     PYTHONDONTWRITEBYTECODE = "1";
   };
-  authArguments = lib.optionals cfg.auth.enable [
+  authTokenFile = if cfg.auth.enable then "%d/asr-auth-token" else "";
+  authCredential = lib.optional cfg.auth.enable
+    "asr-auth-token:${config.sops.secrets.${cfg.auth.sopsSecretName}.path}";
+  authArguments = if cfg.auth.enable then [
     "--auth-token-file"
-    config.sops.secrets.${cfg.auth.sopsSecretName}.path
+    authTokenFile
+  ] else [ "--disable-auth" ];
+  healthArguments = [
+    "${servicePackage}/bin/check-asr-health"
+    "--url"
+    "http://${cfg.bindAddress}:5001/health"
+  ] ++ lib.optionals cfg.auth.enable [
+    "--auth-token-file"
+    authTokenFile
   ];
   commonHardening = {
     User = "zarred";
@@ -90,7 +101,7 @@ in
       description = "Pinned Nix-store ASR service package.";
     };
     auth = {
-      enable = lib.mkEnableOption "SOPS-backed Nemotron TCP bearer authentication";
+      enable = lib.mkEnableOption "SOPS-backed bearer authentication for Nemotron TCP and public batch HTTP";
       sopsSecretName = lib.mkOption {
         type = lib.types.str;
         default = "private-asr-auth-token";
@@ -128,6 +139,13 @@ in
         owner = "zarred";
         group = "users";
         mode = "0400";
+        # systemd credentials are immutable snapshots. A future SOPS rotation
+        # refreshes them by restarting both units; direct token-file users pick
+        # up rotations per HTTP request/new TCP connection without a restart.
+        restartUnits = [
+          "nemotron-asr.service"
+          "parakeet-batch.service"
+        ];
       };
     };
 
@@ -143,9 +161,10 @@ in
         WorkingDirectory = "${servicePackage}/libexec/private-asr-services";
         RuntimeDirectory = "parakeet-batch";
         ReadOnlyPaths = commonHardening.ReadOnlyPaths ++ [ cfg.parakeetEnvironmentRoot ];
+        LoadCredential = authCredential;
         ExecStartPre = [
           "${servicePackage}/bin/check-parakeet-asr-environment"
-          "${pkgs.curl}/bin/curl --fail --silent --show-error --max-time 2 http://${cfg.bindAddress}:5001/health"
+          (lib.escapeShellArgs healthArguments)
         ];
         ExecStart = lib.escapeShellArgs ([
           "${servicePackage}/bin/parakeet-batch-service"
@@ -158,6 +177,7 @@ in
           "--max-upload-bytes" "104857600"
           "--request-timeout" "900"
           "--max-requests" "2"
+          "--disable-auth"
         ]);
       };
     };
@@ -171,6 +191,7 @@ in
         WorkingDirectory = "${servicePackage}/libexec/private-asr-services";
         RuntimeDirectory = "nemotron-asr";
         ReadOnlyPaths = commonHardening.ReadOnlyPaths ++ [ cfg.nemotronEnvironmentRoot ];
+        LoadCredential = authCredential;
         ExecStartPre = "${servicePackage}/bin/check-nemotron-asr-environment";
         ExecStart = lib.escapeShellArgs (([
           "${servicePackage}/bin/nemotron-asr-service"

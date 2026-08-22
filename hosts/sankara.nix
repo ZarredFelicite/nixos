@@ -165,8 +165,8 @@
   };
   services.privateAsr = {
     enable = true;
-    sourceRevision = "caa44cec2b3904b00f646904526926fe42cbc3b8";
-    serviceVersion = "2026-08-23.2";
+    sourceRevision = "f98ab343c7d13b14af6099528baab86686a8c661";
+    serviceVersion = "2026-08-23.3";
     bindAddress = "100.64.1.200";
     allowedNetworks = [ "100.64.0.0/10" ];
     nemotronEnvironmentRoot = "/persist/home/zarred/.local/share/asr-envs/nemotron35-v1";

@@ -32,7 +32,8 @@
     };
     networks = {
       # Dedicated point-to-point Ethernet link: web <-> nano.
-      "10-wired" = {
+      # Keep this web-only so Nano's generic dock rule always owns its en* link.
+      "10-wired" = lib.mkIf (config.networking.hostName == "web") {
         matchConfig.Name = "enp38s0";
         networkConfig = {
           Address = "192.168.86.150/24";
@@ -352,13 +353,23 @@
   };
   programs.ssh = {
     extraConfig = ''
-      Host nixremote-web
-        HostName 100.64.1.150
+      # Both aliases authenticate the same web host key regardless of which
+      # transport endpoint the route-aware proxy selects.
+      Host nixremote-web nixremote-web-cache
         User nixremote
         IdentityFile ${config.sops.secrets.nixremote-private.path}
-        # Prefer the dedicated web <-> nano Ethernet link. If web's SSH port is
-        # unavailable there, transparently fall back to its Tailscale address.
+        HostKeyAlias web
+
+      # Remote builder: wired-first, with Tailscale fallback everywhere else.
+      Host nixremote-web
+        HostName 100.64.1.150
         ProxyCommand ${pkgs.bash}/bin/bash -c 'if ${pkgs.netcat}/bin/nc -z -w 1 192.168.86.150 22; then exec ${pkgs.netcat}/bin/nc 192.168.86.150 22; else exec ${pkgs.netcat}/bin/nc 100.64.1.150 22; fi'
+
+      # Binary cache: only available on the home LAN. On home Wi-Fi, keep the
+      # SSH payload on Tailscale so it follows Tailscale's direct/DERP choice.
+      Host nixremote-web-cache
+        HostName 100.64.1.150
+        ProxyCommand ${pkgs.bash}/bin/bash -c 'if ${pkgs.netcat}/bin/nc -z -w 1 192.168.86.150 22; then exec ${pkgs.netcat}/bin/nc 192.168.86.150 22; elif ${pkgs.netcat}/bin/nc -z -w 1 192.168.8.150 22; then exec ${pkgs.netcat}/bin/nc 100.64.1.150 22; else exit 255; fi'
     '';
     knownHosts = {
       #web = {

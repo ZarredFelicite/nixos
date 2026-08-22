@@ -96,8 +96,6 @@ in {
       "--recreate-lock-file"
       "-L" # print build logs
       # "--impure"
-      "--builders"
-      "''"
       #"--option"
       #"substituters"
       #"'https://cache.nixos.org'"

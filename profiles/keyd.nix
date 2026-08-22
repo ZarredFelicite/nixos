@@ -97,8 +97,8 @@
             d = "overloadt(control, s, 200)";
             f = "overloadt(shift, t, 200)";
             u = "mute";
-            i = "volumedown";
-            o = "volumeup";
+            i = "pagedown";
+            o = "pageup";
             e = "playpause";
             w = "prev";
             r = "next";

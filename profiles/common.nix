@@ -40,8 +40,9 @@
           LinkLocalAddressing = "no";
         };
       };
-      "20-wired" = {
-        matchConfig.MACAddress = "00:e0:4c:68:2a:68";
+      "20-wired" = lib.mkIf (config.networking.hostName == "nano") {
+        # Match any dock/adapter using systemd's predictable Ethernet names.
+        matchConfig.Name = "en*";
         networkConfig = {
           Address = "192.168.86.125/24";
           DHCP = "no";

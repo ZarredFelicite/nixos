@@ -175,10 +175,15 @@
       User = "zarred";
       Group = "users";
       WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
-      ExecStartPre = "${pkgs.bash}/bin/bash -c 'for attempt in {1..120}; do ${pkgs.curl}/bin/curl -fsS http://127.0.0.1:5001/health >/dev/null && exit 0; sleep 1; done; exit 1'";
-      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python parakeet_batch_server.py --listen 127.0.0.1:5003 --segment-length 60 --chunk-overlap 2 --wait-timeout 30'";
+      ExecStartPre = "${pkgs.bash}/bin/bash -c 'for attempt in {1..120}; do ${pkgs.curl}/bin/curl -fsS http://100.64.1.200:5001/health >/dev/null && exit 0; sleep 1; done; exit 1'";
+      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python parakeet_batch_server.py --listen 127.0.0.1:5003 --segment-length 60 --chunk-overlap 2 --wait-timeout 30 --media-timeout 600 --max-media-duration 1800 --max-upload-bytes 104857600 --request-timeout 900 --max-requests 2'";
       Restart = "on-failure";
       RestartSec = "5s";
+      TimeoutStopSec = "20s";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+      ProtectSystem = "strict";
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
     };
   };
 
@@ -195,9 +200,14 @@
       User = "zarred";
       Group = "users";
       WorkingDirectory = "/home/zarred/dev/parakeet-transcriber";
-      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python nemotron_stream_runner.py --listen 0.0.0.0:5002 --http-listen 0.0.0.0:5001 --batch-backend-url http://127.0.0.1:5003 --lookahead-tokens 0 --device auto --dtype auto'";
+      ExecStart = "${pkgs.nix}/bin/nix develop --command bash -lc 'exec .venv-nemotron35/bin/python nemotron_stream_runner.py --listen 100.64.1.200:5002 --http-listen 100.64.1.200:5001 --allow-network 100.64.0.0/10 --batch-backend-url http://127.0.0.1:5003 --lookahead-tokens 0 --device auto --dtype auto --max-clients 8 --max-message-bytes 65536 --max-audio-frame-bytes 32000 --max-stream-duration 300 --audio-queue-capacity 64 --client-idle-timeout 30 --cleanup-timeout 10 --media-timeout 600 --max-media-duration 1800 --max-upload-bytes 104857600 --request-timeout 900 --max-http-requests 2'";
       Restart = "on-failure";
       RestartSec = "5s";
+      TimeoutStopSec = "20s";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+      ProtectSystem = "strict";
+      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
     };
   };
 

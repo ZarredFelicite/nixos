@@ -142,6 +142,7 @@ in {
     #pkgs.opencode
     pkgs-unstable.opencode
     (pkgs.callPackage ../../pkgs/pi.nix {})
+    (pkgs.callPackage ../../pkgs/obscura.nix {})
     # antigravity removed
     pkgs-unstable.playwright-mcp
     #(pkgs-unstable.callPackage ../../pkgs/opencode.nix {} )

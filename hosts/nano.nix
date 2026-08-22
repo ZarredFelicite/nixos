@@ -171,6 +171,8 @@
       WOL_DISABLE = "N";
       DEVICES_TO_ENABLE_ON_AC = "bluetooth wifi";
       DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE = "";
+      # Keep USB autosuspend enabled generally, but exclude the RTL8153 to avoid r8152 Tx queue hangs.
+      USB_DENYLIST = "0bda:8153";
       USB_AUTOSUSPEND = 1;
 
       CPU_MIN_PERF_ON_AC = 0;

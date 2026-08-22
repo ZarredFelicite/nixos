@@ -21,7 +21,9 @@
     #windowrule = match:initial_title Picture-in-Picture|cctv, no_blur on
     #windowrule = match:initial_title Picture-in-Picture|cctv, group barred
     windowrule = match:initial_title Picture-in-Picture|cctv, opacity 1.0 override 0.7 override 1.0 override
-    windowrule = match:initial_title Picture-in-Picture|cctv, no_initial_focus on
+    windowrule = match:initial_class ^(firefox)$, match:initial_title ^(Picture-in-Picture)$, no_initial_focus on
+    windowrule = match:class ^(firefox)$, match:title ^(Picture-in-Picture)$, suppress_event activatefocus
+    windowrule = match:initial_title cctv, no_initial_focus on
     #windowrule = match:initial_title Picture-in-Picture|cctv, tag +pin
     windowrule = match:initial_title Picture-in-Picture|cctv, group deny
     windowrule = match:class ^(nova)$, size 1200 800

@@ -96,7 +96,7 @@ in
       "$mod SHIFT, N, exec, swaync-client --close-latest"
       "$mod, Q, exec, loginctl lock-session"
       "$mod, S, exec, ~/scripts/nova/nova_window"
-      "$mod SHIFT, S, exec, ~/scripts/screencapture/screenshot screenshot --selector-arg gui &> /tmp/screenshot_log"
+      "$mod SHIFT, S, exec, ~/scripts/screencapture/screenshot &> /tmp/screenshot_log"
       "$mod CTRL, S, exec, ~/scripts/screencapture/screenshot screenshot region &> /tmp/screenshot_log"
       "$mod, P, exec, cd /home/zarred/dev/hover-lens && PATH=${quickshellBin}:$PATH /run/current-system/sw/bin/python3 -m hover_lens.main"
       "$mod, F, exec, firefox"

@@ -11,6 +11,7 @@ in {
     ./swaync
     ./notifications.nix
     ./waybar
+    ./cad.nix
     # ./vscode.nix
     #../../modules/quickshell.nix
     # inputs.ags.homeManagerModules.default
@@ -56,7 +57,8 @@ in {
     pkgs.decibels
     pkgs.amberol
     pkgs-unstable.obsidian
-    pkgs.orca-slicer
+    pkgs-unstable.orca-slicer
+    pkgs.f3d # Lightweight CAD/mesh viewer
     (pkgs.callPackage ../../pkgs/stl-thumb.nix {} )
     pkgs.vtk
     pkgs.xdg-utils
@@ -64,6 +66,7 @@ in {
     pkgs.dracula-theme
     pkgs.wtype
     pkgs.signal-desktop
+    pkgs.localsend
     #pkgs.telegram-desktop # hydra build not working
     pkgs.zoom-us
     pkgs.v4l-utils
@@ -152,6 +155,18 @@ in {
     Service = {
       ExecStart = "${pkgs.gotify-desktop}/bin/gotify-desktop";
       Restart = "always";
+    };
+  };
+  systemd.user.services.localsend = mkHyprlandService {
+    Unit = {
+      Description = "LocalSend file sharing tray app";
+      After = [ "tray.target" ];
+      Requires = [ "tray.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.localsend}/bin/localsend_app --hidden";
+      Restart = "on-failure";
+      RestartSec = "5s";
     };
   };
   systemd.user.services.nova-cache = mkHyprlandService { # from original
@@ -253,7 +268,8 @@ in {
     name = "OrcaSlicer";
     genericName = "3D Printing Software";
     icon = "OrcaSlicer";
-    exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json ${pkgs.orca-slicer}/bin/orca-slicer";
+    # Let GLVND select the working OpenGL/EGL vendor on the multi-GPU host.
+    exec = "${pkgs-unstable.orca-slicer}/bin/orca-slicer";
     terminal = false;
     type = "Application";
     mimeType = ["model/stl" "model/3mf" "application/vnd.ms-3mfdocument" "application/prs.wavefront-obj" "application/x-amf" "x-scheme-handler/orcaslicer"];

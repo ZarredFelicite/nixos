@@ -54,6 +54,7 @@
       ".config/polychromatic"
       ".config/keyboard"
       ".config/gh"
+      ".config/herdr"
       ".config/matlab"
       ".config/gcloud"
       ".config/lutris"

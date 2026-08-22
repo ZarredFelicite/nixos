@@ -84,7 +84,30 @@ let
         --replace-fail "python -c" "${tmuxWindowNamePython}/bin/python -c"
       patchShebangs "$target/scripts"
       substituteInPlace "$target/scripts/rename_session_windows.py" \
-        --replace-fail "#!/usr/bin/env python" "#!${tmuxWindowNamePython}/bin/python"
+        --replace-fail "#!/usr/bin/env python" "#!${tmuxWindowNamePython}/bin/python" \
+        --replace-fail \
+          "subprocess.check_output(['ps', '-a', '-oppid,command'])" \
+          "subprocess.check_output(['${pkgs.procps}/bin/ps', '-a', '-oppid,command'])"
+      substituteInPlace "$target/scripts/rename_session_windows.py" \
+        --replace-fail \
+          "def get_current_session(server: Server) -> Session:
+          session_id = server.cmd('display-message', '-p', '#{session_id}').stdout[0]
+          return Session(server, session_id=session_id)" \
+          "def get_current_session(server: Server) -> Optional[Session]:
+          session_ids = server.cmd('display-message', '-p', '#{session_id}').stdout
+          if not session_ids:
+              return None
+          return Session(server, session_id=session_ids[0])"
+      substituteInPlace "$target/scripts/rename_session_windows.py" \
+        --replace-fail \
+          "        current_session = get_current_session(server)
+
+              panes_programs =" \
+          "        current_session = get_current_session(server)
+              if current_session is None:
+                  return
+
+              panes_programs ="
     '';
   };
 in {
@@ -132,6 +155,9 @@ in {
       set -g allow-set-title on
       set -g extended-keys on
       set -g extended-keys-format csi-u
+      # A tmux server started by tmuxy lacks the interactive Wayland environment.
+      # Import it when a real terminal client attaches so clipboard tools can connect.
+      set-option -ag update-environment ' WAYLAND_DISPLAY XDG_RUNTIME_DIR'
       set -g window-style bg=default
       set -g window-active-style bg=default
       bind r source-file ~/.config/tmux/tmux.conf
@@ -139,6 +165,9 @@ in {
       set -g pane-border-format " #{pane_title} "
       set -g pane-border-status top
       set-option -g display-time 1000
+      # Diagnostic panes may opt in locally, but normal panes should disappear
+      # when their process exits. Explicitly reset any stale global override.
+      set-option -g remain-on-exit off
       # Keep status redraws infrequent; status-right includes shell commands.
       set-option -g status-interval 60
 
@@ -147,6 +176,11 @@ in {
       bind-key -n M-[ previous-window
       bind-key -n M-] next-window
       bind-key -n M-w choose-window
+
+      # Pi enables terminal mouse reporting, which makes tmux pass drags into Pi
+      # instead of starting a copy selection. Reserve drags for tmux copying;
+      # normal clicks still reach the application.
+      bind-key -T root MouseDrag1Pane copy-mode -M
 
       # tmux-window-name owns window naming now. The plugin briefly uses tmux's
       # automatic-rename flag to detect unnamed windows, then disables it per-window.
@@ -260,7 +294,12 @@ in {
           set -g @continuum-save-interval '60'
         ''; }
       { plugin = tmuxPlugins.yank;
-        extraConfig = "set -g @yank_selection 'primary'"; }
+        extraConfig = ''
+          set -g @yank_selection 'primary'
+          # tmux's server PATH is intentionally minimal, so auto-detection
+          # cannot see Home Manager's wl-copy binary.
+          set -g @override_copy_command '${pkgs.wl-clipboard}/bin/wl-copy'
+        ''; }
       { plugin = tmuxPlugins.tmux-fzf;
         extraConfig = ''
           TMUX_FZF_LAUNCH_KEY="C-f"

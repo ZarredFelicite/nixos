@@ -153,7 +153,7 @@
     "/" = {
       device = "none";
       fsType = "tmpfs";
-      options = [ "mode=755" ];
+      options = [ "mode=755" "size=32G" ];
       neededForBoot = true;
     };
     "/nix" = {
@@ -184,6 +184,57 @@
     device = "/swap/swapfile";
     size = 65568;
   }];
+
+  # Selenium leaves cloned Firefox profiles behind when tests use an existing
+  # profile. Remove only known, inactive test profiles after a grace period.
+  systemd.services.selenium-firefox-profile-cleanup = {
+    description = "Remove stale Selenium Firefox test profiles";
+    path = [ pkgs.coreutils pkgs.fd pkgs.procps ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "zarred";
+      Group = "users";
+    };
+    script = ''
+      if pgrep -u zarred -x geckodriver >/dev/null \
+        || pgrep -u zarred -f 'firefox.*-{1,2}marionette' >/dev/null; then
+        echo "Firefox WebDriver is active; deferring profile cleanup"
+        exit 0
+      fi
+
+      cleanup_profile_root() {
+        case "$1" in
+          /tmp/*)
+            chmod -R u+w -- "$1" 2>/dev/null || true
+            rm -rf -- "$1"
+            ;;
+        esac
+      }
+
+      while IFS= read -r -d "" profile; do
+        cleanup_profile_root "$(dirname "$profile")"
+      done < <(
+        fd --hidden --type directory --max-depth 2 --changed-before 2h \
+          --print0 '^webdriver-py-profilecopy$' /tmp
+      )
+
+      while IFS= read -r -d "" profile_root; do
+        cleanup_profile_root "$profile_root"
+      done < <(
+        fd --hidden --type directory --max-depth 1 --changed-before 2h --print0 \
+          '^(ultima-marionette-|rust_mozprofile|ff-.*(clone|profile)|local-new-tab-firefox-|primary-clone$)' \
+          /tmp
+      )
+    '';
+  };
+  systemd.timers.selenium-firefox-profile-cleanup = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "15min";
+      OnUnitActiveSec = "1h";
+      Persistent = true;
+    };
+  };
 
   # Prefer systemd-oomd for normal cgroup-aware memory pressure handling.
   # Keep earlyoom as a last-resort fallback when RAM and swap are both nearly exhausted.
@@ -268,9 +319,13 @@
     enable = true;
     motherboard = "amd";
   };
+  # The RX 9070 can fail to resume from s2idle with an unrecoverable SMU -62
+  # error. Use S3/deep and restrict systemd to `mem` so it cannot fall back to
+  # s2idle after a failed suspend attempt.
   # HibernateDelaySec=1h
   systemd.sleep.extraConfig = ''
-    MemorySleepMode=s2idle
+    MemorySleepMode=deep
+    SuspendState=mem
   '';
   nixpkgs.config.nvidia.acceptLicense = true;
   hardware = {

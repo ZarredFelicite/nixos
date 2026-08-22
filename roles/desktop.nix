@@ -73,6 +73,10 @@ in {
     # inputs.home-manager.nixosModules.home-manager # Removed: Handled by individual host configs
   ];
   # home-manager block removed: Handled by individual host configs
+  # LocalSend uses the same port for discovery and transfers.
+  networking.firewall.allowedTCPPorts = [ 53317 ];
+  networking.firewall.allowedUDPPorts = [ 53317 ];
+
   hardware = {
     bluetooth = {
       enable = true;
@@ -89,11 +93,10 @@ in {
     flake = "path:/home/zarred/dots";
     flags = [
       # Match `nh os boot -u`: refresh all flake inputs, not just nixpkgs/home-manager.
+      # Leave the daemon's configured substitutes and remote builders enabled.
       "--recreate-lock-file"
       "-L" # print build logs
       # "--impure"
-      "--builders"
-      "''"
       #"--option"
       #"substituters"
       #"'https://cache.nixos.org'"

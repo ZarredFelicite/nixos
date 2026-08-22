@@ -18,12 +18,18 @@
       #max-jobs = 32;
       #cores = 16;
       substituters =
-        lib.optionals (config.networking.hostName != "web") [ "ssh-ng://nixremote-web" ] ++ [
-        "https://cache.nixos.org"
-        "https://cuda-maintainers.cachix.org"
-        "https://nix-community.cachix.org"
-        "https://hyprland.cachix.org"
-      ];
+        lib.optionals (config.networking.hostName != "web") [
+          # Nano's order is local store, home-LAN-only web cache, then public
+          # caches; priority 30 beats the public caches' default priority 40.
+          # The cache alias fails fast off the home LAN; the builder alias below
+          # remains available through Tailscale for cache misses.
+          "ssh-ng://nixremote-web-cache?priority=30"
+        ] ++ [
+          "https://cache.nixos.org"
+          "https://cuda-maintainers.cachix.org"
+          "https://nix-community.cachix.org"
+          "https://hyprland.cachix.org"
+        ];
       trusted-public-keys = [
         "web-binary-cache:Hsy/WnNAxGvN4SE7bzaBY68O+wkicqTE2fW5iaDFao0="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -43,8 +49,8 @@
     distributedBuilds = if config.networking.hostName == "web" then false else true;
     buildMachines = [
       {
-        # Uses the nixremote-web SSH alias for wired-first connectivity with
-        # automatic Tailscale fallback.
+        # Cache misses are offered to web before Nano's local fallback. The
+        # nixremote-web alias is wired-first with automatic Tailscale fallback.
         hostName = "nixremote-web";
         sshUser = "nixremote";
         sshKey = config.sops.secrets.nixremote-private.path;

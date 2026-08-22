@@ -117,6 +117,12 @@ in
       description = "Port for the Ember web server";
     };
 
+    webHost = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = "Host address for the Ember web listener";
+    };
+
     projectDir = mkOption {
       type = types.str;
       default = "/home/zarred/dev/ember";
@@ -125,10 +131,41 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.webHost == "127.0.0.1" && cfg.port == 4311;
+        message = "services.ember must remain on the loopback listener and expected desktop realtime port";
+      }
+    ];
+
     environment.systemPackages = [ qmdDevice ];
 
     systemd.user.services = let
       qmdPkg = pkgs.callPackage ../pkgs/qmd/package.nix {};
+      tailscaleServeStart = pkgs.writeShellScript "ember-tailscale-serve-start" ''
+        set -euo pipefail
+
+        for attempt in $(${pkgs.coreutils}/bin/seq 1 60); do
+          backend_running=$(${pkgs.tailscale}/bin/tailscale status --json 2>/dev/null \
+            | ${pkgs.jq}/bin/jq -e '.BackendState == "Running"' >/dev/null 2>&1 && echo true || echo false)
+          local_ready=$(${pkgs.bash}/bin/bash -c \
+            'exec 3<>/dev/tcp/127.0.0.1/${toString cfg.port}' >/dev/null 2>&1 && echo true || echo false)
+          if [[ "$backend_running" == true && "$local_ready" == true ]]; then
+            break
+          fi
+
+          if [[ "$attempt" -eq 60 ]]; then
+            echo "Tailscale or Ember did not become ready" >&2
+            exit 1
+          fi
+          ${pkgs.coreutils}/bin/sleep 2
+        done
+
+        # Ember also reconciles this route at daemon startup. Keep this narrow,
+        # idempotent Serve-only unit for boot/readiness recovery; never enable
+        # Funnel and never expose Ember's separate gateway endpoint.
+        exec ${pkgs.tailscale}/bin/tailscale serve --bg --https 443 http://127.0.0.1:${toString cfg.port}
+      '';
     in {
       qmd-mcp = {
         description = "Persistent qmd MCP server";
@@ -146,12 +183,10 @@ in
       };
 
       ember = let
-        emberPackage = pkgs.callPackage ../pkgs/ember.nix {
-          projectDir = cfg.projectDir;
-        };
         emberStart = pkgs.writeShellScript "ember-start" ''
+          export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai-api.path})"
           export OPENROUTER_API_KEY="$(cat ${config.sops.secrets.openrouter-api.path})"
-          exec ${lib.getExe emberPackage} --daemon --web-port=${toString cfg.port}
+          exec ${pkgs.nodejs}/bin/node ${cfg.projectDir}/dist/src/app/main.js --daemon --web-host=${cfg.webHost} --web-port=${toString cfg.port}
         '';
       in {
         description = "Ember Web Server";
@@ -173,6 +208,19 @@ in
         };
 
         path = [ qmdPkg "/run/current-system/sw" ];
+      };
+
+      ember-tailscale-serve = {
+        description = "Ember web UI via Tailscale Serve (HTTPS)";
+        after = [ "network-online.target" "ember.service" ];
+        wants = [ "network-online.target" "ember.service" ];
+        wantedBy = [ "default.target" ];
+
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${tailscaleServeStart}";
+        };
       };
     };
   };

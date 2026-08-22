@@ -13,6 +13,7 @@ let
 
     [gemma4-e4b-it-qat]
     model = /home/zarred/.cache/llama-models/gemma4-e4b-it-qat-q4_0.gguf
+    mmproj = /home/zarred/.cache/llama-models/gemma-4-E4B-it-mmproj.gguf
     ctx-size = 65536
     n-gpu-layers = 99
     device = CUDA0
@@ -78,12 +79,15 @@ in
     ../cli
     ../mail
     ../finance
+    ../desktop/ember-realtime-companion.nix
     ../media
     ../terminal
     ../security.nix
     ../impermanence.nix
     inputs.recall.homeManagerModules.default
   ];
+
+  home.packages = [ inputs.herdr.packages.${pkgs.system}.herdr ];
 
   xdg.configFile."home-assistant/config.json".source =
     config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;
@@ -92,6 +96,7 @@ in
     enable = true;
     intervalSeconds = 60;
     debounceSeconds = 1;
+    nsfwClassifier.enable = true;
   };
 
   systemd.user.services.llm-api-daemon = {
@@ -110,6 +115,29 @@ in
       UMask = "0077";
       NoNewPrivileges = true;
       PrivateTmp = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
+  systemd.user.services.pi-dashboard = {
+    Unit = {
+      Description = "Pi Dashboard server";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+      StartLimitIntervalSec = 0;
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${lib.getExe pkgs.nodejs} /home/zarred/dev/pi-dashboard/packages/server/bin/pi-dashboard.mjs";
+      WorkingDirectory = "/home/zarred/dev/pi-dashboard";
+      Restart = "on-failure";
+      RestartSec = "3s";
+      Environment = [
+        "PATH=/home/zarred/.config/pi/agent/bin:/home/zarred/.pi/dashboard/openspec-shim:/home/zarred/dev/pi-dashboard/node_modules/.bin:/run/current-system/sw/bin:/etc/profiles/per-user/zarred/bin:/home/zarred/.nix-profile/bin"
+        "PI_CODING_AGENT_DIR=/home/zarred/.config/pi/agent"
+        "PI_SUBAGENTS_DIR=/home/zarred/.config/pi/agent/session/subagents"
+        "PI_SKIP_VERSION_CHECK=1"
+      ];
     };
     Install.WantedBy = [ "default.target" ];
   };
@@ -154,15 +182,6 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  systemd.user.services.stocks = {
-    Unit.Description = "Get stock prices from yfinance";
-    Service.ExecStart = "/home/zarred/scripts/finances/yfinance/yfinance-waybar.py";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
   systemd.user.services.abc-news = {
     Unit.Description = "Summarize abc news rss feed";
     Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";
@@ -195,9 +214,8 @@ in
   systemd.user.timers.rss-news-cache = {
     Unit.Description = "Refresh FreshRSS news cache every 30 minutes";
     Timer = {
-      OnBootSec = "2m";
+      OnActiveSec = "2m";
       OnUnitActiveSec = "30m";
-      Persistent = true;
     };
     Install.WantedBy = [ "timers.target" ];
   };
@@ -229,10 +247,13 @@ in
       EnvironmentFile = [ "-/home/zarred/.config/ibkr/announcement-watcher.env" ];
       Environment = [
         "PYTHONUNBUFFERED=1"
+        "IBKR_ANNOUNCEMENT_STATE_DIR=/home/zarred/.local/state/asx-announcement-analysis/announcement-pdfs"
+        "IBKR_STOCK_NOTES_ROOT=/home/zarred/notes/home/finances/stocks"
+        "IBKR_EMBER_SUBAGENT_CYCLE_BUDGET=8"
         "PATH=${lib.makeBinPath [ announcementWatcherPython pkgs.coreutils pkgs.curl ]}:/run/current-system/sw/bin"
       ];
-      ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once";
-      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5";
+      ExecStartPre = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --bootstrap --once --subagent-state-dir /home/zarred/.local/state/asx-announcement-analysis/announcement-pdfs --notes-root /home/zarred/notes/home/finances/stocks";
+      ExecStart = "${announcementWatcherPython}/bin/python /home/zarred/scripts/finances/ibkr/tools/watch_announcements.py --interval 300 --count 20 --reclaim-seconds 1800 --max-attempts 5 --backoff-base-seconds 300 --max-alerts-per-cycle 5 --subagent-mode live --subagent-state-dir /home/zarred/.local/state/asx-announcement-analysis/announcement-pdfs --notes-root /home/zarred/notes/home/finances/stocks --subagent-cycle-budget 8";
       Restart = "on-failure";
       RestartSec = "60s";
       TimeoutStartSec = "20m";
@@ -268,16 +289,12 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
     Unit.After = [ "graphical-session.target" ];
   };
+  # Started by the TTS client only when the Soprano provider is requested.
   systemd.user.services.soprano-streaming-server = {
     Unit.Description = "Soprano low-latency streaming TTS server";
     Service.User = "zarred";
     Service.ExecStart = "/run/current-system/sw/bin/nix-shell /home/zarred/scripts/tts/soprano/shell.nix --run '/home/zarred/.micromamba/envs/soprano/bin/python /home/zarred/scripts/tts/soprano/streaming_server.py --backend lmdeploy --device cuda --host 0.0.0.0 --port 8000'";
-    Service.Restart = "always";
-    Service.RestartSec = "5s";
-    Service.StartLimitIntervalSec = "0";
     Service.WorkingDirectory = "/home/zarred/scripts/tts/soprano";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
   };
 
   systemd.user.services.chatterbox = {
@@ -354,7 +371,71 @@ in
     };
   };
 
-  # Placeholder for any home-manager settings absolutely specific to zarred on web
-  # that don't fit into a reusable profile.
-  # home.packages = [ pkgs.some-web-specific-tool ];
+  systemd.user.services.local-new-tab = {
+    Unit.Description = "Local new-tab page";
+    Service = {
+      Type = "simple";
+      WorkingDirectory = "/home/zarred/dev/local-new-tab";
+      ExecStart = "${pkgs.python3}/bin/python3 /home/zarred/dev/local-new-tab/server.py";
+      Restart = "on-failure";
+      RestartSec = 1;
+      NoNewPrivileges = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
+  # Ember's Pi settings are scoped to ~/.ember; keep standalone Pi's global
+  # compaction defaults unchanged. Preserve the existing settings while
+  # overriding only Ember's recent-token retention.
+  home.file.".ember/settings.json" = {
+    force = true;
+    text = builtins.toJSON {
+      theme = "rose-pine-clear-tools";
+      defaultProvider = "openai-codex";
+      defaultModel = "gpt-5.6-luna";
+      transport = "websocket";
+      lastChangelogVersion = "0.70.0";
+      defaultThinkingLevel = "high";
+      compaction = {
+        keepRecentTokens = 5000;
+      };
+    };
+  };
+
+  # Ember's Realtime resolver disables Pi's ambient environment fallback. Keep
+  # the provider mapping declarative while resolving the key only at runtime.
+  home.file.".ember/models.json".text = builtins.toJSON {
+    providers = {
+      openai = {
+        apiKey = "$OPENAI_API_KEY";
+        baseUrl = "https://api.openai.com/v1";
+      };
+      "local-gemma" = {
+        baseUrl = "http://127.0.0.1:8083/v1";
+        api = "openai-completions";
+        apiKey = "local";
+        compat = {
+          supportsDeveloperRole = false;
+          supportsReasoningEffort = false;
+          maxTokensField = "max_tokens";
+        };
+        models = [
+          {
+            id = "gemma4-e4b-it-qat";
+            name = "Gemma 4 E4B IT QAT (local)";
+            reasoning = false;
+            input = [ "text" "image" ];
+            contextWindow = 4096;
+            maxTokens = 4096;
+            cost = {
+              input = 0;
+              output = 0;
+              cacheRead = 0;
+              cacheWrite = 0;
+            };
+          }
+        ];
+      };
+    };
+  };
 }

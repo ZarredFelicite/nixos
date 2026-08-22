@@ -222,55 +222,21 @@ let
       }
     }
   '';
-  ultima-hover-rail-css = ''
-    /* Ultima's 3px edge target is inaccessible behind Hyprland's border. */
-    @media -moz-pref("ultima.tabs.tabbar.autohide") {
-      #main-window:not([sidebar-expand-on-hover=""]) #sidebar-main:not(:has(
-        #tabbrowser-tabs:hover,
-        #vertical-tabs-newtab-button:hover,
-        .tools-and-extensions:hover
-      )) {
-        width: 40px !important;
-        min-width: 40px !important;
-        opacity: 0 !important;
-        transition:
-          width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-          min-width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-          opacity 120ms ease 100ms !important;
-      }
-
-      #main-window:not([sidebar-expand-on-hover=""]) #sidebar-main:has(
-        #tabbrowser-tabs:hover,
-        #vertical-tabs-newtab-button:hover,
-        .tools-and-extensions:hover
-      ) {
-        width: 340px !important;
-        min-width: 340px !important;
-        opacity: 1 !important;
-        transition:
-          width 260ms cubic-bezier(0.22, 1, 0.36, 1),
-          min-width 260ms cubic-bezier(0.22, 1, 0.36, 1),
-          opacity 100ms ease !important;
-      }
-    }
-  '';
-  ultima-user-chrome = builtins.readFile "${ff-ultima}/userChrome.css" + ultima-hover-rail-css;
+  ultima-user-chrome = builtins.readFile "${ff-ultima}/userChrome.css";
   ultima-user-content = builtins.readFile "${ff-ultima}/userContent.css";
   ultima-ui-prefs = builtins.readFile ./ultima-ui/ui-prefs.js;
   primary-extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     ublock-origin
     darkreader
-    redirector
     firemonkey
     tridactyl
     videospeed
-    adaptive-tab-bar-colour
+    #adaptive-tab-bar-colour
     imagus
-    fx_cast
     rsspreview
     promnesia
     steam-database
-    stylus
+    #stylus
     simple-tab-groups
   ];
 in {
@@ -283,8 +249,8 @@ in {
     package = pkgs.firefox.override {
       nativeMessagingHosts = [
         pkgs.tridactyl-native
-        pkgs.fx-cast-bridge
       ];
+      extraPrefs = builtins.readFile ./mozilla.cfg;
       extraPolicies = {
         Extensions = { Install = [
           #"https://addons.mozilla.org/firefox/downloads/latest/roseppuccin/latest.xpi"
@@ -358,7 +324,8 @@ in {
     ".mozilla/firefox/primary/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
     ".mozilla/firefox/primary/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/theme".source = "${ff-ultima}/theme";
-    ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/customChrome.css;
+    ".mozilla/firefox/primary-ultima-preview/chrome/customChrome.css".source = ./ultima-ui/previewChrome.css;
+    ".mozilla/firefox/primary-ultima-preview/chrome/sharedChrome.css".source = ./ultima-ui/customChrome.css;
     ".mozilla/firefox/primary-ultima-preview/chrome/latinAccentUI.css".source = ./ultima-ui/latinAccentUI.css;
   };
   xdg.desktopEntries.firefox-ultima = {

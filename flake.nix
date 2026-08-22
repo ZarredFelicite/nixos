@@ -37,6 +37,7 @@
     #claude-desktop = { url = "github:k3d3/claude-desktop-linux-flake"; inputs.nixpkgs.follows = "nixpkgs"; inputs.flake-utils.follows = "flake-utils"; };
     
     qmd = { url = "github:tobi/qmd"; };
+    herdr = { url = "github:herdrdev/herdr/v0.8.0"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
     vicinae.url = "path:/home/zarred/dev/vicinae";
     recall = {
@@ -44,6 +45,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    ember-companion.url = "path:/home/zarred/dev/ember/companion";
   };
   outputs = {
     self, nixpkgs,

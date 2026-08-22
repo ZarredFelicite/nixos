@@ -124,10 +124,9 @@ in {
         on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off"; # screen off when timeout has passed
         on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"; # screen on when activity is detected after timeout has fired.
       }
-      {
-        timeout = 900;
-        on-timeout = "systemctl suspend"; # suspend pc
-      }
-    ];
+    ] ++ lib.optional (osConfig.networking.hostName != "web") {
+      timeout = 900;
+      on-timeout = "systemctl suspend"; # suspend pc
+    };
   };
 }

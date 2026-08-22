@@ -18,12 +18,16 @@
       #max-jobs = 32;
       #cores = 16;
       substituters =
-        lib.optionals (config.networking.hostName != "web") [ "ssh-ng://nixremote-web" ] ++ [
-        "https://cache.nixos.org"
-        "https://cuda-maintainers.cachix.org"
-        "https://nix-community.cachix.org"
-        "https://hyprland.cachix.org"
-      ];
+        lib.optionals (config.networking.hostName != "web") [
+          # The web cache is reachable only when a known home-LAN endpoint is
+          # present; priority 30 beats the public caches' default priority 40.
+          "ssh-ng://nixremote-web-cache?priority=30"
+        ] ++ [
+          "https://cache.nixos.org"
+          "https://cuda-maintainers.cachix.org"
+          "https://nix-community.cachix.org"
+          "https://hyprland.cachix.org"
+        ];
       trusted-public-keys = [
         "web-binary-cache:Hsy/WnNAxGvN4SE7bzaBY68O+wkicqTE2fW5iaDFao0="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="

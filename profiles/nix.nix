@@ -15,12 +15,13 @@
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       builders-use-substitutes = true;
-      #max-jobs = 32;
+      # Nano delegates ordinary builds to web; 0 disables local builds.
+      max-jobs = lib.mkIf (config.networking.hostName == "nano") 0;
       #cores = 16;
       substituters =
         lib.optionals (config.networking.hostName != "web") [
-          # Nano's order is local store, home-LAN-only web cache, then public
-          # caches; priority 30 beats the public caches' default priority 40.
+          # Nano's cache lookup order is local store, home-LAN-only web cache,
+          # then public caches; priority 30 beats the public caches' default 40.
           # The cache alias fails fast off the home LAN; the builder alias below
           # remains available through Tailscale for cache misses.
           "ssh-ng://nixremote-web-cache?priority=30"
@@ -49,8 +50,8 @@
     distributedBuilds = if config.networking.hostName == "web" then false else true;
     buildMachines = [
       {
-        # Cache misses are offered to web before Nano's local fallback. The
-        # nixremote-web alias is wired-first with automatic Tailscale fallback.
+        # Cache misses are offered to web; Nano has no local build fallback.
+        # The nixremote-web alias is wired-first with automatic Tailscale fallback.
         hostName = "nixremote-web";
         sshUser = "nixremote";
         sshKey = config.sops.secrets.nixremote-private.path;

@@ -18,17 +18,17 @@ The dedicated Ethernet link uses `web = 192.168.86.150` and `nano = 192.168.86.1
 - `nixremote-web` — remote builder; probes `192.168.86.150:22` first, then falls back to `100.64.1.150` through Tailscale. This alias remains usable off the home LAN; Tailscale chooses its direct-LAN or DERP path.
 - `nixremote-web-cache` — web binary cache; probes the dedicated endpoint first, then checks home Wi-Fi via `192.168.8.150`. On home Wi-Fi the SSH payload still connects to `100.64.1.150` through Tailscale. It fails fast off the home LAN.
 
-The effective order is local store first, followed by these stages:
+The effective cache lookup order is local store first, followed by these stages. Cache misses are built on web; Nano has no local build fallback and fails if web is unavailable:
 
-| Network state | Cache lookup order | Build fallback order |
+| Network state | Cache lookup order | Cache-miss build path |
 | --- | --- | --- |
-| Docked / dedicated Ethernet | web cache over `192.168.86.150` (priority 30), public caches | web builder over wired SSH, then Nano local |
-| Home Wi-Fi, no dock | web cache over Tailscale, public caches | web builder over Tailscale, then Nano local |
-| Other network | public caches | web builder over Tailscale direct/DERP, then Nano local |
+| Docked / dedicated Ethernet | web cache over `192.168.86.150` (priority 30), public caches | web builder over wired SSH |
+| Home Wi-Fi, no dock | web cache over Tailscale, public caches | web builder over Tailscale |
+| Other network | public caches | web builder over Tailscale direct/DERP |
 
 Public substituters are `cache.nixos.org`, `cuda-maintainers.cachix.org`, `nix-community.cachix.org`, and `hyprland.cachix.org`. The web cache's `web-binary-cache` key is trusted locally; its priority 30 precedes the public caches' default priority 40 when the home-LAN route is available.
 
-`system.autoUpgrade` evaluates the live checkout at `path:/home/zarred/dots` around 02:00 (with a 45-minute randomized delay), refreshes/recreates flake inputs, and keeps the configured cache and remote-builder policy. It does not reboot automatically. The source checkout is evaluated into the selected host configuration, paths are fetched from the cache chain or built on web, and resulting store paths are copied into Nano's local store before activation. Existing SSH connections do not migrate mid-build: if the selected route disappears, that build fails and must be retried.
+`system.autoUpgrade` evaluates the live checkout at `path:/home/zarred/dots` around 02:00 (with a 45-minute randomized delay), refreshes/recreates flake inputs, and keeps the configured cache and remote-builder policy. It does not reboot automatically. The source checkout is evaluated into the selected host configuration, paths are fetched from the cache chain or built on web, and resulting store paths are copied into Nano's local store before activation. Nano does not build derivations locally; if the selected web route disappears, that build fails and must be retried.
 
 For local inspection, use commands such as `nix eval --json .#nixosConfigurations.nano.config.nix.buildMachines` and `nix eval --json .#nixosConfigurations.nano.config.nix.settings.substituters`; the generated builder entry is written to `/etc/nix/machines`. The main routing files are `profiles/nix.nix` (substituters/build machine), `profiles/common.nix` (network addresses and SSH aliases), `roles/desktop.nix` (automatic upgrades), `hosts/nano.nix`, and `hosts/web.nix`.
 

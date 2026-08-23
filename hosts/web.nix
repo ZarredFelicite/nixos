@@ -16,6 +16,9 @@
     };
     users.zarred = import ../home/hosts/web.nix;
   };
+  systemd.services."home-manager-zarred".before = [
+    "user@${toString config.users.users.zarred.uid}.service"
+  ];
   nixpkgs.hostPlatform = "x86_64-linux";
   nix.settings.extra-platforms = [ "aarch64-linux" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

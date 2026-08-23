@@ -165,15 +165,12 @@
   };
   services.privateAsr = {
     enable = true;
-    sourceRevision = "f98ab343c7d13b14af6099528baab86686a8c661";
-    serviceVersion = "2026-08-23.3";
+    sourceRevision = "1d36dcac6e4b6bf2a5ba5960aa12d30e1ba9c684";
+    serviceVersion = "2026-08-23.4";
     bindAddress = "100.64.1.200";
     allowedNetworks = [ "100.64.0.0/10" ];
     nemotronEnvironmentRoot = "/persist/home/zarred/.local/share/asr-envs/nemotron35-v1";
     parakeetEnvironmentRoot = "/persist/home/zarred/.local/share/asr-envs/parakeet-v1";
-    # Authentication is prepared but intentionally disabled until the SOPS key
-    # is created and activation is explicitly approved.
-    auth.enable = false;
   };
 
   systemd.services.ocr-server = {

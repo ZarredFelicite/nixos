@@ -25,20 +25,10 @@ let
     PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
     PYTHONDONTWRITEBYTECODE = "1";
   };
-  authTokenFile = if cfg.auth.enable then "%d/asr-auth-token" else "";
-  authCredential = lib.optional cfg.auth.enable
-    "asr-auth-token:${config.sops.secrets.${cfg.auth.sopsSecretName}.path}";
-  authArguments = if cfg.auth.enable then [
-    "--auth-token-file"
-    authTokenFile
-  ] else [ "--disable-auth" ];
   healthArguments = [
     "${servicePackage}/bin/check-asr-health"
     "--url"
     "http://${cfg.bindAddress}:5001/health"
-  ] ++ lib.optionals cfg.auth.enable [
-    "--auth-token-file"
-    authTokenFile
   ];
   commonHardening = {
     User = "zarred";
@@ -100,14 +90,6 @@ in
       readOnly = true;
       description = "Pinned Nix-store ASR service package.";
     };
-    auth = {
-      enable = lib.mkEnableOption "SOPS-backed bearer authentication for Nemotron TCP and public batch HTTP";
-      sopsSecretName = lib.mkOption {
-        type = lib.types.str;
-        default = "private-asr-auth-token";
-        description = "SOPS key declared only when authentication is explicitly enabled.";
-      };
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -121,33 +103,14 @@ in
         message = "Pinned ASR source SERVICE_VERSION does not match services.privateAsr.serviceVersion";
       }
       {
-        assertion = cfg.bindAddress != "0.0.0.0" && cfg.bindAddress != "::" && cfg.bindAddress != "[::]";
-        message = "Private ASR services must bind an explicit private interface";
+        assertion = builtins.match "100[.](6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])[.][0-9]+[.][0-9]+" cfg.bindAddress != null;
+        message = "Credential-free private ASR services must bind an explicit Tailnet address, never a wildcard or public interface";
       }
       {
         assertion = cfg.allowedNetworks != [];
         message = "Private ASR services require a non-empty CIDR allowlist";
       }
-      {
-        assertion = !cfg.auth.enable || cfg.auth.sopsSecretName != "";
-        message = "Private ASR authentication requires a SOPS secret name";
-      }
     ];
-
-    sops.secrets = lib.mkIf cfg.auth.enable {
-      ${cfg.auth.sopsSecretName} = {
-        owner = "zarred";
-        group = "users";
-        mode = "0400";
-        # systemd credentials are immutable snapshots. A future SOPS rotation
-        # refreshes them by restarting both units; direct token-file users pick
-        # up rotations per HTTP request/new TCP connection without a restart.
-        restartUnits = [
-          "nemotron-asr.service"
-          "parakeet-batch.service"
-        ];
-      };
-    };
 
     services.privateAsr.package = servicePackage;
     environment.systemPackages = [ servicePackage ];
@@ -161,7 +124,6 @@ in
         WorkingDirectory = "${servicePackage}/libexec/private-asr-services";
         RuntimeDirectory = "parakeet-batch";
         ReadOnlyPaths = commonHardening.ReadOnlyPaths ++ [ cfg.parakeetEnvironmentRoot ];
-        LoadCredential = authCredential;
         ExecStartPre = [
           "${servicePackage}/bin/check-parakeet-asr-environment"
           (lib.escapeShellArgs healthArguments)
@@ -177,7 +139,6 @@ in
           "--max-upload-bytes" "104857600"
           "--request-timeout" "900"
           "--max-requests" "2"
-          "--disable-auth"
         ]);
       };
     };
@@ -191,7 +152,6 @@ in
         WorkingDirectory = "${servicePackage}/libexec/private-asr-services";
         RuntimeDirectory = "nemotron-asr";
         ReadOnlyPaths = commonHardening.ReadOnlyPaths ++ [ cfg.nemotronEnvironmentRoot ];
-        LoadCredential = authCredential;
         ExecStartPre = "${servicePackage}/bin/check-nemotron-asr-environment";
         ExecStart = lib.escapeShellArgs (([
           "${servicePackage}/bin/nemotron-asr-service"
@@ -216,7 +176,7 @@ in
           "--request-timeout" "900"
           "--max-http-requests" "2"
           "--max-receive-concurrency" "4"
-        ] ++ authArguments));
+        ]));
       };
     };
   };

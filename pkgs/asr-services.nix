@@ -34,7 +34,6 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
 
     install -Dm0444 SERVICE_VERSION "$out/share/private-asr-services/SERVICE_VERSION"
-    install -Dm0444 auth_token.py "$out/libexec/private-asr-services/auth_token.py"
     install -Dm0444 nemotron_batch_api.py "$out/libexec/private-asr-services/nemotron_batch_api.py"
     install -Dm0444 nemotron_stream_runner.py "$out/libexec/private-asr-services/nemotron_stream_runner.py"
     install -Dm0444 parakeet_batch_server.py "$out/libexec/private-asr-services/parakeet_batch_server.py"
@@ -68,20 +67,12 @@ import argparse
 import json
 import sys
 import urllib.request
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'libexec/private-asr-services'))
-from auth_token import load_auth_token
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--url', required=True)
-parser.add_argument('--auth-token-file')
 args = parser.parse_args()
 try:
-    headers = {}
-    if args.auth_token_file:
-        headers['Authorization'] = 'Bearer ' + load_auth_token(args.auth_token_file).decode('utf-8')
-    request = urllib.request.Request(args.url, headers=headers)
+    request = urllib.request.Request(args.url)
     with urllib.request.urlopen(request, timeout=3) as response:
         payload = json.loads(response.read(4096))
     if payload.get('status') != 'ok':

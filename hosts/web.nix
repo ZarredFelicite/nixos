@@ -237,7 +237,7 @@
   };
 
   # Prefer systemd-oomd for normal cgroup-aware memory pressure handling.
-  # Keep earlyoom as a last-resort fallback when RAM and swap are both nearly exhausted.
+  # Keep earlyoom as a system-wide fallback before swap exhaustion makes the desktop unresponsive.
   systemd.oomd = {
     enable = true;
     enableUserSlices = true;
@@ -250,10 +250,10 @@
   };
   services.earlyoom = {
     enable = true;
-    freeMemThreshold = 2;
-    freeSwapThreshold = 3;
-    freeMemKillThreshold = 1;
-    freeSwapKillThreshold = 1;
+    freeMemThreshold = 20;
+    freeSwapThreshold = 5;
+    freeMemKillThreshold = 10;
+    freeSwapKillThreshold = 2;
     enableNotifications = true;
   };
   systemd.services.systemd-oomd-notify = {

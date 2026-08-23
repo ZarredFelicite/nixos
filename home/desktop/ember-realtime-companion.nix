@@ -11,7 +11,7 @@ let
   companionAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" "AF_NETLINK" ];
   transcriptionEnabled = true;
   transcriptionEngine = "nemotron-streaming";
-  transcriptionEndpoint = "100.64.1.200:5001";
+  transcriptionEndpoint = "100.64.1.200:5002";
   transcriptionContractMarker = "2026-08-23.4";
   transcriptionLookaheadTokens = 0;
   transcriptionPrefixMs = 300;
@@ -65,7 +65,7 @@ in
       assertion =
         transcriptionEnabled
         && transcriptionEngine == "nemotron-streaming"
-        && transcriptionEndpoint == "100.64.1.200:5001"
+        && transcriptionEndpoint == "100.64.1.200:5002"
         && transcriptionContractMarker == "2026-08-23.4"
         && transcriptionLookaheadTokens == 0
         && transcriptionPrefixMs == 300;

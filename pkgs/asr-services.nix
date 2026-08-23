@@ -22,6 +22,11 @@ let
     xorg.libXtst
   ];
   libraryPath = lib.makeLibraryPath runtimeLibraries;
+  nativeRuntimeEnvironment = ''
+    export CUDA_PATH='${pkgs.cudaPackages.cudatoolkit}'
+    export XLA_FLAGS='--xla_gpu_cuda_data_dir=${pkgs.cudaPackages.cudatoolkit}'
+    export LD_LIBRARY_PATH='${libraryPath}:/run/opengl-driver/lib:/run/opengl-driver-32/lib'
+  '';
 in
 stdenvNoCC.mkDerivation {
   pname = "private-asr-services";
@@ -43,9 +48,7 @@ stdenvNoCC.mkDerivation {
 #!${pkgs.runtimeShell}
 export ASR_SOURCE_REVISION='${sourceRevision}'
 export PYTHONDONTWRITEBYTECODE=1
-export CUDA_PATH='${pkgs.cudaPackages.cudatoolkit}'
-export XLA_FLAGS='--xla_gpu_cuda_data_dir=${pkgs.cudaPackages.cudatoolkit}'
-export LD_LIBRARY_PATH='${libraryPath}:/run/opengl-driver/lib:/run/opengl-driver-32/lib'
+${nativeRuntimeEnvironment}
 export PATH='${lib.makeBinPath [ pkgs.ffmpeg pkgs.coreutils ]}'
 exec '${nemotronPython}' '$out/libexec/private-asr-services/nemotron_stream_runner.py' --expected-service-version '${serviceVersion}' "\$@"
 SCRIPT
@@ -54,9 +57,7 @@ SCRIPT
 #!${pkgs.runtimeShell}
 export ASR_SOURCE_REVISION='${sourceRevision}'
 export PYTHONDONTWRITEBYTECODE=1
-export CUDA_PATH='${pkgs.cudaPackages.cudatoolkit}'
-export XLA_FLAGS='--xla_gpu_cuda_data_dir=${pkgs.cudaPackages.cudatoolkit}'
-export LD_LIBRARY_PATH='${libraryPath}:/run/opengl-driver/lib:/run/opengl-driver-32/lib'
+${nativeRuntimeEnvironment}
 export PATH='${lib.makeBinPath [ pkgs.ffmpeg pkgs.coreutils ]}'
 exec '${parakeetPython}' '$out/libexec/private-asr-services/parakeet_batch_server.py' --expected-service-version '${serviceVersion}' "\$@"
 SCRIPT
@@ -85,6 +86,7 @@ SCRIPT
     install -m0555 /dev/stdin "$out/bin/check-nemotron-asr-environment" <<'SCRIPT'
 #!${pkgs.runtimeShell}
 set -eu
+${nativeRuntimeEnvironment}
 marker='${nemotronEnvironmentMarker}'
 expected='nemotron35-transformers-5.14.1-torch-2.7.1'
 [ -x '${nemotronPython}' ] || { echo 'Nemotron ASR interpreter is not provisioned' >&2; exit 1; }
@@ -97,6 +99,7 @@ SCRIPT
     install -m0555 /dev/stdin "$out/bin/check-parakeet-asr-environment" <<'SCRIPT'
 #!${pkgs.runtimeShell}
 set -eu
+${nativeRuntimeEnvironment}
 marker='${parakeetEnvironmentMarker}'
 expected='parakeet-nemo-2.3.1-torch-2.7.1'
 [ -x '${parakeetPython}' ] || { echo 'Parakeet ASR interpreter is not provisioned' >&2; exit 1; }

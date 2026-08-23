@@ -98,12 +98,12 @@ SCRIPT
 #!${pkgs.runtimeShell}
 set -eu
 marker='${parakeetEnvironmentMarker}'
-expected='parakeet-nemo-2.3.0-torch-2.7.1'
+expected='parakeet-nemo-2.3.1-torch-2.7.1'
 [ -x '${parakeetPython}' ] || { echo 'Parakeet ASR interpreter is not provisioned' >&2; exit 1; }
 [ -r "$marker" ] || { echo 'Parakeet ASR environment marker is missing' >&2; exit 1; }
 IFS= read -r actual < "$marker"
 [ "$actual" = "$expected" ] || { echo 'Parakeet ASR environment marker mismatch' >&2; exit 1; }
-exec '${parakeetPython}' -c 'import importlib.metadata as m, fastapi, nemo.collections.asr, numpy, torch; assert m.version("nemo_toolkit") == "2.3.0"; assert torch.__version__.split("+")[0] == "2.7.1"'
+exec '${parakeetPython}' -c 'import importlib.metadata as m, fastapi, nemo.collections.asr, numpy, torch; assert m.version("nemo_toolkit") == "2.3.1"; assert torch.__version__.split("+")[0] == "2.7.1"'
 SCRIPT
 
     runHook postInstall

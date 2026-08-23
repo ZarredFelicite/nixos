@@ -165,7 +165,7 @@
   };
   services.privateAsr = {
     enable = true;
-    sourceRevision = "1fcf55bbcde7f33e34519f4420027f5ce784c1ec";
+    sourceRevision = "d7f162150033137e6d33867d94d43783b10c418b";
     serviceVersion = "2026-08-23.4";
     bindAddress = "100.64.1.200";
     allowedNetworks = [ "100.64.0.0/10" ];

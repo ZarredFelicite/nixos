@@ -9,6 +9,12 @@ let
   credentialFile = "~/.config/ember/realtime-companion/credential";
   credentialName = "gateway-credential";
   companionAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" "AF_NETLINK" ];
+  transcriptionEnabled = true;
+  transcriptionEngine = "nemotron-streaming";
+  transcriptionEndpoint = "100.64.1.200:5001";
+  transcriptionContractMarker = "2026-08-23.4";
+  transcriptionLookaheadTokens = 0;
+  transcriptionPrefixMs = 300;
   desktopRealtimeConfig = builtins.toJSON {
     enabled = true;
     wssPath = "/ws/desktop-realtime";
@@ -55,6 +61,16 @@ in
       assertion = companionAddressFamilies == [ "AF_UNIX" "AF_INET" "AF_INET6" "AF_NETLINK" ];
       message = "Ember companion must retain Unix, IPv4, IPv6, and netlink address families";
     }
+    {
+      assertion =
+        transcriptionEnabled
+        && transcriptionEngine == "nemotron-streaming"
+        && transcriptionEndpoint == "100.64.1.200:5001"
+        && transcriptionContractMarker == "2026-08-23.4"
+        && transcriptionLookaheadTokens == 0
+        && transcriptionPrefixMs == 300;
+      message = "Ember local transcription must retain the private Sankara Nemotron contract";
+    }
   ];
 
   home.packages = [ companion pairCommand ];
@@ -94,6 +110,16 @@ in
       opus_frame_ms = 20
       noise_suppression = "off"
       aec = "disabled"
+
+      # Raw Tailnet-private TCP. The companion validates Nemotron's strict
+      # ${transcriptionContractMarker} ready marker before advertising protocol-v2
+      # local-transcription, provider-VAD-correlation, and mute-coupled-tee capabilities.
+      [transcription]
+      enabled = ${if transcriptionEnabled then "true" else "false"}
+      engine = "${transcriptionEngine}"
+      endpoint = "${transcriptionEndpoint}"
+      lookahead_tokens = ${toString transcriptionLookaheadTokens}
+      prefix_ms = ${toString transcriptionPrefixMs}
 
       [limits]
       max_frame_bytes = 524288

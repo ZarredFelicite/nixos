@@ -1,0 +1,115 @@
+diff --git a/src/ui/sidebar.rs b/src/ui/sidebar.rs
+index d9f6197..8f636b7 100644
+--- a/src/ui/sidebar.rs
++++ b/src/ui/sidebar.rs
+@@ -1015,2 +1015,2 @@ fn resolved_token_spans(
+-            | ResolvedTokenKind::Branch(text)
+-            | ResolvedTokenKind::Custom(text) => display_width(text),
++            | ResolvedTokenKind::Branch(text) => display_width(text),
++            ResolvedTokenKind::Custom { value, .. } => display_width(value),
+@@ -1149 +1149 @@ fn resolved_token_spans(
+-            ResolvedTokenKind::TerminalTitle(text) | ResolvedTokenKind::Custom(text) => {
++            ResolvedTokenKind::TerminalTitle(text) => {
+@@ -1154,0 +1155,6 @@ fn resolved_token_spans(
++            ResolvedTokenKind::Custom { value, .. } => {
++                spans.push(Span::styled(
++                    truncate_end(value, budgets[index]),
++                    apply_token_style(custom_style, token.style),
++                ));
++            }
+diff --git a/src/ui/sidebar/tokens.rs b/src/ui/sidebar/tokens.rs
+index c578e13..4f7ecd5 100644
+--- a/src/ui/sidebar/tokens.rs
++++ b/src/ui/sidebar/tokens.rs
+@@ -24 +24 @@ pub(super) enum ResolvedTokenKind {
+-    Custom(String),
++    Custom { name: String, value: String },
+@@ -80 +80,4 @@ pub(super) fn agent_rows(
+-                            .map(ResolvedTokenKind::Custom),
++                            .map(|value| ResolvedTokenKind::Custom {
++                                name: name.clone(),
++                                value,
++                            }),
+@@ -133 +136,4 @@ pub(super) fn space_rows(
+-                            .map(ResolvedTokenKind::Custom),
++                            .map(|value| ResolvedTokenKind::Custom {
++                                name: name.clone(),
++                                value,
++                            }),
+@@ -143,0 +150,18 @@ pub(super) fn space_rows(
++fn workspace_custom_family(name: &str) -> Option<&'static str> {
++    match name {
++        "space_parent_idle"
++        | "space_parent_working"
++        | "space_parent_blocked"
++        | "space_parent_done"
++        | "space_parent_done_flash"
++        | "space_parent_unknown" => Some("parent"),
++        "space_sub_idle"
++        | "space_sub_working"
++        | "space_sub_blocked"
++        | "space_sub_done"
++        | "space_sub_done_flash"
++        | "space_sub_unknown" => Some("sub"),
++        _ => None,
++    }
++}
++
+@@ -145 +169,14 @@ pub(super) fn separator(previous: &ResolvedToken, current: &ResolvedToken) -> &'static str
+-    if matches!(previous.kind, ResolvedTokenKind::StateIcon)
++    let same_workspace_custom_family = match (&previous.kind, &current.kind) {
++        (
++            ResolvedTokenKind::Custom { name: previous, .. },
++            ResolvedTokenKind::Custom { name: current, .. },
++        ) => match (workspace_custom_family(previous), workspace_custom_family(current)) {
++            (Some(previous), Some(current)) => previous == current,
++            _ => false,
++        },
++        _ => false,
++    };
++
++    if same_workspace_custom_family {
++        ""
++    } else if matches!(previous.kind, ResolvedTokenKind::StateIcon)
+@@ -229 +266,4 @@ mod tests
+-                ResolvedToken::unstyled(ResolvedTokenKind::Custom("reviewing auth".into())),
++                ResolvedToken::unstyled(ResolvedTokenKind::Custom {
++                    name: "summary".into(),
++                    value: "reviewing auth".into(),
++                }),
+@@ -256 +296,4 @@ mod tests
+-                ResolvedToken::unstyled(ResolvedTokenKind::Custom("custom title".into())),
++                ResolvedToken::unstyled(ResolvedTokenKind::Custom {
++                    name: "terminal_title".into(),
++                    value: "custom title".into(),
++                }),
+@@ -332,3 +375,22 @@ mod tests
+-            vec![vec![ResolvedToken::unstyled(ResolvedTokenKind::Custom(
+-                "2 changes".into()
+-            ))]]
++            vec![vec![ResolvedToken::unstyled(ResolvedTokenKind::Custom {
++                name: "jj_status".into(),
++                value: "2 changes".into(),
++            })]]
++        );
++    }
++
++    #[test]
++    fn workspace_custom_status_tokens_only_join_within_their_family() {
++        let custom = |name: &str| {
++            ResolvedToken::unstyled(ResolvedTokenKind::Custom {
++                name: name.into(),
++                value: "●".into(),
++            })
++        };
++        let workspace = ResolvedToken::unstyled(ResolvedTokenKind::Workspace("repo".into()));
++
++        assert_eq!(separator(&custom("space_parent_idle"), &custom("space_parent_done")), "");
++        assert_eq!(separator(&custom("space_sub_idle"), &custom("space_sub_done")), "");
++        assert_eq!(
++            separator(&custom("space_parent_idle"), &custom("space_sub_idle")),
++            " · "
+@@ -335,0 +398,3 @@ mod tests
++        assert_eq!(separator(&custom("space_parent_idle"), &workspace), " · ");
++        assert_eq!(separator(&workspace, &custom("space_sub_idle")), " · ");
++        assert_eq!(separator(&custom("unrelated"), &custom("unrelated")), " · ");

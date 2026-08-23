@@ -2,6 +2,9 @@
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  herdrPackage = inputs.herdr.packages.${pkgs.system}.herdr.overrideAttrs (old: {
+    patches = (old.patches or []) ++ [ ../../pkgs/herdr-status-dot-spacing.patch ];
+  });
   ollamaCudaPackage = pkgs-ollama.ollama-cuda;
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
@@ -87,7 +90,7 @@ in
     inputs.recall.homeManagerModules.default
   ];
 
-  home.packages = [ inputs.herdr.packages.${pkgs.system}.herdr ];
+  home.packages = [ herdrPackage ];
 
   xdg.configFile."home-assistant/config.json".source =
     config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;

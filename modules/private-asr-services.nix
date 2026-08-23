@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.services.privateAsr;
+  allowedPrivateCidr = import ./private-asr-cidr.nix { inherit lib; };
   source = builtins.fetchGit {
     url = cfg.sourceRepository;
     rev = cfg.sourceRevision;
@@ -107,8 +108,8 @@ in
         message = "Credential-free private ASR services must bind an explicit Tailnet address, never a wildcard or public interface";
       }
       {
-        assertion = cfg.allowedNetworks != [];
-        message = "Private ASR services require a non-empty CIDR allowlist";
+        assertion = cfg.allowedNetworks != [] && lib.all allowedPrivateCidr cfg.allowedNetworks;
+        message = "Every private ASR allowed network must be a bounded loopback, RFC1918, link-local, ULA, or Tailnet CIDR";
       }
     ];
 

@@ -329,7 +329,8 @@
           proxyPass = "http://100.64.1.200:5001/";
           recommendedProxySettings = false;
           extraConfig = ''
-            client_max_body_size 100m;
+            # 100 MiB file ceiling plus the service's bounded multipart framing.
+            client_max_body_size 101m;
             if ($http_transfer_encoding != "") { return 400; }
             proxy_request_buffering on;
             proxy_connect_timeout 2s;

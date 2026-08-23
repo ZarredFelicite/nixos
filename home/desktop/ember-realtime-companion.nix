@@ -8,6 +8,7 @@ let
   companionAllowPlainLoopbackWsEnabled = true;
   credentialFile = "~/.config/ember/realtime-companion/credential";
   credentialName = "gateway-credential";
+  companionAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" "AF_NETLINK" ];
   desktopRealtimeConfig = builtins.toJSON {
     enabled = true;
     wssPath = "/ws/desktop-realtime";
@@ -49,6 +50,10 @@ in
     {
       assertion = credentialFile == "~/.config/ember/realtime-companion/credential" && credentialName == "gateway-credential";
       message = "Ember companion credential source/name must remain unchanged";
+    }
+    {
+      assertion = companionAddressFamilies == [ "AF_UNIX" "AF_INET" "AF_INET6" "AF_NETLINK" ];
+      message = "Ember companion must retain Unix, IPv4, IPv6, and netlink address families";
     }
   ];
 
@@ -134,7 +139,8 @@ in
       StateDirectory = "ember-realtime-companion";
       StateDirectoryMode = "0700";
       ReadWritePaths = [ "%h/.local/state/ember-realtime-companion" ];
-      RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];
+      # libnice uses netlink to enumerate interfaces while gathering host ICE candidates.
+      RestrictAddressFamilies = companionAddressFamilies;
       LockPersonality = true;
       ProtectControlGroups = true;
       ProtectKernelModules = true;

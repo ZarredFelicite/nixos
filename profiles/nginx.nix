@@ -527,12 +527,13 @@
             };
           }
         ];
-        "tmuxy-funnel.sankara.local" = {
+        # Herdr Web public Funnel endpoint (Tailscale :8443).
+        "herdr-web-funnel.sankara.local" = {
           serverName = "sankara.manticore-lenok.ts.net";
           listen = [ { addr = "127.0.0.1"; port = 18090; } ];
           extraConfig = SSLA.extraConfig;
           locations."/" = {
-            proxyPass = "http://web:9010";
+            proxyPass = "http://web:7936";
             proxyWebsockets = true;
             recommendedProxySettings = false;
             extraConfig = ''
@@ -548,10 +549,11 @@
               proxy_set_header Remote-Email $email;
               error_page 401 =302 https://sankara.manticore-lenok.ts.net/?rd=$target_url;
 
-              proxy_set_header Host $host;
+              proxy_set_header Host $http_host;
+              proxy_set_header Origin $http_origin;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Host $http_host;
               proxy_set_header X-Forwarded-Proto https;
               proxy_set_header Connection $connection_upgrade;
               proxy_set_header Upgrade $http_upgrade;

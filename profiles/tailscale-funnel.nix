@@ -62,9 +62,9 @@ let
   '';
 
   # Dedicated root-scoped endpoints for applications that do not support
-  # path-prefix hosting. Immich emits root-relative frontend and API paths,
-  # so it must not be exposed through /immich.
-  tmuxyRouteCommand = ''
+  # path-prefix hosting. Herdr Web and Immich emit root-relative frontend,
+  # WebSocket, and API paths, so they each get a dedicated Funnel port.
+  herdrWebRouteCommand = ''
     ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=8443 http://127.0.0.1:18090
   '';
 
@@ -131,7 +131,7 @@ in
       ${pkgs.tailscale}/bin/tailscale funnel reset || true
 
       ${rootRouteCommand}
-      ${tmuxyRouteCommand}
+      ${herdrWebRouteCommand}
       ${immichRouteCommand}
       ${piDashboardRouteCommand}
       ${routeCommands}

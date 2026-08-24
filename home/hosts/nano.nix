@@ -25,7 +25,10 @@
   #systemd.user.services.airpods_battery.Install.WantedBy = lib.mkForce [];
   #systemd.user.services.zmk_battery.Install.WantedBy = lib.mkForce [];
 
-  systemd.user.services.quickshell.Service.Environment = [ "QUICKSHELL_DISABLE_AI_VISUALIZER=1" ];
+  systemd.user.services.quickshell.Service.Environment = [
+    "QUICKSHELL_DISABLE_AI_VISUALIZER=1"
+    "QUICKSHELL_LOW_POWER_MODE=1"
+  ];
 
   xdg.configFile."home-assistant/config.json".source =
     config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;

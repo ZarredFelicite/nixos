@@ -92,7 +92,7 @@
 
   systemd.user.services.syncthingtray = mkGraphicalService {
     Unit.Description = "Syncthing monitoring tray";
-    Service.ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray --wait";
+    Service.ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray --config-dir-path %h/.config/syncthingtray --wait";
   };
   systemd.user.services.mppv_watcher = mkGraphicalService {
     Unit.Description = "Watch for mppv changes";

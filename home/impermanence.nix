@@ -74,6 +74,7 @@
       ".config/mcporter"
       ".config/pi"
       ".config/syncthing"
+      ".config/syncthingtray"
       ".config/ignis"
       ".config/ags"
       ".config/quickshell"
@@ -99,7 +100,6 @@
     files = [
       ".config/wtwitch/api.json"
       ".sops.yaml"
-      ".config/syncthingtray.ini"
       ".claude.json"
       ".config/nvtop/interface.ini"
       ".config/vicinae/settings.json"

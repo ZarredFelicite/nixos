@@ -82,9 +82,9 @@
       demuxer-mkv-subtitle-preroll = true;
       #demuxer-max-bytes = 419430400;
       #demuxer-max-back-bytes = 419430400;
-      demuxer-max-bytes = "512MiB";
+      demuxer-max-bytes = "128MiB";
       demuxer-readahead-secs = 60;
-      demuxer-max-back-bytes = "512MiB";
+      demuxer-max-back-bytes = "128MiB";
       prefetch-playlist = false;     # Don't preload next video (saves memory)
       demuxer-lavf-o = "extension_picky=0";
       slang = "eng,en";

@@ -23,11 +23,6 @@
     settings = {
       options.urAccepted = -1;
       options.relaysEnabled = false;
-      gui = {
-        tls = "true";
-        theme = "black";
-        user = "zarred";
-      };
       devices = {
         "web" = { id = "FJPCMZP-BFNE27P-TFDPM26-X2TNVZC-BBKQX4B-4YQO7JZ-5NHRWER-X4YU6AD"; };
         "sankara" = { id = "HWHGCRQ-HYCPKIP-M62FMS6-GQGZDWH-GCNJMJA-QIBXEXY-FVT2COA-KJ3W6QT"; };

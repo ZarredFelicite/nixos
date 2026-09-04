@@ -4,6 +4,10 @@ let
   beetsWithXtractor = pkgs-unstable.beets.overridePythonAttrs (old: {
     propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ beetsXtractor ];
   });
+  mediaStackConfig = pkgs.writeText "media-stack-config.json" (builtins.toJSON {
+    host = "sankara";
+    services.radarr.api_key_pass = "server/radarr";
+  });
 in {
   imports = [
     ./mpd_clients.nix
@@ -34,6 +38,12 @@ in {
     };
     Install.WantedBy = [ "default.target" ];
   };
+
+  # This must be a real mode-0600 file rather than a world-readable Nix-store symlink.
+  home.activation.mediaStackConfig = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -d -m 700 "$HOME/.config/media-stack"
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -m 600 ${mediaStackConfig} "$HOME/.config/media-stack/config.json"
+  '';
 
   xdg.configFile."easyeffects/output/autoeq.json".source = ./easyeffects/autoeq.json;
   services.easyeffects = {

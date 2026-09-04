@@ -6,7 +6,23 @@ let
   });
   mediaStackConfig = pkgs.writeText "media-stack-config.json" (builtins.toJSON {
     host = "sankara";
-    services.radarr.api_key_pass = "server/radarr";
+    services = {
+      radarr.api_key_pass = "server/radarr";
+      sonarr.api_key_pass = "server/sonarr";
+      lidarr.api_key_pass = "server/lidarr";
+      prowlarr = {
+        api_key_pass = "server/prowlarr.com";
+        api_key_pass_field = "api";
+      };
+      transmission = {
+        username = "zarred";
+        password_pass = "server/transmission";
+      };
+      nzbget = {
+        username = "zarred";
+        password_pass = "piracy/nzbget";
+      };
+    };
   });
 in {
   imports = [

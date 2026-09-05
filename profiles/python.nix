@@ -31,6 +31,7 @@ in
       mutagen # Python module for handling audio metadata (often CLI)
       beautifulsoup4 # Useful for CLI scripting
       aiofiles
+      websockets
       playwright
       faker
       backoff

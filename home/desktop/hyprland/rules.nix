@@ -28,6 +28,10 @@
     windowrule = match:initial_title Picture-in-Picture|cctv, group deny
     windowrule = match:class ^(nova)$, size 1200 800
     windowrule = match:title nova, size 1200 800
+    # Codex voice mode uses a huge transparent avatar canvas for animation.
+    windowrule = match:class ^(codex-desktop)$, match:title ^(ChatGPT)$, match:float true, no_blur on
+    windowrule = match:class ^(codex-desktop)$, match:title ^(ChatGPT)$, match:float true, no_shadow on
+    windowrule = match:class ^(codex-desktop)$, match:title ^(ChatGPT)$, match:float true, border_size 0
     # dimaround is invalid in Hyprland 0.55 window rules.
     # windowrule = match:class ^(nova|obsidian)$, dimaround on
     # windowrule = match:title nova, dimaround on

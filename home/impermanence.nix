@@ -68,6 +68,7 @@
       ".config/obsidian"
       ".config/VSCodium"
       ".config/Claude"
+      ".config/Codex"
       ".config/Cursor"
       ".config/opencode"
       ".config/agent"

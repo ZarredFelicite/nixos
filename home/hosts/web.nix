@@ -19,7 +19,7 @@ let
   audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
   announcementWatcherPython = pkgs.python313.withPackages (ps: [ ps.requests ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
-  gemma4ModelsPreset = pkgs.writeText "gemma4-models.ini" ''
+  llamaModelsPreset = pkgs.writeText "llama-models.ini" ''
     version = 1
 
     [gemma4-e4b-it-qat]
@@ -44,6 +44,19 @@ let
     parallel = 1
     reasoning = off
     reasoning-format = deepseek
+    flash-attn = auto
+    batch-size = 512
+    ubatch-size = 512
+    load-on-startup = false
+
+    [qwen3.5-4b-q4_k_m]
+    model = /home/zarred/.cache/llama-models/qwen3.5-4b-q4_k_m.gguf
+    ctx-size = 65536
+    n-gpu-layers = 99
+    device = CUDA0
+    parallel = 1
+    reasoning = off
+    reasoning-format = none
     flash-attn = auto
     batch-size = 512
     ubatch-size = 512
@@ -155,11 +168,11 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  systemd.user.services.gemma4-e4b-server = {
-    Unit.Description = "On-demand Gemma 4 CUDA model router";
+  systemd.user.services.llama-server = {
+    Unit.Description = "On-demand CUDA model router";
     Service = {
       Type = "simple";
-      ExecStart = "${ollamaCudaLib}/llama-server --host 127.0.0.1 --port 8083 --no-webui --offline --models-preset ${gemma4ModelsPreset} --models-max 1 --models-autoload --metrics";
+      ExecStart = "${ollamaCudaLib}/llama-server --host 127.0.0.1 --port 8083 --no-webui --offline --models-preset ${llamaModelsPreset} --models-max 1 --models-autoload --metrics";
       Restart = "on-failure";
       RestartSec = 2;
       TimeoutStartSec = 30;
@@ -440,6 +453,20 @@ in
             input = [ "text" "image" ];
             contextWindow = 4096;
             maxTokens = 4096;
+            cost = {
+              input = 0;
+              output = 0;
+              cacheRead = 0;
+              cacheWrite = 0;
+            };
+          }
+          {
+            id = "qwen3.5-4b-q4_k_m";
+            name = "Qwen 3.5 4B Q4_K_M (local)";
+            reasoning = false;
+            input = [ "text" ];
+            contextWindow = 65536;
+            maxTokens = 65536;
             cost = {
               input = 0;
               output = 0;

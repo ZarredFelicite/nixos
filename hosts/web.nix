@@ -454,7 +454,8 @@
             info.version = nvmlClockOffset_v1
             info.type = NVML_CLOCK_GRAPHICS
             info.pstate = NVML_PSTATE_0
-            info.clockOffsetMHz = 200
+            # info.clockOffsetMHz = 200  # Unstable
+            info.clockOffsetMHz = 100
 
             nvmlDeviceSetClockOffsets(device, byref(info))
 

@@ -1440,8 +1440,8 @@
         "systems": "systems_9"
       },
       "locked": {
-        "lastModified": 1789184602,
-        "narHash": "sha256-hbuOhv9mQzz78t9H3M4fninfSvVkHdlgSuOfA+x1GZM=",
+        "lastModified": 1789196664,
+        "narHash": "sha256-NkJimOnHCGrBT5bm01GIt8b65QEor84bToWzTWYEuDQ=",
         "path": "/home/zarred/dev/vicinae",
         "type": "path"
       },

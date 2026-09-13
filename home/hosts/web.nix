@@ -111,7 +111,19 @@ in
     inputs.recall.homeManagerModules.default
   ];
 
-  home.packages = [ herdrPackage ];
+  home.packages = [
+    herdrPackage
+    (pkgs.callPackage ../../pkgs/handsfree.nix { })
+  ];
+
+  # HandsFree registers the Bluetooth HFP hands-free role itself. Keep
+  # WirePlumber's normal A2DP/LE Audio and HFP Audio Gateway roles, but do not
+  # let it register hfp_hf as well (which conflicts with HandsFree).
+  xdg.configFile."wireplumber/wireplumber.conf.d/90-handsfree.conf".text = ''
+    monitor.bluez.properties = {
+      bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hfp_ag ]
+    }
+  '';
 
   # Herdr's startup hook is intentionally left enabled so its plugin actions
   # remain available. It may attempt a second bind after a Herdr restart and

@@ -131,8 +131,8 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1789465516,
-        "narHash": "sha256-1n5TYJhq3Vm7Mglq3ew60H2dLIFKnxJyLOz+Ea8dLGQ=",
+        "lastModified": 1789480155,
+        "narHash": "sha256-zW3dqi8CNhLRDBR5rWm3FfbvMyCASxfGav3PTnsJk8I=",
         "path": "/home/zarred/dev/ember/companion",
         "type": "path"
       },

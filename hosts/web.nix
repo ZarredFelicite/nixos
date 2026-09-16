@@ -46,6 +46,9 @@
   #  })
   #];
   networking.hostName = "web";
+  # iwd otherwise enables per-interface Wi-Fi power saving, which caused
+  # multi-second WebRTC receive stalls despite iwlwifi's module default.
+  networking.wireless.iwd.settings.DriverQuirks.PowerSaveDisable = "iwlwifi";
   networking.extraHosts = ''
     149.154.166.110 api.telegram.org
   '';

@@ -135,7 +135,6 @@
     #interfaces.wlan0.wakeOnLan.enable = true;
     networkmanager = {
       enable = false;
-      wifi.powersave = false;
       wifi.backend = "iwd";
       logLevel = "WARN";
     };

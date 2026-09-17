@@ -1,6 +1,12 @@
-{ pkgs-unstable, ... }:
+{ osConfig, pkgs, pkgs-unstable, ... }:
 let
   quickshellBin = "${pkgs-unstable.quickshell}/bin";
+  sttLauncher = pkgs.writeShellScript "stt-hyprland-launcher" ''
+    if [ -z "''${OPENROUTER_API_KEY:-}" ] && [ -r "${osConfig.sops.secrets.openrouter-api.path}" ]; then
+      export OPENROUTER_API_KEY="$(<"${osConfig.sops.secrets.openrouter-api.path}")"
+    fi
+    exec "$HOME/scripts/stt/stt" "$@"
+  '';
 in
 {
   wayland.windowManager.hyprland.extraConfig = ''
@@ -80,8 +86,8 @@ in
       "$mod CTRL, D, movetoworkspace, special"
       "$mod, Y, exec, ~/scripts/hyprland/hypr_focusfloat"
       "$mod CTRL, Y, exec, ~/scripts/hyprland/hypr_opacity.sh"
-      "$mod, U, exec, ~/scripts/stt/stt --ember"
-      "$mod CTRL, U, exec, ~/scripts/stt/stt --type"
+      "$mod, U, exec, ${sttLauncher} --ember"
+      "$mod CTRL, U, exec, ${sttLauncher} --type"
       #"$mod, R, exec, ~/scripts/hyprland/resize.sh"
       "$mod, L, exec, vicinae toggle"
       "$mod, Space, exec, vicinae toggle"

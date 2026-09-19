@@ -250,10 +250,10 @@ in
   };
 
   systemd.user.timers.rss-news-cache = {
-    Unit.Description = "Refresh FreshRSS news cache every 30 minutes";
+    Unit.Description = "Refresh FreshRSS news cache every 5 minutes";
     Timer = {
       OnActiveSec = "2m";
-      OnUnitActiveSec = "30m";
+      OnUnitActiveSec = "5m";
     };
     Install.WantedBy = [ "timers.target" ];
   };

@@ -209,7 +209,7 @@ in {
         follow_mouse = 1;
         mouse_refocus = true;
         float_switch_override_focus = 0;
-        special_fallthrough = true;
+        special_fallthrough = false;
         touchpad = {
           disable_while_typing = true;
           scroll_factor = 0.5;

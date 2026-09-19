@@ -240,11 +240,22 @@ in
       Type = "oneshot";
       ExecStart = "${pkgs.bash}/bin/bash /home/zarred/scripts/rss/rss-news-cache-refresh";
       WorkingDirectory = "/home/zarred/scripts/rss";
+      # rss.py has a 240s refresh deadline; leave bounded cleanup headroom.
+      TimeoutStartSec = "5m";
       StandardOutput = "null";
       StandardError = "journal";
       Environment = [
-        "PATH=${lib.makeBinPath [ rssNewsPython pkgs.bash pkgs.coreutils ]}"
+        "PATH=${lib.makeBinPath [ rssNewsPython pkgs.bash pkgs.coreutils pkgs.gnupg ]}"
         "PYTHONUNBUFFERED=1"
+        "RSS_BACKGROUND_LIMIT=50"
+        "RSS_NOISE_THRESHOLD=0.5"
+        "RSS_DEDUPE_WINDOW_HOURS=48"
+        "RSS_REFRESH_DEADLINE_SECONDS=240"
+        # Keep SQLite state and the last-good cache outside /tmp. rss.py still
+        # publishes /tmp/rss-news as a compatibility copy for older consumers.
+        "RSS_NEWS_STATE_DIR=${config.xdg.stateHome}/rss-news"
+        "RSS_NEWS_LAST_GOOD_PATH=${config.xdg.stateHome}/rss-news/rss-news.json"
+        "RSS_NEWS_CACHE_PATH=/tmp/rss-news"
       ];
     };
   };
@@ -253,6 +264,8 @@ in
     Unit.Description = "Refresh FreshRSS news cache every 5 minutes";
     Timer = {
       OnActiveSec = "2m";
+      # Activation-relative preserves the five-minute cadence; systemd
+      # serializes the oneshot, so no shell lock is needed.
       OnUnitActiveSec = "5m";
     };
     Install.WantedBy = [ "timers.target" ];

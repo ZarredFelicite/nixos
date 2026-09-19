@@ -997,6 +997,27 @@
         "type": "github"
       }
     },
+    "print-vault": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789835981,
+        "narHash": "sha256-HJ0+a40tVAl6EeEJLQLPJAXwhPr4xonAF3qzfWDWHlc=",
+        "ref": "refs/heads/main",
+        "rev": "d7b744348cb1ef6e09bf4efad550297b5761643c",
+        "revCount": 13,
+        "type": "git",
+        "url": "file:///home/zarred/dev/print-vault"
+      },
+      "original": {
+        "rev": "d7b744348cb1ef6e09bf4efad550297b5761643c",
+        "type": "git",
+        "url": "file:///home/zarred/dev/print-vault"
+      }
+    },
     "qmd": {
       "inputs": {
         "flake-utils": "flake-utils_3",
@@ -1054,6 +1075,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nur": "nur",
+        "print-vault": "print-vault",
         "qmd": "qmd",
         "recall": "recall",
         "rose-pine-hyprcursor": "rose-pine-hyprcursor",

@@ -98,7 +98,10 @@ in
     inputs.recall.homeManagerModules.default
   ];
 
-  home.packages = [ herdrPackage ];
+  home.packages = [
+    herdrPackage
+    inputs.print-vault.packages.${pkgs.system}.default
+  ];
 
   # Herdr's startup hook is intentionally left enabled so its plugin actions
   # remain available. It may attempt a second bind after a Herdr restart and

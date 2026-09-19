@@ -46,6 +46,10 @@
       inputs.flake-utils.follows = "flake-utils";
     };
     ember-companion.url = "path:/home/zarred/dev/ember/companion";
+    print-vault = {
+      url = "git+file:///home/zarred/dev/print-vault?rev=d7b744348cb1ef6e09bf4efad550297b5761643c";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     self, nixpkgs,

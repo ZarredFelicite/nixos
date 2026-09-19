@@ -16,7 +16,7 @@ let
   herdrWebPath =
     lib.makeBinPath [ pkgs.nodejs herdrPackage piPackage pkgs.bash pkgs.coreutils pkgs.openssl ]
     + ":/run/current-system/sw/bin:/home/zarred/.nix-profile/bin";
-  audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ]);
+  audioSummaryPython = pkgs.python312.withPackages (ps: [ ps.requests ps.numpy ps.webrtcvad ps.setuptools ]);
   announcementWatcherPython = pkgs.python313.withPackages (ps: [ ps.requests ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
   llamaModelsPreset = pkgs.writeText "llama-models.ini" ''

@@ -73,6 +73,12 @@ let
     ps.ultralytics
     ps.uvicorn
   ]);
+  mkVicinaeExtension = (inputs.vicinae.overlays.default pkgs pkgs).mkVicinaeExtension;
+  vicinaePrintvaultExtension = mkVicinaeExtension {
+    pname = "printvault-search";
+    version = "0.1.0";
+    src = inputs.vicinae-printvault;
+  };
 in
 {
   imports = [
@@ -101,6 +107,7 @@ in
   home.packages = [
     herdrPackage
     inputs.print-vault.packages.${pkgs.system}.default
+    vicinaePrintvaultExtension
   ];
 
   # Herdr's startup hook is intentionally left enabled so its plugin actions

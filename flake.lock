@@ -1083,6 +1083,7 @@
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
         "vicinae": "vicinae",
+        "vicinae-printvault": "vicinae-printvault",
         "vigiland": "vigiland",
         "zen-browser": "zen-browser"
       }
@@ -1468,6 +1469,23 @@
       "original": {
         "path": "/home/zarred/dev/vicinae",
         "type": "path"
+      }
+    },
+    "vicinae-printvault": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789837164,
+        "narHash": "sha256-kF1w0gU7Pwo9XjDT0EhQPNSnbpPO94xuU9Hwx0Aufrs=",
+        "ref": "refs/heads/main",
+        "rev": "d306e7b12f6e74198dda3bc5198aab4a77dc2450",
+        "revCount": 1,
+        "type": "git",
+        "url": "file:///home/zarred/dev/vicinae-printvault"
+      },
+      "original": {
+        "rev": "d306e7b12f6e74198dda3bc5198aab4a77dc2450",
+        "type": "git",
+        "url": "file:///home/zarred/dev/vicinae-printvault"
       }
     },
     "vigiland": {

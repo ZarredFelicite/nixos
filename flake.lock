@@ -131,14 +131,20 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1789480155,
-        "narHash": "sha256-zW3dqi8CNhLRDBR5rWm3FfbvMyCASxfGav3PTnsJk8I=",
-        "path": "/home/zarred/dev/ember/companion",
-        "type": "path"
+        "dir": "companion",
+        "lastModified": 1789823013,
+        "narHash": "sha256-T6OeDk8yACfWxb/a6ZLxHdVvRRvXkwJCD42QpJ0gXrE=",
+        "ref": "refs/heads/fix/desktop-shadow-policy",
+        "rev": "21f56e632775f40abe4f951f1fbaf1c5f0594f1f",
+        "revCount": 770,
+        "type": "git",
+        "url": "file:///home/zarred/dev/ember"
       },
       "original": {
-        "path": "/home/zarred/dev/ember/companion",
-        "type": "path"
+        "dir": "companion",
+        "rev": "21f56e632775f40abe4f951f1fbaf1c5f0594f1f",
+        "type": "git",
+        "url": "file:///home/zarred/dev/ember"
       }
     },
     "firefox-gnome-theme": {

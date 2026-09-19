@@ -45,7 +45,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
-    ember-companion.url = "path:/home/zarred/dev/ember/companion";
+    ember-companion.url = "git+file:///home/zarred/dev/ember?dir=companion&rev=21f56e632775f40abe4f951f1fbaf1c5f0594f1f";
   };
   outputs = {
     self, nixpkgs,

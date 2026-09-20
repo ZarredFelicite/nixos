@@ -128,8 +128,9 @@ in
     herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
     inputs.print-vault.packages.${pkgs.system}.default
-    vicinaePrintvaultExtension
   ];
+
+  programs.vicinae.extensions = [ vicinaePrintvaultExtension ];
 
   # HandsFree registers the Bluetooth HFP hands-free role itself. Keep
   # WirePlumber's normal A2DP/LE Audio and HFP Audio Gateway roles, but do not

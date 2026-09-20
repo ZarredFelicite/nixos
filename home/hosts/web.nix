@@ -99,6 +99,7 @@ let
     version = "0.1.0";
     src = inputs.vicinae-printvault;
   };
+  printVaultPackage = inputs.print-vault.packages.${pkgs.system}.default;
 in
 {
   imports = [
@@ -127,10 +128,24 @@ in
   home.packages = [
     herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
-    inputs.print-vault.packages.${pkgs.system}.default
+    printVaultPackage
   ];
 
   programs.vicinae.extensions = [ vicinaePrintvaultExtension ];
+  systemd.user.services.vicinae.Service.Environment = [
+    "PRINTVAULT_BIN=${lib.getExe printVaultPackage}"
+  ];
+
+  xdg.desktopEntries.print-vault = {
+    name = "PrintVault";
+    comment = "Open 3D models in PrintVault";
+    exec = "${lib.getExe printVaultPackage} %f";
+    icon = "${printVaultPackage}/share/icons/hicolor/scalable/apps/print-vault.svg";
+    terminal = false;
+    type = "Application";
+    mimeType = [ "model/stl" "model/3mf" ];
+    categories = [ "Graphics" "Utility" ];
+  };
 
   # HandsFree registers the Bluetooth HFP hands-free role itself. Keep
   # WirePlumber's normal A2DP/LE Audio and HFP Audio Gateway roles, but do not

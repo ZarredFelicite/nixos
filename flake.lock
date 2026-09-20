@@ -1542,16 +1542,16 @@
     "vicinae-printvault": {
       "flake": false,
       "locked": {
-        "lastModified": 1789837164,
-        "narHash": "sha256-kF1w0gU7Pwo9XjDT0EhQPNSnbpPO94xuU9Hwx0Aufrs=",
+        "lastModified": 1789865616,
+        "narHash": "sha256-seJ+ds/adUU2Qbl0RRl2cqo491BWq4ds01UPFGCZDdA=",
         "ref": "refs/heads/main",
-        "rev": "d306e7b12f6e74198dda3bc5198aab4a77dc2450",
-        "revCount": 1,
+        "rev": "58e6bdfed8cfe576402fd4cb3c1534552ac6b921",
+        "revCount": 2,
         "type": "git",
         "url": "file:///home/zarred/dev/vicinae-printvault"
       },
       "original": {
-        "rev": "d306e7b12f6e74198dda3bc5198aab4a77dc2450",
+        "rev": "58e6bdfed8cfe576402fd4cb3c1534552ac6b921",
         "type": "git",
         "url": "file:///home/zarred/dev/vicinae-printvault"
       }

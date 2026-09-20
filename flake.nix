@@ -51,7 +51,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vicinae-printvault = {
-      url = "git+file:///home/zarred/dev/vicinae-printvault?rev=d306e7b12f6e74198dda3bc5198aab4a77dc2450";
+      url = "git+file:///home/zarred/dev/vicinae-printvault?rev=58e6bdfed8cfe576402fd4cb3c1534552ac6b921";
       flake = false;
     };
   };

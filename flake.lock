@@ -1041,6 +1041,27 @@
         "type": "github"
       }
     },
+    "print-vault": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789835981,
+        "narHash": "sha256-HJ0+a40tVAl6EeEJLQLPJAXwhPr4xonAF3qzfWDWHlc=",
+        "ref": "refs/heads/main",
+        "rev": "d7b744348cb1ef6e09bf4efad550297b5761643c",
+        "revCount": 13,
+        "type": "git",
+        "url": "file:///home/zarred/dev/print-vault"
+      },
+      "original": {
+        "rev": "d7b744348cb1ef6e09bf4efad550297b5761643c",
+        "type": "git",
+        "url": "file:///home/zarred/dev/print-vault"
+      }
+    },
     "qmd": {
       "inputs": {
         "flake-utils": "flake-utils_3",
@@ -1098,6 +1119,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nur": "nur",
+        "print-vault": "print-vault",
         "qmd": "qmd",
         "recall": "recall",
         "rose-pine-hyprcursor": "rose-pine-hyprcursor",
@@ -1105,6 +1127,7 @@
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
         "vicinae": "vicinae",
+        "vicinae-printvault": "vicinae-printvault",
         "vigiland": "vigiland",
         "zen-browser": "zen-browser"
       }
@@ -1514,6 +1537,23 @@
       "original": {
         "path": "/home/zarred/dev/vicinae",
         "type": "path"
+      }
+    },
+    "vicinae-printvault": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789837164,
+        "narHash": "sha256-kF1w0gU7Pwo9XjDT0EhQPNSnbpPO94xuU9Hwx0Aufrs=",
+        "ref": "refs/heads/main",
+        "rev": "d306e7b12f6e74198dda3bc5198aab4a77dc2450",
+        "revCount": 1,
+        "type": "git",
+        "url": "file:///home/zarred/dev/vicinae-printvault"
+      },
+      "original": {
+        "rev": "d306e7b12f6e74198dda3bc5198aab4a77dc2450",
+        "type": "git",
+        "url": "file:///home/zarred/dev/vicinae-printvault"
       }
     },
     "vigiland": {

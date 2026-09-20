@@ -46,6 +46,14 @@
       inputs.flake-utils.follows = "flake-utils";
     };
     ember-companion.url = "git+file:///home/zarred/dev/ember?dir=companion&rev=21f56e632775f40abe4f951f1fbaf1c5f0594f1f";
+    print-vault = {
+      url = "git+file:///home/zarred/dev/print-vault?rev=d7b744348cb1ef6e09bf4efad550297b5761643c";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    vicinae-printvault = {
+      url = "git+file:///home/zarred/dev/vicinae-printvault?rev=d306e7b12f6e74198dda3bc5198aab4a77dc2450";
+      flake = false;
+    };
   };
   outputs = {
     self, nixpkgs,

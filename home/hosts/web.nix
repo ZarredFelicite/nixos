@@ -136,16 +136,18 @@ in
     "PRINTVAULT_BIN=${lib.getExe printVaultPackage}"
   ];
 
-  xdg.desktopEntries.print-vault = {
-    name = "PrintVault";
-    comment = "Open 3D models in PrintVault";
-    exec = "${lib.getExe printVaultPackage} %f";
-    icon = "${printVaultPackage}/share/icons/hicolor/scalable/apps/print-vault.svg";
-    terminal = false;
-    type = "Application";
-    mimeType = [ "model/stl" "model/3mf" ];
-    categories = [ "Graphics" "Utility" ];
-  };
+  xdg.dataFile."applications/print-vault.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=PrintVault
+    Comment=Open 3D models in PrintVault
+    Exec=${lib.getExe printVaultPackage} %f
+    Icon=${printVaultPackage}/share/icons/hicolor/scalable/apps/print-vault.svg
+    MimeType=model/stl;model/3mf;
+    Terminal=false
+    Categories=Graphics;Utility;
+    StartupWMClass=PrintVault
+  '';
 
   # HandsFree registers the Bluetooth HFP hands-free role itself. Keep
   # WirePlumber's normal A2DP/LE Audio and HFP Audio Gateway roles, but do not

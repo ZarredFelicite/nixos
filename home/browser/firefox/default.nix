@@ -264,7 +264,9 @@ in {
         id = 0;
         isDefault = true;
         search = (import ./search.nix) ;
-        settings = import ./settings.nix ;
+        settings = (import ./settings.nix) // {
+          "extensions.activeThemeID" = "default-theme@mozilla.org";
+        };
         #bookmarks = import ./bookmarks.nix ;
         bookmarks = {};
         userChrome = ultima-user-chrome;

@@ -2,6 +2,22 @@
 # TODO: backup, recording indicator by grepping ps for wf-recorder, restic
 let
   height = if osConfig.networking.hostName == "web" then "14" else "14";
+  batteryIconsRuntimePath = lib.makeBinPath [
+    pkgs.systemd
+    pkgs.jq
+    pkgs.bc
+    pkgs.python3
+    pkgs.coreutils
+  ];
+  batteryIcons = pkgs.writeTextFile {
+    name = "airpods-battery-icons";
+    executable = true;
+    destination = "/bin/battery_icons.sh";
+    text = lib.replaceStrings
+      [ "#!/usr/bin/env zsh\n" ]
+      [ "#!${pkgs.zsh}/bin/zsh\n\nexport PATH=\"${batteryIconsRuntimePath}\"\n" ]
+      (builtins.readFile ./scripts/battery_icons.sh);
+  };
   cava_config = {
     framerate = 30;
     autosens = 1;
@@ -114,7 +130,7 @@ in {
       PartOf = [ "hyprland-session.target" ];
       After = [ "hyprland-session.target" ];
     };
-    Service.ExecStart = "/home/zarred/scripts/waybar/battery_icons.sh";
+    Service.ExecStart = "${batteryIcons}/bin/battery_icons.sh";
     Service.Restart = "always";
     Install.WantedBy = [ "hyprland-session.target" ];
   };

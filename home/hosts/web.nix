@@ -253,16 +253,6 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  systemd.user.services.abc-news = {
-    Unit.Description = "Summarize abc news rss feed";
-    Service.ExecStart = "/home/zarred/scripts/rss/rss-transform/rss_transformer.py --interval 300";
-    Service.Restart = "always";
-    Service.RestartSec = "300s";
-    Service.StartLimitIntervalSec = "0";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Unit.After = [ "graphical-session.target" ];
-  };
-
   systemd.user.services.rss-news-cache = {
     Unit = {
       Description = "Refresh FreshRSS news cache and AI-mark noisy stories read";

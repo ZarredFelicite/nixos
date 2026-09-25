@@ -1,0 +1,45 @@
+module bar.popouts
+
+Wrapper 1.0 Wrapper.qml
+Content 1.0 Content.qml
+TrayMenu 1.0 TrayMenu.qml
+BluetoothTooltip 1.0 BluetoothTooltip.qml
+NetworkTooltip 1.0 NetworkTooltip.qml
+AudioDevicesTooltip 1.0 AudioDevicesTooltip.qml
+AiSettingsPopout 1.0 AiSettingsPopout.qml
+BrightnessTooltip 1.0 BrightnessTooltip.qml
+TooltipContent 1.0 TooltipContent.qml
+ZmkKeymapTooltip 1.0 ZmkKeymapTooltip.qml
+HyprlandShortcutsPopup 1.0 HyprlandShortcutsPopup.qml
+TodosTooltip 1.0 TodosTooltip.qml
+NewsTooltip 1.0 NewsTooltip.qml
+NotificationsTooltip 1.0 NotificationsTooltip.qml
+NotificationsPanel 1.0 NotificationsPanel.qml
+SystemMenu 1.0 SystemMenu.qml
+StocksTooltip 1.0 StocksTooltip.qml
+CodexUsageTooltip 1.0 CodexUsageTooltip.qml
+PiDashboardQuestionsTooltip 1.0 PiDashboardQuestionsTooltip.qml
+UpdatesTooltip 1.0 UpdatesTooltip.qml
+PlayersTooltip 1.0 PlayersTooltip.qml
+singleton PopoutConfig 1.0 PopoutConfig.qml
+VideoStreamTooltip 1.0 VideoStreamTooltip.qml
+VideoStreamVideo 1.0 VideoStreamVideo.qml
+DiskTooltip 1.0 DiskTooltip.qml
+MemoryTooltip 1.0 MemoryTooltip.qml
+CpuTooltip 1.0 CpuTooltip.qml
+GpuTooltip 1.0 GpuTooltip.qml
+BatteryTooltip 1.0 BatteryTooltip.qml
+TimerTooltip 1.0 TimerTooltip.qml
+CalendarAgenda 1.0 CalendarAgenda.qml
+ResticTooltip 1.0 ResticTooltip.qml
+SystemdFailedTooltip 1.0 SystemdFailedTooltip.qml
+AlphaESSTooltip 1.0 AlphaESSTooltip.qml
+WeatherTooltip 1.0 WeatherTooltip.qml
+GenerationsMenu 1.0 GenerationsMenu.qml
+GenerationDetails 1.0 GenerationDetails.qml
+NetworksMenu 1.0 NetworksMenu.qml
+BluetoothMenu 1.0 BluetoothMenu.qml
+MusicPlayerMenu 1.0 MusicPlayerMenu.qml
+ScreenRecordingMenu 1.0 ScreenRecordingMenu.qml
+Printer3DMenu 1.0 Printer3DMenu.qml
+HomeAssistantMenu 1.0 HomeAssistantMenu.qml

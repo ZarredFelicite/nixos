@@ -1,0 +1,3 @@
+module primary
+
+singleton Config 1.0 config.qml

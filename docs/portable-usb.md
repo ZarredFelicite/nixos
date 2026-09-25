@@ -1,6 +1,6 @@
 # Portable NixOS USB — configuration decisions
 
-Status: planning snapshot (2026-09-25). **No NixOS system or bootloader has been installed on the USB yet.** This is not an executable host configuration.
+Status: MVP built (2026-09-25). **No NixOS system or bootloader has been installed on the USB yet.** The standalone host flake is in `portable/`; `nix build --no-link ./portable#nixosConfigurations.portable-usb.config.system.build.toplevel` succeeds (about 10.9 GiB closure). The USB remains locked pending a verified, approved installation.
 
 ## Purpose
 
@@ -24,7 +24,7 @@ After cleanup, the **entire** `~/scripts` tree (including hidden files) was copi
 ## Confirmed features
 
 - Persistent `/` and home on the encrypted Btrfs partition; no tmpfs-root impermanence like Nano.
-- A login screen offering **Hyprland, COSMIC, and GNOME**. For Hyprland, carry over Nano's custom keybindings, Quickshell, lock screen, and styling where portable. Display manager not chosen yet.
+- **SDDM** login screen offering Hyprland, COSMIC, and GNOME without autologin. Hyprland has adapted Nano-style navigation, selected script-driven shortcuts, Quickshell, Hyprlock, and a generic wallpaper; shortcuts for excluded apps are omitted.
 - NetworkManager for Wi-Fi; no Nano-specific static addresses or interface-name assumptions.
 - SSH with key-only user login and firewall enabled; no password or root SSH login by default.
 - Tailscale and WireGuard, with device credentials provisioned securely after installation rather than embedded in an image or the Nix store. No Syncthing requested.
@@ -37,15 +37,15 @@ After cleanup, the **entire** `~/scripts` tree (including hidden files) was copi
 - `pass` and GPG; credentials and personal data are not part of this document.
 - No automatic NixOS upgrades. Manual updates remain possible.
 - From Nano's development tools: Git, Python and GCC only. Include the Pi coding agent, but no other local AI tools. No Docker/Podman, QEMU/libvirt, CAD/3D-printing tools, Android SDK, or gaming stack.
-- No NFS mounts, Sankara backups, or SSH distributed builder. Prefer the signed Nix store cache served by host `web` when reachable; use public caches and local builds as fallback. Authorize a separate portable-device SSH identity for the web cache after installation.
+- No NFS mounts, Sankara backups, or SSH distributed builder. Public Nix caches and local builds work before enrollment; authorize a portable-device SSH identity and enable the signed `web` cache after first boot. The web cache is not yet active in the MVP configuration.
 - Mount the existing ext4 partition at `/data` for optional bulk storage. It is **unencrypted**; keep home and private state on the encrypted root by default.
 - Enroll Tailscale, WireGuard, mail, GPG, Pi, and other credentials after first boot; do not embed private keys or tokens in the Nix store or USB image.
 - Give the Framework's internal SSD a **separate host configuration**, reusing selected Nano/portable modules where suitable. Do not install Nano's host file unchanged: it hardcodes ThinkPad hardware and disk paths. Build that host after inspecting Framework hardware; the portable USB needs only the tools to install a flake safely.
 
-## Still to decide
+## Installation and validation remaining
 
-1. Implementation details: multi-session display manager, removable UEFI bootloader, portable hostname, and adapting custom Hyprland/Quickshell scripts and assets. Keep the selected custom setup, but disable shortcuts for deliberately excluded applications; some copied scripts also need runtime dependencies not selected for this host. Unless changed, use a password-protected `zarred` account without autologin and Nano's locale/keyboard preferences. Set its password interactively; never commit a plaintext password or private key.
-2. Framework host disk layout and install workflow later. Never infer the internal SSD device name or partition it without verifying it on the Framework.
-3. Validation depth: MVP configuration evaluation/build and boot test versus a more thorough portability and hardening pass.
+1. Verify the Samsung USB serial, partition UUIDs, mount table, and staged `/home/zarred/scripts` once more. Preserve all three existing filesystems; never invoke Disko or reformat. Explicit approval is required before `nixos-install` writes to the prepared USB. The flake uses removable-media GRUB without firmware-variable changes; it does not target the Framework internal SSD.
+2. During installation set a password for the `zarred` account **interactively**, not through Nix or chat. SSH is key-only but has no authorized key until provisioned after first boot. After installation, boot-test on the Framework and check LUKS unlock, login/session selection, Wi-Fi, `/data`, and the Hyprland/Quickshell desktop. Camera, calendar, remote Pi dashboard, TTS, and Ember integrations are passive in the portable Quickshell copy.
+3. Add a separately hardware-verified Framework host and disk workflow later. Never infer the internal SSD device name or partition it without verifying it on the Framework.
 
-**Do not run `nixos-install` or assume the USB is bootable until these choices are resolved and the installation is validated.**
+**Do not run `nixos-install` before the mount/target review and explicit approval; do not claim boot success before a physical boot test.**

@@ -30,22 +30,21 @@ The USB uses an MBR partition table. Ventoy and its three ISOs were removed. The
 - Firefox and Tor Browser; no Brave or Zen Browser.
 - Kitty as the only terminal emulator, plus Zsh, tmux, Starship, Neovim/Nixvim, and Git.
 - Zathura as Nano's minimal PDF viewer; no Obsidian or LibreOffice requested.
-- Terminal mail tools and Signal; no Thunderbird, Discord, or Zoom requested.
+- Terminal mail tools and Signal; install the mail applications now, but configure accounts, sync, and notifications after first boot. No Thunderbird, Discord, or Zoom requested.
 - mpv only from Nano's media applications; no Spotify, MPD/Twitch tools, or OBS requested.
 - `pass` and GPG; credentials and personal data are not part of this document.
 - No automatic NixOS upgrades. Manual updates remain possible.
 - From Nano's development tools: Git, Python and GCC only. Include the Pi coding agent, but no other local AI tools. No Docker/Podman, QEMU/libvirt, CAD/3D-printing tools, Android SDK, or gaming stack.
-- No NFS mounts, Sankara backups, or SSH distributed builder. Use the existing signed Nix store cache served by host `web` when reachable; clarify public-cache fallback below.
+- No NFS mounts, Sankara backups, or SSH distributed builder. Prefer the signed Nix store cache served by host `web` when reachable; use public caches and local builds as fallback. Authorize a separate portable-device SSH identity for the web cache after installation.
 - Mount the existing ext4 partition at `/data` for optional bulk storage. It is **unencrypted**; keep home and private state on the encrypted root by default.
+- Enroll Tailscale, WireGuard, mail, GPG, Pi, and other credentials after first boot; do not embed private keys or tokens in the Nix store or USB image.
+- Give the Framework's internal SSD a **separate host configuration**, reusing selected Nano/portable modules where suitable. Do not install Nano's host file unchanged: it hardcodes ThinkPad hardware and disk paths. Build that host after inspecting Framework hardware; the portable USB needs only the tools to install a flake safely.
 
 ## Still to decide
 
-1. Web's cache is an SSH-NG Nix store endpoint reachable on the home LAN, distinct from Nano's SSH **remote builder**. Confirm whether public Nix caches and local builds should remain as fallback when away from home (recommended). The portable system needs a separately authorized SSH identity for the web cache.
-2. Terminal mail: install the chosen terminal apps only and configure accounts later, or enable Gmail sync/notifications on the portable device? Nano's mail module assumes SOPS credentials and personal scripts and cannot be reused unchanged.
-3. Custom Hyprland/Quickshell: adapt the portable core and remove bindings for excluded apps or missing scripts (recommended), or bring selected personal scripts/assets onto the USB. Nano's full bindings reference Obsidian, Ghostty, Vicinae, SwayNC, local projects, and `/home/zarred/scripts`.
-4. Provision device-specific login/SSH/SOPS credentials, Tailscale enrollment, WireGuard profiles, mail and GPG material securely. Do not copy Nano's private keys or embed secrets in the Nix store. Decide which services must work immediately on first boot versus being enrolled later.
-5. Display manager and removable UEFI bootloader details, portable host name, account password setup, and locale/keyboard preferences. Unless changed, use a password-protected `zarred` login with no autologin, portable EFI boot entry, and the existing locale/timezone preferences.
-6. Framework-specific flake host and safe target-disk installation workflow. Never infer the internal SSD device name or partition it without verifying it on the Framework.
-7. Validation depth: MVP configuration evaluation/build and boot test versus a more thorough portability and hardening pass.
+1. **Script scope:** `~/scripts` totals roughly 59 GiB and contains large TTS/AI/MCP data and sensitive files; it cannot be copied wholesale to the 54.4 GiB encrypted root. Choose between a small Hyprland-only script subset and a broader Quickshell-related **code-only** subset under `/home/zarred/scripts` (recommended). Exclude models, caches, downloads, credentials, and the camera script containing embedded credentials. Shortcuts for excluded applications must be removed or disabled.
+2. Implementation details: multi-session display manager, removable UEFI bootloader, portable hostname, and adapting custom Hyprland/Quickshell scripts and assets. Unless changed, use a password-protected `zarred` account without autologin and Nano's locale/keyboard preferences. Set its password interactively; never commit a plaintext password or private key.
+3. Framework host disk layout and install workflow later. Never infer the internal SSD device name or partition it without verifying it on the Framework.
+4. Validation depth: MVP configuration evaluation/build and boot test versus a more thorough portability and hardening pass.
 
 **Do not run `nixos-install` or assume the USB is bootable until these choices are resolved and the installation is validated.**

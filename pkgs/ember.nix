@@ -1,39 +1,12 @@
-{ lib, writeShellApplication, nodejs, projectDir ? "/home/zarred/dev/ember" }:
+{ lib, runCommand, projectDir ? "/home/zarred/dev/ember" }:
 
-writeShellApplication {
-  name = "ember";
-  runtimeInputs = [ nodejs ];
-  text = ''
-    project_dir=${lib.escapeShellArg projectDir}
-
-    if [ ! -d "$project_dir" ]; then
-      echo "Ember checkout not found at $project_dir" >&2
-      exit 1
-    fi
-
-    if [ ! -f "$project_dir/package.json" ]; then
-      echo "Ember package.json not found at $project_dir/package.json" >&2
-      exit 1
-    fi
-
-    if [ ! -d "$project_dir/node_modules" ]; then
-      echo "Ember dependencies not found at $project_dir/node_modules; run npm install" >&2
-      exit 1
-    fi
-
-    entrypoint="$project_dir/dist/src/app/main.js"
-    if [ ! -f "$entrypoint" ]; then
-      echo "Ember compiled entrypoint not found at $entrypoint; run the Ember build/deploy command" >&2
-      exit 1
-    fi
-
-    cd "$project_dir"
-
-    exec node "$entrypoint" "$@"
-  '';
+runCommand "ember-cli-link" {
   meta = {
-    description = "Wrapper for the local Ember checkout";
+    description = "Link to the locally built Ember CLI";
     mainProgram = "ember";
     platforms = lib.platforms.linux;
   };
-}
+} ''
+  mkdir -p "$out/bin"
+  ln -s ${lib.escapeShellArg "${projectDir}/dist/src/app/main.js"} "$out/bin/ember"
+''

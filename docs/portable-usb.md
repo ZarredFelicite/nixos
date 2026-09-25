@@ -19,6 +19,8 @@ Status: planning snapshot (2026-09-25). **No NixOS system or bootloader has been
 
 The USB uses an MBR partition table. Ventoy and its three ISOs were removed. The previous files on `samsung_c` were deleted at the user's explicit request. An **incomplete, unverified** copy remains at `~/misc/backups/samsung_c-2026-09-25/`; it must not be treated as a full backup. No swap partition or swap file is requested; hibernation is therefore out of scope.
 
+After cleanup, the **entire** `~/scripts` tree (including hidden files) was copied into the encrypted Btrfs filesystem at `/home/zarred/scripts`: 35,229 entries, about 1.24 GB of file data. A checksum-based `rsync` dry run found no differences; the filesystem was then unmounted and LUKS locked. This staged copy is not a NixOS installation, and private files in it must not be copied into the Nix store or a public repo.
+
 ## Confirmed features
 
 - Persistent `/` and home on the encrypted Btrfs partition; no tmpfs-root impermanence like Nano.
@@ -42,9 +44,8 @@ The USB uses an MBR partition table. Ventoy and its three ISOs were removed. The
 
 ## Still to decide
 
-1. **Script scope:** `~/scripts` totals roughly 59 GiB and contains large TTS/AI/MCP data and sensitive files; it cannot be copied wholesale to the 54.4 GiB encrypted root. Choose between a small Hyprland-only script subset and a broader Quickshell-related **code-only** subset under `/home/zarred/scripts` (recommended). Exclude models, caches, downloads, credentials, and the camera script containing embedded credentials. Shortcuts for excluded applications must be removed or disabled.
-2. Implementation details: multi-session display manager, removable UEFI bootloader, portable hostname, and adapting custom Hyprland/Quickshell scripts and assets. Unless changed, use a password-protected `zarred` account without autologin and Nano's locale/keyboard preferences. Set its password interactively; never commit a plaintext password or private key.
-3. Framework host disk layout and install workflow later. Never infer the internal SSD device name or partition it without verifying it on the Framework.
-4. Validation depth: MVP configuration evaluation/build and boot test versus a more thorough portability and hardening pass.
+1. Implementation details: multi-session display manager, removable UEFI bootloader, portable hostname, and adapting custom Hyprland/Quickshell scripts and assets. Keep the selected custom setup, but disable shortcuts for deliberately excluded applications; some copied scripts also need runtime dependencies not selected for this host. Unless changed, use a password-protected `zarred` account without autologin and Nano's locale/keyboard preferences. Set its password interactively; never commit a plaintext password or private key.
+2. Framework host disk layout and install workflow later. Never infer the internal SSD device name or partition it without verifying it on the Framework.
+3. Validation depth: MVP configuration evaluation/build and boot test versus a more thorough portability and hardening pass.
 
 **Do not run `nixos-install` or assume the USB is bootable until these choices are resolved and the installation is validated.**

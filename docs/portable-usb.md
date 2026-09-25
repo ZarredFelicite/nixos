@@ -1,12 +1,12 @@
 # Portable NixOS USB — configuration decisions
 
-Status: MVP built (2026-09-25). **No NixOS system or bootloader has been installed on the USB yet.** The standalone host flake is in `portable/`; `nix build --no-link ./portable#nixosConfigurations.portable-usb.config.system.build.toplevel` succeeds (about 10.9 GiB closure). The USB remains locked pending a verified, approved installation.
+Status: MVP installed on the Samsung Type-C USB (2026-09-25); **physical boot on the Framework has not been tested yet**. The standalone host flake is in `portable/`, with a copy at `/home/zarred/portable-nixos` on the encrypted USB. The prebuilt system was installed without repartitioning or formatting; GRUB's removable UEFI fallback is present. After verification, the USB was unmounted and LUKS locked.
 
 ## Purpose
 
 - A normal, persistent NixOS installation on the Samsung Type-C USB, not a Ventoy ISO or live-overlay setup.
 - Boot on the Framework and, where practical, other UEFI computers.
-- Include the tools and a separate flake host configuration needed to install NixOS onto the Framework's empty internal SSD. The internal SSD has not been touched.
+- Include the tools to install a **future separate flake host configuration** onto the Framework's empty internal SSD after its hardware is identified. That host configuration is not yet written; the internal SSD has not been touched.
 - Adapt chosen Nano features without importing Nano-specific disk, hardware, network, or impermanence assumptions wholesale.
 
 ## Prepared USB layout
@@ -19,7 +19,7 @@ Status: MVP built (2026-09-25). **No NixOS system or bootloader has been install
 
 The USB uses an MBR partition table. Ventoy and its three ISOs were removed. The previous files on `samsung_c` were deleted at the user's explicit request. An **incomplete, unverified** copy remains at `~/misc/backups/samsung_c-2026-09-25/`; it must not be treated as a full backup. No swap partition or swap file is requested; hibernation is therefore out of scope.
 
-After cleanup, the **entire** `~/scripts` tree (including hidden files) was copied into the encrypted Btrfs filesystem at `/home/zarred/scripts`: 35,229 entries, about 1.24 GB of file data. A checksum-based `rsync` dry run found no differences; the filesystem was then unmounted and LUKS locked. This staged copy is not a NixOS installation, and private files in it must not be copied into the Nix store or a public repo.
+After cleanup, the **entire** `~/scripts` tree (including hidden files) was copied into the encrypted Btrfs filesystem at `/home/zarred/scripts`: 35,229 entries, about 1.24 GB of file data. A checksum-based `rsync` dry run found no differences, and the scripts were present after installation. Private files there must not be copied into the Nix store or a public repo.
 
 ## Confirmed features
 
@@ -42,10 +42,10 @@ After cleanup, the **entire** `~/scripts` tree (including hidden files) was copi
 - Enroll Tailscale, WireGuard, mail, GPG, Pi, and other credentials after first boot; do not embed private keys or tokens in the Nix store or USB image.
 - Give the Framework's internal SSD a **separate host configuration**, reusing selected Nano/portable modules where suitable. Do not install Nano's host file unchanged: it hardcodes ThinkPad hardware and disk paths. Build that host after inspecting Framework hardware; the portable USB needs only the tools to install a flake safely.
 
-## Installation and validation remaining
+## Installation record and remaining validation
 
-1. Verify the Samsung USB serial, partition UUIDs, mount table, and staged `/home/zarred/scripts` once more. Preserve all three existing filesystems; never invoke Disko or reformat. Explicit approval is required before `nixos-install` writes to the prepared USB. The flake uses removable-media GRUB without firmware-variable changes; it does not target the Framework internal SSD.
-2. During installation set a password for the `zarred` account **interactively**, not through Nix or chat. SSH is key-only but has no authorized key until provisioned after first boot. After installation, boot-test on the Framework and check LUKS unlock, login/session selection, Wi-Fi, `/data`, and the Hyprland/Quickshell desktop. Camera, calendar, remote Pi dashboard, TTS, and Ember integrations are passive in the portable Quickshell copy.
-3. Add a separately hardware-verified Framework host and disk workflow later. Never infer the internal SSD device name or partition it without verifying it on the Framework.
-
-**Do not run `nixos-install` before the mount/target review and explicit approval; do not claim boot success before a physical boot test.**
+- The Samsung serial and all partition UUIDs were checked before mounting the existing encrypted Btrfs root at `/mnt/portable-usb-install` and its USB EFI partition at `/mnt/portable-usb-install/boot`. With explicit approval, `nixos-install --system … --no-root-password --no-channel-copy` installed the prebuilt flake closure. No disk partitioning, formatting, Framework SSD write, or firmware boot-entry change was requested. The EFI fallback `EFI/BOOT/BOOTX64.EFI` and GRUB configuration were verified.
+- The `zarred` account password was set through masked desktop prompts; its password status is `P` and root's is `L` (locked). Neither password nor hash is stored in this repo. The scripts and copied flake remain on the encrypted root, with roughly 41 GiB available after installation. The USB was safely unmounted and relocked.
+- **Next:** boot the USB on the Framework and test LUKS unlock, SDDM's three sessions, Wi-Fi, `/data`, and Hyprland/Quickshell. Do not claim boot success until that test. If Secure Boot rejects unsigned GRUB, pause and decide how to handle that policy rather than silently changing firmware settings.
+- SSH has no authorized user key yet; enroll it, Tailscale/WireGuard, mail, GPG, Pi credentials, and the `web` cache identity only after first boot. Camera, calendar, remote Pi dashboard, TTS, and Ember integrations are passive in the portable Quickshell copy.
+- Add the Framework's own flake host/disk workflow after verifying its internal SSD identity on that machine. Never infer or partition the internal SSD from this desktop.

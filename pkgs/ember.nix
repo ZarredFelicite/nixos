@@ -21,9 +21,15 @@ writeShellApplication {
       exit 1
     fi
 
+    entrypoint="$project_dir/dist/src/app/main.js"
+    if [ ! -f "$entrypoint" ]; then
+      echo "Ember compiled entrypoint not found at $entrypoint; run the Ember build/deploy command" >&2
+      exit 1
+    fi
+
     cd "$project_dir"
 
-    exec npm run dev -- "$@"
+    exec node "$entrypoint" "$@"
   '';
   meta = {
     description = "Wrapper for the local Ember checkout";

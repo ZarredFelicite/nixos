@@ -11,11 +11,12 @@ boot_uuid=54E2-2E21
 data_uuid=3de76d8b-c3e1-4045-9b0f-fbe78848b0c0
 
 fail() { printf 'update-os: %s\n' "$*" >&2; exit 1; }
-usage() { printf 'Usage: %s [--check|--help]\nUpdate portable USB from web; stage next boot only (no reboot). --check is read-only.\n' "$0"; }
+usage() { printf 'Usage: %s [--check|--locked|--help]\nUpdate portable USB from web; stage next boot only (no reboot). --check is read-only; --locked keeps the current flake.lock.\n' "$0"; }
 case ${1-} in
     --help) (( $# == 1 )) || fail 'unexpected arguments'; usage; exit 0 ;;
     --check) (( $# == 1 )) || fail 'unexpected arguments'; check_only=1 ;;
-    '') (( $# == 0 )) || fail 'unexpected arguments'; check_only=0 ;;
+    --locked) (( $# == 1 )) || fail 'unexpected arguments'; check_only=0; refresh_lock=0 ;;
+    '') (( $# == 0 )) || fail 'unexpected arguments'; check_only=0; refresh_lock=1 ;;
     *) fail 'unknown argument (use --help)' ;;
 esac
 
@@ -102,21 +103,33 @@ restore_if_safe() {
         printf 'Lock changed unexpectedly; not overwriting possible user edits. Backup: %s\n' "$backup" >&2
     fi
 }
-if ! nix flake update --flake "$source_dir"; then
-    current=$(sha256sum < "$source_dir/flake.lock"); current=${current%% *}
-    if [[ $current == "$original" ]]; then
-        printf 'Original lock unchanged; backup: %s\n' "$backup" >&2
-    else
-        printf 'Failed update modified lock; origin of changes cannot be proven. NOT overwriting it; restore manually from %s if appropriate.\n' "$backup" >&2
+if (( refresh_lock )); then
+    if ! nix flake update --flake "$source_dir"; then
+        current=$(sha256sum < "$source_dir/flake.lock"); current=${current%% *}
+        if [[ $current == "$original" ]]; then
+            printf 'Original lock unchanged; backup: %s\n' "$backup" >&2
+        else
+            printf 'Failed update modified lock; origin of changes cannot be proven. NOT overwriting it; restore manually from %s if appropriate.\n' "$backup" >&2
+        fi
+        fail 'flake update failed; no USB install attempted'
     fi
-    fail 'flake update failed; no USB install attempted'
+else
+    current=$(sha256sum < "$source_dir/flake.lock"); current=${current%% *}
+    [[ $current == "$original" ]] || fail "Pinned lock changed unexpectedly; backup: $backup; no USB install attempted"
+    printf 'Using pinned portable flake.lock; no input refresh.\n'
 fi
 updated=$(sha256sum < "$source_dir/flake.lock"); updated=${updated%% *}
-if ! sys=$(nix build --no-link --print-out-paths "$source_dir#nixosConfigurations.portable-usb.config.system.build.toplevel"); then
+build_flags=(--no-link --print-out-paths)
+if (( ! refresh_lock )); then build_flags+=(--no-write-lock-file); fi
+if ! sys=$(nix build "${build_flags[@]}" "$source_dir#nixosConfigurations.portable-usb.config.system.build.toplevel"); then
     restore_if_safe
     fail 'build failed; no USB install attempted'
 fi
 [[ $sys == /nix/store/* && -d $sys ]] || { restore_if_safe; fail 'build did not produce a valid system closure'; }
+if (( ! refresh_lock )); then
+    current=$(sha256sum < "$source_dir/flake.lock"); current=${current%% *}
+    [[ $current == "$original" ]] || fail "Pinned lock changed during build; no USB install attempted; backup: $backup"
+fi
 
 # Unlock with a masked GUI prompt; the passphrase goes only to cryptsetup stdin.
 # Notify before a focus-sensitive prompt; authorization may require a polkit agent.

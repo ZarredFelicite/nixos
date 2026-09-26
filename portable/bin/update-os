@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # Manually update the existing encrypted portable USB from the web desktop.
 set -euo pipefail
-source_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+if [[ ${1-} == --root-stage ]]; then
+    PATH=/run/current-system/sw/bin:/run/wrappers/bin
+    export PATH
+fi
+self=$(realpath -e -- "${BASH_SOURCE[0]}")
+source_dir=$(cd -- "$(dirname -- "$self")/.." && pwd -P)
 target=/mnt/portable-usb-install
 mapper=portable_usb
 state=/home/zarred/.local/state/portable-usb-updater
@@ -16,9 +21,11 @@ case ${1-} in
     --help) (( $# == 1 )) || fail 'unexpected arguments'; usage; exit 0 ;;
     --check) (( $# == 1 )) || fail 'unexpected arguments'; check_only=1 ;;
     --locked) (( $# == 1 )) || fail 'unexpected arguments'; check_only=0; refresh_lock=0 ;;
+    --root-stage) (( $# == 2 )) || fail 'invalid root-stage arguments'; check_only=0; refresh_lock=0; root_stage_mode=1; sys=$2 ;;
     '') (( $# == 0 )) || fail 'unexpected arguments'; check_only=0; refresh_lock=1 ;;
     *) fail 'unknown argument (use --help)' ;;
 esac
+root_stage_mode=${root_stage_mode:-0}
 
 # sysfs holders reveal an open LUKS mapping even when it has another name.
 # Before unlocking require none; afterward require exactly our own mapping.
@@ -36,6 +43,133 @@ assert_root_holders() {
         [[ $actual == "$expected" ]] || return 1
     done
     if [[ -n $expected ]]; then (( count == 1 )); else (( count == 0 )); fi
+}
+
+root_stage() {
+    local uuid dev chain path type props disk candidate root_dev old_profile dest_gid passphrase
+    local -a paths types
+    opened=0; root_mounted=0; boot_mounted=0
+    mapper_dev=''; boot_dev=''; auto=/run/media/zarred/NIXOS_ROOT
+
+    [[ $(id -u) == 0 && ${PKEXEC_UID-} == 1000 && $(hostname) == web ]] || fail 'root stage must be launched by zarred on web'
+    [[ $sys == /nix/store/* && -d $sys && -x $sys/init && $(basename -- "$sys") == nixos-system-portable-usb-* ]] || fail 'invalid prebuilt portable system path'
+    [[ -f $source_dir/flake.nix && -f $source_dir/flake.lock && $(stat -c %u -- "$source_dir/flake.lock") == 1000 ]] || fail 'portable source flake is missing or not user-owned'
+    [[ ! -e /dev/mapper/$mapper ]] || fail 'portable mapper already open'
+    [[ ! -e $target || -d $target && ! -L $target ]] || fail 'installation mountpoint is not a plain directory'
+    [[ -z $(findmnt -rn --mountpoint "$target" -o TARGET) && -z $(findmnt -rn --mountpoint "$target/boot" -o TARGET) ]] || fail 'installation mountpoint already occupied'
+
+    for uuid in "$root_uuid" "$boot_uuid" "$data_uuid"; do
+        dev=$(realpath -e -- "/dev/disk/by-uuid/$uuid") || fail "missing USB partition $uuid"
+        [[ $(lsblk -dnro UUID -- "$dev") == "$uuid" ]] || fail "UUID mismatch: $uuid"
+        chain=$(lsblk -spno PATH,TYPE -- "$dev") || fail "cannot trace partition $uuid"
+        paths=(); types=()
+        while read -r path type; do paths+=("$path"); types+=("$type"); done <<< "$chain"
+        [[ ${#paths[@]} == 2 && ${types[0]} == disk && ${types[1]} == part ]] || fail "ambiguous ancestry: $uuid"
+        [[ $(realpath -e -- "${paths[1]}") == "$dev" ]] || fail "bad ancestry: $uuid"
+        candidate=$(realpath -e -- "${paths[0]}") || fail 'missing parent disk'
+        if [[ -z ${disk-} ]]; then disk=$candidate; else [[ $disk == "$candidate" ]] || fail 'USB partitions belong to different disks'; fi
+        if [[ $uuid == "$root_uuid" ]]; then root_dev=$dev; fi
+        if [[ $uuid == "$boot_uuid" ]]; then boot_dev=$dev; fi
+        if [[ $uuid != "$data_uuid" ]]; then
+            [[ -z $(findmnt -rn -S "$dev" -o TARGET) ]] || fail "USB boot/root partition already mounted: $uuid"
+        fi
+    done
+    props=$(udevadm info --query=property --name="$disk") || fail 'cannot read USB serial'
+    [[ $(printf '%s\n' "$props" | grep -c '^ID_SERIAL_SHORT=') == 1 ]] || fail 'missing/ambiguous USB serial'
+    [[ $(printf '%s\n' "$props" | grep -x "ID_SERIAL_SHORT=$serial") == "ID_SERIAL_SHORT=$serial" ]] || fail 'wrong USB serial'
+    assert_root_holders || fail 'root LUKS partition has an active holder; refusing update'
+    [[ -x /run/current-system/sw/bin/nixos-install ]] || fail 'nixos-install unavailable'
+
+    IFS= read -r passphrase || fail 'missing LUKS passphrase on root-stage stdin'
+    [[ -n $passphrase ]] || fail 'empty LUKS passphrase'
+    trap root_cleanup EXIT
+    trap 'exit 129' HUP
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+    if ! printf '%s' "$passphrase" | cryptsetup open "$root_dev" "$mapper" --key-file -; then
+        unset passphrase
+        fail 'USB unlock failed'
+    fi
+    unset passphrase
+    opened=1
+    mapper_dev=$(realpath -e -- "/dev/mapper/$mapper") || fail 'opened mapper missing'
+    assert_root_holders "$mapper_dev" || fail 'root LUKS holder mismatch after unlock'
+    known_mounts_only || fail 'USB mapper mounted at an unexpected location'
+    auto_unmount || fail 'cannot safely unmount verified UDisks automount'
+
+    mkdir -p -- "$target"
+    mount -t btrfs -- "/dev/mapper/$mapper" "$target"
+    root_mounted=1
+    [[ $(findmnt -rn --mountpoint "$target" -o FSTYPE) == btrfs && $(realpath -e -- "$(findmnt -rn --mountpoint "$target" -o SOURCE | cut -d '[' -f1)") == "$mapper_dev" ]] || fail 'unexpected root mount'
+    [[ -d $target/home/zarred/scripts && ! -L $target/home/zarred && ! -L $target/home/zarred/portable-nixos && -L $target/nix/var/nix/profiles/system && -f $target/etc/shadow ]] || fail 'existing installation/profile/scripts not found; refusing install'
+    old_profile=$(readlink -f -- "$target/nix/var/nix/profiles/system")
+    [[ $old_profile == /nix/store/* && -d $target$old_profile ]] || fail 'old USB system generation is unavailable'
+    [[ -d $target/boot && ! -L $target/boot ]] || fail 'unsafe /boot mountpoint'
+    mount -t vfat -- "$boot_dev" "$target/boot"
+    boot_mounted=1
+    [[ $(findmnt -rn --mountpoint "$target/boot" -o FSTYPE) == vfat && $(realpath -e -- "$(findmnt -rn --mountpoint "$target/boot" -o SOURCE)") == "$boot_dev" ]] || fail 'unexpected ESP mount'
+
+    [[ $(stat -c %u -- "$target/home/zarred/portable-nixos") == 1000 ]] || fail 'USB flake not owned by uid 1000'
+    dest_gid=$(stat -c %g -- "$target/home/zarred/portable-nixos")
+    rsync -a --chown="1000:$dest_gid" --exclude '/bin/update-os' -- "$source_dir/" "$target/home/zarred/portable-nixos/"
+    cmp -s -- "$source_dir/flake.lock" "$target/home/zarred/portable-nixos/flake.lock" || fail 'destination lock mismatch'
+    cmp -s -- "$source_dir/flake.nix" "$target/home/zarred/portable-nixos/flake.nix" || fail 'destination flake mismatch'
+    [[ -z $(rsync -a --chown="1000:$dest_gid" --checksum --dry-run --itemize-changes --exclude '/bin/update-os' -- "$source_dir/" "$target/home/zarred/portable-nixos/") ]] || fail 'destination flake files differ after copy'
+    timeout --kill-after=15s 2h /run/current-system/sw/bin/nixos-install --system "$sys" --root "$target" --no-root-password --no-channel-copy || fail 'nixos-install failed/timed out'
+    [[ -L $target/nix/var/nix/profiles/system && $(readlink -f -- "$target/nix/var/nix/profiles/system") == "$sys" && -d $target$old_profile ]] || fail 'new profile mismatch or old generation missing'
+    [[ -s $target/boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'removable EFI loader missing/empty'
+    [[ -s $target/boot/grub/grub.cfg ]] || fail 'GRUB configuration missing/empty'
+    grep -Fq -- "init=$sys/init" "$target/boot/grub/grub.cfg" || fail 'new generation missing from GRUB'
+    grep -Fq -- "init=$old_profile/init" "$target/boot/grub/grub.cfg" || fail 'previous generation missing from GRUB'
+    grep -Eq '^zarred:[^!*:][^:]*:' "$target/etc/shadow" || fail 'zarred password is not set'
+    grep -Eq '^root:[!*][^:]*:' "$target/etc/shadow" || fail 'root account is not locked'
+    sync -f -- "$target/boot"
+    sync -f -- "$target"
+    printf 'Install verified; unmounting and locking USB.\n'
+    exit 0
+}
+
+known_mounts_only() {
+    local mp
+    while IFS= read -r mp; do
+        [[ -z $mp || $mp == "$auto" || $mp == "$target" ]] || { printf 'Unexpected mapper mount: %s\n' "$mp" >&2; return 1; }
+    done < <(findmnt -rn -S "/dev/mapper/$mapper" -o TARGET)
+}
+auto_unmount() {
+    local mp source
+    mp=$(findmnt -rn --mountpoint "$auto" -o TARGET)
+    [[ -n $mp ]] || return 0
+    [[ $mp == "$auto" ]] || return 1
+    source=$(findmnt -rn --mountpoint "$auto" -o SOURCE) || return 1
+    source=${source%%\[*}
+    [[ $(realpath -e -- "$source" 2>/dev/null) == "$mapper_dev" ]] || return 1
+    umount -- "$auto"
+}
+root_cleanup() {
+    local result=$? clean=0 source
+    trap - EXIT HUP INT TERM
+    set +e
+    if (( boot_mounted )); then
+        source=$(findmnt -rn --mountpoint "$target/boot" -o SOURCE 2>/dev/null)
+        if [[ $(realpath -e -- "$source" 2>/dev/null) == "$boot_dev" ]]; then umount -- "$target/boot" || clean=1; else clean=1; fi
+    fi
+    if (( root_mounted )); then
+        source=$(findmnt -rn --mountpoint "$target" -o SOURCE 2>/dev/null); source=${source%%\[*}
+        if [[ $(realpath -e -- "$source" 2>/dev/null) == "$mapper_dev" ]]; then umount -- "$target" || clean=1; else clean=1; fi
+    fi
+    known_mounts_only || clean=1
+    auto_unmount || clean=1
+    if (( opened )) && [[ -e /dev/mapper/$mapper ]]; then
+        if [[ -z $(findmnt -rn -S "/dev/mapper/$mapper" -o TARGET) && $clean == 0 ]]; then
+            cryptsetup close "$mapper" || clean=1
+        else clean=1; fi
+    fi
+    if (( clean )); then
+        printf 'WARNING: cleanup incomplete; inspect %s, %s and /dev/mapper/%s manually.\n' "$target" "$auto" "$mapper" >&2
+        result=1
+    fi
+    if (( result )); then printf 'USB update incomplete; boot state may be partial if install started.\n' >&2; fi
+    exit "$result"
 }
 
 # Refuse absent, duplicated, mounted or substituted boot/root partitions.
@@ -73,6 +207,7 @@ preflight() {
     [[ -x /run/current-system/sw/bin/nixos-install ]] || fail 'nixos-install unavailable'
 }
 
+if (( root_stage_mode )); then root_stage; fi
 preflight
 if (( check_only )); then printf 'USB identity and desktop preflight passed; no changes made.\n'; exit 0; fi
 printf 'Update USB %s and stage the next boot (no reboot)? [y/N] ' "$serial"
@@ -131,93 +266,15 @@ if (( ! refresh_lock )); then
     [[ $current == "$original" ]] || fail "Pinned lock changed during build; no USB install attempted; backup: $backup"
 fi
 
-# Unlock with a masked GUI prompt; the passphrase goes only to cryptsetup stdin.
-# Notify before a focus-sensitive prompt; authorization may require a polkit agent.
+# The LUKS secret goes only over stdin to the single privileged root stage.
 (cd /home/zarred && pw-play audio/notifications/soft-3-short.mp3) || true
 passphrase=$(timeout --foreground 180s rofi -dmenu -password -p 'Portable USB LUKS passphrase') || fail "unlock cancelled or timed out; built lock retained, backup: $backup"
 [[ -n $passphrase ]] || fail "empty passphrase; built lock retained, backup: $backup"
-root_dev=$(realpath -e -- "/dev/disk/by-uuid/$root_uuid") || fail 'USB removed after build'
-boot_dev=$(realpath -e -- "/dev/disk/by-uuid/$boot_uuid") || fail 'USB removed after build'
 preflight
-# Do not expose the secret as a process argument, file, log, or Nix input.
-if ! printf %s "$passphrase" | pkexec cryptsetup open "$root_dev" "$mapper" --key-file -; then
+if ! printf '%s\n' "$passphrase" | pkexec /run/current-system/sw/bin/bash "$self" --root-stage "$sys"; then
     unset passphrase
-    fail "unlock failed (check polkit agent/passphrase); built lock retained, backup: $backup"
+    fail "privileged USB stage failed; built lock retained, backup: $backup"
 fi
 unset passphrase
-opened=1; root_mounted=0; boot_mounted=0
-mapper_dev=$(realpath -e -- "/dev/mapper/$mapper") || { pkexec cryptsetup close "$mapper" || printf 'WARNING: mapper could not be closed.\n' >&2; fail 'opened mapper missing'; }
-auto=/run/media/zarred/NIXOS_ROOT
-# Only touch the exact UDisks location when its mount source is our mapper.
-auto_unmount() {
-    local mp source
-    mp=$(findmnt -rn --mountpoint "$auto" -o TARGET)
-    [[ -n $mp ]] || return 0
-    [[ $mp == "$auto" ]] || return 1
-    source=$(findmnt -rn --mountpoint "$auto" -o SOURCE); source=${source%%\[*}
-    [[ $(realpath -e -- "$source") == "$mapper_dev" ]] || return 1
-    pkexec umount -- "$auto"
-}
-# Check every mapper mount, including a late UDisks duplicate; never remove an
-# unknown mount just because it shares the device.
-known_mounts_only() {
-    local mp
-    while IFS= read -r mp; do
-        [[ -z $mp || $mp == "$auto" || $mp == "$target" ]] || { printf 'Unexpected mapper mount: %s\n' "$mp" >&2; return 1; }
-    done < <(findmnt -rn -S "/dev/mapper/$mapper" -o TARGET)
-}
-cleanup() {
-    local result=$? clean=0 source
-    trap - EXIT
-    if (( boot_mounted )); then
-        source=$(findmnt -rn --mountpoint "$target/boot" -o SOURCE)
-        if [[ $(realpath -e -- "$source" 2>/dev/null) == "$boot_dev" ]]; then pkexec umount -- "$target/boot" || clean=1; else clean=1; fi
-    fi
-    if (( root_mounted )); then
-        source=$(findmnt -rn --mountpoint "$target" -o SOURCE); source=${source%%\[*}
-        if [[ $(realpath -e -- "$source" 2>/dev/null) == "$mapper_dev" ]]; then pkexec umount -- "$target" || clean=1; else clean=1; fi
-    fi
-    known_mounts_only || clean=1
-    auto_unmount || clean=1
-    if (( opened )); then
-        if [[ -z $(findmnt -rn -S "/dev/mapper/$mapper" -o TARGET) && $clean == 0 ]]; then
-            pkexec cryptsetup close "$mapper" || clean=1
-        else clean=1; fi
-    fi
-    if (( clean )); then printf 'WARNING: cleanup incomplete; inspect %s, %s and /dev/mapper/%s manually.\n' "$target" "$auto" "$mapper" >&2; result=1; fi
-    if (( result )); then printf 'USB update incomplete; lock backup: %s; boot state may be partial if install started.\n' "$backup" >&2; fi
-    exit "$result"
-}
-trap cleanup EXIT
-assert_root_holders "$mapper_dev" || fail 'root LUKS partition has another/missing holder; refusing mount (ours will be closed)'
-known_mounts_only || fail 'USB mapper mounted at an unexpected location'
-auto_unmount || fail 'cannot safely unmount verified UDisks automount'
-pkexec mkdir -p -- "$target"
-pkexec mount -t btrfs -- "/dev/mapper/$mapper" "$target"
-root_mounted=1
-[[ $(findmnt -rn --mountpoint "$target" -o FSTYPE) == btrfs && $(realpath -e -- "$(findmnt -rn --mountpoint "$target" -o SOURCE | cut -d '[' -f1)") == "$(realpath -e -- "/dev/mapper/$mapper")" ]] || fail 'unexpected root mount'
-[[ -d $target/home/zarred/scripts && ! -L $target/home/zarred && ! -L $target/home/zarred/portable-nixos && -L $target/nix/var/nix/profiles/system && -f $target/etc/shadow ]] || fail 'existing installation/profile/scripts not found; refusing install'
-old_profile=$(readlink -f -- "$target/nix/var/nix/profiles/system")
-[[ $old_profile == /nix/store/* && -d $target$old_profile ]] || fail 'old USB system generation is unavailable'
-[[ -d $target/boot && ! -L $target/boot ]] || fail 'unsafe /boot mountpoint'
-pkexec mount -t vfat -- "$boot_dev" "$target/boot"
-boot_mounted=1
-[[ $(findmnt -rn --mountpoint "$target/boot" -o FSTYPE) == vfat && $(realpath -e -- "$(findmnt -rn --mountpoint "$target/boot" -o SOURCE)") == "$boot_dev" ]] || fail 'unexpected ESP mount'
-# Target flake directory is owned by uid 1000; rsync never deletes private files.
-[[ $(stat -c %u -- "$target/home/zarred/portable-nixos") == 1000 ]] || fail 'USB flake not owned by uid 1000'
-rsync -a --no-owner --no-group --exclude '/bin/update-os' -- "$source_dir/" "$target/home/zarred/portable-nixos/"
-cmp -s -- "$source_dir/flake.lock" "$target/home/zarred/portable-nixos/flake.lock" || fail 'destination lock mismatch'
-cmp -s -- "$source_dir/flake.nix" "$target/home/zarred/portable-nixos/flake.nix" || fail 'destination flake mismatch'
-[[ -z $(rsync -a --no-owner --no-group --checksum --dry-run --itemize-changes --exclude '/bin/update-os' -- "$source_dir/" "$target/home/zarred/portable-nixos/") ]] || fail 'destination flake files differ after copy'
-timeout --kill-after=15s 2h pkexec /run/current-system/sw/bin/nixos-install --system "$sys" --root "$target" --no-root-password --no-channel-copy || fail 'nixos-install failed/timed out (polkit agent may be unavailable)'
-[[ -L $target/nix/var/nix/profiles/system && $(readlink -f -- "$target/nix/var/nix/profiles/system") == "$sys" && -d $target$old_profile ]] || fail 'new profile mismatch or old generation missing'
-pkexec /run/current-system/sw/bin/test -s "$target/boot/EFI/BOOT/BOOTX64.EFI" || fail 'removable EFI loader missing/empty'
-pkexec /run/current-system/sw/bin/test -s "$target/boot/grub/grub.cfg" || fail 'GRUB configuration missing/empty'
-pkexec /run/current-system/sw/bin/grep -Fq -- "init=$sys/init" "$target/boot/grub/grub.cfg" || fail 'new generation missing from GRUB'
-pkexec /run/current-system/sw/bin/grep -Fq -- "init=$old_profile/init" "$target/boot/grub/grub.cfg" || fail 'previous generation missing from GRUB'
-pkexec /run/current-system/sw/bin/grep -Eq '^zarred:[^!*:][^:]*:' "$target/etc/shadow" || fail 'zarred password is not set'
-pkexec /run/current-system/sw/bin/grep -Eq '^root:[!*][^:]*:' "$target/etc/shadow" || fail 'root account is not locked'
-pkexec /run/current-system/sw/bin/sync -f -- "$target/boot"
-pkexec /run/current-system/sw/bin/sync -f -- "$target"
-printf 'Install verified; unmounting and locking USB. Original lock backup: %s\n' "$backup"
+printf 'USB update complete; lock backup: %s\n' "$backup"
 printf 'Review and commit the updated desktop portable/flake.lock after this run.\n'

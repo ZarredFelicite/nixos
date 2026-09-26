@@ -26,7 +26,16 @@
     kernelModules = [ "kvm-intel" ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.systemd.enable = true;
-    loader.efi.canTouchEfiVariables = lib.mkForce false;
+    loader = {
+      systemd-boot.enable = lib.mkForce false;
+      efi.canTouchEfiVariables = lib.mkForce false;
+    };
+    lanzaboote = {
+      enable = true;
+      # Runtime sbctl keys stay out of the Nix store. profiles/impermanence.nix
+      # persists /var/lib under encrypted /persist across Titan's tmpfs root.
+      pkiBundle = "/var/lib/sbctl";
+    };
   };
 
   # Disko supplies the tmpfs root/home and the encrypted persistent mounts.

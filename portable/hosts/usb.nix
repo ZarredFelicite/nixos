@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   networking.hostName = "portable-usb";
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -19,12 +19,13 @@
 
     loader = {
       efi.canTouchEfiVariables = false;
-      grub = {
-        enable = true;
-        efiSupport = true;
-        efiInstallAsRemovable = true;
-        device = "nodev";
-      };
+      grub.enable = lib.mkForce false;
+      systemd-boot.enable = lib.mkForce false;
+    };
+    lanzaboote = {
+      enable = true;
+      # Resolved by the runtime install hook; do not stage PKI material in the store.
+      pkiBundle = "/var/lib/sbctl";
     };
   };
 
@@ -88,12 +89,15 @@
     curl
     dosfstools
     e2fsprogs
+    findutils
     git
     gptfdisk
     gh
     jq
     nixos-install-tools
+    openssl
     parted
+    sbsigntool # Verify signed EFI loader/UKIs during updates and Titan install.
     sops
     ssh-to-age
     tmux

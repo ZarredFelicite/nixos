@@ -16,10 +16,15 @@ min_bytes=120000000000
 fail() { printf 'install-titan: %s\nNo automatic rollback or retry: inspect disk/mounts manually before recovery.\n' "$*" >&2; exit 1; }
 usage() { printf '%s\n' 'Usage: install-titan [--plan] [--disk /dev/disk/by-id/...]' '       install-titan --apply --disk /dev/disk/by-id/...' 'Plan is read-only and does not select a disk; apply requires a TTY and two typed confirmations.' 'Run only from the booted persistent portable USB on Titan. Never run from web.'; }
 root_stage=0
+pki_check=0
 if [[ ${1-} == --root-stage ]]; then
   root_stage=1
   (( $# == 9 )) || fail 'invalid privileged invocation'
   root_disk=$2 root_resolved=$3 root_serial=$4 root_system=$5 root_disko=$6 root_key=$7 root_metadata=$8 root_metadata_sha=$9
+  set --
+elif [[ ${1-} == --pki-check ]]; then
+  pki_check=1
+  (( $# == 1 )) || fail 'invalid privileged PKI-check invocation'
   set --
 fi
 mode=plan disk_id=
@@ -33,23 +38,60 @@ while (( $# )); do
   esac
   shift
 done
-if (( ! root_stage )); then
+if (( pki_check )); then
+  [[ $(id -u) == 0 && $(hostname) == portable-usb ]] || fail 'privileged PKI check requires root on USB'
+elif (( ! root_stage )); then
   [[ $mode == plan || -n $disk_id ]] || fail 'explicit --disk required for apply'
   [[ $(id -u) == 1000 && $HOME == /home/zarred && $(hostname) == portable-usb ]] || fail 'must run as zarred on the booted portable USB (not web)'
 else
   [[ $(id -u) == 0 && $(hostname) == portable-usb && -t 0 && -t 1 && -t 2 ]] || fail 'privileged stage requires root on USB and a live TTY'
 fi
 [[ -d /sys/firmware/efi ]] || fail 'UEFI boot required'
-secure_boot=unknown
-for var in /sys/firmware/efi/efivars/SecureBoot-*; do
-  [[ -r $var ]] || continue
-  secure_boot=$(od -An -tu1 -j4 -N1 -- "$var" | xargs) || fail 'Secure Boot state unreadable'
-  break
+read_efi_var() {
+  local name=$1 file value
+  for file in /sys/firmware/efi/efivars/"$name"-*; do
+    [[ -r $file ]] || continue
+    value=$(od -An -tu1 -j4 -N1 -- "$file" | xargs) || fail "$name state unreadable"
+    [[ $value == 0 || $value == 1 ]] || fail "$name state invalid"
+    printf '%s\n' "$value"
+    return 0
+  done
+  return 1
+}
+secure_boot=$(read_efi_var SecureBoot) || fail 'Secure Boot state unavailable'
+[[ $secure_boot == 1 ]] || fail 'Secure Boot must be enabled before installing signed Titan boot artifacts'
+for mode_var in SetupMode AuditMode; do
+  if mode_value=$(read_efi_var "$mode_var"); then
+    [[ $mode_value == 0 ]] || fail "$mode_var must be disabled for enforced Secure Boot"
+  fi
 done
-[[ $secure_boot == 0 ]] || fail 'Secure Boot must be verified disabled before using the unsigned bootloader'
-for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix pkexec mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm; do
+pki=/var/lib/sbctl
+pki_cert=$pki/keys/db/db.pem
+pki_key=$pki/keys/db/db.key
+check_pki() {
+  local key_public_hash cert_public_hash
+  [[ -d $pki && ! -L $pki && $(stat -c %u -- "$pki") == 0 && $(stat -c %a -- "$pki") == 700 ]] || fail 'signing PKI directory must be root-owned mode 0700 at /var/lib/sbctl on the encrypted USB'
+  [[ -f $pki_cert && ! -L $pki_cert && $(stat -c %u -- "$pki_cert") == 0 ]] || fail 'db signing certificate missing or not root-owned'
+  [[ -f $pki_key && ! -L $pki_key && $(stat -c %u -- "$pki_key") == 0 && $(stat -c %a -- "$pki_key") == 600 ]] || fail 'db signing private key missing or not root-only'
+  openssl x509 -in "$pki_cert" -noout -checkend 0 >/dev/null 2>&1 || fail 'db signing certificate is invalid or expired'
+  openssl pkey -in "$pki_key" -passin pass: -check -noout >/dev/null 2>&1 || fail 'db signing private key is invalid or passphrase-protected'
+  key_public_hash=$(openssl pkey -in "$pki_key" -passin pass: -pubout 2>/dev/null | openssl pkey -pubin -outform DER 2>/dev/null | sha256sum) || fail 'cannot derive signing key public fingerprint'
+  cert_public_hash=$(openssl x509 -in "$pki_cert" -pubkey -noout 2>/dev/null | openssl pkey -pubin -outform DER 2>/dev/null | sha256sum) || fail 'cannot derive signing certificate fingerprint'
+  [[ $key_public_hash == "$cert_public_hash" ]] || fail 'db signing key does not match db certificate'
+  [[ -z $(find "$pki" -type l -print -quit) ]] || fail 'signing PKI contains symlinks'
+  [[ -z $(find "$pki" \( ! -user root -o -perm /022 \) -print -quit) ]] || fail 'signing PKI contains non-root-owned or group/world-writable files'
+  [[ $(findmnt -rn --mountpoint /boot -o FSTYPE) == vfat && \
+     -f /boot/EFI/BOOT/BOOTX64.EFI && ! -L /boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'booted USB EFI fallback loader missing or /boot is not its VFAT ESP'
+  sbverify --cert "$pki_cert" /boot/EFI/BOOT/BOOTX64.EFI >/dev/null 2>&1 || fail 'booted USB EFI fallback signature does not verify with configured db certificate'
+}
+for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix pkexec mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find; do
   command -v "$cmd" >/dev/null || fail "missing $cmd; add it to the USB image before installing"
 done
+if (( pki_check )); then
+  check_pki
+  printf '%s\n' 'Root-only signing PKI validated; firmware certificate enrollment was not checked.'
+  exit 0
+fi
 # Product strings vary by BIOS revision: require Framework manufacturer and a Framework Laptop 13 product.
 manufacturer=$(< /sys/class/dmi/id/sys_vendor)
 product=$(< /sys/class/dmi/id/product_name)
@@ -142,6 +184,7 @@ if (( root_stage )); then
   [[ $root_metadata == /run/user/1000/titan-hm.* && $root_metadata_sha =~ ^[0-9a-f]{64}$ ]] || fail 'unexpected HM metadata location/hash'
   [[ $(sha256sum < "$root_metadata" | cut -d' ' -f1) == "$root_metadata_sha" ]] || fail 'HM metadata changed'
   validate_metadata "$root_metadata"
+  check_pki
   check_disk "$root_disk" "$root_resolved"
   [[ $serial == "$root_serial" ]] || fail 'serial changed before destruction'
   # Disko's generated script is pinned and prebuilt with /mnt/titan as rootMountPoint.
@@ -155,6 +198,13 @@ if (( root_stage )); then
      $(findmnt -rn --mountpoint "$mount_root/nix" -o FSTYPE) == btrfs && \
      $(findmnt -rn --mountpoint "$mount_root/boot" -o FSTYPE) == vfat ]] || fail 'Disko mounts did not match expected layout'
   [[ -d $mount_root/persist && ! -L $mount_root/persist && ! -L $mount_root/persist/home ]] || fail 'unsafe persistence path'
+  install -d -o 0 -g 0 -m 0700 -- "$mount_root/persist/var" "$mount_root/persist/var/lib"
+  [[ ! -e $mount_root/persist/var/lib/sbctl && ! -L $mount_root/persist/var/lib/sbctl ]] || fail 'signing PKI destination already exists'
+  cp -a -- "$pki" "$mount_root/persist/var/lib/sbctl" || fail 'cannot preserve signing PKI in encrypted persistence'
+  chown -R 0:0 -- "$mount_root/persist/var/lib/sbctl"
+  chmod -R go-rwx -- "$mount_root/persist/var/lib/sbctl"
+  [[ $(stat -c %a -- "$mount_root/persist/var/lib/sbctl") == 700 && \
+     $(stat -c %a -- "$mount_root/persist/var/lib/sbctl/keys/db/db.key") == 600 ]] || fail 'persisted signing PKI permissions are not root-only'
   install -d -m 0700 -- "$mount_root/persist/secrets" "$mount_root/persist/etc/ssh"
   printf 'Titan login password (input hidden): ' >&2
   IFS= read -rs password </dev/tty || fail 'login password unavailable'
@@ -188,6 +238,14 @@ if (( root_stage )); then
   # The /home/zarred tmpfs mount is created by Disko; HM links it on first activation.
   nixos-install --system "$root_system" --root "$mount_root" --no-root-password --no-channel-copy || fail 'installation incomplete; inspect mounted target; do not rerun Disko'
   [[ -L $mount_root/nix/var/nix/profiles/system ]] || fail 'installed system profile absent'
+  [[ -f $mount_root/boot/EFI/BOOT/BOOTX64.EFI && ! -L $mount_root/boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'signed EFI fallback loader missing'
+  mapfile -t ukis < <(compgen -G "$mount_root/boot/EFI/Linux/*.efi" || true)
+  (( ${#ukis[@]} > 0 )) || fail 'signed UKI missing from EFI/Linux'
+  sbverify --cert "$pki_cert" "$mount_root/boot/EFI/BOOT/BOOTX64.EFI" >/dev/null 2>&1 || fail 'EFI fallback loader signature does not verify with the configured db certificate'
+  for uki in "${ukis[@]}"; do
+    [[ -f $uki && ! -L $uki ]] || fail 'unsafe UKI artifact'
+    sbverify --cert "$pki_cert" "$uki" >/dev/null 2>&1 || fail "UKI signature does not verify with configured db certificate: ${uki##*/}"
+  done
   printf '%s\n' 'System installed. Leave mounts in place for manual inspection; do not re-run the formatter.'
   exit 0
 fi
@@ -237,6 +295,8 @@ printf '\nTARGET: %s / %s / %s bytes / serial %s\n' "$disk_id" "$model" "$size" 
 printf 'Stage a disk-bound configuration and build Titan BEFORE any formatting? Type the exact disk serial: '
 read -r reply
 [[ $reply == "$serial" ]] || fail 'first confirmation failed'
+# Validate the USB's root-only signing bundle before staging/building or any target writes.
+pkexec /run/current-system/sw/bin/bash "$self" --pki-check || fail 'Secure Boot signing PKI preflight failed'
 # Only the path, never credentials, is placed in the tracked source. This same module
 # also binds Disko's generated script to /mnt/titan (CLI rootMountPoint is ignored for NixOS modules).
 printf '{ ... }: { disko.devices.disk.main.device = "%s"; disko.rootMountPoint = "%s"; }\n' "$disk_id" "$mount_root" > "$flake/hosts/titan/target-disk.nix"
@@ -269,5 +329,5 @@ printf 'Type WIPE %s to authorize destruction: ' "$serial"
 read -r reply
 [[ $reply == "WIPE $serial" ]] || fail 'destructive confirmation failed'
 # Revalidate in privileged child immediately before Disko. The same by-id path and prebuilt script are used.
-pkexec "$self" --root-stage "$disk_id" "$resolved" "$serial" "$system" "$disko_script" "$key" "$metadata" "$metadata_sha" || fail 'root installation incomplete; leave mounts untouched and inspect manually'
+pkexec /run/current-system/sw/bin/bash "$self" --root-stage "$disk_id" "$resolved" "$serial" "$system" "$disko_script" "$key" "$metadata" "$metadata_sha" || fail 'root installation incomplete; leave mounts untouched and inspect manually'
 printf '%s\n' 'Titan install finished. Inspect boot and SOPS services on first boot; no reboot performed.'

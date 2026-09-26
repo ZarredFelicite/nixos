@@ -14,6 +14,9 @@ serial=0399123100003330
 root_uuid=71e6355f-be02-4e5c-9bb2-7a9022f925f0
 boot_uuid=54E2-2E21
 data_uuid=3de76d8b-c3e1-4045-9b0f-fbe78848b0c0
+pki_root=/var/lib/sbctl
+pki_cert=$pki_root/keys/db/db.pem
+pki_key=$pki_root/keys/db/db.key
 
 fail() { printf 'update-os: %s\n' "$*" >&2; exit 1; }
 usage() { printf 'Usage: %s [--check|--locked|--help]\nUpdate portable USB from web; stage next boot only (no reboot). --check is read-only; --locked keeps the current flake.lock.\n' "$0"; }
@@ -47,6 +50,8 @@ assert_root_holders() {
 
 root_stage() {
     local uuid dev chain path type props disk candidate root_dev old_profile dest_gid passphrase
+    local pki_path pki_mode uki
+    local -a ukis
     local -a paths types
     opened=0; root_mounted=0; boot_mounted=0
     mapper_dev=''; boot_dev=''; auto=/run/media/zarred/NIXOS_ROOT
@@ -79,6 +84,25 @@ root_stage() {
     [[ $(printf '%s\n' "$props" | grep -x "ID_SERIAL_SHORT=$serial") == "ID_SERIAL_SHORT=$serial" ]] || fail 'wrong USB serial'
     assert_root_holders || fail 'root LUKS partition has an active holder; refusing update'
     [[ -x /run/current-system/sw/bin/nixos-install ]] || fail 'nixos-install unavailable'
+    [[ -x $sys/sw/bin/sbverify ]] || fail 'built system does not provide sbverify; refusing unsigned-artifact check'
+    [[ -x $sys/sw/bin/openssl ]] || fail 'built system does not provide openssl; refusing Secure Boot PKI validation'
+    for pki_path in /var/lib/sbctl /var/lib/sbctl/keys /var/lib/sbctl/keys/db; do
+        [[ -d $pki_path && ! -L $pki_path && $(stat -c %u -- "$pki_path") == 0 ]] || fail 'Secure Boot PKI directory missing, linked, or not root-owned'
+        pki_mode=$(stat -c %a -- "$pki_path") || fail 'cannot inspect Secure Boot PKI directory'
+        (( (8#$pki_mode & 022) == 0 )) || fail 'Secure Boot PKI directory is writable by group or others'
+    done
+    for pki_path in "$pki_cert" "$pki_key"; do
+        [[ -f $pki_path && ! -L $pki_path && $(stat -c %u -- "$pki_path") == 0 ]] || fail 'Secure Boot PKI file missing, linked, or not root-owned'
+        pki_mode=$(stat -c %a -- "$pki_path") || fail 'cannot inspect Secure Boot PKI file'
+        (( (8#$pki_mode & 022) == 0 )) || fail 'Secure Boot PKI file is writable by group or others'
+    done
+    pki_mode=$(stat -c %a -- "$pki_key") || fail 'cannot inspect Secure Boot signing key permissions'
+    (( (8#$pki_mode & 077) == 0 )) || fail 'Secure Boot signing key is accessible by group or others'
+    "$sys/sw/bin/openssl" verify -CAfile "$pki_cert" "$pki_cert" >/dev/null 2>&1 || fail 'Secure Boot certificate is invalid, not yet valid, or expired'
+    "$sys/sw/bin/openssl" pkey -in "$pki_key" -passin pass: -noout >/dev/null 2>&1 || fail 'Secure Boot private key is invalid or protected by a passphrase'
+    cmp -s \
+        <("$sys/sw/bin/openssl" x509 -in "$pki_cert" -pubkey -noout 2>/dev/null) \
+        <("$sys/sw/bin/openssl" pkey -in "$pki_key" -passin pass: -pubout 2>/dev/null) || fail 'Secure Boot certificate and private key do not match'
 
     IFS= read -r passphrase || fail 'missing LUKS passphrase on root-stage stdin'
     [[ -n $passphrase ]] || fail 'empty LUKS passphrase'
@@ -116,11 +140,18 @@ root_stage() {
     cmp -s -- "$source_dir/flake.nix" "$target/home/zarred/portable-nixos/flake.nix" || fail 'destination flake mismatch'
     [[ -z $(rsync -a --chown="1000:$dest_gid" --checksum --dry-run --itemize-changes --exclude '/bin/update-os' -- "$source_dir/" "$target/home/zarred/portable-nixos/") ]] || fail 'destination flake files differ after copy'
     timeout --kill-after=15s 2h /run/current-system/sw/bin/nixos-install --system "$sys" --root "$target" --no-root-password --no-channel-copy || fail 'nixos-install failed/timed out'
-    [[ -L $target/nix/var/nix/profiles/system && $(readlink -f -- "$target/nix/var/nix/profiles/system") == "$sys" && -d $target$old_profile ]] || fail 'new profile mismatch or old generation missing'
-    [[ -s $target/boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'removable EFI loader missing/empty'
-    [[ -s $target/boot/grub/grub.cfg ]] || fail 'GRUB configuration missing/empty'
-    grep -Fq -- "init=$sys/init" "$target/boot/grub/grub.cfg" || fail 'new generation missing from GRUB'
-    grep -Fq -- "init=$old_profile/init" "$target/boot/grub/grub.cfg" || fail 'previous generation missing from GRUB'
+    [[ -L $target/nix/var/nix/profiles/system && $(readlink -f -- "$target/nix/var/nix/profiles/system") == "$sys" && -d $target$old_profile ]] || fail 'new profile mismatch or previous system profile missing'
+    [[ -s $target/boot/EFI/BOOT/BOOTX64.EFI && ! -L $target/boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'removable EFI loader missing, empty, or linked'
+    [[ -d $target/boot/EFI/Linux && ! -L $target/boot/EFI/Linux ]] || fail 'Lanzaboote UKI directory missing or linked'
+    shopt -s nullglob
+    ukis=("$target"/boot/EFI/Linux/*.efi)
+    shopt -u nullglob
+    ((${#ukis[@]} > 0)) || fail 'no Lanzaboote UKIs found on ESP'
+    for uki in "${ukis[@]}"; do
+        [[ -f $uki && ! -L $uki && -s $uki ]] || fail 'invalid UKI artifact on ESP'
+        "$sys/sw/bin/sbverify" --cert "$pki_cert" "$uki" >/dev/null 2>&1 || fail 'UKI signature verification failed against runtime Secure Boot certificate'
+    done
+    "$sys/sw/bin/sbverify" --cert "$pki_cert" "$target/boot/EFI/BOOT/BOOTX64.EFI" >/dev/null 2>&1 || fail 'removable EFI loader signature verification failed against runtime Secure Boot certificate'
     grep -Eq '^zarred:[^!*:][^:]*:' "$target/etc/shadow" || fail 'zarred password is not set'
     grep -Eq '^root:[!*][^:]*:' "$target/etc/shadow" || fail 'root account is not locked'
     sync -f -- "$target/boot"
@@ -261,6 +292,8 @@ if ! sys=$(nix build "${build_flags[@]}" "$source_dir#nixosConfigurations.portab
     fail 'build failed; no USB install attempted'
 fi
 [[ $sys == /nix/store/* && -d $sys ]] || { restore_if_safe; fail 'build did not produce a valid system closure'; }
+[[ -x $sys/sw/bin/sbverify ]] || { restore_if_safe; fail 'built system lacks sbverify; refusing update without signature verification'; }
+[[ -x $sys/sw/bin/openssl ]] || { restore_if_safe; fail 'built system lacks openssl; refusing Secure Boot PKI validation'; }
 if (( ! refresh_lock )); then
     current=$(sha256sum < "$source_dir/flake.lock"); current=${current%% *}
     [[ $current == "$original" ]] || fail "Pinned lock changed during build; no USB install attempted; backup: $backup"

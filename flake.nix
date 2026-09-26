@@ -17,6 +17,10 @@
     flake-utils.url = "github:numtide/flake-utils";
     nixos-hardware.url = "github:NixOS/nixos-hardware/662bd6e312d2c8b212e32cb377abaee190749320";
     disko = { url = "github:nix-community/disko"; inputs.nixpkgs.follows = "nixpkgs"; };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.3";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # X1 Nano settings are vendored locally; nixos-hardware also supports Titan.
     impermanence.url = "github:nix-community/impermanence";
@@ -137,6 +141,7 @@
             inputs.stylix.nixosModules.stylix
             inputs.nixos-hardware.nixosModules.framework-intel-core-ultra-series3
             inputs.disko.nixosModules.disko
+            inputs.lanzaboote.nixosModules.lanzaboote
             ./hosts/titan.nix
             ./roles/desktop.nix
           ];

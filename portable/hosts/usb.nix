@@ -122,6 +122,7 @@
   # Home Manager provides hyprlock; PAM must be configured by the system.
   security.pam.services.hyprlock = {};
 
+  hardware.enableRedistributableFirmware = true;
   hardware.graphics.enable = true;
   xdg.portal.enable = true;
 }

@@ -57,7 +57,7 @@ root_stage() {
     mapper_dev=''; boot_dev=''; auto=/run/media/zarred/NIXOS_ROOT
 
     [[ $(id -u) == 0 && ${PKEXEC_UID-} == 1000 && $(hostname) == web ]] || fail 'root stage must be launched by zarred on web'
-    [[ $sys == /nix/store/* && -d $sys && -x $sys/init && $(basename -- "$sys") == nixos-system-portable-usb-* ]] || fail 'invalid prebuilt portable system path'
+    [[ $sys == /nix/store/* && -d $sys && -x $sys/init && ${sys##*/} =~ ^[a-z0-9]{32}-nixos-system-portable-usb- ]] || fail 'invalid prebuilt portable system path'
     [[ -f $source_dir/flake.nix && -f $source_dir/flake.lock && $(stat -c %u -- "$source_dir/flake.lock") == 1000 ]] || fail 'portable source flake is missing or not user-owned'
     [[ ! -e /dev/mapper/$mapper ]] || fail 'portable mapper already open'
     [[ ! -e $target || -d $target && ! -L $target ]] || fail 'installation mountpoint is not a plain directory'

@@ -67,6 +67,7 @@
     };
   };
   networking.firewall.enable = true;
+  security.polkit.enable = true;
 
   networking.networkmanager.enable = true;
   hardware.bluetooth.enable = true;
@@ -89,11 +90,17 @@
     e2fsprogs
     git
     gptfdisk
+    gh
+    jq
+    nixos-install-tools
     parted
+    sops
+    ssh-to-age
     tmux
     util-linux
     vim
     wget
+    whois # mkpasswd: masked Titan login setup in install-titan
     wireguard-tools
   ];
 

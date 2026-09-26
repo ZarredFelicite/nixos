@@ -125,6 +125,26 @@
         "url": "https://install.determinate.systems/determinate-nixd/tag/v3.22.3/x86_64-linux"
       }
     },
+    "disko": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789770686,
+        "narHash": "sha256-uZkBR7yHdIKUFB5SZdfgh1qkGfI3XmYmI/lTiquxbck=",
+        "owner": "nix-community",
+        "repo": "disko",
+        "rev": "725ea35e410ad83be4931d1bff7e090eacaf3563",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "disko",
+        "type": "github"
+      }
+    },
     "ember-companion": {
       "inputs": {
         "nixpkgs": "nixpkgs_3",
@@ -134,17 +154,17 @@
         "dir": "companion",
         "lastModified": 1789823013,
         "narHash": "sha256-T6OeDk8yACfWxb/a6ZLxHdVvRRvXkwJCD42QpJ0gXrE=",
-        "ref": "refs/heads/fix/desktop-shadow-policy",
+        "owner": "ZarredFelicite",
+        "repo": "ember-private",
         "rev": "21f56e632775f40abe4f951f1fbaf1c5f0594f1f",
-        "revCount": 770,
-        "type": "git",
-        "url": "file:///home/zarred/dev/ember"
+        "type": "github"
       },
       "original": {
         "dir": "companion",
+        "owner": "ZarredFelicite",
+        "repo": "ember-private",
         "rev": "21f56e632775f40abe4f951f1fbaf1c5f0594f1f",
-        "type": "git",
-        "url": "file:///home/zarred/dev/ember"
+        "type": "github"
       }
     },
     "firefox-gnome-theme": {
@@ -1050,16 +1070,16 @@
       "locked": {
         "lastModified": 1789835981,
         "narHash": "sha256-HJ0+a40tVAl6EeEJLQLPJAXwhPr4xonAF3qzfWDWHlc=",
-        "ref": "refs/heads/main",
+        "owner": "ZarredFelicite",
+        "repo": "print-vault-private",
         "rev": "d7b744348cb1ef6e09bf4efad550297b5761643c",
-        "revCount": 13,
-        "type": "git",
-        "url": "file:///home/zarred/dev/print-vault"
+        "type": "github"
       },
       "original": {
+        "owner": "ZarredFelicite",
+        "repo": "print-vault-private",
         "rev": "d7b744348cb1ef6e09bf4efad550297b5761643c",
-        "type": "git",
-        "url": "file:///home/zarred/dev/print-vault"
+        "type": "github"
       }
     },
     "qmd": {
@@ -1091,19 +1111,24 @@
         ]
       },
       "locked": {
-        "lastModified": 1789033686,
-        "narHash": "sha256-+xvG0lGswPogVbhrjpFvpHJ+AsADlD/HqA/hanp9w6E=",
-        "path": "/home/zarred/dev/recall",
-        "type": "path"
+        "lastModified": 1789033134,
+        "narHash": "sha256-Gp4GeaU4HFrEkuwv+TXcRmS6S+lBq1tbJIKQIchWeD8=",
+        "owner": "ZarredFelicite",
+        "repo": "recall-private",
+        "rev": "83f84be730292fd9ae57366dd699db1e9ad37506",
+        "type": "github"
       },
       "original": {
-        "path": "/home/zarred/dev/recall",
-        "type": "path"
+        "owner": "ZarredFelicite",
+        "repo": "recall-private",
+        "rev": "83f84be730292fd9ae57366dd699db1e9ad37506",
+        "type": "github"
       }
     },
     "root": {
       "inputs": {
         "determinate": "determinate",
+        "disko": "disko",
         "ember-companion": "ember-companion",
         "flake-compat": "flake-compat_2",
         "flake-utils": "flake-utils",
@@ -1529,14 +1554,18 @@
         "systems": "systems_9"
       },
       "locked": {
-        "lastModified": 1789201611,
-        "narHash": "sha256-7fuA76C7FPySklzjV+5vxhWz5U8ZPdlKVLTf9Nxwj88=",
-        "path": "/home/zarred/dev/vicinae",
-        "type": "path"
+        "lastModified": 1790398856,
+        "narHash": "sha256-E11BlOkbE1TKjeWtxrIG2jfwsJJYeS19wgdXytbf1jw=",
+        "owner": "ZarredFelicite",
+        "repo": "vicinae-private",
+        "rev": "0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f",
+        "type": "github"
       },
       "original": {
-        "path": "/home/zarred/dev/vicinae",
-        "type": "path"
+        "owner": "ZarredFelicite",
+        "repo": "vicinae-private",
+        "rev": "0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f",
+        "type": "github"
       }
     },
     "vicinae-printvault": {
@@ -1544,16 +1573,16 @@
       "locked": {
         "lastModified": 1789865616,
         "narHash": "sha256-seJ+ds/adUU2Qbl0RRl2cqo491BWq4ds01UPFGCZDdA=",
-        "ref": "refs/heads/main",
+        "owner": "ZarredFelicite",
+        "repo": "vicinae-printvault-private",
         "rev": "58e6bdfed8cfe576402fd4cb3c1534552ac6b921",
-        "revCount": 2,
-        "type": "git",
-        "url": "file:///home/zarred/dev/vicinae-printvault"
+        "type": "github"
       },
       "original": {
+        "owner": "ZarredFelicite",
+        "repo": "vicinae-printvault-private",
         "rev": "58e6bdfed8cfe576402fd4cb3c1534552ac6b921",
-        "type": "git",
-        "url": "file:///home/zarred/dev/vicinae-printvault"
+        "type": "github"
       }
     },
     "vigiland": {

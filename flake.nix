@@ -16,8 +16,9 @@
     nur = { url = "github:nix-community/NUR"; };
     flake-utils.url = "github:numtide/flake-utils";
     nixos-hardware.url = "github:NixOS/nixos-hardware/662bd6e312d2c8b212e32cb377abaee190749320";
+    disko = { url = "github:nix-community/disko"; inputs.nixpkgs.follows = "nixpkgs"; };
 
-    # X1 Nano settings are vendored locally; nixos-hardware is only used for ROCK 4C+.
+    # X1 Nano settings are vendored locally; nixos-hardware also supports Titan.
     impermanence.url = "github:nix-community/impermanence";
     stylix.url = "github:danth/stylix/release-25.11";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -39,19 +40,19 @@
     qmd = { url = "github:tobi/qmd"; };
     herdr = { url = "github:herdrdev/herdr/v0.8.2"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
-    vicinae.url = "path:/home/zarred/dev/vicinae";
+    vicinae.url = "github:ZarredFelicite/vicinae-private/0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f";
     recall = {
-      url = "path:/home/zarred/dev/recall";
+      url = "github:ZarredFelicite/recall-private/83f84be730292fd9ae57366dd699db1e9ad37506";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
-    ember-companion.url = "git+file:///home/zarred/dev/ember?dir=companion&rev=21f56e632775f40abe4f951f1fbaf1c5f0594f1f";
+    ember-companion.url = "github:ZarredFelicite/ember-private/21f56e632775f40abe4f951f1fbaf1c5f0594f1f?dir=companion";
     print-vault = {
-      url = "git+file:///home/zarred/dev/print-vault?rev=d7b744348cb1ef6e09bf4efad550297b5761643c";
+      url = "github:ZarredFelicite/print-vault-private/d7b744348cb1ef6e09bf4efad550297b5761643c";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vicinae-printvault = {
-      url = "git+file:///home/zarred/dev/vicinae-printvault?rev=58e6bdfed8cfe576402fd4cb3c1534552ac6b921";
+      url = "github:ZarredFelicite/vicinae-printvault-private/58e6bdfed8cfe576402fd4cb3c1534552ac6b921";
       flake = false;
     };
   };
@@ -124,6 +125,19 @@
           modules = [
             inputs.stylix.nixosModules.stylix
             ./hosts/nano.nix
+            ./roles/desktop.nix
+          ];
+        };
+        titan = lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs self pkgs-unstable pkgs-quickshell pkgs-brave-origin;
+          };
+          modules = [
+            inputs.stylix.nixosModules.stylix
+            inputs.nixos-hardware.nixosModules.framework-intel-core-ultra-series3
+            inputs.disko.nixosModules.disko
+            ./hosts/titan.nix
             ./roles/desktop.nix
           ];
         };

@@ -7,6 +7,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
     initrd.availableKernelModules = [
       "xhci_pci"
       "usb_storage"

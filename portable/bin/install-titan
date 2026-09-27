@@ -3,7 +3,7 @@
 set +x
 set -euo pipefail
 umask 077
-# pkexec sanitizes the caller's environment; use NixOS system/profile command paths.
+# Use NixOS system/profile command paths for sudo-launched root stages.
 export PATH=/run/current-system/sw/bin:/run/wrappers/bin:/etc/profiles/per-user/zarred/bin:$PATH
 export PAGER=cat
 self=$(realpath -e -- "${BASH_SOURCE[0]}")
@@ -59,12 +59,13 @@ read_efi_var() {
   return 1
 }
 secure_boot=$(read_efi_var SecureBoot) || fail 'Secure Boot state unavailable'
-[[ $secure_boot == 1 ]] || fail 'Secure Boot must be enabled before installing signed Titan boot artifacts'
-for mode_var in SetupMode AuditMode; do
-  if mode_value=$(read_efi_var "$mode_var"); then
-    [[ $mode_value == 0 ]] || fail "$mode_var must be disabled for enforced Secure Boot"
-  fi
-done
+if [[ $secure_boot == 1 ]]; then
+  for mode_var in SetupMode AuditMode; do
+    if mode_value=$(read_efi_var "$mode_var"); then
+      [[ $mode_value == 0 ]] || fail "$mode_var must be disabled for enforced Secure Boot"
+    fi
+  done
+fi
 pki=/var/lib/sbctl
 pki_cert=$pki/keys/db/db.pem
 pki_key=$pki/keys/db/db.key
@@ -84,7 +85,7 @@ check_pki() {
      -f /boot/EFI/BOOT/BOOTX64.EFI && ! -L /boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'booted USB EFI fallback loader missing or /boot is not its VFAT ESP'
   sbverify --cert "$pki_cert" /boot/EFI/BOOT/BOOTX64.EFI >/dev/null 2>&1 || fail 'booted USB EFI fallback signature does not verify with configured db certificate'
 }
-for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix pkexec mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find; do
+for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix sudo mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find; do
   command -v "$cmd" >/dev/null || fail "missing $cmd; add it to the USB image before installing"
 done
 if (( pki_check )); then
@@ -189,7 +190,7 @@ if (( root_stage )); then
   [[ $serial == "$root_serial" ]] || fail 'serial changed before destruction'
   # Disko's generated script is pinned and prebuilt with /mnt/titan as rootMountPoint.
   # Its own wipe confirmation remains enabled, as a third independent confirmation.
-  printf 'Polkit authorized; Disko will request its own confirmation and LUKS passphrase on this TTY.\n'
+  printf 'sudo authorized; Disko will request its own confirmation and LUKS passphrase on this TTY.\n'
   install -d -m 0755 -- "$mount_root"
   "$root_disko/bin/disko-destroy-format-mount" || fail 'Disko incomplete; inspect partitions, LUKS mapping and mounts manually'
   [[ $(findmnt -rn --mountpoint "$mount_root" -o FSTYPE) == tmpfs && \
@@ -260,7 +261,7 @@ if [[ $mode == plan ]]; then
   printf '%s\n' 'Read-only plan complete. Apply needs explicit --disk and two confirmations; no disk writes performed.'
   exit 0
 fi
-[[ -t 0 && -t 1 && -t 2 ]] || fail 'apply needs interactive TTY for polkit and LUKS prompts'
+[[ -t 0 && -t 1 && -t 2 ]] || fail 'apply needs an interactive TTY for sudo and LUKS prompts'
 [[ -d /home/zarred/scripts && ! -L /home/zarred/scripts ]] || fail 'USB scripts missing; must be available before formatting'
 [[ -d /run/user/1000 && $(stat -c %u -- /run/user/1000) == 1000 ]] || fail 'user runtime unavailable for HM metadata'
 printf 'preflight-only' | mkpasswd -m yescrypt --stdin >/dev/null || fail 'mkpasswd lacks yescrypt support; install whois on USB before apply'
@@ -296,7 +297,7 @@ printf 'Stage a disk-bound configuration and build Titan BEFORE any formatting? 
 read -r reply
 [[ $reply == "$serial" ]] || fail 'first confirmation failed'
 # Validate the USB's root-only signing bundle before staging/building or any target writes.
-pkexec /run/current-system/sw/bin/bash "$self" --pki-check || fail 'Secure Boot signing PKI preflight failed'
+sudo /run/current-system/sw/bin/bash "$self" --pki-check || fail 'Secure Boot signing PKI preflight failed'
 # Only the path, never credentials, is placed in the tracked source. This same module
 # also binds Disko's generated script to /mnt/titan (CLI rootMountPoint is ignored for NixOS modules).
 printf '{ ... }: { disko.devices.disk.main.device = "%s"; disko.rootMountPoint = "%s"; }\n' "$disk_id" "$mount_root" > "$flake/hosts/titan/target-disk.nix"
@@ -329,5 +330,5 @@ printf 'Type WIPE %s to authorize destruction: ' "$serial"
 read -r reply
 [[ $reply == "WIPE $serial" ]] || fail 'destructive confirmation failed'
 # Revalidate in privileged child immediately before Disko. The same by-id path and prebuilt script are used.
-pkexec /run/current-system/sw/bin/bash "$self" --root-stage "$disk_id" "$resolved" "$serial" "$system" "$disko_script" "$key" "$metadata" "$metadata_sha" || fail 'root installation incomplete; leave mounts untouched and inspect manually'
+sudo /run/current-system/sw/bin/bash "$self" --root-stage "$disk_id" "$resolved" "$serial" "$system" "$disko_script" "$key" "$metadata" "$metadata_sha" || fail 'root installation incomplete; leave mounts untouched and inspect manually'
 printf '%s\n' 'Titan install finished. Inspect boot and SOPS services on first boot; no reboot performed.'

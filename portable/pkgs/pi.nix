@@ -33,7 +33,7 @@ buildNpmPackage (finalAttrs: {
   buildPhase = ''
     runHook preBuild
     tsgo -p packages/ai/tsconfig.build.json
-    tsgo -p packages/tui/tsconfig.build.json
+    tsgo -p packages/tui/tsconfig.build.json --target es2024
     tsgo -p packages/agent/tsconfig.build.json
     npm run build --workspace=packages/coding-agent
     runHook postBuild

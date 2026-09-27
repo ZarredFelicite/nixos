@@ -234,11 +234,10 @@ in {
         "$mod CTRL, Right, resizeactive, 20 0"
       ];
     };
-    # 25.11 pins Hyprland 0.52; Nano's 0.53+ match:-style window rules
-    # cannot be copied verbatim. Keep only the compatible bar layer effect.
+    # Hyprland 0.53+ requires match:-style layer rules.
     extraConfig = ''
-      layerrule = blur, primary-bar
-      layerrule = ignorealpha 0.45, primary-bar
+      layerrule = match:namespace primary-bar, blur on
+      layerrule = match:namespace primary-bar, ignore_alpha 0.45
     '';
   };
 }

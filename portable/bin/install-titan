@@ -3,8 +3,8 @@
 set +x
 set -euo pipefail
 umask 077
-# Use NixOS system/profile command paths for sudo-launched root stages.
-export PATH=/run/current-system/sw/bin:/run/wrappers/bin:/etc/profiles/per-user/zarred/bin:$PATH
+# Prefer NixOS setuid wrappers over their non-setuid package binaries.
+export PATH=/run/wrappers/bin:/run/current-system/sw/bin:/etc/profiles/per-user/zarred/bin:$PATH
 export PAGER=cat
 self=$(realpath -e -- "${BASH_SOURCE[0]}")
 flake=/home/zarred/dots
@@ -297,7 +297,7 @@ printf 'Stage a disk-bound configuration and build Titan BEFORE any formatting? 
 read -r reply
 [[ $reply == "$serial" ]] || fail 'first confirmation failed'
 # Validate the USB's root-only signing bundle before staging/building or any target writes.
-sudo /run/current-system/sw/bin/bash "$self" --pki-check || fail 'Secure Boot signing PKI preflight failed'
+/run/wrappers/bin/sudo /run/current-system/sw/bin/bash "$self" --pki-check || fail 'Secure Boot signing PKI preflight failed'
 # Only the path, never credentials, is placed in the tracked source. This same module
 # also binds Disko's generated script to /mnt/titan (CLI rootMountPoint is ignored for NixOS modules).
 printf '{ ... }: { disko.devices.disk.main.device = "%s"; disko.rootMountPoint = "%s"; }\n' "$disk_id" "$mount_root" > "$flake/hosts/titan/target-disk.nix"
@@ -330,5 +330,5 @@ printf 'Type WIPE %s to authorize destruction: ' "$serial"
 read -r reply
 [[ $reply == "WIPE $serial" ]] || fail 'destructive confirmation failed'
 # Revalidate in privileged child immediately before Disko. The same by-id path and prebuilt script are used.
-sudo /run/current-system/sw/bin/bash "$self" --root-stage "$disk_id" "$resolved" "$serial" "$system" "$disko_script" "$key" "$metadata" "$metadata_sha" || fail 'root installation incomplete; leave mounts untouched and inspect manually'
+/run/wrappers/bin/sudo /run/current-system/sw/bin/bash "$self" --root-stage "$disk_id" "$resolved" "$serial" "$system" "$disko_script" "$key" "$metadata" "$metadata_sha" || fail 'root installation incomplete; leave mounts untouched and inspect manually'
 printf '%s\n' 'Titan install finished. Inspect boot and SOPS services on first boot; no reboot performed.'

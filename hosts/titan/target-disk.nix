@@ -1,6 +1,5 @@
-# Replace this placeholder with a reviewed /dev/disk/by-id/... SSD path only
-# after identifying Titan's physical target disk. Until then evaluation of any
-# installer disk device or system build must fail closed.
+# Titan's verified internal Samsung 9100 PRO 2 TB, serial S7YCNJ0L219298W.
 { ... }: {
-  disko.devices.disk.main.device = throw "Titan target SSD not verified: replace hosts/titan/target-disk.nix with a reviewed /dev/disk/by-id path before building or running disko";
+  disko.devices.disk.main.device = "/dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W";
+  disko.rootMountPoint = "/mnt/titan";
 }

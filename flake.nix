@@ -5,6 +5,8 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable-small";
     # Keep Ollama CUDA on the last known-good revision until the 0.32.x nvcc regression is fixed.
     nixpkgs-ollama.url = "github:nixos/nixpkgs/9ab0784f4b4b98a4f100d4cb2245d791cdccf70a";
+    # Match Titan's GPU stack to the known-working portable USB generation.
+    nixpkgs-titan-gpu.url = "github:NixOS/nixpkgs/f5c082a40f7571c266e74e80ae2e68aadd8a9fc7";
     nixpkgs-quickshell.url = "github:nixos/nixpkgs/8ee95bcb238069810a968efbf2bba8e4d6ff11a6";
     nixpkgs-brave-origin.url = "github:Daniel-42-z/brave-origin-flake/bbe5b55e46d3f842ef52a2db961eb0244ec2cbd4";
     zen-browser = {
@@ -62,7 +64,7 @@
   };
   outputs = {
     self, nixpkgs,
-    nixpkgs-unstable, nixpkgs-ollama, nixpkgs-quickshell, nixpkgs-brave-origin, #nixpkgs-master,
+    nixpkgs-unstable, nixpkgs-ollama, nixpkgs-quickshell, nixpkgs-brave-origin, nixpkgs-titan-gpu, #nixpkgs-master,
     home-manager, determinate, ...  }@inputs:
     let
       lib = nixpkgs.lib // home-manager.lib;
@@ -90,6 +92,10 @@
         config.allowUnfree = true;
       };
       pkgs-brave-origin = nixpkgs-brave-origin.packages.${system};
+      pkgs-titan-gpu = import nixpkgs-titan-gpu {
+        inherit system;
+        config.allowUnfree = true;
+      };
       rock4cModules = [
         inputs.nixos-hardware.nixosModules.rock-4c-plus
         ./hosts/rock4c.nix
@@ -135,7 +141,7 @@
         titan = lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit inputs self pkgs-unstable pkgs-quickshell pkgs-brave-origin;
+            inherit inputs self pkgs-unstable pkgs-quickshell pkgs-brave-origin pkgs-titan-gpu;
           };
           modules = [
             inputs.stylix.nixosModules.stylix

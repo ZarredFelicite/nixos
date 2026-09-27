@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, pkgs-brave-origin, inputs, self, ... }: {
+{ config, lib, pkgs, pkgs-unstable, pkgs-quickshell, pkgs-brave-origin, pkgs-titan-gpu, inputs, self, ... }: {
   imports = [
     inputs.home-manager.nixosModules.home-manager
     ./titan/disko.nix
@@ -21,8 +21,12 @@
   # The shared desktop role refreshes the lockfile nightly, but Titan has no
   # private-GitHub credentials until its own authentication is provisioned.
   system.autoUpgrade.enable = lib.mkForce false;
+  hardware.enableRedistributableFirmware = true;
+  # The SSD generation used older Xe firmware without Panther Lake blobs.
+  hardware.firmware = lib.mkForce [ pkgs-titan-gpu.linux-firmware ];
+
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs-titan-gpu.linuxPackages_latest;
     kernelModules = [ "kvm-intel" ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.systemd.enable = true;
@@ -70,6 +74,8 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+    package = pkgs-titan-gpu.mesa;
+    package32 = pkgs-titan-gpu.pkgsi686Linux.mesa;
     extraPackages = with pkgs; [ intel-media-driver libva-vdpau-driver libvdpau-va-gl ];
   };
 }

@@ -112,10 +112,7 @@
   services.power-profiles-daemon.enable = true;
 
   services.xserver.enable = true;
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-  };
+  services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
   services.desktopManager.cosmic.enable = true;
   programs.hyprland.enable = true;

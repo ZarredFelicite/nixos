@@ -16,11 +16,17 @@ min_bytes=120000000000
 fail() { printf 'install-titan: %s\nNo automatic rollback or retry: inspect disk/mounts manually before recovery.\n' "$*" >&2; exit 1; }
 usage() { printf '%s\n' 'Usage: install-titan [--plan] [--disk /dev/disk/by-id/...]' '       install-titan --apply --disk /dev/disk/by-id/...' 'Plan is read-only and does not select a disk; apply requires a TTY and two typed confirmations.' 'Run only from the booted persistent portable USB on Titan. Never run from web.'; }
 root_stage=0
+finish_stage=0
 pki_check=0
 if [[ ${1-} == --root-stage ]]; then
   root_stage=1
   (( $# == 9 )) || fail 'invalid privileged invocation'
   root_disk=$2 root_resolved=$3 root_serial=$4 root_system=$5 root_disko=$6 root_key=$7 root_metadata=$8 root_metadata_sha=$9
+  set --
+elif [[ ${1-} == --finish-prebuilt ]]; then
+  finish_stage=1
+  (( $# == 8 )) || fail 'invalid prebuilt finish invocation'
+  root_disk=$2 root_resolved=$3 root_serial=$4 root_system=$5 root_key=$6 root_metadata=$7 root_metadata_sha=$8
   set --
 elif [[ ${1-} == --pki-check ]]; then
   pki_check=1
@@ -40,7 +46,7 @@ while (( $# )); do
 done
 if (( pki_check )); then
   [[ $(id -u) == 0 && $(hostname) == portable-usb ]] || fail 'privileged PKI check requires root on USB'
-elif (( ! root_stage )); then
+elif (( ! root_stage && ! finish_stage )); then
   [[ $mode == plan || -n $disk_id ]] || fail 'explicit --disk required for apply'
   [[ $(id -u) == 1000 && $HOME == /home/zarred && $(hostname) == portable-usb ]] || fail 'must run as zarred on the booted portable USB (not web)'
 else
@@ -58,13 +64,15 @@ read_efi_var() {
   done
   return 1
 }
-secure_boot=$(read_efi_var SecureBoot) || fail 'Secure Boot state unavailable'
-if [[ $secure_boot == 1 ]]; then
-  for mode_var in SetupMode AuditMode; do
-    if mode_value=$(read_efi_var "$mode_var"); then
-      [[ $mode_value == 0 ]] || fail "$mode_var must be disabled for enforced Secure Boot"
-    fi
-  done
+if (( ! finish_stage )); then
+  secure_boot=$(read_efi_var SecureBoot) || fail 'Secure Boot state unavailable'
+  if [[ $secure_boot == 1 ]]; then
+    for mode_var in SetupMode AuditMode; do
+      if mode_value=$(read_efi_var "$mode_var"); then
+        [[ $mode_value == 0 ]] || fail "$mode_var must be disabled for enforced Secure Boot"
+      fi
+    done
+  fi
 fi
 pki=/var/lib/sbctl
 pki_cert=$pki/keys/db/db.pem
@@ -85,7 +93,7 @@ check_pki() {
      -f /boot/EFI/BOOT/BOOTX64.EFI && ! -L /boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'booted USB EFI fallback loader missing or /boot is not its VFAT ESP'
   sbverify --cert "$pki_cert" /boot/EFI/BOOT/BOOTX64.EFI >/dev/null 2>&1 || fail 'booted USB EFI fallback signature does not verify with configured db certificate'
 }
-for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix sudo mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find; do
+for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix nix-store sudo mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find; do
   command -v "$cmd" >/dev/null || fail "missing $cmd; add it to the USB image before installing"
 done
 if (( pki_check )); then
@@ -98,10 +106,12 @@ manufacturer=$(< /sys/class/dmi/id/sys_vendor)
 product=$(< /sys/class/dmi/id/product_name)
 [[ $manufacturer == 'Framework' && $product == *'Laptop 13'* ]] || fail "DMI is not a Framework Laptop 13 ($manufacturer / $product)"
 [[ -f $flake/flake.nix && -f $flake/flake.lock && -f $flake/hosts/titan/disko.nix && -f $flake/hosts/titan/target-disk.nix ]] || fail 'full root Titan flake missing from /home/zarred/dots'
-[[ ! -L $mount_root && -z $(findmnt -rn --mountpoint "$mount_root" -o TARGET) ]] || fail "$mount_root symlinked or already mounted"
+if (( ! finish_stage )); then
+  [[ ! -L $mount_root && -z $(findmnt -rn --mountpoint "$mount_root" -o TARGET) ]] || fail "$mount_root symlinked or already mounted"
+fi
 
 check_disk() {
-  local path=$1 expected=${2-} child name props count line uuid parent udevserial
+  local path=$1 expected=${2-} mounted_ok=${3-0} child name props count line uuid parent udevserial mountpoint
   [[ $path == /dev/disk/by-id/* && $path != *$'\n'* && $path != *'"'* && $path != *'\\'* ]] || fail 'disk must be a simple /dev/disk/by-id path'
   [[ $path != *-part[0-9]* ]] || fail 'partition ID is not a disk'
   [[ -L $path ]] || fail 'disk by-id symlink missing'
@@ -125,11 +135,20 @@ check_disk() {
     [[ -b $child ]] || fail 'disk descendant disappeared'
     name=$(lsblk -dnro KNAME -- "$child")
     [[ $name =~ ^[a-zA-Z0-9._-]+$ ]] || fail 'unsafe block name'
-    for parent in /sys/class/block/"$name"/holders/*; do
-      [[ ! -e $parent ]] || fail "active holder on $child"
-    done
-    [[ -z $(lsblk -nrpo MOUNTPOINTS -- "$child" | grep -v '^$' || true) ]] || fail "mounted descendant: $child"
-    [[ -z $(findmnt -rn -S "$child" -o TARGET) ]] || fail "mounted device: $child"
+    if (( ! mounted_ok )); then
+      for parent in /sys/class/block/"$name"/holders/*; do
+        [[ ! -e $parent ]] || fail "active holder on $child"
+      done
+      [[ -z $(lsblk -nrpo MOUNTPOINTS -- "$child" | grep -v '^$' || true) ]] || fail "mounted descendant: $child"
+      [[ -z $(findmnt -rn -S "$child" -o TARGET) ]] || fail "mounted device: $child"
+    else
+      while IFS= read -r mountpoint; do
+        case $mountpoint in
+          "$mount_root"|"$mount_root/home/zarred"|"$mount_root/persist"|"$mount_root/nix"|"$mount_root/boot") ;;
+          *) fail "unexpected mount on approved SSD: $child ($mountpoint)" ;;
+        esac
+      done < <(lsblk -nrpo MOUNTPOINTS -- "$child" | grep -v '^$' || true)
+    fi
     while read -r line _; do
       [[ $line != "$child" && $(realpath -e -- "$line" 2>/dev/null || true) != "$child" ]] || fail "swap active on $child"
     done < /proc/swaps
@@ -177,27 +196,58 @@ user_directory() {
   done
 }
 
-if (( root_stage )); then
+if (( root_stage || finish_stage )); then
   [[ $root_resolved == /dev/* && $root_serial =~ ^[a-zA-Z0-9._-]+$ ]] || fail 'invalid root-stage identity'
-  [[ $root_system == /nix/store/* && -d $root_system && $root_disko == /nix/store/* && -x $root_disko/bin/disko-destroy-format-mount ]] || fail 'prebuilt paths invalid'
+  if (( finish_stage )); then
+    [[ $root_disk == /dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W && \
+       $root_serial == S7YCNJ0L219298W ]] || fail 'prebuilt finish is restricted to the approved Titan SSD identity'
+    [[ $root_system =~ ^/nix/store/[a-z0-9]{32}-nixos-system-titan-.+$ ]] || fail 'invalid logical Titan system store path'
+  else
+    [[ $root_system == /nix/store/* && -d $root_system && $root_disko == /nix/store/* && -x $root_disko/bin/disko-destroy-format-mount ]] || fail 'prebuilt paths invalid'
+  fi
   [[ $root_key == /home/zarred/.local/state/titan-provision/ssh_host_ed25519_key && -f $root_key && ! -L $root_key ]] || fail 'Titan key missing'
-  [[ ! -e $mount_root && ! -L $mount_root ]] || fail 'mount root already exists or is a symlink'
+  if (( root_stage )); then
+    [[ ! -e $mount_root && ! -L $mount_root ]] || fail 'mount root already exists or is a symlink'
+  else
+    [[ -d $mount_root && ! -L $mount_root ]] || fail 'preformatted target root is missing or symlinked'
+  fi
   [[ $root_metadata == /run/user/1000/titan-hm.* && $root_metadata_sha =~ ^[0-9a-f]{64}$ ]] || fail 'unexpected HM metadata location/hash'
   [[ $(sha256sum < "$root_metadata" | cut -d' ' -f1) == "$root_metadata_sha" ]] || fail 'HM metadata changed'
   validate_metadata "$root_metadata"
   check_pki
-  check_disk "$root_disk" "$root_resolved"
-  [[ $serial == "$root_serial" ]] || fail 'serial changed before destruction'
-  # Disko's generated script is pinned and prebuilt with /mnt/titan as rootMountPoint.
-  # Its own wipe confirmation remains enabled, as a third independent confirmation.
-  printf 'sudo authorized; Disko will request its own confirmation and LUKS passphrase on this TTY.\n'
-  install -d -m 0755 -- "$mount_root"
-  "$root_disko/bin/disko-destroy-format-mount" || fail 'Disko incomplete; inspect partitions, LUKS mapping and mounts manually'
+  if (( finish_stage )); then
+    check_disk "$root_disk" "$root_resolved" 1
+  else
+    check_disk "$root_disk" "$root_resolved"
+  fi
+  [[ $serial == "$root_serial" ]] || fail 'disk serial changed before installation'
+  if (( root_stage )); then
+    # Disko's generated script is pinned and prebuilt with /mnt/titan as rootMountPoint.
+    # Its own wipe confirmation remains enabled, as a third independent confirmation.
+    printf 'sudo authorized; Disko will request its own confirmation and LUKS passphrase on this TTY.\n'
+    install -d -m 0755 -- "$mount_root"
+    "$root_disko/bin/disko-destroy-format-mount" || fail 'Disko incomplete; inspect partitions, LUKS mapping and mounts manually'
+  fi
   [[ $(findmnt -rn --mountpoint "$mount_root" -o FSTYPE) == tmpfs && \
      $(findmnt -rn --mountpoint "$mount_root/home/zarred" -o FSTYPE) == tmpfs && \
      $(findmnt -rn --mountpoint "$mount_root/persist" -o FSTYPE) == btrfs && \
      $(findmnt -rn --mountpoint "$mount_root/nix" -o FSTYPE) == btrfs && \
-     $(findmnt -rn --mountpoint "$mount_root/boot" -o FSTYPE) == vfat ]] || fail 'Disko mounts did not match expected layout'
+     $(findmnt -rn --mountpoint "$mount_root/boot" -o FSTYPE) == vfat ]] || fail 'target mounts do not match expected layout'
+  if (( finish_stage )); then
+    for mountpoint in "$mount_root/nix" "$mount_root/persist" "$mount_root/boot"; do
+      source=$(findmnt -rn --mountpoint "$mountpoint" -o SOURCE)
+      source=${source%%\[*}
+      [[ -b $source ]] || fail "target mount source is not a block device: $mountpoint"
+      if [[ $mountpoint == "$mount_root/boot" ]]; then
+        [[ $(lsblk -dnro TYPE -- "$source") == part ]] || fail 'target EFI mount is not a partition'
+      else
+        [[ $(lsblk -dnro TYPE -- "$source") == crypt ]] || fail "target btrfs mount is not encrypted: $mountpoint"
+      fi
+      lsblk -snrpo PATH -- "$source" | grep -Fxq -- "$resolved" || fail "target mount is not backed by approved SSD: $mountpoint"
+    done
+    [[ -d "$mount_root$root_system" && ! -L "$mount_root$root_system" ]] || fail 'prebuilt system path absent from target Nix store'
+    nix-store --store "local?root=$mount_root" --verify-path "$root_system" >/dev/null || fail 'prebuilt system path failed target-store verification'
+  fi
   [[ -d $mount_root/persist && ! -L $mount_root/persist && ! -L $mount_root/persist/home ]] || fail 'unsafe persistence path'
   install -d -o 0 -g 0 -m 0700 -- "$mount_root/persist/var" "$mount_root/persist/var/lib"
   [[ ! -e $mount_root/persist/var/lib/sbctl && ! -L $mount_root/persist/var/lib/sbctl ]] || fail 'signing PKI destination already exists'

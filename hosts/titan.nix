@@ -30,6 +30,8 @@
     kernelModules = [ "kvm-intel" ];
     initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod" ];
     initrd.systemd.enable = true;
+    initrd.systemd.tpm2.enable = true;
+    initrd.luks.devices.root.crypttabExtraOpts = [ "tpm2-device=auto" ];
     loader = {
       systemd-boot.enable = lib.mkForce false;
       efi.canTouchEfiVariables = lib.mkForce false;

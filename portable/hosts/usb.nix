@@ -15,7 +15,12 @@
       "usbhid"
       "sd_mod"
     ];
-    initrd.luks.devices.portable_usb.device = "/dev/disk/by-uuid/71e6355f-be02-4e5c-9bb2-7a9022f925f0";
+    initrd.systemd.enable = true;
+    initrd.systemd.tpm2.enable = true;
+    initrd.luks.devices.portable_usb = {
+      device = "/dev/disk/by-uuid/71e6355f-be02-4e5c-9bb2-7a9022f925f0";
+      crypttabExtraOpts = [ "tpm2-device=auto" ];
+    };
 
     loader = {
       efi.canTouchEfiVariables = false;

@@ -41,6 +41,7 @@
   # Disko supplies the tmpfs root/home and the encrypted persistent mounts.
   fileSystems."/persist".neededForBoot = true;
   fileSystems."/nix".neededForBoot = true;
+  fileSystems."/home/zarred".neededForBoot = true;
 
   # Titan decrypts SOPS using its own persisted SSH host key. Its login hash is
   # provisioned separately into encrypted /persist, never into the Nix store.

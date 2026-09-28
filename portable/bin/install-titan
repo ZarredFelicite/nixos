@@ -14,11 +14,17 @@ usb_serial=0399123100003330
 mount_root=/mnt/titan
 min_bytes=120000000000
 fail() { printf 'install-titan: %s\nNo automatic rollback or retry: inspect disk/mounts manually before recovery.\n' "$*" >&2; exit 1; }
-usage() { printf '%s\n' 'Usage: install-titan [--plan] [--disk /dev/disk/by-id/...]' '       install-titan --apply --disk /dev/disk/by-id/...' 'Plan is read-only and does not select a disk; apply requires a TTY and two typed confirmations.' 'Run only from the booted persistent portable USB on Titan. Never run from web.'; }
+usage() { printf '%s\n' 'Usage: install-titan [--plan] [--disk /dev/disk/by-id/...]' '       install-titan --apply --disk /dev/disk/by-id/...' '       install-titan --format-prebuilt <approved-by-id> <expected-resolved-device> <expected-serial> <prebuilt-disko-store-path> <expected-Web-Git-commit>' 'Plan is read-only and does not select a disk; apply requires a TTY and two typed confirmations.' 'Run only from the booted persistent portable USB on Titan. Never run from web.'; }
 root_stage=0
 finish_stage=0
+format_stage=0
 pki_check=0
-if [[ ${1-} == --root-stage ]]; then
+if [[ ${1-} == --format-prebuilt ]]; then
+  format_stage=1
+  (( $# == 6 )) || fail 'invalid privileged prebuilt-format invocation'
+  format_disk=$2 format_resolved=$3 format_serial=$4 format_disko=$5 format_commit=$6
+  set --
+elif [[ ${1-} == --root-stage ]]; then
   root_stage=1
   (( $# == 9 )) || fail 'invalid privileged invocation'
   root_disk=$2 root_resolved=$3 root_serial=$4 root_system=$5 root_disko=$6 root_key=$7 root_metadata=$8 root_metadata_sha=$9
@@ -46,7 +52,7 @@ while (( $# )); do
 done
 if (( pki_check )); then
   [[ $(id -u) == 0 && $(hostname) == portable-usb ]] || fail 'privileged PKI check requires root on USB'
-elif (( ! root_stage && ! finish_stage )); then
+elif (( ! root_stage && ! finish_stage && ! format_stage )); then
   [[ $mode == plan || -n $disk_id ]] || fail 'explicit --disk required for apply'
   [[ $(id -u) == 1000 && $HOME == /home/zarred && $(hostname) == portable-usb ]] || fail 'must run as zarred on the booted portable USB (not web)'
 else
@@ -93,7 +99,7 @@ check_pki() {
      -f /boot/EFI/BOOT/BOOTX64.EFI && ! -L /boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'booted USB EFI fallback loader missing or /boot is not its VFAT ESP'
   sbverify --cert "$pki_cert" /boot/EFI/BOOT/BOOTX64.EFI >/dev/null 2>&1 || fail 'booted USB EFI fallback signature does not verify with configured db certificate'
 }
-for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix nix-store sudo mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find; do
+for cmd in lsblk realpath findmnt stat udevadm grep ssh-keygen ssh-to-age sops nix nix-store sudo mkpasswd git flock nixos-install cp install chown cmp chmod cut xargs jq mktemp sha256sum od rm openssl sbverify find python3; do
   command -v "$cmd" >/dev/null || fail "missing $cmd; add it to the USB image before installing"
 done
 if (( pki_check )); then
@@ -147,7 +153,7 @@ check_disk() {
           "$mount_root"|"$mount_root/home/zarred"|"$mount_root/persist"|"$mount_root/nix"|"$mount_root/boot") ;;
           *) fail "unexpected mount on approved SSD: $child ($mountpoint)" ;;
         esac
-      done < <(lsblk -nrpo MOUNTPOINTS -- "$child" | grep -v '^$' || true)
+      done < <(findmnt -rn -S "$child" -o TARGET)
     fi
     while read -r line _; do
       [[ $line != "$child" && $(realpath -e -- "$line" 2>/dev/null || true) != "$child" ]] || fail "swap active on $child"
@@ -164,6 +170,63 @@ check_disk() {
     [[ -n $parent && $(realpath -e -- "/dev/$parent") != "$resolved" ]] || fail 'portable USB is the target'
   done
 }
+
+if (( format_stage )); then
+  approved_disk=/dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W
+  [[ $format_disk == "$approved_disk" && $format_serial == S7YCNJ0L219298W ]] || fail 'prebuilt format is restricted to the approved Titan SSD identity'
+  [[ $format_resolved =~ ^/dev/[a-zA-Z0-9._-]+$ ]] || fail 'invalid expected resolved device'
+  [[ $format_commit =~ ^[0-9a-f]{40}$ ]] || fail 'expected Web commit must be a full 40-character hash'
+  [[ $format_disko =~ ^/nix/store/[a-z0-9]{32}-[^/]+$ && -x $format_disko/bin/disko-destroy-format-mount ]] || fail 'invalid prebuilt Disko store path'
+  nix-store --check-validity "$format_disko" || fail 'prebuilt Disko path is not valid in the USB Nix store'
+
+  git -C "$flake" rev-parse --is-inside-work-tree >/dev/null 2>&1 || fail 'USB checkout is not a Git worktree'
+  [[ $(git -C "$flake" rev-parse HEAD) == "$format_commit" ]] || fail 'USB checkout does not match the expected Web commit'
+  [[ -z $(git -C "$flake" status --porcelain) ]] || fail 'USB checkout is not clean'
+  git -C "$flake" ls-files --error-unmatch -- hosts/titan/target-disk.nix >/dev/null || fail 'target-disk.nix is not tracked'
+  target_device_line="  disko.devices.disk.main.device = \"$approved_disk\";"
+  target_mount_line="  disko.rootMountPoint = \"$mount_root\";"
+  [[ $(grep -Fxc -- "$target_device_line" "$flake/hosts/titan/target-disk.nix") == 1 && \
+     $(grep -Fxc -- "$target_mount_line" "$flake/hosts/titan/target-disk.nix") == 1 ]] || fail 'committed target-disk.nix assignments do not match the approved disk and mount root'
+
+  check_preformat_state() {
+    local mounted_target part_path part_type part_num part_fstype has_crypt=0 has_esp=0 has_luks=0
+    while IFS= read -r mounted_target; do
+      case $mounted_target in
+        "$mount_root"|"$mount_root"/*) fail "stale target mount exists: $mounted_target" ;;
+      esac
+    done < <(findmnt -rn -o TARGET)
+    while read -r part_path part_type part_num part_fstype _; do
+      [[ $part_type == crypt ]] && has_crypt=1
+      if [[ $part_type == part && $part_num == 1 && ${part_fstype,,} == vfat ]]; then has_esp=1; fi
+      if [[ $part_type == part && $part_num == 2 && ${part_fstype,,} == crypto_luks ]]; then has_luks=1; fi
+    done < <(lsblk -nrpo PATH,TYPE,PARTN,FSTYPE -- "$format_resolved")
+    (( ! has_crypt )) || fail 'target already has an active encrypted mapper; close it and inspect manually'
+    (( ! (has_esp && has_luks) )) || fail 'target already has the Titan Disko ESP/LUKS layout; refusing to overwrite an installed or previously formatted system'
+  }
+  check_preformat_state
+  check_disk "$format_disk" "$format_resolved"
+  [[ $resolved == "$format_resolved" && $serial == "$format_serial" ]] || fail 'approved target identity changed'
+  root_source=$(findmnt -rn --mountpoint / -o SOURCE) || fail 'cannot identify live USB root'
+  esp_source=$(findmnt -rn --mountpoint /boot -o SOURCE) || fail 'cannot identify live USB ESP'
+  [[ $(findmnt -rn --mountpoint /boot -o FSTYPE) == vfat ]] || fail 'live USB ESP is not mounted as VFAT'
+  root_on_usb=0
+  for usb_uuid in 71E6355F-BE02-4E5C-9BB2-7A9022F925F0 3DE76D8B-C3E1-4045-9B0F-FBE78848B0C0; do
+    if lsblk -snrpo UUID -- "$root_source" 2>/dev/null | grep -Fxiq -- "$usb_uuid"; then root_on_usb=1; fi
+  done
+  lsblk -snrpo UUID -- "$esp_source" 2>/dev/null | grep -Fxiq -- '54E2-2E21' || fail 'live ESP is not backed by the known portable USB ESP UUID'
+  (( root_on_usb )) || fail 'live root is not backed by a known portable USB root UUID'
+
+  printf 'DESTRUCTIVE: Disko will format %s, serial %s. Type exactly WIPE %s: ' "$format_disk" "$format_serial" "$format_serial" >/dev/tty
+  IFS= read -r format_reply </dev/tty || fail 'wipe confirmation unavailable'
+  [[ $format_reply == "WIPE $format_serial" ]] || fail 'wipe confirmation failed'
+  # Recheck immediately before the sole destructive operation; never retry Disko.
+  check_preformat_state
+  check_disk "$format_disk" "$format_resolved"
+  [[ $resolved == "$format_resolved" && $serial == "$format_serial" ]] || fail 'approved target identity changed before formatting'
+  "$format_disko/bin/disko-destroy-format-mount" || fail 'Disko formatting failed; inspect target manually and do not retry automatically'
+  printf '%s\n' 'Disko formatting completed; target mounts remain in place for the later import stage.'
+  exit 0
+fi
 
 # Validate NUL-delimited HM directory/file records before touching disk and again as root.
 validate_metadata() {
@@ -185,9 +248,21 @@ validate_metadata() {
   (( count > 0 && seen_dots && seen_scripts )) || fail 'HM persistence lacks dots or scripts directories'
 }
 
-# Create only under encrypted /persist; every user-managed ancestor must be user-owned.
+# Home Manager's /persist bind units source paths under /persist/home/zarred.
+# Keep the traversed parent searchable but not listable; the user's home itself
+# and its persisted content stay private. /persist remains root-managed.
+ensure_user_persistence_home() {
+  local persist_home=$mount_root/persist/home user_home=$mount_root/persist/home/zarred
+  [[ -d $mount_root/persist && ! -L $mount_root/persist ]] || fail 'unsafe persistence root'
+  [[ ! -L $persist_home && ( ! -e $persist_home || -d $persist_home ) ]] || fail 'unsafe persistence home parent'
+  [[ ! -L $user_home && ( ! -e $user_home || -d $user_home ) ]] || fail 'unsafe persisted user home'
+  install -d -o 1000 -g 100 -m 0711 -- "$persist_home"
+  install -d -o 1000 -g 100 -m 0700 -- "$user_home"
+}
+
+# Create only the generated HM bind-source paths under the user's persisted home.
 user_directory() {
-  local relative=$1 part current=$mount_root/persist
+  local relative=$1 part current=$mount_root/persist/home/zarred
   IFS=/ read -ra components <<< "$relative"
   for part in "${components[@]}"; do
     current+=/$part
@@ -245,11 +320,29 @@ if (( root_stage || finish_stage )); then
       fi
       lsblk -snrpo PATH -- "$source" | grep -Fxq -- "$resolved" || fail "target mount is not backed by approved SSD: $mountpoint"
     done
+    for directory in "$mount_root/home" "$mount_root/nix" "$mount_root/persist"; do
+      [[ -d $directory && ! -L $directory && $(stat -c %u -- "$directory") == 0 ]] || fail "expected root-owned target mountpoint missing or unsafe: $directory"
+      mode=$(stat -c %a -- "$directory")
+      [[ $mode == 700 || $mode == 755 ]] || fail "unexpected target mountpoint mode at $directory: $mode"
+    done
+    home_user=$mount_root/home/zarred
+    [[ -d $home_user && ! -L $home_user && $(stat -c %u:%g:%a -- "$home_user") == 1000:100:700 ]] || fail 'target home must remain zarred-owned mode 0700'
+    store=$mount_root/nix/store
+    [[ -d $store && ! -L $store && $(stat -c %u -- "$store") == 0 ]] || fail 'target Nix store missing or not root-owned'
+    store_mode=$(stat -c %a -- "$store")
+    [[ $store_mode == 700 || $store_mode == 1775 ]] || fail "unexpected target Nix store mode: $store_mode"
+    # Open only the root-owned mountpoints Disko initializes as 0700. Preserve
+    # private home permissions and Nix store sticky/group semantics.
+    for directory in "$mount_root/home" "$mount_root/nix" "$mount_root/persist"; do
+      [[ $(stat -c %a -- "$directory") == 755 ]] || chmod 0755 -- "$directory"
+    done
+    [[ $store_mode == 1775 ]] || chmod 1775 -- "$store"
     [[ -d "$mount_root$root_system" && ! -L "$mount_root$root_system" ]] || fail 'prebuilt system path absent from target Nix store'
     nix-store --store "local?root=$mount_root" --verify-path "$root_system" >/dev/null || fail 'prebuilt system path failed target-store verification'
   fi
   [[ -d $mount_root/persist && ! -L $mount_root/persist && ! -L $mount_root/persist/home ]] || fail 'unsafe persistence path'
-  install -d -o 0 -g 0 -m 0700 -- "$mount_root/persist/var" "$mount_root/persist/var/lib"
+  # Non-root system services must traverse /var/lib; keep the sbctl subtree 0700.
+  install -d -o 0 -g 0 -m 0755 -- "$mount_root/persist/var" "$mount_root/persist/var/lib"
   [[ ! -e $mount_root/persist/var/lib/sbctl && ! -L $mount_root/persist/var/lib/sbctl ]] || fail 'signing PKI destination already exists'
   cp -a -- "$pki" "$mount_root/persist/var/lib/sbctl" || fail 'cannot preserve signing PKI in encrypted persistence'
   chown -R 0:0 -- "$mount_root/persist/var/lib/sbctl"
@@ -273,8 +366,10 @@ if (( root_stage || finish_stage )); then
   chmod 0400 -- "$mount_root/persist/secrets/zarred-password-hash"
   install -m 0600 -- "$root_key" "$mount_root/persist/etc/ssh/ssh_host_ed25519_key"
   install -m 0644 -- "$root_key.pub" "$mount_root/persist/etc/ssh/ssh_host_ed25519_key.pub"
-  # HM links home.persistence."/persist" directly to /persist/{dots,scripts,...}.
-  # Create both its directories and file parents as user-owned, never root /persist/etc or /persist/var.
+  # Build precisely the generated HM bind-source tree under /persist/home/zarred.
+  # Directory records create their full sources; file records create their parents.
+  # Root-managed /persist/etc, /persist/var, and /persist/secrets remain separate.
+  ensure_user_persistence_home
   while IFS= read -r -d '' kind; do
     IFS= read -r -d '' entry || fail 'truncated HM metadata after formatting'
     if [[ $kind == D ]]; then user_directory "$entry"; elif [[ $entry == */* ]]; then
@@ -282,12 +377,77 @@ if (( root_stage || finish_stage )); then
     fi
   done < "$root_metadata"
   [[ -d /home/zarred/scripts && ! -L /home/zarred/scripts ]] || fail 'USB user scripts missing; cannot provision persistent scripts'
-  cp -a -- "$flake/." "$mount_root/persist/dots/" || fail 'persistent flake copy failed'
-  cp -a -- /home/zarred/scripts/. "$mount_root/persist/scripts/" || fail 'persistent scripts copy failed'
-  chown -R 1000:100 -- "$mount_root/persist/dots" "$mount_root/persist/scripts"
-  cmp -s -- "$flake/hosts/titan/target-disk.nix" "$mount_root/persist/dots/hosts/titan/target-disk.nix" || fail 'persisted target configuration differs'
-  # The /home/zarred tmpfs mount is created by Disko; HM links it on first activation.
+  persist_home=$mount_root/persist/home/zarred
+  cp -a -- "$flake/." "$persist_home/dots/" || fail 'persistent flake copy failed'
+  cp -a -- /home/zarred/scripts/. "$persist_home/scripts/" || fail 'persistent scripts copy failed'
+  chown -R 1000:100 -- "$persist_home/dots" "$persist_home/scripts"
+  cmp -s -- "$flake/hosts/titan/target-disk.nix" "$persist_home/dots/hosts/titan/target-disk.nix" || fail 'persisted target configuration differs'
+  # Titan's HM profile enables Quickshell but does not generate its primary config.
+  # Provision the known-good USB config into the actual encrypted bind source.
+  primary_source=$flake/portable/config/quickshell/primary
+  primary_dest=$persist_home/.config/quickshell/primary
+  [[ -d $primary_source && ! -L $primary_source && -f $primary_source/shell.qml && -f $primary_source/config.qml ]] || fail 'portable Quickshell primary config is missing'
+  [[ -d $persist_home/.config/quickshell && ! -L $persist_home/.config/quickshell && ! -e $primary_dest && ! -L $primary_dest ]] || fail 'Quickshell persistence bind source is missing or already populated'
+  cp -a -- "$primary_source" "$primary_dest" || fail 'Quickshell persistent config copy failed'
+  chown -R 1000:100 -- "$primary_dest"
+  cmp -s -- "$primary_source/config.qml" "$primary_dest/config.qml" || fail 'persisted Quickshell config differs'
+  # The generated system declares Web's public login keys, but Nix store
+  # traversal can prevent sshd from reading /etc/ssh/authorized_keys.d.
+  # Install only those same declared public keys into the encrypted home bind.
+  etc_store=$(readlink -- "$mount_root$root_system/etc") || fail 'Titan generated /etc store link missing'
+  [[ $etc_store =~ ^/nix/store/[a-z0-9]{32}-etc/etc$ ]] || fail 'unsafe Titan generated /etc link'
+  authorized_store=$(readlink -- "$mount_root$etc_store/ssh/authorized_keys.d/zarred") || fail 'Titan generated public login keys missing'
+  [[ $authorized_store =~ ^/nix/store/[a-z0-9]{32}-zarred-authorized_keys$ ]] || fail 'unsafe generated public login keys path'
+  authorized_source=$mount_root$authorized_store
+  authorized_dest=$persist_home/.ssh/authorized_keys
+  [[ -f $authorized_source && ! -L $authorized_source && $(stat -c %u:%a -- "$authorized_source") == 0:444 ]] || fail 'Titan declared public login keys are unsafe'
+  ssh-keygen -lf "$authorized_source" >/dev/null || fail 'Titan declared public login keys are invalid'
+  [[ -d $persist_home/.ssh && ! -L $persist_home/.ssh && $(stat -c %u:%g:%a -- "$persist_home/.ssh") == 1000:100:700 && ! -e $authorized_dest && ! -L $authorized_dest ]] || fail 'encrypted user SSH bind source is unsafe or already populated'
+  install -o 1000 -g 100 -m 0600 -- "$authorized_source" "$authorized_dest"
+  cmp -s -- "$authorized_source" "$authorized_dest" || fail 'persisted authorized keys differ from the declared keys'
+  # Lanzaboote resolves its signing PKI at /var/lib/sbctl inside the target root;
+  # expose the encrypted-persistence copy only for nixos-install, then always unbind.
+  persisted_pki=$mount_root/persist/var/lib/sbctl
+  [[ -d $persisted_pki && ! -L $persisted_pki && $(stat -c %u:%a -- "$persisted_pki") == 0:700 ]] || fail 'persisted signing PKI directory is unsafe'
+  [[ -f $persisted_pki/keys/db/db.pem && ! -L $persisted_pki/keys/db/db.pem && \
+     $(stat -c %u -- "$persisted_pki/keys/db/db.pem") == 0 && \
+     -f $persisted_pki/keys/db/db.key && ! -L $persisted_pki/keys/db/db.key && \
+     $(stat -c %u:%a -- "$persisted_pki/keys/db/db.key") == 0:600 ]] || fail 'persisted signing PKI certificate or private key is missing/unsafe'
+  pki_dest=$mount_root/var/lib/sbctl
+  [[ ! -L $mount_root/var && ( ! -e $mount_root/var || -d $mount_root/var ) ]] || fail 'target /var is unsafe'
+  install -d -o 0 -g 0 -m 0755 -- "$mount_root/var/lib"
+  [[ -d $mount_root/var/lib && ! -L $mount_root/var/lib ]] || fail 'target /var/lib is unsafe'
+  [[ -z $(findmnt -rn --mountpoint "$mount_root/var/lib" -o TARGET) ]] || fail 'target /var/lib is already a mountpoint'
+  [[ -z $(findmnt -rn --mountpoint "$pki_dest" -o TARGET) ]] || fail 'target signing PKI path is already a mountpoint'
+  [[ ! -L $pki_dest && ( ! -e $pki_dest || -d $pki_dest ) ]] || fail 'target signing PKI destination is unsafe'
+  if [[ -d $pki_dest ]]; then
+    [[ $(stat -c %u -- "$pki_dest") == 0 && -z $(ls -A -- "$pki_dest") ]] || fail 'target signing PKI destination is not empty and root-owned'
+  fi
+  install -d -o 0 -g 0 -m 0700 -- "$pki_dest"
+  [[ $(stat -c %u:%a -- "$pki_dest") == 0:700 ]] || fail 'target signing PKI mountpoint ownership/mode is unsafe'
+  pki_bound=0
+  cleanup_pki_bind() {
+    local rc=$?
+    trap - EXIT
+    if (( pki_bound )) && [[ -n $(findmnt -rn --mountpoint "$pki_dest" -o TARGET) ]]; then
+      if ! umount -- "$pki_dest"; then
+        printf 'install-titan: temporary signing PKI bind remains mounted at %s; inspect manually.\n' "$pki_dest" >&2
+        exit 1
+      fi
+    fi
+    exit "$rc"
+  }
+  trap cleanup_pki_bind EXIT
+  pki_bound=1
+  mount --bind "$persisted_pki" "$pki_dest" || fail 'cannot temporarily bind encrypted signing PKI into target root'
+  [[ -f $pki_dest/keys/db/db.pem && ! -L $pki_dest/keys/db/db.pem && \
+     -f $pki_dest/keys/db/db.key && ! -L $pki_dest/keys/db/db.key && \
+     $(stat -c %a -- "$pki_dest") == 700 ]] || fail 'temporary signing PKI bind verification failed'
+  python3 "${self%/*}/provision-titan-wifi" || fail 'Wi-Fi provisioning failed; no credential was copied outside encrypted persistence'
   nixos-install --system "$root_system" --root "$mount_root" --no-root-password --no-channel-copy || fail 'installation incomplete; inspect mounted target; do not rerun Disko'
+  umount -- "$pki_dest" || fail 'cannot remove temporary signing PKI bind; inspect target before recovery'
+  pki_bound=0
+  trap - EXIT
   [[ -L $mount_root/nix/var/nix/profiles/system ]] || fail 'installed system profile absent'
   [[ -f $mount_root/boot/EFI/BOOT/BOOTX64.EFI && ! -L $mount_root/boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'signed EFI fallback loader missing'
   mapfile -t ukis < <(compgen -G "$mount_root/boot/EFI/Linux/*.efi" || true)
@@ -297,6 +457,7 @@ if (( root_stage || finish_stage )); then
     [[ -f $uki && ! -L $uki ]] || fail 'unsafe UKI artifact'
     sbverify --cert "$pki_cert" "$uki" >/dev/null 2>&1 || fail "UKI signature does not verify with configured db certificate: ${uki##*/}"
   done
+  /run/current-system/sw/bin/bash "${self%/*}/titan-enroll-tpm" /dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W-part2 root || fail 'TPM enrollment did not complete; installed signed fallbacks and passphrase remain available'
   printf '%s\n' 'System installed. Leave mounts in place for manual inspection; do not re-run the formatter.'
   exit 0
 fi

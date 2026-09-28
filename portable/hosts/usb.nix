@@ -102,6 +102,7 @@
     nixos-install-tools
     openssl
     parted
+    python3 # USB-to-Titan Wi-Fi provisioning runs as root before Home Manager is active.
     sbsigntool # Verify signed EFI loader/UKIs during updates and Titan install.
     sops
     ssh-to-age

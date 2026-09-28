@@ -1,0 +1,366 @@
+#!/usr/bin/env python3
+"""One-command, Web-launched coordinator for a guarded Titan USB install."""
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import secrets
+import selectors
+import shlex
+import subprocess
+import sys
+import tempfile
+import time
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[2]
+USB = "zarred@192.168.86.219"
+AGENT = "/run/user/1000/gnupg/S.gpg-agent.ssh"
+DISK = "/dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W"
+SERIAL = "S7YCNJ0L219298W"
+KEY = "/home/zarred/.local/state/titan-provision/ssh_host_ed25519_key"
+SSH_OPTIONS = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "-o", "StrictHostKeyChecking=yes",
+               "-o", "HostKeyAlias=192.168.8.219", "-o", "ForwardAgent=no", "-o", f"IdentityAgent={AGENT}",
+               "-o", "ServerAliveInterval=20", "-o", "ServerAliveCountMax=6"]
+TIMEOUT = 8 * 60 * 60
+
+
+class FlowError(RuntimeError):
+    pass
+
+
+def run(argv, *, timeout=120, capture=True):
+    try:
+        # Keep long Nix build progress visible without retaining hours of logs in RAM.
+        build = len(argv) > 1 and argv[0:2] == ["nix", "build"]
+        return subprocess.run(argv, check=True, text=True, stdout=subprocess.PIPE if capture else None,
+                              stderr=None if build or not capture else subprocess.PIPE, timeout=timeout)
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError) as exc:
+        # Never include command output: remote prompts and diagnostics may contain secrets.
+        raise FlowError(f"command failed or timed out: {Path(argv[0]).name}") from exc
+
+
+def ssh(remote, *, tty=False, capture=True, timeout=120):
+    return run(["ssh", *( ["-tt"] if tty else ["-T"]), *SSH_OPTIONS, USB, remote], timeout=timeout, capture=capture)
+
+
+def quote_command(*args):
+    return " ".join(shlex.quote(str(x)) for x in args)
+
+
+def local_snapshot():
+    branch = run(["git", "-C", str(REPO), "branch", "--show-current"]).stdout.strip()
+    head = run(["git", "-C", str(REPO), "rev-parse", "HEAD"]).stdout.strip()
+    dirty = run(["git", "-C", str(REPO), "status", "--porcelain"]).stdout
+    if branch != "feat/portable-usb-mvp" or not re.fullmatch(r"[0-9a-f]{40}", head) or dirty:
+        raise FlowError("Web checkout must be clean on feat/portable-usb-mvp; commit all intended changes first")
+    return branch, head
+
+
+def remote_preflight(branch, head):
+    script = r'''set -eu
+[ "$(hostname)" = portable-usb ]
+repo=/home/zarred/dots
+[ -d "$repo/.git" ] || [ -f "$repo/.git" ]
+branch=$(git -C "$repo" branch --show-current)
+head=$(git -C "$repo" rev-parse HEAD)
+[ -z "$(git -C "$repo" status --porcelain)" ]
+printf 'USB_STATE:%s:%s\n' "$branch" "$head"
+disk=/dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W
+resolved=$(realpath -e -- "$disk")
+serial=$(lsblk -dnro SERIAL -- "$resolved" | xargs)
+udev=$(udevadm info --query=property --name="$resolved" | grep '^ID_SERIAL_SHORT=' || :)
+[ "$serial" = S7YCNJ0L219298W ] && [ "$udev" = ID_SERIAL_SHORT=S7YCNJ0L219298W ]
+[ "$(lsblk -dnro TYPE -- "$resolved")" = disk ]
+[ "$(lsblk -dnro RM -- "$resolved")" = 0 ] && [ "$(lsblk -dnro HOTPLUG -- "$resolved")" = 0 ]
+[ "$(findmnt -rn --mountpoint / -o SOURCE)" = /dev/mapper/portable_usb ]
+[ "$(findmnt -rn --mountpoint /boot -o FSTYPE)" = vfat ]
+if lsblk -nrpo TYPE,PARTN,FSTYPE -- "$resolved" | awk '$1=="part" && (($2==1 && tolower($3)=="vfat") || ($2==2 && tolower($3)=="crypto_luks")){n++} END{exit n==2?0:1}'; then exit 41; fi
+printf 'USB_DISK:%s:%s\n' "$resolved" "$serial"'''
+    result = ssh("bash -c " + shlex.quote(script)).stdout
+    state = re.findall(r"^USB_STATE:([^:\n]+):([0-9a-f]{40})$", result, re.M)
+    disks = re.findall(r"^USB_DISK:(/dev/[A-Za-z0-9._-]+):([A-Za-z0-9._-]+)$", result, re.M)
+    if len(state) != 1 or state[0][0] != branch:
+        raise FlowError("USB checkout branch differs from Web; refusing to switch branches")
+    if len(state) != 1 or len(disks) != 1 or disks[0][1] != SERIAL:
+        raise FlowError("USB preflight did not return exactly the expected checkout and SSD identity")
+    return state[0][1], disks[0][0]
+
+
+def sync_checkout(branch, web_head, usb_head):
+    ancestor = run(["git", "-C", str(REPO), "merge-base", "--is-ancestor", usb_head, web_head], capture=False)
+    del ancestor
+    fd, bundle = tempfile.mkstemp(prefix="titan-web-", suffix=".bundle")
+    os.close(fd)
+    remote_bundle = "/run/user/1000/titan-web-" + secrets.token_hex(12) + ".bundle"
+    try:
+        run(["git", "-C", str(REPO), "bundle", "create", bundle, f"refs/heads/{branch}"])
+        scp(bundle, remote_bundle)
+        script = ("set -eu; repo=/home/zarred/dots; b=" + shlex.quote(remote_bundle) + "; trap 'rm -f -- \"$b\"' EXIT; "
+                  "git -C \"$repo\" fetch \"$b\" " + shlex.quote(f"refs/heads/{branch}") + "; "
+                  "git -C \"$repo\" merge --ff-only FETCH_HEAD; "
+                  "test \"$(git -C \"$repo\" branch --show-current)\" = " + shlex.quote(branch) + "; "
+                  "test \"$(git -C \"$repo\" rev-parse HEAD)\" = " + shlex.quote(web_head) + "; "
+                  "test -z \"$(git -C \"$repo\" status --porcelain)\"; rm -- \"$b\"")
+        ssh("bash -c " + shlex.quote(script))
+    finally:
+        Path(bundle).unlink(missing_ok=True)
+
+
+def scp(local, remote):
+    run(["scp", *SSH_OPTIONS, str(local), f"{USB}:{remote}"], timeout=120)
+
+
+def build_output(attr, executable=False):
+    result = run(["nix", "build", "--no-link", "--print-out-paths", f"{REPO}#{attr}"], timeout=TIMEOUT)
+    lines = result.stdout.splitlines()
+    if len(lines) != 1 or not re.fullmatch(r"/nix/store/[0-9a-z]{32}-[^/]+", lines[0]):
+        raise FlowError(f"Nix build returned invalid output for {attr}")
+    path = lines[0]
+    if executable and not Path(path, "bin/disko-destroy-format-mount").is_file():
+        raise FlowError("built Disko output lacks the expected executable")
+    return path
+
+
+def closure(source):
+    run(["nix-store", "--verify-path", source], timeout=TIMEOUT)
+    text = run(["nix-store", "--query", "--requisites", source], timeout=TIMEOUT).stdout
+    paths = text.splitlines()
+    if not paths or len(paths) != len(set(paths)) or any(not re.fullmatch(r"/nix/store/[0-9a-z]{32}-[^/]+", x) for x in paths):
+        raise FlowError("Nix returned invalid or duplicate requisites paths")
+    if any(not os.path.exists(p) for p in paths):
+        raise FlowError("Web is missing a required Nix closure path")
+    paths = sorted(paths)
+    manifest = hashlib.sha256(("\n".join(paths) + "\n").encode()).hexdigest()
+    return len(paths), manifest
+
+
+def persistence_metadata():
+    attr = f'{REPO}#nixosConfigurations.titan.config.home-manager.users.zarred.home.persistence."/persist"'
+    records = []
+    for field, kind in (("directories", b"D"), ("files", b"F")):
+        expr = 'xs: map (v: if builtins.isString v then v else v.' + ("directory" if kind == b"D" else "file") + ') xs'
+        result = run(["nix", "eval", "--json", "--apply", expr, f"{attr}.{field}"], timeout=TIMEOUT)
+        values = json.loads(result.stdout)
+        if not isinstance(values, list) or any(not isinstance(x, str) for x in values):
+            raise FlowError("Nix returned malformed HM persistence paths")
+        records += [(kind, x) for x in values]
+    seen = set()
+    encoded = bytearray()
+    for kind, entry in records:
+        if (not entry or entry.startswith("/") or entry.endswith("/") or "//" in entry or
+            any(c in entry for c in "\n\r\t\\\"'") or not re.fullmatch(r"[A-Za-z0-9._/ -]+", entry) or
+            any(part in ("", ".", "..") for part in entry.split("/")) or entry.split("/", 1)[0] in
+            {"etc", "var", "secrets", "nix", "home", "root"}):
+            raise FlowError("HM persistence path fails install-titan preflight semantics")
+        key = (kind, entry)
+        if key in seen:
+            raise FlowError("duplicate HM persistence record")
+        seen.add(key)
+        encoded.extend(kind + b"\0" + entry.encode() + b"\0")
+    if not any(k == b"D" and x == "dots" for k, x in records) or not any(k == b"D" and x == "scripts" for k, x in records):
+        raise FlowError("HM persistence must include dots and scripts directories")
+    return bytes(encoded), hashlib.sha256(encoded).hexdigest()
+
+
+def wait_ready(proc, expected, timeout=120):
+    selector = selectors.DefaultSelector()
+    selector.register(proc.stdout, selectors.EVENT_READ)
+    data = bytearray()
+    deadline = time.monotonic() + timeout
+    try:
+        while time.monotonic() < deadline:
+            if proc.poll() is not None:
+                raise FlowError("USB importer exited before READY")
+            for key, _ in selector.select(min(1, deadline - time.monotonic())):
+                chunk = os.read(key.fd, 4096)
+                if not chunk:
+                    continue
+                data.extend(chunk)
+                sys.stdout.write(chunk.decode("utf-8", "replace"))
+                sys.stdout.flush()
+                while b"\n" in data:
+                    line, _, rest = data.partition(b"\n")
+                    data[:] = rest
+                    text = line.decode("utf-8", "replace").strip()
+                    # sudo may print its password prompt without a newline, so the
+                    # READY marker can follow it on the same PTY output line.
+                    if "TITAN_INSTALL_IMPORT_READY:" in text:
+                        fifo = text.rsplit("TITAN_INSTALL_IMPORT_READY:", 1)[1]
+                        if fifo != expected:
+                            raise FlowError("USB importer announced an unexpected FIFO")
+                        return fifo
+        raise FlowError("timed out waiting for USB importer READY")
+    finally:
+        selector.close()
+
+
+def interactive_ssh(remote, success_text, timeout=TIMEOUT):
+    proc = subprocess.Popen(["ssh", "-tt", *SSH_OPTIONS, USB, remote], stdin=None,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0)
+    selector = selectors.DefaultSelector()
+    selector.register(proc.stdout, selectors.EVENT_READ)
+    transcript = bytearray()
+    deadline = time.monotonic() + timeout
+    try:
+        while time.monotonic() < deadline:
+            if proc.poll() is not None and not selector.get_map():
+                break
+            for key, _ in selector.select(1):
+                chunk = os.read(key.fd, 8192)
+                if not chunk:
+                    selector.unregister(key.fileobj)
+                    continue
+                sys.stdout.buffer.write(chunk)
+                sys.stdout.buffer.flush()
+                transcript.extend(chunk)
+                if len(transcript) > 1024 * 1024:
+                    raise FlowError("unexpectedly large interactive SSH output")
+        code = proc.wait(timeout=5)
+    except Exception:
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        raise
+    finally:
+        selector.close()
+    if code != 0 or success_text.encode() not in transcript:
+        raise FlowError("interactive USB command failed or its completion token was absent")
+
+
+def wait_import(proc, count, manifest):
+    deadline = time.monotonic() + TIMEOUT
+    output = bytearray()
+    matching_ok = False
+    selector = selectors.DefaultSelector()
+    selector.register(proc.stdout, selectors.EVENT_READ)
+    try:
+        while time.monotonic() < deadline:
+            if proc.poll() is not None and not selector.get_map():
+                break
+            for key, _ in selector.select(1):
+                chunk = os.read(key.fd, 8192)
+                if not chunk:
+                    selector.unregister(key.fileobj)
+                    continue
+                output.extend(chunk)
+                if len(output) > 1024 * 1024:
+                    raise FlowError("unexpectedly large USB importer output")
+                while b"\n" in output:
+                    line, _, rest = output.partition(b"\n")
+                    output[:] = rest
+                    text = line.decode("utf-8", "replace").strip()
+                    match = re.fullmatch(r"TITAN_INSTALL_IMPORT_OK:([1-9][0-9]*):([0-9a-f]{64})", text)
+                    if match:
+                        if (int(match.group(1)), match.group(2)) != (count, manifest):
+                            raise FlowError("USB importer reported a mismatched closure")
+                        matching_ok = True
+                    else:
+                        print(text, flush=True)
+        code = proc.wait(timeout=5)
+    finally:
+        selector.close()
+    if code != 0 or not matching_ok:
+        raise FlowError("USB import failed or matching IMPORT_OK was absent")
+
+
+def importer(mode, source, count, manifest, head, name):
+    fifo = f"/run/user/1000/titan-install.{name}/import.fifo"
+    cmd = ["/home/zarred/dots/portable/bin/titan-install-import", "--mode", mode, "--expected-head", head,
+           "--source", source, "--count", str(count), "--manifest", manifest, "--fifo-dir-name", name]
+    remote = "/run/wrappers/bin/sudo " + quote_command(*cmd)
+    proc = subprocess.Popen(["ssh", "-tt", *SSH_OPTIONS, USB, remote], stdout=subprocess.PIPE,
+                           stderr=subprocess.STDOUT, bufsize=0)
+    try:
+        wait_ready(proc, fifo)
+        stream = [str(REPO / "portable/bin/titan-store-stream"), "--source", source, "--fifo", fifo,
+                  "--count", str(count), "--manifest", manifest, "--expected-head", head, "--mode", mode]
+        streamed = run(stream, timeout=TIMEOUT)
+        stream_ok = re.fullmatch(
+            rf"Titan stream OK mode={re.escape(mode)} paths={count} bytes=[0-9]+ manifest={manifest} sha256=[0-9a-f]{{64}}",
+            streamed.stdout.strip(),
+        )
+        if not stream_ok:
+            raise FlowError("Web streamer exited without the exact expected stream-OK result")
+        print(f"Web streamer completed for {mode}; verifying USB import result...", flush=True)
+        wait_import(proc, count, manifest)
+    except Exception:
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        raise
+
+
+def has_live_tty():
+    return sys.stdin.isatty() and sys.stdout.isatty() and sys.stderr.isatty()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.parse_args()
+    if not has_live_tty():
+        print("titan-install-from-web: run from an interactive Web terminal; prompts must remain visible.", file=sys.stderr)
+        return 2
+    temp_remote = []
+    try:
+        branch, head = local_snapshot()
+        usb_head, resolved = remote_preflight(branch, head)
+        # Establish ancestry locally before any USB checkout update.
+        run(["git", "-C", str(REPO), "merge-base", "--is-ancestor", usb_head, head], capture=False)
+        if usb_head != head:
+            sync_checkout(branch, head, usb_head)
+        # Ensure the remote now has exactly the immutable Web commit.
+        if remote_preflight(branch, head)[0] != head:
+            raise FlowError("USB checkout failed to fast-forward to the exact Web commit")
+
+        # Both builds and all derived preflight artifacts precede any destructive stage.
+        system = build_output("nixosConfigurations.titan.config.system.build.toplevel")
+        disko = build_output("nixosConfigurations.titan.config.system.build.destroyFormatMount", executable=True)
+        system_count, system_manifest = closure(system)
+        disko_count, disko_manifest = closure(disko)
+        metadata, metadata_sha = persistence_metadata()
+
+        name = secrets.token_urlsafe(18).replace("-", "_")
+        hm_path = f"/run/user/1000/titan-hm.{secrets.token_hex(8)}"
+        with tempfile.NamedTemporaryFile(prefix="titan-hm-", delete=True) as f:
+            f.write(metadata); f.flush()
+            scp(f.name, hm_path)
+        temp_remote.append(hm_path)
+        ssh("bash -c " + shlex.quote("set -eu; f=" + shlex.quote(hm_path) + "; chmod 0600 -- \"$f\"; test \"$(stat -c %u:%a -- \"$f\")\" = 1000:600; test \"$(sha256sum < \"$f\" | cut -d' ' -f1)\" = " + metadata_sha))
+
+        print(f"Preflight complete. Target {DISK} -> {resolved}, serial {SERIAL}.", flush=True)
+        print("The next command stage asks for WIPE plus live LUKS and login prompts. Do not disconnect the USB.", flush=True)
+        # Stage 1: transfer only Disko's closure to USB, then format exactly once.
+        importer("usb-store", disko, disko_count, disko_manifest, head, name)
+        fmt = ["/home/zarred/dots/portable/bin/install-titan", "--format-prebuilt", DISK, resolved, SERIAL, disko, head]
+        interactive_ssh("/run/wrappers/bin/sudo " + quote_command(*fmt), "Disko formatting completed; target mounts remain in place for the later import stage.")
+
+        # Stage 2 uses a fresh FIFO name and streams the full system directly into SSD.
+        name2 = secrets.token_urlsafe(18).replace("-", "_")
+        importer("ssd-store", system, system_count, system_manifest, head, name2)
+        finish = ["/home/zarred/dots/portable/bin/install-titan", "--finish-prebuilt", DISK, resolved,
+                  SERIAL, system, KEY, hm_path, metadata_sha]
+        interactive_ssh("/run/wrappers/bin/sudo " + quote_command(*finish), "System installed. Leave mounts in place for manual inspection; do not re-run Disko.")
+        print("Signed Titan installation completed. No reboot was requested; leave mounts for inspection.")
+    except (FlowError, OSError, subprocess.SubprocessError, ValueError, TypeError, KeyError) as exc:
+        print(f"titan-install-from-web: {exc}\nSTOP: do not retry a destructive stage; inspect the USB and leave target mounts in place.", file=sys.stderr)
+        return 1
+    finally:
+        for path in temp_remote:
+            try:
+                ssh("rm -f -- " + shlex.quote(path), timeout=15)
+            except Exception:
+                print(f"WARNING: could not remove staged metadata {path}; inspect USB runtime directory.", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

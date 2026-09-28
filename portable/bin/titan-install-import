@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# Guarded USB-side RAM FIFO importer for the Web-launched Titan install flow.
+set -euo pipefail
+umask 077
+
+usage() {
+  printf 'Usage: %s --mode usb-store|ssd-store --expected-head HEX --source /nix/store/PATH --count N --manifest SHA256 --fifo-dir-name RANDOM\n' "$0" >&2
+  exit 2
+}
+fail() { printf 'titan-install-import: %s\n' "$1" >&2; exit 1; }
+
+mode= head= source= count= manifest= fifo_name=
+while (($#)); do
+  case $1 in
+    --mode) (($# >= 2)) || usage; mode=$2; shift 2 ;;
+    --expected-head) (($# >= 2)) || usage; head=$2; shift 2 ;;
+    --source) (($# >= 2)) || usage; source=$2; shift 2 ;;
+    --count) (($# >= 2)) || usage; count=$2; shift 2 ;;
+    --manifest) (($# >= 2)) || usage; manifest=$2; shift 2 ;;
+    --fifo-dir-name) (($# >= 2)) || usage; fifo_name=$2; shift 2 ;;
+    *) usage ;;
+  esac
+done
+[[ $mode == usb-store || $mode == ssd-store ]] || usage
+[[ $head =~ ^[0-9a-f]{40}$ ]] || fail 'expected Web HEAD must be a full commit hash'
+[[ $source =~ ^/nix/store/[0-9a-z]{32}-[^/]+$ ]] || fail 'source must be a canonical Nix store path'
+[[ $count =~ ^[1-9][0-9]{0,6}$ ]] || fail 'closure count is invalid'
+[[ $manifest =~ ^[0-9a-f]{64}$ ]] || fail 'closure manifest must be a SHA256 digest'
+[[ $fifo_name =~ ^[A-Za-z0-9_-]{8,64}$ ]] || fail 'FIFO directory name must be a caller-generated random token'
+
+host=$(hostname)
+[[ $(id -u) == 0 && $host == portable-usb && -d /sys/firmware/efi ]] || fail 'must run as root on the portable-usb UEFI host'
+repo=/home/zarred/dots
+[[ -d $repo/.git || -f $repo/.git ]] || fail 'expected USB checkout is unavailable at /home/zarred/dots'
+[[ $(git -C "$repo" rev-parse HEAD 2>/dev/null) == "$head" ]] || fail 'USB checkout HEAD does not match expected Web commit'
+[[ -z $(git -C "$repo" status --porcelain 2>/dev/null) ]] || fail 'USB checkout is not clean'
+
+[[ $(findmnt -rn --mountpoint / -o SOURCE) == /dev/mapper/portable_usb ]] || fail 'portable USB root identity check failed'
+usb_boot=$(realpath -e "$(findmnt -rn --mountpoint /boot -o SOURCE 2>/dev/null)" 2>/dev/null) || fail 'USB boot mount is unavailable'
+usb_esp=$(realpath -e /dev/disk/by-uuid/54E2-2E21 2>/dev/null) || fail 'expected USB ESP UUID is unavailable'
+[[ $usb_boot == "$usb_esp" && $(findmnt -rn --mountpoint /boot -o FSTYPE) == vfat ]] || fail 'USB ESP identity check failed'
+
+ssd_id=/dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W
+ssd=$(realpath -e "$ssd_id" 2>/dev/null) || fail 'approved target SSD is unavailable'
+[[ $(lsblk -dnro SERIAL "$ssd" 2>/dev/null | xargs) == S7YCNJ0L219298W ]] || fail 'target SSD serial check failed'
+[[ $(udevadm info --query=property --name="$ssd" 2>/dev/null | grep '^ID_SERIAL_SHORT=' || :) == ID_SERIAL_SHORT=S7YCNJ0L219298W ]] || fail 'target SSD udev identity check failed'
+
+if [[ $mode == usb-store ]]; then
+  [[ ${source##*/} == *disko-destroy-format-mount ]] || fail 'usb-store source is not the Disko format/mount closure'
+  ! mountpoint -q /mnt/titan || fail 'target install root is already mounted; refusing usb-store import'
+  mounts=$(lsblk -nrpo MOUNTPOINT "$ssd" 2>/dev/null) || fail 'cannot inspect target SSD mounts'
+  [[ -z ${mounts//[$'\n ']/} ]] || fail 'target SSD has a mounted partition'
+  ! lsblk -nrpo TYPE "$ssd" 2>/dev/null | grep -qx crypt || fail 'target SSD has an active encrypted mapper'
+else
+  ssd_part=$(realpath -e "$ssd_id-part2" 2>/dev/null) || fail 'approved target SSD data partition is unavailable'
+  ssd_esp=$(realpath -e "$ssd_id-part1" 2>/dev/null) || fail 'approved target SSD ESP is unavailable'
+  [[ $ssd_part == /dev/nvme0n1p2 && $ssd_esp == /dev/nvme0n1p1 ]] || fail 'target SSD partition identity check failed'
+  [[ ${source##*/} == *nixos-system-titan-* ]] || fail 'ssd-store source is not a Titan system closure'
+  [[ $(cryptsetup status root 2>/dev/null | grep -E '^  device:' || :) == *"$ssd_part" ]] || fail 'decrypted root does not map to the approved SSD partition'
+  [[ $(findmnt -rn --mountpoint /mnt/titan -o FSTYPE) == tmpfs ]] || fail 'install root is not the expected RAM tmpfs'
+  for mountpoint in /mnt/titan/nix /mnt/titan/persist; do
+    [[ $(findmnt -rn --mountpoint "$mountpoint" -o FSTYPE) == btrfs ]] || fail 'SSD store/persist mount type check failed'
+    mounted_from=$(findmnt -rn --mountpoint "$mountpoint" -o SOURCE) || fail 'SSD store/persist mount is missing'
+    [[ ${mounted_from%%\[*} == /dev/mapper/root ]] || fail 'SSD store/persist source check failed'
+    mount_opts=$(findmnt -rn --mountpoint "$mountpoint" -o OPTIONS) || fail 'cannot inspect SSD mount options'
+    [[ ,$mount_opts, == *,rw,* ]] || fail 'SSD store/persist must be mounted read-write'
+  done
+  ssd_boot=$(realpath -e "$(findmnt -rn --mountpoint /mnt/titan/boot -o SOURCE 2>/dev/null)" 2>/dev/null) || fail 'SSD ESP mount is unavailable'
+  [[ $ssd_boot == "$ssd_esp" && $(findmnt -rn --mountpoint /mnt/titan/boot -o FSTYPE) == vfat ]] || fail 'SSD ESP identity check failed'
+  [[ -d /mnt/titan/nix/store ]] || fail 'SSD Nix store directory is missing'
+  available=$(df -B1 --output=avail /mnt/titan/nix 2>/dev/null | tail -n 1 | xargs) || fail 'cannot inspect SSD free space'
+  [[ $available =~ ^[0-9]+$ && $available -ge 100000000000 ]] || fail 'SSD has less than 100 GB available'
+fi
+
+# Reject accidental redirection of either mode into the wrong store.
+if [[ $mode == usb-store ]]; then
+  store_args=()
+  nix_store_args=()
+else
+  store_args=(--store 'local?root=/mnt/titan')
+  nix_store_args=(--store 'local?root=/mnt/titan')
+fi
+
+# The Web side enforces the <=2 GiB NAR cap for usb-store. The destination
+# closure is checked only after import; do not assume anything about path counts.
+
+fifo_dir=/run/user/1000/titan-install.$fifo_name
+fifo=$fifo_dir/import.fifo
+[[ ! -e $fifo_dir && ! -L $fifo_dir ]] || fail 'caller FIFO directory already exists'
+mkdir -m 0750 -- "$fifo_dir" || fail 'cannot create FIFO directory'
+chown root:users "$fifo_dir" || fail 'cannot set FIFO directory ownership'
+mkfifo -m 0620 -- "$fifo" || fail 'cannot create import FIFO'
+chown root:users "$fifo" || fail 'cannot set FIFO ownership'
+[[ $(stat -c '%u:%G:%a' "$fifo_dir") == 0:users:750 && $(stat -c '%u:%G:%a' "$fifo") == 0:users:620 ]] || fail 'FIFO permissions do not match stream contract'
+[[ $(findmnt -rn --target "$fifo_dir" -o FSTYPE) == tmpfs ]] || fail 'FIFO directory is not on RAM-backed storage'
+
+printf 'TITAN_INSTALL_IMPORT_READY:%s\n' "$fifo"
+timeout --kill-after=20s 5400s nix-store "${store_args[@]}" --import < "$fifo" >/dev/null || fail 'Nix import failed or timed out'
+# Import output may list only paths newly added to the store (USB reuse is
+# expected); the full queried source closure below is the authoritative check.
+nix-store "${nix_store_args[@]}" --verify-path "$source" >/dev/null 2>&1 || fail 'source path verification failed after import'
+mapfile -t paths < <(nix-store "${nix_store_args[@]}" --query --requisites "$source" 2>/dev/null) || fail 'cannot verify imported source closure'
+((${#paths[@]} == count)) || fail 'imported source closure count differs from caller manifest'
+[[ " ${paths[*]} " == *" $source "* ]] || fail 'source path is absent from imported closure'
+mapfile -t sorted_paths < <(printf '%s\n' "${paths[@]}" | LC_ALL=C sort -u)
+((${#sorted_paths[@]} == count)) || fail 'imported source closure contains duplicate paths'
+actual_manifest=$(printf '%s\n' "${sorted_paths[@]}" | sha256sum | cut -d' ' -f1)
+[[ $actual_manifest == "$manifest" ]] || fail 'imported closure manifest does not match caller manifest'
+for path in "${sorted_paths[@]}"; do
+  nix-store "${nix_store_args[@]}" --verify-path "$path" >/dev/null 2>&1 || fail 'an imported closure path failed verification'
+done
+[[ $(findmnt -rn --mountpoint / -o SOURCE) == /dev/mapper/portable_usb ]] || fail 'USB root changed during import'
+[[ $(realpath -e "$(findmnt -rn --mountpoint /boot -o SOURCE 2>/dev/null)" 2>/dev/null) == "$usb_esp" ]] || fail 'USB ESP changed during import'
+printf 'TITAN_INSTALL_IMPORT_OK:%s:%s\n' "$count" "$manifest"

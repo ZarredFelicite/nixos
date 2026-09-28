@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""Export a verified local Nix closure into Titan's pre-created RAM FIFO."""
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import selectors
+import shlex
+import subprocess
+import sys
+import time
+
+REPO = "/home/zarred/dots/.worktrees/portable-usb"
+SSH_TARGET = "zarred@192.168.86.219"
+SSH_IDENTITY_AGENT = "/run/user/1000/gnupg/S.gpg-agent.ssh"
+CHUNK = 1024 * 1024
+OVERALL_TIMEOUT = 8 * 60 * 60
+IDLE_TIMEOUT = 120
+USB_STORE_NAR_LIMIT = 2 * 1024**3
+
+
+def fail(message):
+    raise RuntimeError(message)
+
+
+def run_checked(argv, *, text=False):
+    return subprocess.run(argv, check=True, stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE, text=text).stdout
+
+
+def validate(args):
+    if args.mode not in ("usb-store", "ssd-store"):
+        fail("mode must be usb-store or ssd-store")
+    if not re.fullmatch(r"/nix/store/[0-9a-z]{32}-[^/]+", args.source):
+        fail("source must be a canonical /nix/store path")
+    if not os.path.exists(args.source):
+        fail("source path does not exist on Web")
+    if not os.path.isdir(args.source):
+        fail("source must be a Nix store directory")
+    source_name = os.path.basename(args.source).split("-", 1)[1]
+    if args.mode == "usb-store" and not source_name.endswith("disko-destroy-format-mount"):
+        fail("usb-store source must be a Disko disko-destroy-format-mount output")
+    if args.mode == "ssd-store" and "nixos-system-titan-" not in source_name:
+        fail("ssd-store source must be the Titan system toplevel")
+    if not re.fullmatch(r"/run/user/1000/titan-install\.[A-Za-z0-9_-]{8,64}/[A-Za-z0-9_.-]+\.fifo", args.fifo):
+        fail("FIFO must be under /run/user/1000/titan-install.<random>/")
+    if args.count < 1:
+        fail("expected closure count must be positive")
+    if not re.fullmatch(r"[0-9a-f]{64}", args.manifest):
+        fail("manifest must be a lowercase SHA256 hex digest")
+    if not re.fullmatch(r"[0-9a-f]{40}", args.expected_head):
+        fail("expected HEAD must be a full 40-character commit hash")
+
+    head = run_checked(["git", "-C", REPO, "rev-parse", "HEAD"], text=True).strip()
+    if head != args.expected_head:
+        fail("Web checkout HEAD differs from caller-verified commit")
+    if run_checked(["git", "-C", REPO, "status", "--porcelain"], text=True):
+        fail("Web checkout is dirty")
+    run_checked(["nix-store", "--verify-path", args.source])
+    paths = run_checked(["nix-store", "--query", "--requisites", args.source], text=True).splitlines()
+    if not paths or any(not re.fullmatch(r"/nix/store/[0-9a-z]{32}-[^/]+", p) for p in paths):
+        fail("Nix returned an invalid requisites path list")
+    if len(set(paths)) != len(paths):
+        fail("Nix requisites list contains duplicate paths")
+    if args.mode == "usb-store" and any("-nixos-system-titan-" in os.path.basename(p) for p in paths):
+        fail("refusing a closure containing the Titan system to USB store; use ssd-store")
+    if args.mode == "usb-store":
+        try:
+            info = run_checked(["nix", "path-info", "--json", "--recursive", args.source], text=True)
+            metadata = json.loads(info)
+            nar_sizes = [metadata[p]["narSize"] for p in paths]
+        except (KeyError, TypeError, ValueError) as exc:
+            fail(f"cannot establish USB closure NAR size: {exc}")
+        if any(not isinstance(size, int) or size < 0 for size in nar_sizes):
+            fail("Nix returned an invalid closure NAR size")
+        total_nar_bytes = sum(nar_sizes)
+        if total_nar_bytes > USB_STORE_NAR_LIMIT:
+            fail(f"USB closure NAR size {total_nar_bytes} exceeds 2 GiB limit")
+    actual_manifest = hashlib.sha256(("\n".join(sorted(paths)) + "\n").encode()).hexdigest()
+    if len(paths) != args.count or actual_manifest != args.manifest:
+        fail(f"closure mismatch: count={len(paths)} manifest={actual_manifest}")
+    missing = [p for p in paths if not os.path.exists(p)]
+    if missing:
+        fail(f"Web is missing {len(missing)} closure path(s)")
+    return paths
+
+
+def remote_command(fifo, mode):
+    qfifo = shlex.quote(fifo)
+    qdir = shlex.quote(os.path.dirname(fifo))
+    checks = [
+        'set -euo pipefail',
+        f'case {qfifo} in /run/user/1000/titan-install.[A-Za-z0-9_-]*/[A-Za-z0-9_.-]*.fifo) ;; *) exit 1 ;; esac',
+        'test "$(hostname)" = portable-usb',
+        f'test ! -L {qdir}',
+        f'test -d {qdir}',
+        f'test "$(stat -c %u:%G:%a {qdir})" = 0:users:750',
+        f'test -p {qfifo}',
+        f'test "$(stat -c %u:%G:%a {qfifo})" = 0:users:620',
+        'test "$(findmnt -rn --mountpoint / -o SOURCE)" = /dev/mapper/portable_usb',
+        'test "$(findmnt -rn --mountpoint /boot -o SOURCE)" = /dev/sda1',
+    ]
+    if mode == "ssd-store":
+        checks += [
+            'test "$(findmnt -rn --mountpoint /mnt/titan/nix -o FSTYPE)" = btrfs',
+            'nix_source=$(findmnt -rn --mountpoint /mnt/titan/nix -o SOURCE); test "${nix_source%%\\[*}" = /dev/mapper/root',
+        ]
+    checks.append(f'tee {qfifo} | sha256sum')
+    return "bash -c " + shlex.quote("; ".join(checks))
+
+
+def stream(paths, fifo, mode, manifest):
+    ssh_cmd = [
+        "ssh", "-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10",
+        "-o", "StrictHostKeyChecking=yes", "-o", "HostKeyAlias=192.168.8.219",
+        "-o", "ForwardAgent=no", "-o", f"IdentityAgent={SSH_IDENTITY_AGENT}",
+        "-o", "ServerAliveInterval=20", "-o", "ServerAliveCountMax=6",
+        SSH_TARGET, remote_command(fifo, mode),
+    ]
+    exporter = receiver = None
+    selector = selectors.DefaultSelector()
+    try:
+        receiver = subprocess.Popen(ssh_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                    stderr=subprocess.DEVNULL, bufsize=0)
+        exporter = subprocess.Popen(["nix-store", "--export", *paths], stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE, bufsize=0)
+        for stream in (exporter.stdout, receiver.stdin, receiver.stdout):
+            os.set_blocking(stream.fileno(), False)
+        selector.register(exporter.stdout, selectors.EVENT_READ, "export")
+        selector.register(receiver.stdin, selectors.EVENT_WRITE, "send")
+        selector.register(receiver.stdout, selectors.EVENT_READ, "remote")
+        pending = memoryview(b"")
+        export_eof = False
+        send_done = False
+        remote_output = bytearray()
+        digest = hashlib.sha256()
+        sent = 0
+        start = last_io = time.monotonic()
+        while not (send_done and receiver.poll() is not None and not selector.get_map()):
+            now = time.monotonic()
+            if now - start > OVERALL_TIMEOUT:
+                fail("stream exceeded 8-hour overall timeout")
+            if now - last_io > IDLE_TIMEOUT:
+                fail("stream idle for more than 120 seconds")
+            for key, _ in selector.select(timeout=min(5, IDLE_TIMEOUT - (now - last_io))):
+                if key.data == "export":
+                    data = os.read(exporter.stdout.fileno(), CHUNK)
+                    last_io = time.monotonic()
+                    if data:
+                        pending = memoryview(data)
+                        digest.update(data)
+                        sent += len(data)
+                        selector.unregister(exporter.stdout)
+                    else:
+                        export_eof = True
+                        selector.unregister(exporter.stdout)
+                        selector.unregister(receiver.stdin)
+                        receiver.stdin.close()
+                        send_done = True
+                elif key.data == "send":
+                    if pending:
+                        written = os.write(receiver.stdin.fileno(), pending)
+                        pending = pending[written:]
+                        last_io = time.monotonic()
+                        if not pending:
+                            if not export_eof:
+                                selector.register(exporter.stdout, selectors.EVENT_READ, "export")
+                            else:
+                                selector.unregister(receiver.stdin)
+                                receiver.stdin.close()
+                                send_done = True
+                else:
+                    data = os.read(receiver.stdout.fileno(), 256)
+                    last_io = time.monotonic()
+                    if data:
+                        remote_output.extend(data)
+                        if len(remote_output) > 4096:
+                            fail("remote checksum response was unexpectedly large")
+                    elif receiver.poll() is not None:
+                        selector.unregister(receiver.stdout)
+            if exporter.poll() is not None and exporter.returncode != 0:
+                detail = exporter.stderr.read(1024).decode(errors="replace").strip()
+                fail(f"nix-store export failed ({exporter.returncode}): {detail}")
+            if receiver.poll() not in (None, 0):
+                fail(f"strict SSH receiver failed (exit {receiver.returncode})")
+        export_code = exporter.wait(timeout=5)
+        receive_code = receiver.wait(timeout=5)
+        if export_code or receive_code:
+            fail(f"export/SSH exit status {export_code}/{receive_code}")
+        local_sha = digest.hexdigest()
+        response = remote_output.decode("ascii", errors="replace").strip().split()
+        remote_sha = response[0] if response else ""
+        if not re.fullmatch(r"[0-9a-f]{64}", remote_sha) or remote_sha != local_sha:
+            fail(f"checksum mismatch: Web={local_sha} Titan={remote_sha or 'missing'}")
+        print(f"Titan stream OK mode={mode} paths={len(paths)} bytes={sent} manifest={manifest} sha256={local_sha}")
+    finally:
+        selector.close()
+        for process in (exporter, receiver):
+            if process is not None and process.poll() is None:
+                process.kill()
+                process.wait()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", required=True, help="verified local /nix/store path")
+    parser.add_argument("--fifo", required=True, help="pre-created Titan RAM FIFO")
+    parser.add_argument("--count", required=True, type=int, help="expected requisites count")
+    parser.add_argument("--manifest", required=True, help="expected sorted-path SHA256")
+    parser.add_argument("--expected-head", required=True, help="caller-verified full Web checkout HEAD")
+    parser.add_argument("--mode", required=True, choices=("usb-store", "ssd-store"))
+    args = parser.parse_args()
+    try:
+        paths = validate(args)
+        stream(paths, args.fifo, args.mode, args.manifest)
+    except (OSError, subprocess.SubprocessError, RuntimeError) as exc:
+        print(f"titan-store-stream: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

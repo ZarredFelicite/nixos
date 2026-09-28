@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+"""Copy one saved NetworkManager WPA-PSK profile into encrypted Titan iwd state."""
+import configparser
+import os
+from pathlib import Path
+import re
+import secrets
+import stat
+import subprocess
+import sys
+
+NM_DIR = Path("/etc/NetworkManager/system-connections")
+IWD_DIR = Path("/mnt/titan/persist/var/lib/iwd")
+
+
+class ProvisionError(Exception):
+    pass
+
+
+def run_nmcli(args):
+    try:
+        return subprocess.run(["nmcli", *args], check=True, text=True,
+                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        raise ProvisionError("cannot safely inspect NetworkManager profiles") from None
+
+
+def nm_records(lines, width):
+    """Parse nmcli -g terse rows: colon-separated fields with backslash escapes."""
+    records = []
+    for line in lines:
+        fields, field = [], []
+        escaped = False
+        for char in line:
+            if escaped:
+                field.append({"n": "\n", "r": "\r", "t": "\t"}.get(char, char))
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == ":":
+                fields.append("".join(field))
+                field = []
+            else:
+                field.append(char)
+        if escaped:
+            raise ProvisionError("malformed NetworkManager profile listing")
+        fields.append("".join(field))
+        if len(fields) != width:
+            raise ProvisionError("malformed NetworkManager profile listing")
+        records.append(tuple(fields))
+    return records
+
+
+def is_wifi_type(value):
+    return value in {"wifi", "802-11-wireless"}
+
+
+def root_owned(path):
+    return path.stat().st_uid == 0
+
+
+def root_owned_stat(st):
+    return st.st_uid == 0
+
+
+def validate_keyfile_dir():
+    try:
+        st = NM_DIR.lstat()
+        if not stat.S_ISDIR(st.st_mode) or not root_owned_stat(st) or st.st_mode & 0o022:
+            raise ProvisionError("NetworkManager keyfile directory is unsafe")
+    except OSError:
+        raise ProvisionError("NetworkManager keyfile directory is unavailable") from None
+
+
+def keyfile_value(contents, target_section, target_key):
+    section = ""
+    for line in contents.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            section = stripped[1:-1].strip()
+        elif section == target_section and stripped and not stripped.startswith(("#", ";")):
+            key, separator, value = line.partition("=")
+            if separator and key.strip() == target_key:
+                return value.rstrip("\r")
+    return ""
+
+
+def load_keyfile(path):
+    try:
+        if NM_DIR.is_symlink() or path.parent != NM_DIR or path.suffix != ".nmconnection":
+            raise ProvisionError("NetworkManager profile source is outside the approved keyfile directory")
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+        try:
+            st = os.fstat(fd)
+            if not stat.S_ISREG(st.st_mode) or not root_owned_stat(st) or st.st_mode & 0o077:
+                raise ProvisionError("NetworkManager keyfile is not a root-only regular file")
+            parser = configparser.ConfigParser(interpolation=None, strict=True)
+            with os.fdopen(fd, "r", encoding="utf-8") as f:
+                fd = -1
+                contents = f.read()
+            parser.read_string(contents)
+            raw_psk = keyfile_value(contents, "wifi-security", "psk")
+        finally:
+            if fd >= 0:
+                os.close(fd)
+        uuid = parser.get("connection", "uuid", fallback="")
+        kind = parser.get("connection", "type", fallback="")
+        if not uuid or not is_wifi_type(kind):
+            raise ProvisionError("NetworkManager keyfile is not a supported Wi-Fi profile")
+        return uuid, parser, raw_psk
+    except (OSError, UnicodeError, configparser.Error, ValueError):
+        raise ProvisionError("cannot safely read NetworkManager keyfile") from None
+
+
+def read_profile(path, expected_uuid, parser=None, raw_psk=None):
+    try:
+        actual_uuid, parser, raw_psk = load_keyfile(path) if parser is None else (parser.get("connection", "uuid", fallback=""), parser, raw_psk)
+        if actual_uuid != expected_uuid or not is_wifi_type(parser.get("connection", "type", fallback="")):
+            raise ProvisionError("NetworkManager keyfile identity does not match nmcli")
+        if parser.get("wifi-security", "key-mgmt", fallback="") != "wpa-psk":
+            raise ProvisionError("selected Wi-Fi profile is not WPA-PSK")
+        ssid = parser.get("wifi", "ssid", fallback="")
+        psk = raw_psk if raw_psk is not None else parser.get("wifi-security", "psk", fallback="")
+        if not ssid or len(ssid.encode("utf-8")) > 32 or any(ord(c) < 0x20 or ord(c) == 0x7f for c in ssid):
+            raise ProvisionError("selected Wi-Fi profile has an unsupported SSID")
+        if not (re.fullmatch(r"[ -~]{8,63}", psk) or (len(psk) == 64 and re.fullmatch(r"[0-9a-fA-F]{64}", psk))):
+            raise ProvisionError("selected Wi-Fi profile has a missing or unsupported PSK")
+        return ssid, psk
+    except (OSError, UnicodeError, configparser.Error, ValueError):
+        raise ProvisionError("cannot safely read selected NetworkManager keyfile") from None
+
+
+def iwd_passphrase(value):
+    leading_spaces = len(value) - len(value.lstrip(" "))
+    return "\\s" * leading_spaces + value[leading_spaces:].replace("\\", "\\\\")
+
+
+def iwd_name(ssid):
+    if re.fullmatch(r"[A-Za-z0-9 _-]+", ssid):
+        return ssid
+    return "=" + ssid.encode("utf-8").hex()
+
+
+def provision(nm_dir=None, iwd_dir=None, nmcli=None):
+    global NM_DIR
+    # Bind the approved source root for path checks (also makes isolated tests safe).
+    NM_DIR = Path(nm_dir) if nm_dir is not None else NM_DIR
+    iwd_dir = Path(iwd_dir) if iwd_dir is not None else IWD_DIR
+    nmcli = nmcli or run_nmcli
+    validate_keyfile_dir()
+    profiles = nm_records(nmcli(["-g", "UUID,TYPE", "connection", "show"]), 2)
+    active = nm_records(nmcli(["-g", "UUID,TYPE", "connection", "show", "--active"]), 2)
+    overview_wifi = [uuid for uuid, kind in profiles if is_wifi_type(kind)]
+    wifi_active = [uuid for uuid, kind in active if is_wifi_type(kind)]
+    by_uuid = {}
+    for path in sorted(NM_DIR.iterdir()):
+        if path.suffix != ".nmconnection" or path.is_symlink():
+            continue
+        try:
+            uuid, parser, raw_psk = load_keyfile(path)
+        except ProvisionError:
+            continue
+        if uuid in overview_wifi:
+            by_uuid.setdefault(uuid, []).append((path, parser, raw_psk))
+    if wifi_active:
+        if len(set(wifi_active)) != 1:
+            raise ProvisionError("active Wi-Fi profile is ambiguous")
+        selected_uuid = wifi_active[0]
+        matches = by_uuid.get(selected_uuid, [])
+        if overview_wifi.count(selected_uuid) != 1 or len(matches) != 1:
+            raise ProvisionError("active Wi-Fi profile source is missing or ambiguous")
+        selected = (selected_uuid, *matches[0])
+    else:
+        supported = []
+        for uuid in overview_wifi:
+            matches = by_uuid.get(uuid, [])
+            if len(matches) != 1:
+                continue
+            path, parser, raw_psk = matches[0]
+            try:
+                read_profile(path, uuid, parser, raw_psk)
+                supported.append((uuid, path, parser, raw_psk))
+            except ProvisionError:
+                continue
+        if len(supported) != 1:
+            raise ProvisionError("stored WPA-PSK Wi-Fi profile is missing or ambiguous")
+        selected = supported[0]
+    uuid, path, parser, raw_psk = selected
+    ssid, psk = read_profile(path, uuid, parser, raw_psk)
+    dest_dir = Path(iwd_dir)
+    try:
+        for parent in (dest_dir, *dest_dir.parents):
+            if parent.is_symlink():
+                raise ProvisionError("encrypted iwd destination has a symlinked parent")
+        if not dest_dir.exists():
+            os.mkdir(dest_dir, 0o755)
+            os.chown(dest_dir, 0, 0)
+            os.chmod(dest_dir, 0o755)
+        if not dest_dir.is_dir() or not root_owned(dest_dir):
+            raise ProvisionError("encrypted iwd destination is unsafe")
+        name = iwd_name(ssid) + ".psk"
+        dest = dest_dir / name
+        if dest.exists() or dest.is_symlink():
+            raise ProvisionError("iwd profile destination already exists")
+        # Create exclusively inside encrypted /persist; publish without overwrite.
+        tmp = dest_dir / (".titan-wifi-" + secrets.token_hex(12))
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as out:
+                out.write("[Settings]\nAutoConnect=true\n\n[Security]\n")
+                value = psk if len(psk) == 64 else iwd_passphrase(psk)
+                out.write(("PreSharedKey=" if len(psk) == 64 else "Passphrase=") + value + "\n")
+                out.flush()
+                os.fsync(out.fileno())
+            os.chown(tmp, 0, 0)
+            os.chmod(tmp, 0o600)
+            os.link(tmp, dest, follow_symlinks=False)
+            os.unlink(tmp)
+            dfd = os.open(dest_dir, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(dfd)
+            finally:
+                os.close(dfd)
+        except Exception:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
+            raise
+    except ProvisionError:
+        raise
+    except OSError:
+        raise ProvisionError("cannot safely create encrypted iwd profile") from None
+
+
+def main():
+    try:
+        provision()
+    except ProvisionError as e:
+        print(f"provision-titan-wifi: {e}", file=sys.stderr)
+        return 1
+    print("Titan Wi-Fi profile provisioned from saved USB connection.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

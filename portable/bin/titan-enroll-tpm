@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Guarded, one-shot TPM2 enrollment for the freshly formatted Titan LUKS device.
+set -euo pipefail
+umask 077
+fail() { printf 'titan-enroll-tpm: %s\nPreserve the LUKS passphrase and inspect manually; do not retry enrollment or formatting.\n' "$*" >&2; exit 1; }
+(( $# == 2 )) || fail 'expected approved partition by-id and mapper name'
+partition=$1 mapper=$2
+approved=/dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W-part2
+[[ $partition == "$approved" && $mapper == root ]] || fail 'unexpected target partition or mapper'
+[[ $(id -u) == 0 && -t 0 && -t 1 && -t 2 ]] || fail 'root and live foreground TTY required'
+[[ -L $partition ]] || fail 'approved partition by-id link missing'
+part=$(realpath -e -- "$partition") || fail 'cannot resolve approved partition'
+[[ -b $part && $(lsblk -dnro TYPE -- "$part") == part && $(lsblk -dnro PARTN -- "$part") == 2 ]] || fail 'approved partition is not partition 2'
+parent=$(lsblk -dnro PKNAME -- "$part" | xargs)
+[[ -n $parent ]] || fail 'cannot identify approved SSD parent'
+serial=$(udevadm info --query=property --name="/dev/$parent" | grep '^ID_SERIAL_SHORT=' || true)
+[[ $serial == ID_SERIAL_SHORT=S7YCNJ0L219298W ]] || fail 'approved SSD serial mismatch'
+[[ -b /dev/mapper/$mapper ]] || fail 'target root mapper is missing'
+mapper_source=$(cryptsetup status "$mapper" | awk '$1 == "device:" { print $2 }') || fail 'cannot inspect target mapper'
+[[ -n $mapper_source && $(realpath -e -- "$mapper_source") == "$part" ]] || fail 'root mapper is not backed by approved partition'
+luks_uuid=$(cryptsetup luksUUID "$part") || fail 'cannot read target LUKS UUID'
+[[ -n $luks_uuid && $mapper_source == /dev/* ]] || fail 'target mapper and partition LUKS UUID mismatch'
+
+metadata=$(cryptsetup luksDump --dump-json-metadata "$part") || fail 'cannot inspect LUKS metadata'
+if jq -e '[.tokens[]? | select(.type == "systemd-tpm2")] | length == 0' <<< "$metadata" >/dev/null; then :; else fail 'existing TPM2 token found; refusing to overwrite/re-enroll'; fi
+jq -e '.keyslots | has("0")' <<< "$metadata" >/dev/null || fail 'preserved passphrase keyslot 0 is missing'
+
+[[ -d /sys/class/tpm/tpm0 ]] || fail 'TPM device unavailable'
+systemd-analyze has-tpm2 >/dev/null 2>&1 || fail 'systemd reports no usable TPM2 device'
+pcr_measurement=$(systemd-analyze pcrs 7 2>/dev/null) || fail 'cannot read measured TPM PCR7'
+grep -Eiq '^[[:space:]]*7[[:space:]]+[^[:space:]]+[[:space:]]+[[:xdigit:]]{64}[[:space:]]*$' <<< "$pcr_measurement" || fail 'PCR7 SHA256 measurement unavailable'
+secure_boot=
+for efivar in /sys/firmware/efi/efivars/SecureBoot-*; do
+  [[ -r $efivar ]] || continue
+  secure_boot=$(od -An -tu1 -j4 -N1 -- "$efivar" | xargs) || fail 'cannot read Secure Boot state'
+  break
+done
+if [[ $secure_boot == 1 ]]; then
+  printf '%s\n' 'PCR7 enrollment uses the current Secure Boot policy; matching firmware state is required at unlock.' >&2
+else
+  printf '%s\n' 'WARNING: Secure Boot is disabled or unreadable; PCR7-bound unlock may not provide the expected Secure Boot policy.' >&2
+fi
+
+usb_dir=/var/lib/titan-provision/luks-header-backups
+ssd_dir=/mnt/titan/persist/titan/luks-header-backups
+[[ $(findmnt -rn -T /var/lib -o SOURCE) == /dev/mapper/portable_usb ]] || fail 'header backup location is not on the encrypted boot USB root'
+[[ $(findmnt -rn --mountpoint /mnt/titan/persist -o FSTYPE) == btrfs ]] || fail 'target encrypted /persist mount unavailable'
+persist_source=$(findmnt -rn --mountpoint /mnt/titan/persist -o SOURCE) || fail 'cannot identify target /persist source'
+persist_source=${persist_source%%\[*}
+[[ -b $persist_source && $(lsblk -dnro TYPE -- "$persist_source") == crypt ]] || fail 'target /persist is not backed by an encrypted mapper'
+lsblk -snrpo PATH -- "$persist_source" | grep -Fxq -- "$part" || fail 'target /persist encrypted mapper is not backed by approved SSD LUKS partition'
+for dir in "$usb_dir" "$ssd_dir"; do
+  [[ ! -L ${dir%/*} && ! -L $dir ]] || fail 'header backup directory is a symlink'
+  install -d -o root -g root -m 0700 -- "$dir" || fail 'cannot create root-only header backup directory'
+  [[ $(stat -c %u:%a -- "$dir") == 0:700 ]] || fail 'header backup directory is not root-only'
+done
+usb_backup=$usb_dir/titan-$luks_uuid.header
+ssd_backup=$ssd_dir/titan-$luks_uuid.header
+[[ ! -e $usb_backup && ! -L $usb_backup && ! -e $ssd_backup && ! -L $ssd_backup ]] || fail 'a header backup already exists; refusing to overwrite'
+cryptsetup luksHeaderBackup "$part" --header-backup-file "$usb_backup" || fail 'encrypted-USB header backup failed'
+chmod 0600 -- "$usb_backup"
+[[ -f $usb_backup && ! -L $usb_backup && $(stat -c %u:%a -- "$usb_backup") == 0:600 && $(stat -c %s -- "$usb_backup") == 16777216 ]] || fail 'USB 16 MiB LUKS header backup failed validation'
+cryptsetup luksHeaderBackup "$part" --header-backup-file "$ssd_backup" || fail 'encrypted-SSD header backup failed'
+chmod 0600 -- "$ssd_backup"
+[[ -f $ssd_backup && ! -L $ssd_backup && $(stat -c %u:%a -- "$ssd_backup") == 0:600 && $(stat -c %s -- "$ssd_backup") == 16777216 ]] || fail 'SSD 16 MiB LUKS header backup failed validation'
+cmp -s -- "$usb_backup" "$ssd_backup" || fail 'USB and SSD LUKS header backups differ'
+
+printf '%s\n' 'Enrolling TPM2 PCR7 with no PIN. Enter the existing LUKS passphrase at the visible prompt.' >&2
+# Intentionally foreground: systemd-cryptenroll owns the live TTY prompt.
+systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 --tpm2-with-pin=no "$part" || fail 'TPM enrollment failed; passphrase slot retained; do not retry blindly'
+metadata=$(cryptsetup luksDump --dump-json-metadata "$part") || fail 'cannot verify post-enrollment LUKS metadata'
+jq -e '
+  (.keyslots | has("0")) and
+  ([.tokens[]? | select(.type == "systemd-tpm2")] | length == 1) and
+  ([.tokens[]? | select(.type == "systemd-tpm2") | .keyslots[]] | length == 1) and
+  ([.tokens[]? | select(.type == "systemd-tpm2") | .keyslots[] | tostring] as $s | ($s[0] != "0" and (.keyslots | has($s[0])))) and
+  ([.tokens[]? | select(.type == "systemd-tpm2") | .["tpm2-pcrs"]] | all(. == [7] or . == "7")) and
+  ([.tokens[]? | select(.type == "systemd-tpm2") | .["tpm2-pin"]] | all(. == null or . == false))
+' <<< "$metadata" >/dev/null || fail 'TPM token metadata does not match required PCR7/no-PIN/new-slot policy'
+printf 'TPM2 PCR7 enrollment verified for LUKS UUID %s; passphrase keyslot 0 retained. Header backups are root-only on encrypted USB and SSD /persist.\n' "$luks_uuid"

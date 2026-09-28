@@ -52,6 +52,8 @@ After cleanup, the **entire** `~/scripts` tree (including hidden files) was copi
 
 ## Titan discovery (Framework laptop)
 
+> **Current state (2026-09-28):** The internal SSD is already installed and TPM-enrolled; the planning/install steps below are historical. **Never run Disko or `install-titan --apply` on the installed SSD.** `portable/bin/titan-install-from-web` is for a separately approved fresh install only; it refuses the existing ESP/LUKS layout. Its Wi-Fi and TPM provisioning changes have mocked tests, not an end-to-end reinstall test.
+
 - The reported CPU is **Intel Core Ultra 5 325**, offered in the Framework Laptop 13 Pro (Intel Core Ultra Series 3). Confirm the DMI product on the laptop before selecting its hardware profile. The pinned `nixos-hardware` revision includes `nixosModules.framework-intel-core-ultra-series3`; do not import Nano's ThinkPad profile.
 - Titan's root-flake host now shares Nano's **tmpfs root/home, full desktop role, and Home Manager profile**, but uses the Framework Series 3 hardware module, a separate Disko layout, and runtime login-hash provisioning. It deliberately has **no SSD target yet** (`hosts/titan/target-disk.nix` throws). Its disk identity, swap needs, and final layout require Titan-side inventory and approval.
 - The committed read-only inventory command `portable/bin/titan-inventory` was copied to the encrypted USB as `/home/zarred/portable-nixos/bin/titan-inventory` and checksum-verified; the USB was relocked. After booting it on Titan, run this command locally to see CPU/DMI/BIOS and all disk/partition identifiers. It **never selects or modifies a disk**; its serials, WWNs, and UUIDs should be shared carefully.

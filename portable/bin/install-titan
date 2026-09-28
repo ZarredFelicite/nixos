@@ -251,6 +251,19 @@ validate_metadata() {
 # Home Manager's /persist bind units source paths under /persist/home/zarred.
 # Keep the traversed parent searchable but not listable; the user's home itself
 # and its persisted content stay private. /persist remains root-managed.
+ensure_persist_var() {
+  local directory mode
+  for directory in "$mount_root/persist/var" "$mount_root/persist/var/lib"; do
+    [[ ! -L $directory && ( ! -e $directory || -d $directory ) ]] || fail "unsafe persistence directory: $directory"
+  done
+  install -d -o 0 -g 0 -m 0755 -- "$mount_root/persist/var" "$mount_root/persist/var/lib"
+  for directory in "$mount_root/persist/var" "$mount_root/persist/var/lib"; do
+    [[ -d $directory && ! -L $directory && $(stat -c %u:%g -- "$directory") == 0:0 ]] || fail "persistence directory is not root-owned: $directory"
+    mode=$(stat -c %a -- "$directory")
+    [[ $mode =~ ^[0-7]+$ ]] && (( (8#$mode & 0022) == 0 )) || fail "persistence directory is group/world-writable: $directory"
+  done
+}
+
 ensure_user_persistence_home() {
   local persist_home=$mount_root/persist/home user_home=$mount_root/persist/home/zarred
   [[ -d $mount_root/persist && ! -L $mount_root/persist ]] || fail 'unsafe persistence root'
@@ -269,6 +282,142 @@ user_directory() {
     [[ ! -L $current && ( ! -e $current || -d $current ) ]] || fail "unsafe existing persistence path: $relative"
     install -d -o 1000 -g 100 -m 0700 -- "$current"
   done
+}
+
+verify_titan_boot() {
+  python3 - "$1" "$2" <<'PY'
+import shlex
+import stat
+import sys
+from pathlib import Path
+
+boot = Path(sys.argv[1])
+system = sys.argv[2]
+def reject(message):
+    raise SystemExit(f"install-titan boot verification: {message}")
+def regular(path):
+    try:
+        mode = path.lstat().st_mode
+    except OSError:
+        reject(f"missing boot artifact: {path.name}")
+    if not stat.S_ISREG(mode) or path.stat().st_size == 0:
+        reject(f"unsafe or empty boot artifact: {path.name}")
+def directory(path):
+    try:
+        mode = path.lstat().st_mode
+    except OSError:
+        reject(f"missing boot directory: {path.name}")
+    if not stat.S_ISDIR(mode):
+        reject(f"unsafe boot directory: {path.name}")
+
+def lines(path):
+    try:
+        return path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError):
+        reject(f"cannot read boot metadata: {path.name}")
+
+def safe_esp_file(value, esp, label):
+    if not value.startswith("/") or "\\" in value or "\x00" in value:
+        reject(f"invalid {label} path")
+    parts = value[1:].split("/")
+    if any(part in ("", ".", "..") for part in parts):
+        reject(f"unsafe {label} path")
+    path = esp.joinpath(*parts)
+    # Check every component without following symlinks.
+    current = esp
+    for part in parts:
+        current = current / part
+        try:
+            mode = current.lstat().st_mode
+        except OSError:
+            reject(f"missing {label} file")
+        if stat.S_ISLNK(mode):
+            reject(f"symlinked {label} file")
+    regular(path)
+
+try:
+    directory(boot)
+    esp = boot
+    for part in ("EFI", "EFI/BOOT", "EFI/systemd", "loader", "loader/entries"):
+        directory(esp / part)
+    fallback = esp / "EFI/BOOT/BOOTX64.EFI"
+    systemd_loader = esp / "EFI/systemd/systemd-bootx64.efi"
+    regular(fallback)
+    regular(systemd_loader)
+    if fallback.read_bytes() != systemd_loader.read_bytes():
+        reject("EFI fallback is not the installed systemd-boot loader")
+
+    loader_conf = esp / "loader/loader.conf"
+    regular(loader_conf)
+    defaults = []
+    for raw in lines(loader_conf):
+        text = raw.strip()
+        if not text or text.startswith("#"):
+            continue
+        fields = text.split(None, 1)
+        if len(fields) != 2:
+            reject("malformed loader.conf")
+        key, value = fields
+        if key == "default":
+            defaults.append(value.strip())
+        elif key not in {"timeout", "console-mode", "editor", "auto-entries", "auto-firmware", "reboot-for-bitlocker"}:
+            reject("unexpected loader.conf directive")
+    if len(defaults) != 1 or not defaults[0] or "/" in defaults[0] or "\\" in defaults[0]:
+        reject("missing, ambiguous, or unsafe default entry")
+
+    entries_dir = esp / "loader/entries"
+    files = sorted(entries_dir.glob("*.conf"))
+    if not files:
+        reject("no Type1 boot entries")
+    parsed = {}
+    for entry in files:
+        regular(entry)
+        fields = {"initrd": [], "options": []}
+        for raw in lines(entry):
+            text = raw.strip()
+            if not text or text.startswith("#"):
+                continue
+            key, sep, value = text.partition(" ")
+            if not sep or key not in {"title", "version", "machine-id", "sort-key", "options", "linux", "initrd", "devicetree"}:
+                reject("malformed or unsupported Type1 entry")
+            value = value.strip()
+            if not value:
+                reject("empty Type1 entry field")
+            if key == "initrd" or key == "options":
+                fields[key].append(value)
+            elif key in fields and fields[key]:
+                reject("duplicate Type1 entry field")
+            else:
+                fields[key] = value
+        if not fields.get("title") or not fields.get("version") or not fields.get("linux") or len(fields["options"]) != 1 or not fields["initrd"]:
+            reject("incomplete Type1 entry")
+        safe_esp_file(fields["linux"], esp, "kernel")
+        for initrd in fields["initrd"]:
+            safe_esp_file(initrd, esp, "initrd")
+        try:
+            options = shlex.split(fields["options"][0])
+        except ValueError:
+            reject("malformed Type1 options")
+        init_values = [option[5:] for option in options if option.startswith("init=")]
+        if len(init_values) != 1:
+            reject("Type1 entry has missing or ambiguous init")
+        fields["init_path"] = init_values[0]
+        parsed[entry.name] = fields
+
+    default = defaults[0]
+    if default not in parsed:
+        reject("loader default does not name an installed Type1 entry")
+    expected_init = system + "/init"
+    selected = parsed[default]
+    if selected["init_path"] != expected_init:
+        reject("default Type1 entry does not reference the installed Titan system init")
+    if sum(item["init_path"] == expected_init for item in parsed.values()) != 1:
+        reject("installed Titan init is referenced by ambiguous Type1 entries")
+except SystemExit:
+    raise
+except Exception:
+    reject("unexpected error while validating boot artifacts")
+PY
 }
 
 if (( root_stage || finish_stage )); then
@@ -308,6 +457,11 @@ if (( root_stage || finish_stage )); then
      $(findmnt -rn --mountpoint "$mount_root/persist" -o FSTYPE) == btrfs && \
      $(findmnt -rn --mountpoint "$mount_root/nix" -o FSTYPE) == btrfs && \
      $(findmnt -rn --mountpoint "$mount_root/boot" -o FSTYPE) == vfat ]] || fail 'target mounts do not match expected layout'
+  boot_source=$(findmnt -rn --mountpoint "$mount_root/boot" -o SOURCE) || fail 'cannot identify target EFI partition'
+  boot_source=${boot_source%%\[*}
+  [[ -b $boot_source && $(lsblk -dnro TYPE -- "$boot_source") == part && \
+     $(lsblk -dnro PARTN -- "$boot_source") == 1 ]] || fail 'target EFI mount is not partition 1'
+  lsblk -snrpo PATH -- "$boot_source" | grep -Fxq -- "$resolved" || fail 'target EFI partition is not backed by approved SSD'
   if (( finish_stage )); then
     for mountpoint in "$mount_root/nix" "$mount_root/persist" "$mount_root/boot"; do
       source=$(findmnt -rn --mountpoint "$mountpoint" -o SOURCE)
@@ -341,14 +495,6 @@ if (( root_stage || finish_stage )); then
     nix-store --store "local?root=$mount_root" --verify-path "$root_system" >/dev/null || fail 'prebuilt system path failed target-store verification'
   fi
   [[ -d $mount_root/persist && ! -L $mount_root/persist && ! -L $mount_root/persist/home ]] || fail 'unsafe persistence path'
-  # Non-root system services must traverse /var/lib; keep the sbctl subtree 0700.
-  install -d -o 0 -g 0 -m 0755 -- "$mount_root/persist/var" "$mount_root/persist/var/lib"
-  [[ ! -e $mount_root/persist/var/lib/sbctl && ! -L $mount_root/persist/var/lib/sbctl ]] || fail 'signing PKI destination already exists'
-  cp -a -- "$pki" "$mount_root/persist/var/lib/sbctl" || fail 'cannot preserve signing PKI in encrypted persistence'
-  chown -R 0:0 -- "$mount_root/persist/var/lib/sbctl"
-  chmod -R go-rwx -- "$mount_root/persist/var/lib/sbctl"
-  [[ $(stat -c %a -- "$mount_root/persist/var/lib/sbctl") == 700 && \
-     $(stat -c %a -- "$mount_root/persist/var/lib/sbctl/keys/db/db.key") == 600 ]] || fail 'persisted signing PKI permissions are not root-only'
   install -d -m 0700 -- "$mount_root/persist/secrets" "$mount_root/persist/etc/ssh"
   printf 'Titan login password (input hidden): ' >&2
   IFS= read -rs password </dev/tty || fail 'login password unavailable'
@@ -405,59 +551,12 @@ if (( root_stage || finish_stage )); then
   [[ -d $persist_home/.ssh && ! -L $persist_home/.ssh && $(stat -c %u:%g:%a -- "$persist_home/.ssh") == 1000:100:700 && ! -e $authorized_dest && ! -L $authorized_dest ]] || fail 'encrypted user SSH bind source is unsafe or already populated'
   install -o 1000 -g 100 -m 0600 -- "$authorized_source" "$authorized_dest"
   cmp -s -- "$authorized_source" "$authorized_dest" || fail 'persisted authorized keys differ from the declared keys'
-  # Lanzaboote resolves its signing PKI at /var/lib/sbctl inside the target root;
-  # expose the encrypted-persistence copy only for nixos-install, then always unbind.
-  persisted_pki=$mount_root/persist/var/lib/sbctl
-  [[ -d $persisted_pki && ! -L $persisted_pki && $(stat -c %u:%a -- "$persisted_pki") == 0:700 ]] || fail 'persisted signing PKI directory is unsafe'
-  [[ -f $persisted_pki/keys/db/db.pem && ! -L $persisted_pki/keys/db/db.pem && \
-     $(stat -c %u -- "$persisted_pki/keys/db/db.pem") == 0 && \
-     -f $persisted_pki/keys/db/db.key && ! -L $persisted_pki/keys/db/db.key && \
-     $(stat -c %u:%a -- "$persisted_pki/keys/db/db.key") == 0:600 ]] || fail 'persisted signing PKI certificate or private key is missing/unsafe'
-  pki_dest=$mount_root/var/lib/sbctl
-  [[ ! -L $mount_root/var && ( ! -e $mount_root/var || -d $mount_root/var ) ]] || fail 'target /var is unsafe'
-  install -d -o 0 -g 0 -m 0755 -- "$mount_root/var/lib"
-  [[ -d $mount_root/var/lib && ! -L $mount_root/var/lib ]] || fail 'target /var/lib is unsafe'
-  [[ -z $(findmnt -rn --mountpoint "$mount_root/var/lib" -o TARGET) ]] || fail 'target /var/lib is already a mountpoint'
-  [[ -z $(findmnt -rn --mountpoint "$pki_dest" -o TARGET) ]] || fail 'target signing PKI path is already a mountpoint'
-  [[ ! -L $pki_dest && ( ! -e $pki_dest || -d $pki_dest ) ]] || fail 'target signing PKI destination is unsafe'
-  if [[ -d $pki_dest ]]; then
-    [[ $(stat -c %u -- "$pki_dest") == 0 && -z $(ls -A -- "$pki_dest") ]] || fail 'target signing PKI destination is not empty and root-owned'
-  fi
-  install -d -o 0 -g 0 -m 0700 -- "$pki_dest"
-  [[ $(stat -c %u:%a -- "$pki_dest") == 0:700 ]] || fail 'target signing PKI mountpoint ownership/mode is unsafe'
-  pki_bound=0
-  cleanup_pki_bind() {
-    local rc=$?
-    trap - EXIT
-    if (( pki_bound )) && [[ -n $(findmnt -rn --mountpoint "$pki_dest" -o TARGET) ]]; then
-      if ! umount -- "$pki_dest"; then
-        printf 'install-titan: temporary signing PKI bind remains mounted at %s; inspect manually.\n' "$pki_dest" >&2
-        exit 1
-      fi
-    fi
-    exit "$rc"
-  }
-  trap cleanup_pki_bind EXIT
-  pki_bound=1
-  mount --bind "$persisted_pki" "$pki_dest" || fail 'cannot temporarily bind encrypted signing PKI into target root'
-  [[ -f $pki_dest/keys/db/db.pem && ! -L $pki_dest/keys/db/db.pem && \
-     -f $pki_dest/keys/db/db.key && ! -L $pki_dest/keys/db/db.key && \
-     $(stat -c %a -- "$pki_dest") == 700 ]] || fail 'temporary signing PKI bind verification failed'
+  ensure_persist_var
   python3 "${self%/*}/provision-titan-wifi" || fail 'Wi-Fi provisioning failed; no credential was copied outside encrypted persistence'
   nixos-install --system "$root_system" --root "$mount_root" --no-root-password --no-channel-copy || fail 'installation incomplete; inspect mounted target; do not rerun Disko'
-  umount -- "$pki_dest" || fail 'cannot remove temporary signing PKI bind; inspect target before recovery'
-  pki_bound=0
-  trap - EXIT
   [[ -L $mount_root/nix/var/nix/profiles/system ]] || fail 'installed system profile absent'
-  [[ -f $mount_root/boot/EFI/BOOT/BOOTX64.EFI && ! -L $mount_root/boot/EFI/BOOT/BOOTX64.EFI ]] || fail 'signed EFI fallback loader missing'
-  mapfile -t ukis < <(compgen -G "$mount_root/boot/EFI/Linux/*.efi" || true)
-  (( ${#ukis[@]} > 0 )) || fail 'signed UKI missing from EFI/Linux'
-  sbverify --cert "$pki_cert" "$mount_root/boot/EFI/BOOT/BOOTX64.EFI" >/dev/null 2>&1 || fail 'EFI fallback loader signature does not verify with the configured db certificate'
-  for uki in "${ukis[@]}"; do
-    [[ -f $uki && ! -L $uki ]] || fail 'unsafe UKI artifact'
-    sbverify --cert "$pki_cert" "$uki" >/dev/null 2>&1 || fail "UKI signature does not verify with configured db certificate: ${uki##*/}"
-  done
-  /run/current-system/sw/bin/bash "${self%/*}/titan-enroll-tpm" /dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W-part2 root || fail 'TPM enrollment did not complete; installed signed fallbacks and passphrase remain available'
+  verify_titan_boot "$mount_root/boot" "$root_system"
+  /run/current-system/sw/bin/bash "${self%/*}/titan-enroll-tpm" /dev/disk/by-id/nvme-Samsung_SSD_9100_PRO_2TB_S7YCNJ0L219298W-part2 root || fail 'TPM enrollment did not complete; passphrase fallback remains available'
   printf '%s\n' 'System installed. Leave mounts in place for manual inspection; do not re-run the formatter.'
   exit 0
 fi

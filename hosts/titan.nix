@@ -32,16 +32,7 @@
     initrd.systemd.enable = true;
     initrd.systemd.tpm2.enable = true;
     initrd.luks.devices.root.crypttabExtraOpts = [ "tpm2-device=auto" ];
-    loader = {
-      systemd-boot.enable = lib.mkForce false;
-      efi.canTouchEfiVariables = lib.mkForce false;
-    };
-    lanzaboote = {
-      enable = true;
-      # Runtime sbctl keys stay out of the Nix store. profiles/impermanence.nix
-      # persists /var/lib under encrypted /persist across Titan's tmpfs root.
-      pkiBundle = "/var/lib/sbctl";
-    };
+    loader.efi.canTouchEfiVariables = lib.mkForce false;
   };
 
   # Disko supplies the tmpfs root/home and the encrypted persistent mounts.

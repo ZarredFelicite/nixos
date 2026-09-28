@@ -147,7 +147,6 @@
             inputs.stylix.nixosModules.stylix
             inputs.nixos-hardware.nixosModules.framework-intel-core-ultra-series3
             inputs.disko.nixosModules.disko
-            inputs.lanzaboote.nixosModules.lanzaboote
             ./hosts/titan.nix
             ./roles/desktop.nix
           ];

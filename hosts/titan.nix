@@ -64,9 +64,7 @@
   };
   systemd.network.networks."60-wifi" = lib.mkForce {
     matchConfig.Name = "wl*";
-    networkConfig.DHCP = "yes";
-    dhcpV4Config.RouteMetric = 600;
-    routes = [ { Metric = 600; } ];
+    linkConfig.Unmanaged = true;
   };
 
   # Shared Docker config enables NVIDIA containers on every non-Nano host;

@@ -100,6 +100,8 @@ stdenv.mkDerivation (finalAttrs: {
   version = pin.version;
   inherit src;
 
+  patches = [ ./patches/collection-vsearch.patch ];
+
   nativeBuildInputs = [ typescript ];
   buildInputs = [ sqlite nodejs ];
 

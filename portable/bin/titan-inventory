@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Read-only, local inventory for Titan after booting the portable USB.
+
+usage() {
+  printf '%s\n' \
+    'Usage: titan-inventory [--help]' \
+    'Print a read-only CPU, firmware, and block-device inventory to stdout.' \
+    'No drive is selected or modified. No report file is written.' \
+    'Output includes disk serials, WWNs, and filesystem identifiers; share it carefully.'
+}
+
+if (( $# == 1 )) && [[ "$1" == --help || "$1" == -h ]]; then
+  usage
+  exit 0
+fi
+if (( $# != 0 )); then
+  usage >&2
+  exit 2
+fi
+
+sys_value() {
+  local value
+  if [[ -r "$1" ]] && IFS= read -r value < "$1" && [[ -n "$value" ]]; then
+    printf '%s' "$value"
+  else
+    printf 'unknown'
+  fi
+}
+
+cpu_model() {
+  local line
+  if [[ -r /proc/cpuinfo ]]; then
+    while IFS= read -r line; do
+      if [[ "$line" == 'model name'*:* ]]; then
+        printf '%s' "${line#*: }"
+        return
+      fi
+    done < /proc/cpuinfo
+  fi
+  printf 'unknown'
+}
+
+secure_boot_state() {
+  local var byte
+  [[ -d /sys/firmware/efi ]] || { printf 'unknown'; return; }
+  command -v od >/dev/null 2>&1 || { printf 'unknown'; return; }
+  # EFI variable contents start with four attribute bytes; byte 5 is the state.
+  for var in /sys/firmware/efi/efivars/SecureBoot-*; do
+    [[ -r "$var" ]] || continue
+    byte=$(od -An -tu1 -j4 -N1 "$var" 2>/dev/null) || continue
+    byte=${byte//[[:space:]]/}
+    case "$byte" in
+      1) printf 'enabled'; return ;;
+      0) printf 'disabled'; return ;;
+    esac
+  done
+  printf 'unknown'
+}
+
+printf '%s\n' 'Titan — local read-only inventory'
+printf '%s\n' 'Identifiers below (serials, WWNs, UUIDs) can be sensitive; share this output carefully.'
+printf '\nCPU model: %s\n' "$(cpu_model)"
+printf 'DMI product: %s\n' "$(sys_value /sys/class/dmi/id/product_name)"
+printf 'DMI board: %s\n' "$(sys_value /sys/class/dmi/id/board_name)"
+printf 'BIOS vendor: %s\n' "$(sys_value /sys/class/dmi/id/bios_vendor)"
+printf 'BIOS version: %s\n' "$(sys_value /sys/class/dmi/id/bios_version)"
+printf 'BIOS date: %s\n' "$(sys_value /sys/class/dmi/id/bios_date)"
+if [[ -d /sys/firmware/efi ]]; then
+  printf 'Boot mode: EFI\n'
+else
+  printf 'Boot mode: legacy (no EFI firmware interface detected)\n'
+fi
+printf 'Secure Boot: %s\n' "$(secure_boot_state)"
+
+printf '\n%s\n' 'Block devices and partitions (PATH identifies the device; MOUNTPOINTS shows mounts):'
+if command -v lsblk >/dev/null 2>&1; then
+  if ! lsblk -p -o PATH,TYPE,TRAN,RM,SIZE,MODEL,SERIAL,WWN,FSTYPE,UUID,PARTUUID,MOUNTPOINTS; then
+    printf '%s\n' 'Could not read block-device inventory.'
+  fi
+else
+  printf '%s\n' 'lsblk unavailable; block-device inventory unknown.'
+fi
+printf '\n%s\n' 'The running root (/) may be backed by the portable USB: trace its MOUNTPOINTS entry through its parent disk and check TRAN/RM.'
+printf '%s\n' 'A mapper, subvolume, or overlay may obscure the backing disk. No disk is selected here, and no SSD is assumed empty.'

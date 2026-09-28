@@ -1,0 +1,9 @@
+Workspace 1.0 Workspace.qml
+CavaVisualizer 1.0 CavaVisualizer.qml
+SystemTray 1.0 SystemTray.qml
+TrayItem 1.0 TrayItem.qml
+SystemRings 1.0 SystemRings.qml
+AudioInputPill 1.0 AudioInputPill.qml
+AudioOutputPill 1.0 AudioOutputPill.qml
+NotificationsToasts 1.0 NotificationsToasts.qml
+NotificationInlinePill 1.0 NotificationInlinePill.qml

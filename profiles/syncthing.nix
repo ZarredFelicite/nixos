@@ -24,17 +24,28 @@
       options.urAccepted = -1;
       options.relaysEnabled = false;
       devices = {
-        "web" = { id = "FJPCMZP-BFNE27P-TFDPM26-X2TNVZC-BBKQX4B-4YQO7JZ-5NHRWER-X4YU6AD"; };
+        "web" = {
+          id = "FJPCMZP-BFNE27P-TFDPM26-X2TNVZC-BBKQX4B-4YQO7JZ-5NHRWER-X4YU6AD";
+          addresses = if config.networking.hostName == "titan"
+            then [ "tcp://192.168.86.150:22000" "dynamic" ]
+            else [ "dynamic" ];
+        };
         "sankara" = { id = "HWHGCRQ-HYCPKIP-M62FMS6-GQGZDWH-GCNJMJA-QIBXEXY-FVT2COA-KJ3W6QT"; };
         "nano" = { id = "I3P5FM2-DOHDIM7-WOPMTTE-KOCGQ66-GVSONDW-NB4KY4N-SFHGPJO-ELM7XQZ"; };
         "p8p" = { id = "WJSCFJY-M5SXBE4-ZXUM2BX-PUQ3IYD-76KTVMQ-EVWD53T-OGVT3FG-A4W5MQR"; };
-      };
+      } // (if config.networking.hostName == "web" then {
+        "titan" = {
+          id = "ZGDUA6D-D3SGXGO-YJTWTLB-B7HGMB6-SVDQ2UU-WQNT35K-G6PXRLN-XWYHKA2";
+          addresses = [ "tcp://192.168.86.219:22000" "dynamic" ];
+        };
+      } else { });
       folders = {
         "sync" = {
           enable = true;
 	        path = "/home/zarred/sync";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" "p8p" ];
+	        devices = [ "web" "sankara" "nano" "p8p" ]
+            ++ (if config.networking.hostName == "web" then [ "titan" ] else [ ]);
 	      };
         "notes" = {
           enable = true;

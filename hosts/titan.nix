@@ -48,6 +48,20 @@
   };
   users.users.zarred.hashedPasswordFile = lib.mkForce "/persist/secrets/zarred-password-hash";
 
+  # The Web↔Titan cable is a dedicated static-only link. Matching this exact
+  # adapter earlier than 30-wired keeps other en* adapters on DHCP and avoids
+  # a default route, DNS, or link-local address on the direct link. Static-only
+  # is intentional: if this adapter is reused elsewhere it must not acquire a
+  # potentially conflicting DHCP configuration.
+  systemd.network.networks."10-direct-link" = lib.mkForce {
+    matchConfig.Name = "enp0s13f0u2u4u5";
+    networkConfig = {
+      Address = "192.168.86.219/24";
+      DHCP = "no";
+      LinkLocalAddressing = "no";
+    };
+    linkConfig.RequiredForOnline = "no";
+  };
   # Do not use Nano's fixed wlan0 or host-specific wired device rules.
   systemd.network.networks."30-wired" = lib.mkForce {
     matchConfig.Name = "en*";

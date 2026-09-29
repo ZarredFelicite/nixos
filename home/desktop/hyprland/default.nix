@@ -110,7 +110,8 @@ in {
         ];
       })
       (lib.mkIf (osConfig.networking.hostName == "titan") {
-        settings.monitor = ["eDP-1,preferred,auto,1.5"];
+        settings.monitor = ["eDP-1,preferred,auto,1.5,vrr,0"];
+        settings.misc.vrr = lib.mkForce false;
       })
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {

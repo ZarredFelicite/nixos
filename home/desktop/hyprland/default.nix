@@ -109,6 +109,9 @@ in {
           "DP-3,preferred,auto,1,transform,1"
         ];
       })
+      (lib.mkIf (osConfig.networking.hostName == "titan") {
+        settings.monitor = ["eDP-1,preferred,auto,1.5"];
+      })
       (lib.mkIf (osConfig.networking.hostName == "web") {
         settings = {
           monitor = [

@@ -529,10 +529,11 @@ if (( root_stage || finish_stage )); then
   chown -R 1000:100 -- "$persist_home/dots" "$persist_home/scripts"
   cmp -s -- "$flake/hosts/titan/target-disk.nix" "$persist_home/dots/hosts/titan/target-disk.nix" || fail 'persisted target configuration differs'
   # Titan's HM profile enables Quickshell but does not generate its primary config.
-  # Provision the known-good USB config into the actual encrypted bind source.
-  primary_source=$flake/portable/config/quickshell/primary
+  # Seed the runtime snapshot from Nano commit 5056dbe2e582911029921e0e70a41568d633cede,
+  # not the deliberately separate portable-USB config, into encrypted persistence.
+  primary_source=$flake/portable/config/quickshell/titan-primary/primary
   primary_dest=$persist_home/.config/quickshell/primary
-  [[ -d $primary_source && ! -L $primary_source && -f $primary_source/shell.qml && -f $primary_source/config.qml ]] || fail 'portable Quickshell primary config is missing'
+  [[ -d $primary_source && ! -L $primary_source && -f $primary_source/shell.qml && -f $primary_source/config.qml ]] || fail 'Titan Quickshell primary snapshot is missing'
   [[ -d $persist_home/.config/quickshell && ! -L $persist_home/.config/quickshell && ! -e $primary_dest && ! -L $primary_dest ]] || fail 'Quickshell persistence bind source is missing or already populated'
   cp -a -- "$primary_source" "$primary_dest" || fail 'Quickshell persistent config copy failed'
   chown -R 1000:100 -- "$primary_dest"

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# List NixOS generations with metadata
+# Output: JSON array of generation objects
+# [{
+#   "number": 2470,
+#   "date": "2025-10-11 02:09",
+#   "current": true,
+#   "summary": "↑ 15 packages, ↓ 3 packages"
+# }]
+
+set -euo pipefail
+
+PROFILES_DIR="/nix/var/nix/profiles"
+CURRENT_GEN=$(basename "$(readlink -f "$PROFILES_DIR/system")" | grep -oP 'system-\K[0-9]+' || echo "")
+
+# Get all generation numbers
+GENS=$(ls "$PROFILES_DIR" | grep -oP 'system-\K[0-9]+(?=-link)' | sort -rn | head -15)
+
+items=()
+for gen in $GENS; do
+  link="$PROFILES_DIR/system-${gen}-link"
+  if [[ ! -L "$link" ]]; then continue; fi
+  
+  # Get date from symlink modification time
+  date=$(stat -c '%y' "$link" | cut -d'.' -f1)
+  
+  # Check if current
+  is_current="false"
+  [[ "$gen" == "$CURRENT_GEN" ]] && is_current="true"
+  
+  # Get summary - skip diff calculation for now (too slow)
+  if [[ "$is_current" == "true" ]]; then
+    summary="(current)"
+  else
+    summary=""
+  fi
+  
+  # Build JSON object
+  item=$(jq -nc \
+    --argjson number "$gen" \
+    --arg date "$date" \
+    --argjson current "$is_current" \
+    --arg summary "$summary" \
+    '{number: $number, date: $date, current: $current, summary: $summary}')
+  items+=("$item")
+done
+
+# Print array
+printf '%s\n' "${items[@]}" | jq -s '.'

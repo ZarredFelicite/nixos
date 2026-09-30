@@ -36,10 +36,16 @@
 - Status: source/live changes exist; installer coverage needs verification. Current boot generation has older Home Manager settings. No switch/reboot approved by this backlog.
 
 ### 6. Titan → Web personal GPG SSH authentication
-- Current state: GPG SSH agent offers no identities; personal login fails. Public keygrip corresponds to Web authentication/signing subkey. Personal private-key availability not inspected.
-- Proposed change: authentication-subkey-only SOPS ciphertext, Titan-scoped recipients, restrictive runtime secret, import as Zarred into persisted `.gnupg`, correct keygrip, verify Web authorization.
-- Installer action: record actual chosen provisioning and dependencies once implemented; ensure secrets activate before importer and handle passphrase requirements without hidden boot-time prompts. Never copy master private key or put plaintext in Nix store/Git.
-- Status: user asked to continue setup; no export/import/config implementation yet. Update this item as work proceeds.
+- Implemented/live: exported only Web's selected authentication/signing subkey into `secrets/titan/gpg-auth-subkey.bin` (Titan-only SOPS recipient, retained passphrase protection); decrypted on Titan into a `zarred:0400` runtime secret and imported into persisted `.gnupg`.
+- Source: `.sops.yaml` specific rule, import in `hosts/titan.nix`, module `hosts/titan/gpg-ssh.nix`, helper `hosts/titan/gpg-import.sh`, focused tests `portable/tests/test_titan_gpg_import.py`. User oneshot/path watcher waits for runtime availability and cannot prompt; idempotence/metadata/master-key guards included. Shared `home/security.nix` already selects the correct grip and was unchanged.
+- Evidence: protected dummy export/import and failure tests passed; source syntax/targeted evaluation passed. Real agent offers exact Web-authorized SSH fingerprint; master and unrelated encryption secret grips are unavailable. User unlocked protected subkey in TTY; strict Titan → Web login as Zarred passed, exit 0. Temporary sudo authorization was invalidated and SSH session closed.
+- Installer action: verify all-in-one source/assets include ciphertext and Titan module; SOPS deployment precedes user importer; watcher's no-loop boot behavior; `.gnupg` persistence; protected-key first-use unlock stays user-driven. New module will be included by Titan host builds, but installer/first-boot coverage has not been exercised. Do not strip passphrase, export master key or put plaintext in Nix store/Git.
+- Status: live SSH resolved and declarative source prepared; no installer-script edit or NixOS/HM activation. System-managed deployment/user units are not yet active on Titan; imported subkey is persistent, manual runtime secret ephemeral. Batch installer coverage/activation remains pending.
+
+### 7. Restrictive GPG directory permissions
+- Live change: Titan persistence-backed `.gnupg` tightened from `0755` to `0700`, owner Zarred; no keyring-content inspection.
+- Installer action: ensure initial persistent `.gnupg` provisioning creates/retains mode `0700` with correct owner; validate existing Home Manager/impermanence coverage before adding a redundant installer change.
+- Status: live fix verified; installer directory-mode coverage pending.
 
 ## Verified prerequisites — no repair indicated
 
@@ -62,4 +68,6 @@
 | Change | Source/commit | Verification | Installer action | Status |
 |---|---|---|---|---|
 | Corrected SOPS diagnostic and temporary converter transfer | `/nix/store/5jbm99w5x6py300p1iq0dq9a0581zkc2-ssh-to-age-1.3.0` | SSH/age public identities match; YAML and binary fresh decryption passed, exit 0 | Existing installer uses correct conversion; no edit indicated | Diagnostic-only; no profile change |
-| Restored durable summary/backlog after ephemeral home copies disappeared | These two project docs | Project directory is persistence-backed; track in Git | None | Operational record |
+| Restored durable summary/backlog after ephemeral home copies disappeared | These two project docs; commit `7f26f8a9` | Project directory is persistence-backed; tracked in Git | None | Operational record |
+| Auth-only GPG provisioning and actual Web SSH login | Ciphertext + Titan module/importer + focused tests | Auth available; master/encryption secret grips unavailable; strict SSH to Web succeeded as Zarred, exit 0 | Validate batch asset/order/first-boot coverage; source module ready, active generation unchanged | Live complete; activation/installer validation pending |
+| GPG homedir mode `0700` | Live persisted `.gnupg` | Owner Zarred, mode `0700` | Check directory-mode coverage | Live fixed |

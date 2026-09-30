@@ -2,6 +2,7 @@
   imports = [
     inputs.home-manager.nixosModules.home-manager
     ./titan/disko.nix
+    ./titan/gpg-ssh.nix
   ];
 
   home-manager = {

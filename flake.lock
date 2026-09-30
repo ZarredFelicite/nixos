@@ -1,5 +1,74 @@
 {
   "nodes": {
+    "codex-desktop": {
+      "inputs": {
+        "flake-utils": "flake-utils_codex",
+        "nixpkgs": "nixpkgs_codex"
+      },
+      "locked": {
+        "lastModified": 1790752073,
+        "narHash": "sha256-xNHn9e8Oj+gKone18I4WQ5SDOy6P5a2+LuUPlgEpcZ4=",
+        "owner": "ilysenko",
+        "repo": "codex-desktop-linux",
+        "rev": "e67d0463aa16fadf8b6c16ad9c970682a663591c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ilysenko",
+        "repo": "codex-desktop-linux",
+        "rev": "e67d0463aa16fadf8b6c16ad9c970682a663591c",
+        "type": "github"
+      }
+    },
+    "flake-utils_codex": {
+      "inputs": {
+        "systems": "systems_codex"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "systems_codex": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "nixpkgs_codex": {
+      "locked": {
+        "lastModified": 1772773019,
+        "narHash": "sha256-E1bxHxNKfDoQUuvriG71+f+s/NT0qWkImXsYZNFFfCs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "aca4d95fce4914b3892661bcb80b8087293536c6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "base16": {
       "inputs": {
         "fromYaml": "fromYaml"
@@ -1103,6 +1172,7 @@
     },
     "root": {
       "inputs": {
+        "codex-desktop": "codex-desktop",
         "determinate": "determinate",
         "ember-companion": "ember-companion",
         "flake-compat": "flake-compat_2",

@@ -126,6 +126,7 @@ in
   ];
 
   home.packages = [
+    inputs.codex-desktop.packages.${pkgs.system}.codex-desktop
     herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
     printVaultPackage

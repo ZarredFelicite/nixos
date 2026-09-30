@@ -7,7 +7,7 @@ keys:
   - &surface age12p0ry3yv3jugc99smskv0263ydljet6u9mu3u549jm525w78f9pqgryewv
   - &titan age1nzlr59275d22ma4j3kecf2pmf46rq24mvldmlpgunt0ukw8gu9kq54g32w
 creation_rules:
-  - path_regex: ^secrets/titan/gpg-auth-subkey\.bin$
+  - path_regex: ^secrets/titan/gpg-key\.bin$
     key_groups:
     - age:
       - *titan

@@ -1,10 +1,10 @@
 { config, ... }:
 let
-  secretPath = config.sops.secrets.titan-gpg-auth-subkey.path;
+  secretPath = config.sops.secrets.titan-gpg-key.path;
 in
 {
-  sops.secrets.titan-gpg-auth-subkey = {
-    sopsFile = ../../secrets/titan/gpg-auth-subkey.bin;
+  sops.secrets.titan-gpg-key = {
+    sopsFile = ../../secrets/titan/gpg-key.bin;
     format = "binary";
     owner = "zarred";
     mode = "0400";
@@ -13,11 +13,11 @@ in
   # Keep the runtime importer Titan-only even though Titan reuses Nano's HM
   # profile. It waits for the SOPS runtime secret and never unlocks/signs keys.
   home-manager.users.zarred = { lib, pkgs, ... }: {
-    systemd.user.paths.titan-gpg-auth-subkey = {
-      Unit.Description = "Wait for Titan's SOPS-provisioned GPG auth subkey";
+    systemd.user.paths.titan-gpg-key = {
+      Unit.Description = "Wait for Titan's SOPS-provisioned full GPG key";
       Path = {
         PathExists = secretPath;
-        Unit = "titan-gpg-auth-subkey-import.service";
+        Unit = "titan-gpg-key-import.service";
         # A successful oneshot remains active. The path trigger limit prevents
         # failure retries from looping; retry/rotation needs explicit user action.
         TriggerLimitIntervalSec = "1h";
@@ -26,9 +26,9 @@ in
       Install.WantedBy = [ "default.target" ];
     };
 
-    systemd.user.services.titan-gpg-auth-subkey-import = {
+    systemd.user.services.titan-gpg-key-import = {
       Unit = {
-        Description = "Import Titan's SOPS-provisioned GPG auth subkey";
+        Description = "Import Titan's SOPS-provisioned full GPG key";
         ConditionPathExists = secretPath;
       };
       Service = {

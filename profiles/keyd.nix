@@ -3,11 +3,12 @@
     final: prev:
     {
       keyd = prev.keyd.overrideAttrs (old: {
+        version = "2.6.0";
         src = prev.fetchFromGitHub {
           owner = "rvaiya";
           repo = "keyd";
-          rev = "v2.5.0"; # NOTE: UPDATE
-          hash = "sha256-pylfQjTnXiSzKPRJh9Jli1hhin/MIGIkZxLKxqlReVo="; # NOTE: UPDATE
+          rev = "v2.6.0"; # NOTE: UPDATE
+          hash = "sha256-l7yjGpicX1ly4UwF7gcOTaaHPRnxVUMwZkH70NDLL5M="; # NOTE: UPDATE
         };
         postPatch = ''
           substituteInPlace Makefile \

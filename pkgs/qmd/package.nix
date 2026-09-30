@@ -100,8 +100,6 @@ stdenv.mkDerivation (finalAttrs: {
   version = pin.version;
   inherit src;
 
-  patches = [ ./patches/collection-vsearch.patch ];
-
   nativeBuildInputs = [ typescript ];
   buildInputs = [ sqlite nodejs ];
 
@@ -114,17 +112,6 @@ stdenv.mkDerivation (finalAttrs: {
 
     tsc -p tsconfig.build.json
 
-    # qmd 1.0.6 explicitly auto-detects GPUs instead of passing through
-    # node-llama-cpp's NODE_LLAMA_CPP_GPU default. Honor its supported CPU
-    # off-values so the qmd-device toggle can force CPU execution.
-    substituteInPlace dist/llm.js \
-      --replace-fail \
-      '            const gpuTypes = await getLlamaGpuTypes();' \
-      '            const requestedGpu = process.env.NODE_LLAMA_CPP_GPU?.toLowerCase();
-                const gpuOffValues = ["false", "off", "none", "disable", "disabled"];
-                const forceCpu = gpuOffValues.includes(requestedGpu ?? "");
-                const gpuTypes = forceCpu ? [false] : await getLlamaGpuTypes();'
-
     runHook postBuild
   '';
 
@@ -135,7 +122,7 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/bin
 
     ln -s ${node_modules}/node_modules $out/lib/qmd/node_modules
-    cp -r dist $out/lib/qmd/
+    cp -r dist bin skills $out/lib/qmd/
     cp package.json $out/lib/qmd/
 
     cat > $out/bin/qmd <<EOF
@@ -144,6 +131,9 @@ stdenv.mkDerivation (finalAttrs: {
 
     export NODE_LLAMA_CPP_LLAMA_DIR="''${XDG_CACHE_HOME:-\$HOME/.cache}/node-llama-cpp/llama"
     export NODE_LLAMA_CPP_GPU="\''${NODE_LLAMA_CPP_GPU:-cuda}"
+    # QMD 2.x owns GPU-mode selection. Preserve the local launcher contract:
+    # NODE_LLAMA_CPP_GPU defaults to CUDA and its CPU-off values force CPU.
+    export QMD_LLAMA_GPU="\''${QMD_LLAMA_GPU:-\$NODE_LLAMA_CPP_GPU}"
     export CUDAToolkit_ROOT="${cudaPackages.cudatoolkit}"
     export CUDA_PATH="${cudaPackages.cudatoolkit}"
     export CPATH="${cudaPackages.cudatoolkit}/include:${cudaPackages.cuda_cudart}/include:''${CPATH:-}"
@@ -164,7 +154,7 @@ stdenv.mkDerivation (finalAttrs: {
     export NODE_PATH="$out/lib/qmd/node_modules"
     export PATH="${lib.makeBinPath [ stdenv.cc gnumake cmake git python3 node-gyp cudaPackages.cudatoolkit ]}:\$PATH"
 
-    exec ${nodejs}/bin/node "$out/lib/qmd/dist/qmd.js" "\$@"
+    exec ${nodejs}/bin/node "$out/lib/qmd/bin/qmd" "\$@"
     EOF
     chmod +x $out/bin/qmd
 

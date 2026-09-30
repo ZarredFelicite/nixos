@@ -34,8 +34,7 @@ in {
     inputs.spicetify-nix.homeManagerModules.spicetify
   ];
   home.packages = [
-    #(pkgs.callPackage ../../pkgs/lowfi {})
-    pkgs.lowfi
+    (pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.tplay
     pkgs-unstable.spotify-player
     pkgs-unstable.streamrip

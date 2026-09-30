@@ -142,7 +142,7 @@ in {
     pkgs-unstable.gemini-cli
     emberPackage
     #pkgs.opencode
-    pkgs-unstable.opencode
+    (pkgs.callPackage ../../pkgs/opencode.nix {})
     (pkgs.callPackage ../../pkgs/pi.nix {})
     (pkgs.callPackage ../../pkgs/obscura.nix {})
     # antigravity removed

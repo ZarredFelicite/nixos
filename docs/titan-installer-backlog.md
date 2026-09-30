@@ -47,13 +47,20 @@
 - Installer action: ensure initial persistent `.gnupg` provisioning creates/retains mode `0700` with correct owner; validate existing Home Manager/impermanence coverage before adding a redundant installer change.
 - Status: live fix verified; installer directory-mode coverage pending.
 
-## Research proposal — not approved or implemented
+### 8. Private Hyprlock PAM credential patch
+- User selected a private fork and application patch, not a custom password-handling helper. Private upstream-based repo (GitHub cannot make public forks private): https://github.com/ZarredFelicite/hyprlock-private.
+- Base: upstream tag `v0.9.2`, commit `c48279d1e0f0a4399b5a2d56c16f2ec677ba18f8`. Patch branch `fix/pam-gnupg-credentials`, signed commit `eae9b657929a617e7b993e557745be9f0e213376`; private review https://github.com/ZarredFelicite/hyprlock-private/pull/1.
+- Change: `src/auth/Pam.cpp` calls `pam_setcred(PAM_ESTABLISH_CRED)` only after successful authentication, before `pam_end`. Credential failure logs generic status but preserves successful screen unlock. UI and authentication failure behavior unchanged.
+- Evidence: actual auth-body mocked-PAM regression covers success ordering, failed authentication, and nonfatal credential errors without input logging; passed. Out-of-system pinned Nixpkgs build passed; `/nix/store/41ar253zxpayk1xhfs9hqgnmkpcc951k-hyprlock-0.9.2` imports `pam_setcred`/`pam_strerror`. No real lock test or deployment.
+- Installer action: pin/build the private fork revision, ensure private-source access works during Web/bootstrap builds, and include its output in Titan's generation. Do not assume Titan GPG credentials exist before installation; do not embed access tokens in Git/Nix expressions/store.
+- Status: patch implemented, committed, pushed, private PR open. Repository Actions disabled to avoid unrequested CI builds. Package wiring/merge/deployment pending.
 
-### Hyprlock/GPG cache integration
-- Alternatives and implementation plan: [titan-gpg-lock-options.md](titan-gpg-lock-options.md).
-- Findings: existing GPG preset/PAM flags do not establish unlocking; explicit Hyprlock PAM text bypasses generated direct gnupg rules, and active Hyprlock 0.9.2 lacks `pam_setcred` required by `pam_gnupg`.
-- Potential approaches: Titan-only PAM auth helper (stock Hyprlock), small Hyprlock compatibility patch plus pam_gnupg, or explicitly approved storage-backed unlock hook. Clear agent caches on lock; preset all three personal grips after successful authentication if passwords match.
-- Status: research only. Do not include a chosen implementation in the installer batch until scope/PAM or passphrase-storage changes are explicitly approved, implemented and tested. Host-age SOPS provisioning is separate and already works.
+## Follow-up integration — not yet implemented or activated
+
+### Hyprlock/GPG cache wiring
+- Research: [titan-gpg-lock-options.md](titan-gpg-lock-options.md). The application blocker is fixed in the private patch above; Titan's active locker is still unpatched.
+- Remaining: make `pam_gnupg` effective in Titan's PAM stack (existing explicit `auth include login` bypasses generated direct rules), select all three full-key grips, and clear GPG Agent caches on lock through Hypridle. Validate matching passphrases and cache behavior with an independent recovery session.
+- Approval boundary: user approved the private application fork/patch, not PAM-policy changes, passphrase storage, a system switch or live lock tests. Obtain required specific approval before those operations. Host-age SOPS provisioning remains separate and already works.
 
 ## Verified prerequisites — no repair indicated
 
@@ -80,3 +87,4 @@
 | Initial auth-only provisioning and actual Web SSH login | Commit `d8c2ac2d` | Strict SSH to Web succeeded as Zarred, exit 0 | Superseded by user-approved full-key scope below | Auth-only restriction removed |
 | Full GPG key provisioning, matching other computers | Full-key ciphertext + corrected Titan module/importer/tests | Actual full import and idempotence passed; master/encryption/auth grips all available; SSH identity unchanged | Validate full-key assets/order/first-boot coverage; active generation unchanged | Live complete; activation/installer validation pending |
 | GPG homedir mode `0700` | Live persisted `.gnupg` | Owner Zarred, mode `0700` | Check directory-mode coverage | Live fixed |
+| Private Hyprlock credential-initialization patch | Private repo/PR above; `eae9b657929a617e7b993e557745be9f0e213376` | Mocked actual auth lifecycle passed; pinned package compile and PAM linkage verified | Pin private revision and validate PAM/keygrip/lock-cache wiring | Patch ready; not deployed |

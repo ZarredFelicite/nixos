@@ -13,6 +13,8 @@ let
   herdrWebPluginDir = "${config.xdg.configHome}/herdr/plugins/github/barnuri.herdr-web-313cb02235b3";
   herdrWebConfigDir = "${config.xdg.configHome}/herdr/plugins/config/barnuri.herdr-web";
   herdrWebStateDir = "${config.xdg.stateHome}/herdr-web";
+  helmRuntimeDir = "${config.xdg.dataHome}/helm";
+  helmStateDir = "${config.xdg.stateHome}/herdr-agent-workbench-canary";
   herdrWebPath =
     lib.makeBinPath [ pkgs.nodejs herdrPackage piPackage pkgs.bash pkgs.coreutils pkgs.openssl ]
     + ":/run/current-system/sw/bin:/home/zarred/.nix-profile/bin";
@@ -162,6 +164,44 @@ in
       bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hfp_ag ]
     }
   '';
+
+  # Helm's runtime is installed under persistent ~/.local/share because the
+  # home directory itself is tmpfs. State and configuration remain separate.
+  systemd.user.services.helm = {
+    Unit = {
+      Description = "Helm agent workspace";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" "helm-proxy.service" ];
+      Before = [ "helm-proxy.service" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${helmRuntimeDir}/bin/helm --host 127.0.0.1 --port 8789 --remote-security-config ${helmStateDir}/remote-security.json";
+      Restart = "on-failure";
+      RestartSec = "5s";
+      Environment = [
+        "HERDR_SOCKET_PATH=${config.xdg.configHome}/herdr/herdr.sock"
+        "HERDR_WEB_HOST_ID=agent-workbench-canary"
+        "HERDR_WEB_SEMANTIC_DIR=${config.xdg.stateHome}/herdr-web-canary/semantic"
+        "HERDR_WEB_PI_EXTENSION_ENTRY=${helmRuntimeDir}/share/helm/pi-extension/dist/index.ts"
+      ];
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
+  systemd.user.services.helm-proxy = {
+    Unit = {
+      Description = "Helm local nginx relay";
+      After = [ "helm.service" ];
+      PartOf = [ "helm.service" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.nginx}/bin/nginx -e ${helmStateDir}/nginx-error.log -c ${helmStateDir}/nginx.conf -g 'daemon off;'";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
 
   # Herdr's startup hook is intentionally left enabled so its plugin actions
   # remain available. It may attempt a second bind after a Herdr restart and

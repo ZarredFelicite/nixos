@@ -2,6 +2,7 @@
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  codexDesktopPackage = pkgs.callPackage ../../pkgs/codex-desktop.nix { inherit inputs; };
   herdrPackage = inputs.herdr.packages.${pkgs.system}.herdr.overrideAttrs (old: {
     patches = (old.patches or []) ++ [ ../../pkgs/herdr-status-dot-spacing.patch ];
   });
@@ -128,14 +129,14 @@ in
   ];
 
   home.packages = [
-    inputs.codex-desktop.packages.${pkgs.system}.codex-desktop
+    codexDesktopPackage
     herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
     printVaultPackage
   ];
 
   wayland.windowManager.hyprland.settings.exec-once = lib.mkAfter [
-    "[workspace special:codex silent] ${inputs.codex-desktop.packages.${pkgs.system}.codex-desktop}/bin/codex-desktop"
+    "[workspace special:codex silent] ${codexDesktopPackage}/bin/codex-desktop"
   ];
 
   programs.vicinae.extensions = [ vicinaePrintvaultExtension ];

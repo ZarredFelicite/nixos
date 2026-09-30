@@ -132,6 +132,10 @@ in
     printVaultPackage
   ];
 
+  wayland.windowManager.hyprland.settings.exec-once = lib.mkAfter [
+    "[workspace special:codex silent] ${inputs.codex-desktop.packages.${pkgs.system}.codex-desktop}/bin/codex-desktop"
+  ];
+
   programs.vicinae.extensions = [ vicinaePrintvaultExtension ];
   systemd.user.services.vicinae.Service.Environment = [
     "PRINTVAULT_BIN=${lib.getExe printVaultPackage}"

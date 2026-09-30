@@ -47,6 +47,14 @@
 - Installer action: ensure initial persistent `.gnupg` provisioning creates/retains mode `0700` with correct owner; validate existing Home Manager/impermanence coverage before adding a redundant installer change.
 - Status: live fix verified; installer directory-mode coverage pending.
 
+## Research proposal — not approved or implemented
+
+### Hyprlock/GPG cache integration
+- Alternatives and implementation plan: [titan-gpg-lock-options.md](titan-gpg-lock-options.md).
+- Findings: existing GPG preset/PAM flags do not establish unlocking; explicit Hyprlock PAM text bypasses generated direct gnupg rules, and active Hyprlock 0.9.2 lacks `pam_setcred` required by `pam_gnupg`.
+- Potential approaches: Titan-only PAM auth helper (stock Hyprlock), small Hyprlock compatibility patch plus pam_gnupg, or explicitly approved storage-backed unlock hook. Clear agent caches on lock; preset all three personal grips after successful authentication if passwords match.
+- Status: research only. Do not include a chosen implementation in the installer batch until scope/PAM or passphrase-storage changes are explicitly approved, implemented and tested. Host-age SOPS provisioning is separate and already works.
+
 ## Verified prerequisites — no repair indicated
 
 ### SOPS bootstrap / fresh decryption

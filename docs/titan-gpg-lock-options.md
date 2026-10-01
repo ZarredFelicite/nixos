@@ -1,6 +1,6 @@
 # GPG lock/unlock with Hyprlock: implementation options
 
-Research completed 2026-09-30. Subsequently the user chose the private-fork compatibility patch: https://github.com/ZarredFelicite/hyprlock-private/pull/1, commit `eae9b657929a617e7b993e557745be9f0e213376` based on v0.9.2. The patch and focused tests/build are complete; it was subsequently runtime-deployed on Titan without a lock test. Shared Nix package pin and Titan boot-only persistence were subsequently completed; PAM/cache wiring remains pending. No lock hooks, PAM changes or passphrase storage were applied. See [titan-installer-backlog.md](titan-installer-backlog.md) for implementation state; the alternatives below record the research findings before that choice.
+Research completed 2026-09-30. Subsequently the user chose the private-fork compatibility patch: https://github.com/ZarredFelicite/hyprlock-private/pull/1, commit `eae9b657929a617e7b993e557745be9f0e213376` based on v0.9.2. The patch and focused tests/build are complete; it was subsequently runtime-deployed on Titan without a lock test. Shared Nix package pin and Titan boot-only persistence were subsequently completed. Titan-only three-grip handoff and lock-cache clearing are now implemented and isolated-tested in source, but not synced/activated: Titan SSH and Tailscale ping timed out at the deployment step. No PAM policy changes or extra passphrase storage were needed. See [titan-installer-backlog.md](titan-installer-backlog.md) for implementation state; the alternatives below record the research findings before that choice.
 
 ## Goal and current state
 
@@ -16,6 +16,15 @@ SOPS provision/import is separate: Titan's host SSH-to-age identity decrypts the
 4. **That flag is not an effective direct Hyprlock hook today.** The explicit PAM text evaluates to `auth include login`; the active `/etc/pam.d/hyprlock` has that same include and no direct `pam_gnupg` rule. The text override bypasses the generated per-service rules. This does not by itself describe every rule in the included login stack.
 5. **The installed locker lacks the required credential step.** `pam-gnupg` explicitly requires screen lockers to call `pam_setcred` after authentication [2]. The actual Titan artifact `/nix/store/74c2dwiyd4ds8cdadi8rx0kkxmxm2jbw-hyprlock-0.9.2/bin/hyprlock` imports `pam_authenticate`, `pam_start` and `pam_end`, but has no `pam_setcred` import or runtime lookup string. The source-selected 0.9.2 artifact was checked separately with the same result. Evidence is binary inspection, not a fetched source-body review: raw source retrieval timed out.
 6. **Only one grip is currently in `.pam-gnupg`.** A full-key handoff needs the master, encryption and authentication/signing grips, not just SSH authentication. This must be overridden for Titan only, not silently propagated to other hosts.
+
+## Chosen-route implementation (source ready; activation pending)
+
+The user subsequently approved the unified handoff. Titan's actual included `login` stack already has one optional `pam_gnupg.so` auth rule before the final sufficient Unix validator; no PAM override/duplicate rule is required. Exact pinned v0.4 source (`/nix/store/81w91h0bnyk58md2l5hkr5xr1kkjsq7c-source`) confirms auth only stores the token in PAM memory and cleans it up; presetting occurs during `pam_setcred`, with helper transport over a pipe. The patched locker calls that only after successful authentication. Do not add `store-only`, which would disable this credential-stage preset.
+
+- `hosts/titan/gpg-ssh.nix` overrides `.pam-gnupg` with all three grips below, Titan only.
+- `hosts/titan.nix` adds only Hypridle `on_lock_cmd = gpg-connect-agent --no-autostart reloadagent /bye` using the pinned absolute executable. No unlock/startup hook. This flushes the whole agent cache; pinned Hypridle 0.1.7 dispatches it asynchronously upon the compositor's locked notification, normally after lock-surface rendering. It is not a pre-lock barrier.
+- `portable/tests/test_titan_gpg_lock.py` passed with real Linux-PAM/pam_gnupg and disposable protected keys in a non-root bubblewrap namespace masking `/home` and `/run`. A wrong token never established credentials; successful auth alone did not unlock; `PAM_ESTABLISH_CRED` enabled primary/auth signatures and encryption-key decryption; reload disabled all again. Synthetic token remained in memory/pipes; no real keys/agent sockets were used.
+- Current Titan runtime/source activation and real login/GPG passphrase matching remain unverified. Next step is reconnecting to Titan, syncing/building the approved narrow change and coordinating activation/testing. No real locker was run or live cache cleared during implementation.
 
 ## Alternatives
 

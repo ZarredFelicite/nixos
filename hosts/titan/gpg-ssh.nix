@@ -13,6 +13,12 @@ in
   # Keep the runtime importer Titan-only even though Titan reuses Nano's HM
   # profile. It waits for the SOPS runtime secret and never unlocks/signs keys.
   home-manager.users.zarred = { lib, pkgs, ... }: {
+    home.file.".pam-gnupg".text = lib.mkForce ''
+      13A4FEE773790871433DF46D116C7AE1C597FBDC
+      5B32AFE33A293758C727F532FA9BD2E43A44237E
+      BEF3920E6B79FF4A4F817838844F26D1BCAE35C9
+    '';
+
     systemd.user.paths.titan-gpg-key = {
       Unit.Description = "Wait for Titan's SOPS-provisioned full GPG key";
       Path = {

@@ -13,7 +13,11 @@
       outputs = self;
       headless = false;
     };
-    users.zarred = import ../home/hosts/nano.nix;
+    users.zarred = {
+      imports = [ ../home/hosts/nano.nix ];
+      services.hypridle.settings.general.on_lock_cmd =
+        "${pkgs.gnupg}/bin/gpg-connect-agent --no-autostart reloadagent /bye >/dev/null";
+    };
   };
 
   nixpkgs.hostPlatform = "x86_64-linux";

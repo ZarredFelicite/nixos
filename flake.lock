@@ -567,6 +567,24 @@
         "type": "github"
       }
     },
+    "hyprlock-private": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790784403,
+        "narHash": "sha256-MlvUwiS+RkKqww30gAiiAQ9apLgrah1wmxPEWCdYtvw=",
+        "ref": "fix/pam-gnupg-credentials",
+        "rev": "eae9b657929a617e7b993e557745be9f0e213376",
+        "revCount": 397,
+        "type": "git",
+        "url": "ssh://git@github.com/ZarredFelicite/hyprlock-private.git"
+      },
+      "original": {
+        "ref": "fix/pam-gnupg-credentials",
+        "rev": "eae9b657929a617e7b993e557745be9f0e213376",
+        "type": "git",
+        "url": "ssh://git@github.com/ZarredFelicite/hyprlock-private.git"
+      }
+    },
     "ignis": {
       "inputs": {
         "ignis-gvc": "ignis-gvc",
@@ -1276,6 +1294,7 @@
         "flake-utils": "flake-utils",
         "herdr": "herdr",
         "home-manager": "home-manager",
+        "hyprlock-private": "hyprlock-private",
         "ignis": "ignis",
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",

@@ -61,6 +61,10 @@
       url = "github:ZarredFelicite/vicinae-printvault-private/58e6bdfed8cfe576402fd4cb3c1534552ac6b921";
       flake = false;
     };
+    hyprlock-private = {
+      url = "git+ssh://git@github.com/ZarredFelicite/hyprlock-private.git?ref=fix/pam-gnupg-credentials&rev=eae9b657929a617e7b993e557745be9f0e213376";
+      flake = false;
+    };
   };
   outputs = {
     self, nixpkgs,
@@ -96,7 +100,11 @@
         inherit system;
         config.allowUnfree = true;
       };
+      hyprlockOverlayModule = {
+        nixpkgs.overlays = [ (import ./overlays/hyprlock.nix inputs) ];
+      };
       rock4cModules = [
+        hyprlockOverlayModule
         inputs.nixos-hardware.nixosModules.rock-4c-plus
         ./hosts/rock4c.nix
       ];
@@ -197,6 +205,7 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             inputs.stylix.nixosModules.stylix
             ./roles/iso.nix
+            hyprlockOverlayModule
           ];
         };
       };

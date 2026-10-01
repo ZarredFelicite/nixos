@@ -80,6 +80,7 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
+      (import ../overlays/hyprlock.nix inputs)
       #inputs.nix-vscode-extensions.overlays.default
       #(final: prev: rec {
       #  rofi-calc = prev.rofi-calc.override { rofi-unwrapped = prev.rofi-wayland-unwrapped; };

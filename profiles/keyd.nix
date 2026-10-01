@@ -26,9 +26,12 @@
       });
     }
   )];
+  users.groups.keyd = {};
   systemd.services.keyd.serviceConfig = {
-    CapabilityBoundingSet = lib.mkForce [ "CAP_SYS_NICE" ];
+    Group = "keyd";
+    CapabilityBoundingSet = lib.mkForce [ "CAP_SYS_NICE" "CAP_IPC_LOCK" ];
     PrivateUsers = lib.mkForce false;
+    RestrictRealtime = lib.mkForce false;
     SystemCallFilter = lib.mkForce [
       "nice"
       "@system-service"

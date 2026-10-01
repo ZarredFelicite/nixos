@@ -195,7 +195,8 @@
       fifs = "fif --dir ~/scripts";
     };
   };
-  xdg.configFile."zsh/fzf-tab-sources/--complete.zsh".text = ''
+  # Link the directory, not individual files: fzf-tab-source's (.N) glob skips symlinks.
+  xdg.configFile."zsh/fzf-tab-sources".source = pkgs.writeTextDir "--complete.zsh" ''
     # :fzf-tab:complete:*
     ~/scripts/previewers/mini_previewer "''${realpath#-*=}"
   '';

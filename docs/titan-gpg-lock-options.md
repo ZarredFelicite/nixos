@@ -1,6 +1,6 @@
 # GPG lock/unlock with Hyprlock: implementation options
 
-Research completed 2026-09-30. Subsequently the user chose the private-fork compatibility patch: https://github.com/ZarredFelicite/hyprlock-private/pull/1, commit `eae9b657929a617e7b993e557745be9f0e213376` based on v0.9.2. The patch and focused tests/build are complete; it is not deployed. No lock hooks, PAM changes or passphrase storage were applied. See [titan-installer-backlog.md](titan-installer-backlog.md) for implementation state; the alternatives below record the research findings before that choice.
+Research completed 2026-09-30. Subsequently the user chose the private-fork compatibility patch: https://github.com/ZarredFelicite/hyprlock-private/pull/1, commit `eae9b657929a617e7b993e557745be9f0e213376` based on v0.9.2. The patch and focused tests/build are complete; it was subsequently runtime-deployed on Titan without a lock test. Persistent package and PAM/cache wiring remain pending. No lock hooks, PAM changes or passphrase storage were applied. See [titan-installer-backlog.md](titan-installer-backlog.md) for implementation state; the alternatives below record the research findings before that choice.
 
 ## Goal and current state
 

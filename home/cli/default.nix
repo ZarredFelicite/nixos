@@ -139,7 +139,6 @@ in {
     pkgs-unstable.claude-code # An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster
     pkgs-unstable.codex # Lightweight coding agent that runs in your terminal
     pkgs.oterm # Text-based terminal client for Ollama
-    pkgs-unstable.gemini-cli
     emberPackage
     #pkgs.opencode
     (pkgs.callPackage ../../pkgs/opencode.nix {})

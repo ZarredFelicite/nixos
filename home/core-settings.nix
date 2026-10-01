@@ -60,6 +60,11 @@
     signByDefault = true;
   };
 
+  # OpenSSH does not create the parent directory of ControlPath sockets.
+  home.activation.sshControlMasters = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -d -m 700 "$HOME/.ssh" "$HOME/.ssh/controlmasters"
+  '';
+
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;

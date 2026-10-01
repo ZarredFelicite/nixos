@@ -10,6 +10,10 @@
 
 ## Pending integration / coverage checks
 
+### SSH ControlMaster directory after activation/reboot
+- Shared SSH configuration points `ControlPath` at `~/.ssh/controlmasters/%r@%h:%p`, but never created that directory. After the user's configuration activation/reboot, Titan reported “cannot bind ... no such file or directory.” Created the directory as `zarred`, mode `0700`, without changing SSH authentication, pins or multiplexing policy.
+- Permanent source repair: `home/core-settings.nix` now creates `.ssh` and `controlmasters` at mode `0700` via a dry-run-aware Home Manager activation hook. Targeted Titan activation-node evaluation passed; no full rebuild, switch or reboot was performed for this repair. `.ssh` is already persisted. Installer action: retain this hook in the later batch; until the next user activation, the manual directory repair supplies the same state.
+
 ### TaskNotes `tn` runtime dependency
 - The existing `/home/zarred/scripts/notes/tasknotes-cli-go/tn` was found by login zsh, but its ELF interpreter `/nix/store/vr7ds8vwbl2fz7pr221d5y0f8n9a5wda-glibc-2.40-218/lib/ld-linux-x86-64.so.2` was absent on Titan, causing misleading “no such file” errors. Copied its four-path Nix closure from Web and retained it with user GC root `~/.config/tasknotes-cli/tn-runtime` inside the already-persisted config directory; shared binary unchanged. `tn --help` now prints expected command usage. API connectivity/configuration was not tested or changed.
 - Installer action (deferred batch): include runtime closures for copied native ELF tools, or package `tn` declaratively/portably; copying the executable alone is insufficient. Status: local runtime repaired; installer coverage pending.

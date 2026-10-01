@@ -271,7 +271,7 @@ in {
          animate_manual_resizes = true;
          animate_mouse_windowdragging = true;
          focus_on_activate = true;
-         layers_hog_keyboard_focus = true;
+         layers_hog_keyboard_focus = false;
          mouse_move_enables_dpms = false;
          key_press_enables_dpms = true;
          enable_swallow = false;

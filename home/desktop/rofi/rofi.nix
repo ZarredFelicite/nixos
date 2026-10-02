@@ -1,7 +1,20 @@
-{ pkgs, lib, osConfig, ... }: {
+{ pkgs, lib, osConfig, ... }:
+let
+  # Rofi's Wayland layer should take initial focus without reserving it.
+  rofiOnDemand = pkgs.rofi.override {
+    rofi-unwrapped = pkgs.rofi-unwrapped.overrideAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace source/wayland/display.c \
+          --replace-fail \
+          'zwlr_layer_surface_v1_set_keyboard_interactivity(wayland->wlr_surface, 1);' \
+          'zwlr_layer_surface_v1_set_keyboard_interactivity(wayland->wlr_surface, 2);'
+      '';
+    });
+  };
+in {
   stylix.targets.rofi.enable = false;
   programs.rofi = {
-    #package = pkgs.rofi-wayland;
+    package = rofiOnDemand;
     cycle = false;
     location = "center";
     font = lib.mkDefault "IosevkaTerm NFM 16";

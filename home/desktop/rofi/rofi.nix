@@ -1,4 +1,4 @@
-{ pkgs, lib, osConfig, ... }:
+{ pkgs, lib, osConfig, config, ... }:
 let
   # Rofi's Wayland layer should take initial focus without reserving it.
   rofiOnDemand = pkgs.rofi.override {
@@ -12,6 +12,11 @@ let
     });
   };
 in {
+  home.file.".local/bin/rofi" = lib.mkIf (osConfig.networking.hostName == "web") {
+    source = "${config.programs.rofi.finalPackage}/bin/rofi";
+  };
+  home.sessionPath = lib.mkIf (osConfig.networking.hostName == "web") [ "$HOME/.local/bin" ];
+
   stylix.targets.rofi.enable = false;
   programs.rofi = {
     package = rofiOnDemand;

@@ -84,8 +84,14 @@ in {
     };
     script = ''
       ${pkgs.systemd}/bin/systemctl stop mpd.service 2>/dev/null || true
-      ${pkgs.psmisc}/bin/fuser -km ${builtins.concatStringsSep " " nfsMounts} 2>/dev/null || true
-      ${pkgs.util-linux}/bin/umount -f -l ${builtins.concatStringsSep " " nfsMounts} 2>/dev/null || true
+      for mount in ${builtins.concatStringsSep " " nfsMounts}; do
+        # Unmounted directories belong to the local filesystem: never kill its users.
+        if ${pkgs.util-linux}/bin/findmnt --nocanonicalize --noheadings \
+          --mountpoint "$mount" --types nfs,nfs4 >/dev/null; then
+          ${pkgs.psmisc}/bin/fuser -k -m -M "$mount" 2>/dev/null || true
+          ${pkgs.util-linux}/bin/umount -f -l "$mount" 2>/dev/null || true
+        fi
+      done
     '';
   };
 

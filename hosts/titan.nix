@@ -63,6 +63,10 @@
     };
     linkConfig.RequiredForOnline = "no";
   };
+  # IWD configures Wi-Fi; networkd has no managed link on Wi-Fi-only boots.
+  # Its shared unlimited wait would block network-online and the NFS mounts.
+  systemd.network.wait-online.enable = lib.mkForce false;
+
   # Do not use Nano's fixed wlan0 or host-specific wired device rules.
   systemd.network.networks."30-wired" = lib.mkForce {
     matchConfig.Name = "en*";

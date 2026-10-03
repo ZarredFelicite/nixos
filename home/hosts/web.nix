@@ -2,20 +2,9 @@
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
-  herdrPackage = inputs.herdr.packages.${pkgs.system}.herdr.overrideAttrs (old: {
-    patches = (old.patches or []) ++ [ ../../pkgs/herdr-status-dot-spacing.patch ];
-  });
   ollamaCudaPackage = pkgs-ollama.ollama-cuda;
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
-  # This checkout is the audited barnuri.herdr-web 0.1.1 install at
-  # 198546e47350fc88d013889fea06f26a0daceda6.
-  herdrWebPluginDir = "${config.xdg.configHome}/herdr/plugins/github/barnuri.herdr-web-313cb02235b3";
-  herdrWebConfigDir = "${config.xdg.configHome}/herdr/plugins/config/barnuri.herdr-web";
-  herdrWebStateDir = "${config.xdg.stateHome}/herdr-web";
-  herdrWebPath =
-    lib.makeBinPath [ pkgs.nodejs herdrPackage piPackage pkgs.bash pkgs.coreutils pkgs.openssl ]
-    + ":/run/current-system/sw/bin:/home/zarred/.nix-profile/bin";
   audioSummaryPython = pkgs.python312.withPackages (ps: [
     ps.requests
     ps.numpy
@@ -126,7 +115,6 @@ in
   ];
 
   home.packages = [
-    herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
     printVaultPackage
   ];
@@ -157,31 +145,6 @@ in
       bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hfp_ag ]
     }
   '';
-
-  # Herdr's startup hook is intentionally left enabled so its plugin actions
-  # remain available. It may attempt a second bind after a Herdr restart and
-  # exit with EADDRINUSE; this user service owns the persistent web listener.
-  systemd.user.services.herdr-web = {
-    Unit = {
-      Description = "Herdr Web browser UI";
-      After = [ "network-online.target" ];
-      Wants = [ "network-online.target" ];
-    };
-    Service = {
-      Type = "simple";
-      WorkingDirectory = herdrWebPluginDir;
-      ExecStart = "${pkgs.nodejs}/bin/node ${herdrWebPluginDir}/server.js";
-      Restart = "on-failure";
-      RestartSec = "5s";
-      Environment = [
-        "PATH=${herdrWebPath}"
-        "HERDR_PLUGIN_CONFIG_DIR=${herdrWebConfigDir}"
-        "HERDR_PLUGIN_STATE_DIR=${herdrWebStateDir}"
-        "HERDR_BIN_PATH=${herdrPackage}/bin/herdr"
-      ];
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
 
   xdg.configFile."home-assistant/config.json".source =
     config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."home-assistant-config.json".path;

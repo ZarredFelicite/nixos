@@ -30,7 +30,6 @@
 
   systemd.user.services.quickshell.Service.Environment = [
     "QUICKSHELL_DISABLE_AI_VISUALIZER=1"
-    "QUICKSHELL_LOW_POWER_MODE=1"
   ];
 
   xdg.configFile."home-assistant/config.json".source =

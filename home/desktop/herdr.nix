@@ -28,7 +28,7 @@ in
     $DRY_RUN_CMD ${herdrPackage}/bin/herdr plugin link "${herdrWebPlugin}"
   '';
 
-  systemd.user.services.herdr-web = {
+  systemd.user.services.herdr-server = {
     Unit = {
       Description = "Herdr Web browser UI";
       After = [ "network-online.target" ];

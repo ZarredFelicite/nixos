@@ -1,0 +1,5 @@
+--- a/drivers/gpu/drm/i915/display/intel_vrr.c
++++ b/drivers/gpu/drm/i915/display/intel_vrr.c
+@@ -415,1 +415,1 @@
+-	crtc_state->vrr.dc_balance.enable = true;
++	crtc_state->vrr.dc_balance.enable = false;

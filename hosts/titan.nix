@@ -40,6 +40,15 @@
     loader.efi.canTouchEfiVariables = lib.mkForce false;
   };
 
+  # Opt-in diagnostic only; this is not a claimed fix for VRR pacing.
+  specialisation."vrr-dc-balance-off".configuration.boot.kernelPatches =
+    lib.mkAfter [
+      {
+        name = "vrr-dc-balance-off-test";
+        patch = ./titan/vrr-dc-balance-off.patch;
+      }
+    ];
+
   # Disko supplies the tmpfs root/home and the encrypted persistent mounts.
   fileSystems."/persist".neededForBoot = true;
   fileSystems."/nix".neededForBoot = true;

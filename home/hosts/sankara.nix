@@ -46,6 +46,35 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
+  # Separate all-author stock scans share the DB but never alter the user RSS feed.
+  systemd.user.services.hotcopper-stock-feed = {
+    Unit.Description = "Cache recent HotCopper stock discussions from all authors";
+    Service = {
+      Type = "oneshot";
+      WorkingDirectory = "/home/zarred/scripts/finances/ibkr";
+      ExecStart = "/home/zarred/scripts/scrapers/hotcopper/stock_feed --once --run-budget 900";
+      TimeoutStartSec = "20min";
+      Nice = 10;
+      MemoryMax = "1G";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+      Environment = [
+        "PATH=/run/current-system/sw/bin:/home/zarred/scripts/ai"
+        "HOTCOPPER_CRAWL4AI_BASE=http://web:11235"
+        "TZ=Australia/Sydney"
+      ];
+    };
+  };
+  systemd.user.timers.hotcopper-stock-feed = {
+    Unit.Description = "Refresh cached stock-wide HotCopper discussion in rotating batches";
+    Timer = {
+      OnStartupSec = "2min";
+      OnUnitInactiveSec = "5min";
+      AccuracySec = "30s";
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
+
   systemd.user.services.hotcopper = {
     Unit.Description = "Scrape HotCopper for user posts";
     Unit.After = [ "graphical-session.target" ];

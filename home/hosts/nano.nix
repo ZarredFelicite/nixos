@@ -1,4 +1,4 @@
-{ inputs, self, pkgs, lib, config, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, pkgs-unstable, lib, config, osConfig, ... }: # Added osConfig
 
 {
   imports = [
@@ -21,6 +21,9 @@
     ../security.nix
     ../impermanence.nix
   ];
+
+  # 0.11+ provides encrypted, fingerprint-authorized input sharing.
+  home.packages = [ pkgs-unstable.lan-mouse ];
 
   #systemd.user.services.airpods_battery.Install.WantedBy = lib.mkForce [];
   #systemd.user.services.zmk_battery.Install.WantedBy = lib.mkForce [];

@@ -129,6 +129,8 @@ in
   ];
 
   home.packages = [
+    # 0.11+ provides encrypted, fingerprint-authorized input sharing.
+    pkgs-unstable.lan-mouse
     codexDesktopPackage
     herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })

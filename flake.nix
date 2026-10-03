@@ -42,7 +42,7 @@
     codex-desktop.url = "github:ilysenko/codex-desktop-linux/e67d0463aa16fadf8b6c16ad9c970682a663591c";
     vicinae.url = "path:/home/zarred/dev/vicinae";
     recall = {
-      url = "path:/home/zarred/dev/recall";
+      url = "git+file:///home/zarred/dev/recall";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };

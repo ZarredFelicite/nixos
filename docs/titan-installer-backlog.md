@@ -10,10 +10,10 @@
 
 ## Pending integration / coverage checks
 
-### Unified Titan GPG unlock/cache clearing (source ready; deployment blocked)
+### Unified Titan GPG unlock/cache clearing (active; real-cycle validation pending)
 - User approved all three personal keygrips and lock-time cache clearing. `hosts/titan/gpg-ssh.nix` now sets the three-grip `.pam-gnupg`; `hosts/titan.nix` adds pinned `gpg-connect-agent --no-autostart reloadagent /bye` only on Hypridle's lock event. Existing effective PAM policy remains unchanged: included login already contains optional GPG auth; exact v0.4 source shows token storage in auth and presetting in `pam_setcred` after the patched locker's successful authentication.
 - Isolated real-PAM/disposable-key test `portable/tests/test_titan_gpg_lock.py` passed: failed auth does not unlock; success alone does not unlock; credential establishment enables all three key operations; reload disables all three. No actual user credentials, keys, cache operations or locker execution. Lock hook is asynchronous after the compositor locked event, not a pre-lock barrier. Login/GPG passphrase matching remains unverified.
-- Deployment blocked by strict SSH connect timeout and Tailscale ping timeout; no source sync/activation for this change yet. Installer action: include both Titan-only overrides in the later batch and coordinate a recovery-backed real lock/unlock test. Do not duplicate/replace the existing PAM login stack.
+- Initial connectivity blocker resolved; newer Rofi/network source was merged without discarding it (`1873e18b`) and synced. The user activated the declared config; parent verified runtime/persistent system `a9n0…`, HM `n0bml…`, all three live grips, unchanged PAM, patched `vq90…` locker and loaded Hypridle hook/restart trigger `n8vf…` (active PID `163809`, start 2026-10-03 13:09:31 AEST). The parent's staged `b8bq…` candidate was not activated. Actual passphrase matching/real lock cycle remain untested. Installer action: include both Titan-only overrides in the later batch and coordinate a recovery-backed real lock/unlock test; do not duplicate/replace the PAM login stack.
 
 ### SSH ControlMaster directory after activation/reboot
 - Shared SSH configuration points `ControlPath` at `~/.ssh/controlmasters/%r@%h:%p`, but never created that directory. After the user's configuration activation/reboot, Titan reported “cannot bind ... no such file or directory.” Created the directory as `zarred`, mode `0700`, without changing SSH authentication, pins or multiplexing policy.

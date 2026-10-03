@@ -122,6 +122,7 @@ in
     ../finance
     ../desktop/ember-realtime-companion.nix
     ../media
+    ../services/print-failure-monitor.nix
     ../terminal
     ../security.nix
     ../impermanence.nix

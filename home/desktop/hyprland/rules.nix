@@ -1,6 +1,9 @@
 { ... }: {
   wayland.windowManager.hyprland.extraConfig = ''
     # Window rules for v0.53
+    # Quickshell owns this tag; removing it restores each window's native decoration.
+    windowrule = match:tag quickshell-single-window, match:float false, border_size 0
+    windowrule = match:tag quickshell-single-window, match:float false, rounding 0
     windowrule = match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$, float on
     # Hover Lens is a transparent selection overlay; keep compositor effects off
     # so the cutout remains readable and input focus stays on the overlay.

@@ -12,6 +12,7 @@ in {
     ./notifications.nix
     ./waybar
     ./cad.nix
+    ./lan-mouse.nix
     # ./vscode.nix
     #../../modules/quickshell.nix
     # inputs.ags.homeManagerModules.default

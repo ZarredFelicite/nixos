@@ -48,15 +48,17 @@ let
 
     [gemma4-12b-heretic]
     model = /home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf
-    ctx-size = 32768
+    ctx-size = 65536
     n-gpu-layers = 99
     device = CUDA0
     parallel = 1
     reasoning = off
     reasoning-format = deepseek
-    flash-attn = auto
-    batch-size = 512
-    ubatch-size = 512
+    flash-attn = on
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    batch-size = 128
+    ubatch-size = 128
     load-on-startup = false
 
     [qwen3.5-4b-q4_k_m]

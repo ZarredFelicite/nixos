@@ -40,9 +40,9 @@
     herdr = { url = "github:herdrdev/herdr/v0.8.2"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
     codex-desktop.url = "github:ilysenko/codex-desktop-linux/e67d0463aa16fadf8b6c16ad9c970682a663591c";
-    vicinae.url = "path:/home/zarred/dev/vicinae";
+    vicinae.url = "git+ssh://git@github-vicinae-private/ZarredFelicite/vicinae-private.git?ref=main&rev=0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f";
     recall = {
-      url = "git+file:///home/zarred/dev/recall";
+      url = "git+ssh://git@github-recall-private/ZarredFelicite/recall-private.git?ref=main&rev=d2ae402deb9e01441644ad547b3e9eed2b9e3646";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };

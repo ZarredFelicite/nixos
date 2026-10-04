@@ -1147,15 +1147,17 @@
       "locked": {
         "lastModified": 1791005042,
         "narHash": "sha256-P+9YaaeUwth2YePS5ZgaoVZkYaPL4cfKAiIxd+Mtdks=",
-        "ref": "refs/heads/main",
+        "ref": "main",
         "rev": "d2ae402deb9e01441644ad547b3e9eed2b9e3646",
         "revCount": 109,
         "type": "git",
-        "url": "file:///home/zarred/dev/recall"
+        "url": "ssh://git@github-recall-private/ZarredFelicite/recall-private.git"
       },
       "original": {
+        "ref": "main",
+        "rev": "d2ae402deb9e01441644ad547b3e9eed2b9e3646",
         "type": "git",
-        "url": "file:///home/zarred/dev/recall"
+        "url": "ssh://git@github-recall-private/ZarredFelicite/recall-private.git"
       }
     },
     "root": {
@@ -1602,14 +1604,19 @@
         "systems": "systems_10"
       },
       "locked": {
-        "lastModified": 1789201611,
-        "narHash": "sha256-7fuA76C7FPySklzjV+5vxhWz5U8ZPdlKVLTf9Nxwj88=",
-        "path": "/home/zarred/dev/vicinae",
-        "type": "path"
+        "lastModified": 1790398856,
+        "narHash": "sha256-E11BlOkbE1TKjeWtxrIG2jfwsJJYeS19wgdXytbf1jw=",
+        "ref": "main",
+        "rev": "0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github-vicinae-private/ZarredFelicite/vicinae-private.git"
       },
       "original": {
-        "path": "/home/zarred/dev/vicinae",
-        "type": "path"
+        "ref": "main",
+        "rev": "0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f",
+        "type": "git",
+        "url": "ssh://git@github-vicinae-private/ZarredFelicite/vicinae-private.git"
       }
     },
     "vicinae-printvault": {

@@ -63,6 +63,23 @@ let
     reasoning = on
     reasoning-format = deepseek
     load-on-startup = false
+
+    [qwen3.8-27b-gsq-rco-iq3-s]
+    model = /home/zarred/.cache/llama-models/qwen3.8-27b-heretic-gsq-rco-iq3_s.gguf
+    ctx-size = 65536
+    batch-size = 128
+    ubatch-size = 128
+    parallel = 1
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    flash-attn = on
+    n-gpu-layers = 99
+    device = Vulkan0,Vulkan1
+    split-mode = layer
+    tensor-split = 11.5,7.5
+    reasoning = on
+    reasoning-format = deepseek
+    load-on-startup = false
   '';
   llamaModelsPreset = pkgs.writeText "llama-models.ini" ''
     version = 1

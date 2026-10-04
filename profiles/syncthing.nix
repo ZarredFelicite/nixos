@@ -36,10 +36,12 @@ in {
         "sankara" = { id = "HWHGCRQ-HYCPKIP-M62FMS6-GQGZDWH-GCNJMJA-QIBXEXY-FVT2COA-KJ3W6QT"; };
         "nano" = { id = "I3P5FM2-DOHDIM7-WOPMTTE-KOCGQ66-GVSONDW-NB4KY4N-SFHGPJO-ELM7XQZ"; };
         "p8p" = { id = "WJSCFJY-M5SXBE4-ZXUM2BX-PUQ3IYD-76KTVMQ-EVWD53T-OGVT3FG-A4W5MQR"; };
-      } // (if config.networking.hostName == "web" then {
+      } // (if builtins.elem config.networking.hostName [ "web" "sankara" ] then {
         "titan" = {
           id = "ZGDUA6D-D3SGXGO-YJTWTLB-B7HGMB6-SVDQ2UU-WQNT35K-G6PXRLN-XWYHKA2";
-          addresses = [ "tcp://192.168.86.219:22000" "dynamic" ];
+          addresses = if config.networking.hostName == "web"
+            then [ "tcp://192.168.86.219:22000" "dynamic" ]
+            else [ "dynamic" ];
         };
       } else { });
       folders = {

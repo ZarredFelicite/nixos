@@ -17,6 +17,12 @@
       imports = [ ../home/hosts/nano.nix ];
       services.hypridle.settings.general.on_lock_cmd =
         "${pkgs.gnupg}/bin/gpg-connect-agent --no-autostart reloadagent /bye >/dev/null";
+      # Override the shared Titan VRR-off baseline only after the DC-balance
+      # patch restored 120Hz animation with genuine VRR on this panel.
+      wayland.windowManager.hyprland.settings = {
+        monitor = lib.mkOverride 40 [ "eDP-1,2880x1920@120,auto,1.5,vrr,1" ];
+        misc.vrr = lib.mkOverride 40 true;
+      };
     };
   };
 
@@ -38,16 +44,23 @@
     initrd.systemd.tpm2.enable = true;
     initrd.luks.devices.root.crypttabExtraOpts = [ "tpm2-device=auto" ];
     loader.efi.canTouchEfiVariables = lib.mkForce false;
-  };
-
-  # Opt-in diagnostic only; this is not a claimed fix for VRR pacing.
-  specialisation."vrr-dc-balance-off".configuration.boot.kernelPatches =
-    lib.mkAfter [
+    kernelPatches = lib.mkAfter [
       {
+        # Keep the evaluated patch identity to reuse the tested kernel build.
         name = "vrr-dc-balance-off-test";
         patch = ./titan/vrr-dc-balance-off.patch;
       }
     ];
+  };
+
+  # Safe fallback: the original kernel, fixed 120Hz, and VRR disabled.
+  specialisation."stock-kernel".configuration = {
+    boot.kernelPatches = lib.mkForce [ ];
+    home-manager.users.zarred.wayland.windowManager.hyprland.settings = {
+      monitor = lib.mkOverride 30 [ "eDP-1,2880x1920@120,auto,1.5,vrr,0" ];
+      misc.vrr = lib.mkOverride 30 false;
+    };
+  };
 
   # Disko supplies the tmpfs root/home and the encrypted persistent mounts.
   fileSystems."/persist".neededForBoot = true;

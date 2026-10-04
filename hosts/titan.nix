@@ -29,6 +29,10 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "titan";
   services.syncthing.enable = true;
+  # XHCI immediately wakes s2idle; leave USB operational but disallow USB wake.
+  services.udev.extraRules = ''
+    ACTION=="add|change", SUBSYSTEM=="pci", KERNEL=="0000:00:14.0", ATTR{vendor}=="0x8086", ATTR{device}=="0xe47d", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
+  '';
   # The shared desktop role refreshes the lockfile nightly, but Titan has no
   # private-GitHub credentials until its own authentication is provisioned.
   system.autoUpgrade.enable = lib.mkForce false;

@@ -29,6 +29,24 @@ let
   ]);
   announcementWatcherPython = pkgs.python313.withPackages (ps: [ ps.requests ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
+  llamaGemmaVulkanModelsPreset = pkgs.writeText "llama-gemma-vulkan-models.ini" ''
+    version = 1
+
+    [gemma4-12b-heretic]
+    model = /home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf
+    ctx-size = 131072
+    n-gpu-layers = 99
+    device = Vulkan0
+    parallel = 1
+    reasoning = off
+    reasoning-format = deepseek
+    flash-attn = on
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    batch-size = 128
+    ubatch-size = 128
+    load-on-startup = false
+  '';
   llamaModelsPreset = pkgs.writeText "llama-models.ini" ''
     version = 1
 
@@ -258,6 +276,23 @@ in
         "PI_SDK_PATH=${piSdkPath}"
       ];
       UMask = "0077";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
+  systemd.user.services.gemma-heretic-vulkan = {
+    Unit.Description = "On-demand AMD Vulkan Gemma model router";
+    Service = {
+      Type = "simple";
+      ExecStart = "${lib.getExe' pkgs-unstable.llama-cpp-vulkan "llama-server"} --host 127.0.0.1 --port 8084 --no-webui --offline --models-preset ${llamaGemmaVulkanModelsPreset} --models-max 1 --models-autoload --metrics";
+      Restart = "on-failure";
+      RestartSec = 2;
+      TimeoutStartSec = 30;
+      Environment = [
+        "VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
+      ];
       NoNewPrivileges = true;
       PrivateTmp = true;
     };

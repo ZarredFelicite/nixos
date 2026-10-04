@@ -49,7 +49,7 @@ let
 
     [qwen3.8-27b-rvn-heretic]
     model = /home/zarred/.cache/llama-models/qwen3.8-27b-rvn-heretic-q4_k_m.gguf
-    ctx-size = 32768
+    ctx-size = 65536
     batch-size = 128
     ubatch-size = 128
     parallel = 1
@@ -59,7 +59,7 @@ let
     n-gpu-layers = 99
     device = Vulkan0,Vulkan1
     split-mode = layer
-    tensor-split = 11,8
+    tensor-split = 11.5,7.5
     reasoning = on
     reasoning-format = deepseek
     load-on-startup = false

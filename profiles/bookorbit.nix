@@ -1,10 +1,10 @@
 { pkgs, ... }: {
-  # A private app/DB network. The idempotent setup unit lets generated
-  # oci-containers units depend on the network existing before container start.
+  # A private PostgreSQL network. The idempotent setup unit ensures the
+  # generated PostgreSQL container unit starts only after the network exists.
   systemd.services.podman-network-bookorbit = {
     description = "Create the private BookOrbit Podman network";
     wantedBy = [ "multi-user.target" ];
-    before = [ "podman-bookorbit-postgres.service" "podman-bookorbit-app.service" ];
+    before = [ "podman-bookorbit-postgres.service" ];
     path = [ pkgs.podman ];
     serviceConfig = {
       Type = "oneshot";
@@ -22,6 +22,7 @@
     "d /var/lib/bookorbit/app 0750 zarred users - -"
     "d /var/lib/bookorbit/import 0750 zarred users - -"
     "d /var/lib/bookorbit/postgres 0700 root root - -"
+    "d /mnt/gargantua/media/books/bookorbit-library 0750 zarred users - -"
   ];
 
   virtualisation.oci-containers.containers = {
@@ -35,7 +36,7 @@
         # /var/lib/postgresql; explicitly place it in the persistent bind.
         PGDATA = "/var/lib/postgresql/data";
       };
-      ports = [ ];
+      ports = [ "127.0.0.1:8091:5432" ];
       networks = [ "bookorbit" ];
       volumes = [
         "/var/lib/bookorbit/postgres:/var/lib/postgresql/data"
@@ -54,10 +55,10 @@
       image = "ghcr.io/bookorbit/bookorbit:3.2.0@sha256:d2ad208924c3743078991ec8ee4819d84e435d3377c4ddf61a05f0cd033b3e08";
       dependsOn = [ "bookorbit-postgres" ];
       environment = {
-        PORT = "3000";
+        PORT = "8090";
         APP_URL = "http://192.168.8.200:8090";
-        POSTGRES_HOST = "postgres";
-        POSTGRES_PORT = "5432";
+        POSTGRES_HOST = "127.0.0.1";
+        POSTGRES_PORT = "8091";
         POSTGRES_USER = "bookorbit";
         POSTGRES_DB = "bookorbit";
         POSTGRES_PASSWORD = "";
@@ -75,13 +76,15 @@
         NODE_MAX_OLD_SPACE_SIZE = "2048";
         TZ = "Australia/Melbourne";
       };
-      ports = [ "192.168.8.200:8090:3000" ];
-      networks = [ "bookorbit" ];
+      ports = [ ];
       volumes = [
         "/var/lib/bookorbit/app:/data"
         "/var/lib/bookorbit/import:/import"
         "/mnt/gargantua/media/books/cwa-library:/source/ebooks:ro"
         "/mnt/gargantua/media/books/audiobooks:/source/audiobooks:ro"
+        "/mnt/gargantua/downloads/torrents/complete:/mnt/gargantua/downloads/torrents/complete:ro"
+        "/mnt/gargantua/downloads/nzb/complete:/mnt/gargantua/downloads/nzb/complete:ro"
+        "/mnt/gargantua/media/books/bookorbit-library:/source/downloads:rw"
         "/persist/etc/bookorbit/postgres-password:/run/secrets/postgres-password:ro"
         "/persist/etc/bookorbit/jwt-secret:/run/secrets/jwt-secret:ro"
         "/persist/etc/bookorbit/bootstrap-token:/run/secrets/bootstrap-token:ro"
@@ -98,6 +101,7 @@
         "--cap-add=SETGID"
         "--cap-add=SETUID"
         "--security-opt=no-new-privileges:true"
+        "--network=host"
       ];
     };
   };
@@ -106,8 +110,7 @@
     requires = [ "podman-network-bookorbit.service" ];
     after = [ "podman-network-bookorbit.service" ];
   };
-  systemd.services.podman-bookorbit-app = {
-    requires = [ "podman-network-bookorbit.service" ];
-    after = [ "podman-network-bookorbit.service" ];
-  };
+  systemd.services.podman-bookorbit-app.unitConfig.RequiresMountsFor = "/mnt/gargantua";
+
+  networking.firewall.interfaces.enp4s0.allowedTCPPorts = [ 8090 ];
 }

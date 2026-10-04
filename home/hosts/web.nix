@@ -46,6 +46,23 @@ let
     batch-size = 128
     ubatch-size = 128
     load-on-startup = false
+
+    [qwen3.8-27b-rvn-heretic]
+    model = /home/zarred/.cache/llama-models/qwen3.8-27b-rvn-heretic-q4_k_m.gguf
+    ctx-size = 32768
+    batch-size = 128
+    ubatch-size = 128
+    parallel = 1
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    flash-attn = on
+    n-gpu-layers = 99
+    device = Vulkan0,Vulkan1
+    split-mode = layer
+    tensor-split = 11,8
+    reasoning = on
+    reasoning-format = deepseek
+    load-on-startup = false
   '';
   llamaModelsPreset = pkgs.writeText "llama-models.ini" ''
     version = 1
@@ -283,7 +300,7 @@ in
   };
 
   systemd.user.services.gemma-heretic-vulkan = {
-    Unit.Description = "On-demand AMD Vulkan Gemma model router";
+    Unit.Description = "On-demand AMD/NVIDIA Vulkan Gemma/Qwen model router";
     Service = {
       Type = "simple";
       ExecStart = "${lib.getExe' pkgs-unstable.llama-cpp-vulkan "llama-server"} --host 127.0.0.1 --port 8084 --no-webui --offline --models-preset ${llamaGemmaVulkanModelsPreset} --models-max 1 --models-autoload --metrics";
@@ -291,7 +308,7 @@ in
       RestartSec = 2;
       TimeoutStartSec = 30;
       Environment = [
-        "VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
+        "VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json"
       ];
       NoNewPrivileges = true;
       PrivateTmp = true;

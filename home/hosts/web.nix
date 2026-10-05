@@ -614,10 +614,18 @@ in
     text = builtins.toJSON {
       theme = "rose-pine-clear-tools";
       defaultProvider = "openai-codex";
-      defaultModel = "gpt-5.6-luna";
+      defaultModel = "gpt-6.1-sol";
+      enabledModels = [
+        "local-gemma/gemma4-e4b-it-qat"
+        "local-gemma/gemma4-12b-heretic"
+        "openai-codex/gpt-6-astra"
+        "openai-codex/gpt-6-luna"
+        "openai-codex/gpt-6.1-sol"
+        "openrouter/z-ai/glm-5.3-flash"
+      ];
       transport = "websocket";
       lastChangelogVersion = "0.70.0";
-      defaultThinkingLevel = "high";
+      defaultThinkingLevel = "medium";
       compaction = {
         keepRecentTokens = 5000;
       };
@@ -626,52 +634,7 @@ in
 
   # Ember's Realtime resolver disables Pi's ambient environment fallback. Keep
   # the provider mapping declarative while resolving the key only at runtime.
-  home.file.".ember/models.json".text = builtins.toJSON {
-    providers = {
-      openai = {
-        apiKey = "$OPENAI_API_KEY";
-        baseUrl = "https://api.openai.com/v1";
-      };
-      "local-gemma" = {
-        baseUrl = "http://127.0.0.1:8083/v1";
-        api = "openai-completions";
-        apiKey = "local";
-        compat = {
-          supportsDeveloperRole = false;
-          supportsReasoningEffort = false;
-          maxTokensField = "max_tokens";
-        };
-        models = [
-          {
-            id = "gemma4-e4b-it-qat";
-            name = "Gemma 4 E4B IT QAT (local)";
-            reasoning = false;
-            input = [ "text" "image" ];
-            contextWindow = 4096;
-            maxTokens = 4096;
-            cost = {
-              input = 0;
-              output = 0;
-              cacheRead = 0;
-              cacheWrite = 0;
-            };
-          }
-          {
-            id = "qwen3.5-4b-q4_k_m";
-            name = "Qwen 3.5 4B Q4_K_M (local)";
-            reasoning = false;
-            input = [ "text" ];
-            contextWindow = 65536;
-            maxTokens = 65536;
-            cost = {
-              input = 0;
-              output = 0;
-              cacheRead = 0;
-              cacheWrite = 0;
-            };
-          }
-        ];
-      };
-    };
-  };
+  # Keep explicit definitions for Pi's pinned models: Ember's older runtime
+  # catalogue does not include them yet. Retain Qwen for the voice fast gate.
+  home.file.".ember/models.json".text = builtins.readFile ./ember-models.json;
 }

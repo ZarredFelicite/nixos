@@ -7,8 +7,6 @@ in
 {
   home.packages = lib.mkIf isTitan [ pkgs-unstable.lan-mouse ];
 
-  home.persistence."/persist".directories = lib.mkIf isTitan [ ".config/lan-mouse" ];
-
   systemd.user.services.lan-mouse = lib.mkIf enabled {
     Unit = {
       Description = "Lan Mouse daemon";

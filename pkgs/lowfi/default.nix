@@ -2,20 +2,22 @@
 
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "lowfi";
-  version = "1.5.6";
+  version = "2.0.7";
 
   src = pkgs.fetchFromGitHub {
     owner = "talwat";
     repo = pname;
     rev = version;
-    sha256 = "sha256-pfvTOoWsXukZTfev9+Ifcp3YYIqtYZgmEVPHuqD4IsM="; # NOTE: UPDATE
+    sha256 = "sha256-/GU1e01AjeS4AVBvQUi/GZKeQ0X+hnmt+kyW3gp0jgg="; # NOTE: UPDATE
   };
 
-  cargoHash = "sha256-TGj3xH18xanhA25r+gTtLPa7KQKS9WEyGl412pnFZdw=";
+  cargoHash = "sha256-iuC0YBhzK8mATJekTgBDMiXATRdThem35p5AyDXQNGo=";
 
   nativeBuildInputs = with pkgs; [ pkg-config ];
   buildInputs = with pkgs; [ alsa-lib.dev openssl ];
   buildFeatures = [ "mpris" ];
+  # This test downloads tracks; the Nix build sandbox cannot access the network.
+  checkFlags = [ "--skip" "tests::tracks::list::download" ];
 
   #  preFixup = ''
   #    installManPage $releaseDir/build/ripgrep-*/out/rg.1

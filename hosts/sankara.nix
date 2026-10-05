@@ -7,6 +7,7 @@
     ../modules/private-asr-services.nix
     ../profiles/searxng.nix
     ../profiles/tailscale-funnel.nix
+    ../profiles/bookorbit.nix
   ];
   home-manager = {
     useGlobalPkgs = true;

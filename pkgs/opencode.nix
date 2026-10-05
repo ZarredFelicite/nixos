@@ -4,33 +4,16 @@
   fetchurl,
   autoPatchelfHook,
   installShellFiles,
-  unzip,
   testers,
 }:
 
 let
-  version = "0.15.31";
+  version = "1.18.33";
 
-  sources = {
-    "aarch64-darwin" = {
-      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-darwin-arm64.zip";
-      hash = "sha256-Oizu4QKISBSDeBDXXSfUPPz3cS4MrapG+IezhkoInGU="; # NOTE: UPDATE
-    };
-    "aarch64-linux" = {
-      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-linux-arm64.zip";
-      hash = "sha256-+V1RwzvgAXKqK57ZujjDg3BlE0rxqxCywsMghVDrX2M="; # NOTE: UPDATE
-    };
-    "x86_64-darwin" = {
-      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-darwin-x64.zip";
-      hash = "sha256-0s9sqlmuk3Nnn7XnI5W7MS22VbcTvmwj4LsxJ1j2AWs="; # NOTE: UPDATE
-    };
-    "x86_64-linux" = {
-      url = "https://github.com/sst/opencode/releases/download/v${version}/opencode-linux-x64.zip";
-      hash = "sha256-nozyFG92eJSsw6dznyugMTnVzf7yQCRlFTiQGdRL54c="; # NOTE: UPDATE
-    };
+  source = {
+    url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz";
+    hash = "sha256-5UYSMhOuR5CaQmhpKqS5SVDQEa/pysmTh1OiGU8cFtU="; # NOTE: UPDATE
   };
-
-  source = sources.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
@@ -41,9 +24,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   };
 
   nativeBuildInputs = [
-    unzip
     installShellFiles
-  ] ++ lib.optionals stdenvNoCC.hostPlatform.isLinux [
     autoPatchelfHook
   ];
 
@@ -75,9 +56,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       It combines a TypeScript/JavaScript core with a Go-based TUI
       to provide an interactive AI coding experience.
     '';
-    homepage = "https://github.com/sst/opencode";
+    homepage = "https://github.com/anomalyco/opencode";
     license = lib.licenses.mit;
-    platforms = lib.platforms.unix;
+    platforms = [ "x86_64-linux" ];
     mainProgram = "opencode";
   };
 })

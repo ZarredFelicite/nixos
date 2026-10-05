@@ -2,16 +2,16 @@
 
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "rgd";
-  version = "1.2.2";
+  version = "1.6.0";
 
   src = pkgs.fetchFromGitHub {
     owner = "Rolv-Apneseth";
     repo = pname;
     rev = "v${version}"; # NOTE: UPDATE
-    sha256 = "sha256-wnUn/MmbXTvwxF4QiWzcLWNPT+XUoKbFwl0l+v51CSE="; # NOTE: UPDATE
+    sha256 = "sha256-GZpG+jnoyL9/6A1tBF0fqnVkn47tAkNUyzA2epn4gR4="; # NOTE: UPDATE
   };
 
-  cargoHash = "sha256-a4MqS1AUcXhlZGImeqzUnDVxYuje5dm4SaebeEPjlEE=";
+  cargoHash = "sha256-3kCU1wHDcbgcY7sBtuTkjG8HR4AqRZqZWziSlD33lcU=";
 
   nativeBuildInputs = with pkgs; [ pkg-config ];
   buildInputs = with pkgs; [ sqlite ];

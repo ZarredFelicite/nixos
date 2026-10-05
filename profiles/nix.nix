@@ -106,12 +106,12 @@
           packageOverrides = pyfinal: pyprev: {
             #"youtube-transcript-api" = pyprev.callPackage ../pkgs/python/youtube-transcript-api {};
             youtube-transcript-api = pyprev.youtube-transcript-api.overridePythonAttrs ( oldAttrs: {
-              version = "1.1.0";
+              version = "1.2.4";
               src = pkgs.fetchFromGitHub {
                 owner = "jdepoix";
                 repo = "youtube-transcript-api";
-                tag = "v1.1.0";
-                hash = "sha256-RCyv0RhJkxZ4RcM0Hv9Qd4KBBpbakjhhuX8V15GcMQA="; # NOTE: UPDATE
+                tag = "v1.2.4"; # NOTE: UPDATE
+                hash = "sha256-FFLbDiZJR+xqaMMjcBQFYgrdJEofTiBdSNmmlMlrNfY="; # NOTE: UPDATE
               };
               doCheck = false;
             });

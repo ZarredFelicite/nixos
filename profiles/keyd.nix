@@ -3,11 +3,12 @@
     final: prev:
     {
       keyd = prev.keyd.overrideAttrs (old: {
+        version = "2.6.0";
         src = prev.fetchFromGitHub {
           owner = "rvaiya";
           repo = "keyd";
-          rev = "v2.5.0"; # NOTE: UPDATE
-          hash = "sha256-pylfQjTnXiSzKPRJh9Jli1hhin/MIGIkZxLKxqlReVo="; # NOTE: UPDATE
+          rev = "v2.6.0"; # NOTE: UPDATE
+          hash = "sha256-l7yjGpicX1ly4UwF7gcOTaaHPRnxVUMwZkH70NDLL5M="; # NOTE: UPDATE
         };
         postPatch = ''
           substituteInPlace Makefile \
@@ -25,9 +26,12 @@
       });
     }
   )];
+  users.groups.keyd = {};
   systemd.services.keyd.serviceConfig = {
-    CapabilityBoundingSet = lib.mkForce [ "CAP_SYS_NICE" ];
+    Group = "keyd";
+    CapabilityBoundingSet = lib.mkForce [ "CAP_SYS_NICE" "CAP_IPC_LOCK" ];
     PrivateUsers = lib.mkForce false;
+    RestrictRealtime = lib.mkForce false;
     SystemCallFilter = lib.mkForce [
       "nice"
       "@system-service"

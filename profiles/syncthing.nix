@@ -1,4 +1,7 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, ... }:
+let
+  titanDevices = if config.networking.hostName == "web" then [ "titan" ] else [ ];
+in {
   #systemd.services.syncthing.unitConfig.After = lib.mkForce "graphical-session.target";
   #systemd.services.syncthing.serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 120";
   environment.variables.SYNCTHING_CTL_URL = "http://localhost:8384";
@@ -33,10 +36,12 @@
         "sankara" = { id = "HWHGCRQ-HYCPKIP-M62FMS6-GQGZDWH-GCNJMJA-QIBXEXY-FVT2COA-KJ3W6QT"; };
         "nano" = { id = "I3P5FM2-DOHDIM7-WOPMTTE-KOCGQ66-GVSONDW-NB4KY4N-SFHGPJO-ELM7XQZ"; };
         "p8p" = { id = "WJSCFJY-M5SXBE4-ZXUM2BX-PUQ3IYD-76KTVMQ-EVWD53T-OGVT3FG-A4W5MQR"; };
-      } // (if config.networking.hostName == "web" then {
+      } // (if builtins.elem config.networking.hostName [ "web" "sankara" ] then {
         "titan" = {
           id = "ZGDUA6D-D3SGXGO-YJTWTLB-B7HGMB6-SVDQ2UU-WQNT35K-G6PXRLN-XWYHKA2";
-          addresses = [ "tcp://192.168.86.219:22000" "dynamic" ];
+          addresses = if config.networking.hostName == "web"
+            then [ "tcp://192.168.86.219:22000" "dynamic" ]
+            else [ "dynamic" ];
         };
       } else { });
       folders = {
@@ -45,43 +50,43 @@
 	        path = "/home/zarred/sync";
           type = "sendreceive";
 	        devices = [ "web" "sankara" "nano" "p8p" ]
-            ++ (if config.networking.hostName == "web" then [ "titan" ] else [ ]);
+            ++ titanDevices;
 	      };
         "notes" = {
           enable = true;
 	        path = "/home/zarred/notes";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" "p8p" ];
+	        devices = [ "web" "sankara" "nano" "p8p" ] ++ titanDevices;
 	      };
         "scripts" = {
           enable = true;
           path = "/home/zarred/scripts";
           type = "sendreceive"; # "sendreceive", "sendonly", "receiveonly", "receiveencrypted"
-	        devices = [ "web" "sankara" "nano" ];
+	        devices = [ "web" "sankara" "nano" ] ++ titanDevices;
 	      };
         "documents" = {
           enable = true;
 	        path = "/home/zarred/documents";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" ];
+	        devices = [ "web" "sankara" "nano" ] ++ titanDevices;
 	      };
         "videos" = {
           enable = true;
 	        path = "/home/zarred/videos";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" ];
+	        devices = [ "web" "sankara" "nano" ] ++ titanDevices;
 	      };
         "pictures" = {
           enable = true;
 	        path = "/home/zarred/pictures";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" ];
+	        devices = [ "web" "sankara" "nano" ] ++ titanDevices;
 	      };
         "audio" = {
           enable = true;
 	        path = "/home/zarred/audio";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" "p8p" ];
+	        devices = [ "web" "sankara" "nano" "p8p" ] ++ titanDevices;
 	      };
         "dev" = {
           enable = false;
@@ -92,12 +97,12 @@
         "newsboat" = {
 	        path = "/home/zarred/.local/share/newsboat";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" ];
+	        devices = [ "web" "sankara" "nano" ] ++ titanDevices;
 	      };
         "databases" = {
 	        path = "/home/zarred/.local/share/databases";
           type = "sendreceive";
-	        devices = [ "web" "sankara" "nano" ];
+	        devices = [ "web" "sankara" "nano" ] ++ titanDevices;
 	      };
       };
     };

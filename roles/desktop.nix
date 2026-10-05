@@ -110,7 +110,8 @@ in {
   # Refuse automatic upgrades when the dry-run would build known huge packages
   # locally (e.g. Electron/Chromium) instead of downloading substitutes.
   systemd.services.nixos-upgrade = {
-    path = [ pkgs.gawk pkgs.gnugrep pkgs.gnused pkgs.coreutils pkgs.nix ];
+    # The pre-start guard invokes nixos-rebuild by name, unlike the main script.
+    path = [ config.system.build.nixos-rebuild pkgs.gawk pkgs.gnugrep pkgs.gnused pkgs.coreutils pkgs.nix ];
     preStart = ''
       ${pkgs.bash}/bin/bash /home/zarred/scripts/nix/nixos-dry-build-check \
         --host ${lib.escapeShellArg config.networking.hostName} \

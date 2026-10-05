@@ -2,6 +2,7 @@
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  codexDesktopPackage = pkgs.callPackage ../../pkgs/codex-desktop.nix { inherit inputs; };
   ollamaCudaPackage = pkgs-ollama.ollama-cuda;
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
@@ -15,6 +16,90 @@ let
   ]);
   announcementWatcherPython = pkgs.python313.withPackages (ps: [ ps.requests ]);
   rssNewsPython = pkgs.python312.withPackages (ps: [ ps.requests ps.html2text ]);
+  llamaGemmaVulkanModelsPreset = pkgs.writeText "llama-gemma-vulkan-models.ini" ''
+    version = 1
+
+    [gemma4-12b-heretic]
+    model = /home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf
+    ctx-size = 131072
+    n-gpu-layers = 99
+    device = Vulkan0
+    parallel = 1
+    reasoning = off
+    reasoning-format = deepseek
+    flash-attn = on
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    batch-size = 128
+    ubatch-size = 128
+    load-on-startup = false
+
+    [qwen3.8-27b-rvn-heretic]
+    model = /home/zarred/.cache/llama-models/qwen3.8-27b-rvn-heretic-q4_k_m.gguf
+    ctx-size = 65536
+    batch-size = 128
+    ubatch-size = 128
+    parallel = 1
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    flash-attn = on
+    n-gpu-layers = 99
+    device = Vulkan0,Vulkan1
+    split-mode = layer
+    tensor-split = 11.5,7.5
+    reasoning = on
+    reasoning-format = deepseek
+    load-on-startup = false
+
+    [qwen3.8-27b-gsq-rco-iq3-s]
+    model = /home/zarred/.cache/llama-models/qwen3.8-27b-heretic-gsq-rco-iq3_s.gguf
+    ctx-size = 65536
+    batch-size = 128
+    ubatch-size = 128
+    parallel = 1
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    flash-attn = on
+    n-gpu-layers = 99
+    device = Vulkan0,Vulkan1
+    split-mode = layer
+    tensor-split = 11.5,7.5
+    reasoning = on
+    reasoning-format = deepseek
+    load-on-startup = false
+
+    [qwen3.8-27b-davidau-iq3-m]
+    model = /home/zarred/.cache/llama-models/qwen3.8-27b-davidau-iq3_m.gguf
+    ctx-size = 65536
+    batch-size = 128
+    ubatch-size = 128
+    parallel = 1
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    flash-attn = on
+    n-gpu-layers = 99
+    device = Vulkan0,Vulkan1
+    split-mode = layer
+    tensor-split = 11.5,7.5
+    reasoning = on
+    reasoning-format = deepseek
+    load-on-startup = false
+
+    [qwen3.5-9b-davidau-q4-k-m]
+    model = /home/zarred/.cache/llama-models/qwen3.5-9b-davidau-q4_k_m.gguf
+    ctx-size = 65536
+    batch-size = 128
+    ubatch-size = 128
+    parallel = 1
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    flash-attn = on
+    n-gpu-layers = 99
+    device = Vulkan0
+    reasoning = on
+    reasoning-format = deepseek
+    load-on-startup = false
+  '';
   llamaModelsPreset = pkgs.writeText "llama-models.ini" ''
     version = 1
 
@@ -34,15 +119,17 @@ let
 
     [gemma4-12b-heretic]
     model = /home/zarred/.cache/llama-models/gemma4-12b-heretic-q4_k_m.gguf
-    ctx-size = 32768
+    ctx-size = 65536
     n-gpu-layers = 99
     device = CUDA0
     parallel = 1
     reasoning = off
     reasoning-format = deepseek
-    flash-attn = auto
-    batch-size = 512
-    ubatch-size = 512
+    flash-attn = on
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    batch-size = 128
+    ubatch-size = 128
     load-on-startup = false
 
     [qwen3.5-4b-q4_k_m]
@@ -108,6 +195,7 @@ in
     ../finance
     ../desktop/ember-realtime-companion.nix
     ../media
+    ../services/print-failure-monitor.nix
     ../terminal
     ../security.nix
     ../impermanence.nix
@@ -115,8 +203,15 @@ in
   ];
 
   home.packages = [
+    # 0.11+ provides encrypted, fingerprint-authorized input sharing.
+    pkgs-unstable.lan-mouse
+    codexDesktopPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
     printVaultPackage
+  ];
+
+  wayland.windowManager.hyprland.settings.exec-once = lib.mkAfter [
+    "[workspace special:codex silent] ${codexDesktopPackage}/bin/codex-desktop"
   ];
 
   programs.vicinae.extensions = [ vicinaePrintvaultExtension ];
@@ -170,6 +265,23 @@ in
         "PI_SDK_PATH=${piSdkPath}"
       ];
       UMask = "0077";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
+  systemd.user.services.gemma-heretic-vulkan = {
+    Unit.Description = "On-demand AMD/NVIDIA Vulkan Gemma/Qwen model router";
+    Service = {
+      Type = "simple";
+      ExecStart = "${lib.getExe' pkgs-unstable.llama-cpp-vulkan "llama-server"} --host 127.0.0.1 --port 8084 --no-webui --offline --models-preset ${llamaGemmaVulkanModelsPreset} --models-max 1 --models-autoload --metrics";
+      Restart = "on-failure";
+      RestartSec = 2;
+      TimeoutStartSec = 30;
+      Environment = [
+        "VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json"
+      ];
       NoNewPrivileges = true;
       PrivateTmp = true;
     };
@@ -429,10 +541,18 @@ in
     text = builtins.toJSON {
       theme = "rose-pine-clear-tools";
       defaultProvider = "openai-codex";
-      defaultModel = "gpt-5.6-luna";
+      defaultModel = "gpt-6.1-sol";
+      enabledModels = [
+        "local-gemma/gemma4-e4b-it-qat"
+        "local-gemma/gemma4-12b-heretic"
+        "openai-codex/gpt-6-astra"
+        "openai-codex/gpt-6-luna"
+        "openai-codex/gpt-6.1-sol"
+        "openrouter/z-ai/glm-5.3-flash"
+      ];
       transport = "websocket";
       lastChangelogVersion = "0.70.0";
-      defaultThinkingLevel = "high";
+      defaultThinkingLevel = "medium";
       compaction = {
         keepRecentTokens = 5000;
       };
@@ -441,52 +561,7 @@ in
 
   # Ember's Realtime resolver disables Pi's ambient environment fallback. Keep
   # the provider mapping declarative while resolving the key only at runtime.
-  home.file.".ember/models.json".text = builtins.toJSON {
-    providers = {
-      openai = {
-        apiKey = "$OPENAI_API_KEY";
-        baseUrl = "https://api.openai.com/v1";
-      };
-      "local-gemma" = {
-        baseUrl = "http://127.0.0.1:8083/v1";
-        api = "openai-completions";
-        apiKey = "local";
-        compat = {
-          supportsDeveloperRole = false;
-          supportsReasoningEffort = false;
-          maxTokensField = "max_tokens";
-        };
-        models = [
-          {
-            id = "gemma4-e4b-it-qat";
-            name = "Gemma 4 E4B IT QAT (local)";
-            reasoning = false;
-            input = [ "text" "image" ];
-            contextWindow = 4096;
-            maxTokens = 4096;
-            cost = {
-              input = 0;
-              output = 0;
-              cacheRead = 0;
-              cacheWrite = 0;
-            };
-          }
-          {
-            id = "qwen3.5-4b-q4_k_m";
-            name = "Qwen 3.5 4B Q4_K_M (local)";
-            reasoning = false;
-            input = [ "text" ];
-            contextWindow = 65536;
-            maxTokens = 65536;
-            cost = {
-              input = 0;
-              output = 0;
-              cacheRead = 0;
-              cacheWrite = 0;
-            };
-          }
-        ];
-      };
-    };
-  };
+  # Keep explicit definitions for Pi's pinned models: Ember's older runtime
+  # catalogue does not include them yet. Retain Qwen for the voice fast gate.
+  home.file.".ember/models.json".text = builtins.readFile ./ember-models.json;
 }

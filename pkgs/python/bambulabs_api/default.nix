@@ -2,13 +2,13 @@
 
 pkgs.python3.pkgs.buildPythonPackage rec {
   pname = "bambulabs_api";
-  version = "2.6.5";
+  version = "2.6.6";
   format = "pyproject";
   src = pkgs.fetchFromGitHub {
     owner = "mchrisgm";
     repo = pname;
     rev = "${version}"; # NOTE: UPDATE
-    sha256 = "sha256-uKQIP87bG7xs8g3scqGvHlzEYDi2j8sAxbeNYMhwo8w="; # NOTE: UPDATE
+    sha256 = "sha256-o3S2zCr0x3BpEoBp8r2DcvG3TAF758hJsYpClm2IgF4="; # NOTE: UPDATE
   };
   propagatedBuildInputs = with pkgs; [
     python3Packages.setuptools

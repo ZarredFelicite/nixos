@@ -1,6 +1,9 @@
 { ... }: {
   wayland.windowManager.hyprland.extraConfig = ''
     # Window rules for v0.53
+    # Quickshell owns this tag; removing it restores each window's native decoration.
+    windowrule = match:tag quickshell-single-window, match:float false, border_size 0
+    windowrule = match:tag quickshell-single-window, match:float false, rounding 0
     windowrule = match:class ^(nova|zoom|xdg-desktop-portal-gtk|steam|org.kde.kdeconnect.daemon)$, float on
     # Hover Lens is a transparent selection overlay; keep compositor effects off
     # so the cutout remains readable and input focus stays on the overlay.
@@ -110,6 +113,8 @@
   '';
   wayland.windowManager.hyprland.settings = {
     workspace = [
+      # Match the bar's single-window mode without changing special-workspace padding.
+      "w[tv1]s[false], gapsin:0, gapsout:0"
       "1, monitor:desc:Dell Inc. AW3423DWF 2ZVC2S3, default:true"
       "5, monitor:desc:Xiaomi Corporation Mi Monitor, default:true"
       "special:obsidian, on-created-empty:obsidian, gapsout:40, gapsin:40"

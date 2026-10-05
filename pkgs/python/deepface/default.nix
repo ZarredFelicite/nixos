@@ -23,20 +23,33 @@
 
 buildPythonPackage rec {
   pname = "deepface";
-  version = "0.0.98";
+  version = "0.0.101";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "serengil";
     repo = "deepface";
     tag = "v${version}";
-    hash = "sha256-Z9TDmNqeHXFeldXSl3Sz0SCR2UFW+sIA6aFPpSKY6bU=";
+    hash = "sha256-8MoJOj6B9/X3Ik3Ar83Jyhnw0HP8/1/0FIoiFd1dVWI=";
   };
 
   postPatch = ''
     # prevent collisions
     substituteInPlace setup.py \
-      --replace-fail "data_files=[(\"\", [\"README.md\", \"requirements.txt\", \"package_info.json\"])]," "" \
+      --replace-fail '    data_files=[
+            (
+                "",
+                [
+                    "README.md",
+                    "requirements.txt",
+                    # TODO: use requirements_base.txt instead of requirements.txt in the next release, and remove requirements.txt from the package. This is a breaking change, so it should be done in a major release.
+                    # "requirements_base.txt",
+                    "requirements_tf.txt",
+                    "requirements_pytorch.txt",
+                    "package_info.json",
+                ],
+            )
+        ],' "" \
       --replace-fail "install_requires=requirements," ""
 
     substituteInPlace deepface/DeepFace.py \

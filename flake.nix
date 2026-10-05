@@ -46,9 +46,10 @@
     qmd = { url = "github:tobi/qmd"; };
     herdr = { url = "github:herdrdev/herdr/v0.8.2"; };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0.1";
+    codex-desktop.url = "github:ilysenko/codex-desktop-linux/e67d0463aa16fadf8b6c16ad9c970682a663591c";
     vicinae.url = "github:ZarredFelicite/vicinae-private/0934960b0f4e8d1bf82c7aaa3ea64dd71e55520f";
     recall = {
-      url = "github:ZarredFelicite/recall-private/83f84be730292fd9ae57366dd699db1e9ad37506";
+      url = "github:ZarredFelicite/recall-private/ad5e604e27ec76921a7073869268bc8f453c3059";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };

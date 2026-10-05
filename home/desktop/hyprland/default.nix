@@ -124,6 +124,7 @@ in {
             "Unknown-1,disable"
           ];
           env = [
+            "PATH,$HOME/.local/bin:$PATH"
             "GDK_BACKEND,wayland"
             "QT_QPA_PLATFORM,wayland"
           #"SDL_VIDEODRIVER,wayland"

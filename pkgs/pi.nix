@@ -2,6 +2,7 @@
   lib,
   buildNpmPackage,
   fetchFromGitHub,
+  fetchurl,
   typescript-go,
   nix-update-script,
   versionCheckHook,
@@ -9,16 +10,24 @@
   ripgrep,
   makeBinaryWrapper,
 }:
-buildNpmPackage (finalAttrs: {
+buildNpmPackage (finalAttrs:
+  let
+    modelData = fetchurl {
+      url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${finalAttrs.version}.tgz";
+      hash = "sha512-4nV9JKc94iPX8bwdGPc2nTuVPKIPsffhnp3WoN9NYCNqbtoOF8LhYcIs/+Sn/alroqJK/5QRu6/Z6Ck+n0hyBA==";
+    };
+  in
+  {
   pname = "pi-coding-agent";
-  version = "0.80.8";
+  version = "0.99.1";
   src = fetchFromGitHub {
     owner = "earendil-works";
     repo = "pi";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-wCsZA1gb9sFri6OdTWBf0UCXYxqxlbImG8iE6K+D9u4=";
+    hash = "sha256-bLDEt1sKiS6ReQ6Uch0tOSLU8aykKl3UwN7WVkRE9Og=";
   };
-  npmDepsHash = "sha256-WdSQHKKOVzEFxUQH3QnSVzs+HpJPATnCQ701nbRB0lc=";
+  npmDepsHash = "sha256-eKtv1fN7X4ukuYbsj7hduGZ3W2FdmO/fAnoaWJp7MQQ=";
+  # The GitHub source omits generated provider JSON; use the exact-version npm artifact.
   npmWorkspace = "packages/coding-agent";
   # Skip native module rebuild for unneeded workspaces (e.g. canvas from web-ui)
   npmRebuildFlags = [ "--ignore-scripts" ];
@@ -27,13 +36,19 @@ buildNpmPackage (finalAttrs: {
     makeBinaryWrapper
   ];
   # Build workspace dependencies in order, then the coding-agent.
-  # We invoke tsgo directly for workspace deps to skip pi-ai's
-  # generate-models script which requires network access
-  # (models.generated.ts is committed to the repo).
+  # Compile pi-ai directly to avoid its network-dependent model-data generator.
+  # Generated provider JSON is supplied by the pinned npm artifact above.
   buildPhase = ''
     runHook preBuild
-    tsgo -p packages/ai/tsconfig.build.json
+    # Hydrate the generated provider data from the pinned 0.99.1 pi-ai release.
+    tar -xzf ${modelData} -C "$TMPDIR" package/dist/providers/data
+    cp -r "$TMPDIR/package/dist/providers/data" packages/ai/src/providers/data
+    npm run build --workspace=packages/chord
     tsgo -p packages/tui/tsconfig.build.json
+    npm run build --workspace=packages/telemetry
+    npm run build --workspace=packages/codemode
+    npm run build --workspace=packages/mcp
+    tsgo -p packages/ai/tsconfig.build.json
     tsgo -p packages/agent/tsconfig.build.json
     npm run build --workspace=packages/coding-agent
     runHook postBuild
@@ -46,7 +61,11 @@ buildNpmPackage (finalAttrs: {
     # Replace workspace deps needed at runtime with real copies
     for ws in @earendil-works/pi-ai:packages/ai \
               @earendil-works/pi-agent-core:packages/agent \
-              @earendil-works/pi-tui:packages/tui; do
+              @earendil-works/pi-tui:packages/tui \
+              @earendil-works/pi-telemetry:packages/telemetry \
+              @earendil-works/chord:packages/chord \
+              @earendil-works/pi-codemode:packages/codemode \
+              @earendil-works/pi-mcp:packages/mcp; do
       IFS=: read -r pkg src <<< "$ws"
       rm "$nm/$pkg"
       cp -r "$src" "$nm/$pkg"

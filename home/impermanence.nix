@@ -44,6 +44,7 @@
       # PERSISTENT .CONF
       ".config/skills"
       ".config/kdeconnect"
+      ".config/lan-mouse" # Device identity and authorized peer fingerprints
       ".config/BraveSoftware"
       ".config/PrusaSlicer"
       ".config/OrcaSlicer"

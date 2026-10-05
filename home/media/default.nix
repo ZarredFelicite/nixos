@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, inputs, ... }:
+{ config, lib, osConfig, pkgs, pkgs-unstable, inputs, ... }:
 let
   beetsXtractor = pkgs-unstable.python3Packages.callPackage ../../pkgs/python/beets-xtractor { };
   beetsWithXtractor = pkgs-unstable.beets.overridePythonAttrs (old: {
@@ -34,14 +34,14 @@ in {
     inputs.spicetify-nix.homeManagerModules.spicetify
   ];
   home.packages = [
-    #(pkgs.callPackage ../../pkgs/lowfi {})
-    pkgs.lowfi
+    (pkgs.callPackage ../../pkgs/lowfi {})
     pkgs.tplay
     pkgs-unstable.spotify-player
     pkgs-unstable.streamrip
   ];
 
-  systemd.user.services.spotify-player = {
+  # Sankara runs Sonarr, whose port conflicts with Spotify's login callback.
+  systemd.user.services.spotify-player = lib.mkIf (osConfig.networking.hostName != "sankara") {
     Unit = {
       Description = "Spotify Player daemon";
       After = [ "network-online.target" ];

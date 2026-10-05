@@ -69,6 +69,36 @@
     enable = true;
     enableDefaultConfig = false;
     matchBlocks = {
+      "github-vicinae-private" = lib.hm.dag.entryBefore [ "*" ] {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "/home/zarred/.ssh/private-source-keys/vicinae-private";
+        identitiesOnly = true;
+        userKnownHostsFile = "/home/zarred/.ssh/private-source-known_hosts /home/zarred/.ssh/known_hosts";
+        controlMaster = "no";
+        controlPath = "none";
+        controlPersist = "no";
+        extraOptions = {
+          IdentityAgent = "none";
+          StrictHostKeyChecking = "yes";
+          BatchMode = "yes";
+        };
+      };
+      "github-recall-private" = lib.hm.dag.entryBefore [ "*" ] {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "/home/zarred/.ssh/private-source-keys/recall-private";
+        identitiesOnly = true;
+        userKnownHostsFile = "/home/zarred/.ssh/private-source-known_hosts /home/zarred/.ssh/known_hosts";
+        controlMaster = "no";
+        controlPath = "none";
+        controlPersist = "no";
+        extraOptions = {
+          IdentityAgent = "none";
+          StrictHostKeyChecking = "yes";
+          BatchMode = "yes";
+        };
+      };
       "*" = {
         forwardAgent = false;
         addKeysToAgent = "no";

@@ -1,14 +1,56 @@
-{ inputs, pkgs, config, osConfig, ... }:
+{ inputs, pkgs, lib, config, osConfig, ... }:
 let
   herdrPackage = inputs.herdr.packages.${pkgs.system}.herdr.overrideAttrs (old: {
     patches = (old.patches or []) ++ [ ../../pkgs/herdr-status-dot-spacing.patch ];
   });
   helmRuntimeDir = "${config.xdg.dataHome}/helm";
   helmStateDir = "${config.xdg.stateHome}/herdr-agent-workbench-canary";
+  herdrWebPlugin = "${pkgs.callPackage ../../pkgs/herdr-web.nix { }}/lib/node_modules/herdr-web";
+  piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
+  herdrWebConfigDir = "${config.xdg.configHome}/herdr/plugins/config/barnuri.herdr-web";
+  herdrWebStateDir = "${config.xdg.stateHome}/herdr-web";
+  herdrWebPath = lib.makeBinPath [
+    pkgs.nodejs
+    herdrPackage
+    piPackage
+    pkgs.bash
+    pkgs.coreutils
+    pkgs.openssl
+  ] + ":/run/current-system/sw/bin:/home/zarred/.nix-profile/bin";
 in {
   # Host-specific Herdr integrations use the shared CLI package.
   _module.args.herdrPackage = herdrPackage;
   home.packages = [ herdrPackage ];
+
+  # Keep plugin registration in Herdr's mutable registry, preserving existing
+  # config, state, and other plugin entries.
+  home.activation.herdrWebPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD mkdir -p "${herdrWebConfigDir}" "${herdrWebStateDir}"
+    $DRY_RUN_CMD chmod 700 "${herdrWebConfigDir}" "${herdrWebStateDir}"
+    $DRY_RUN_CMD ${herdrPackage}/bin/herdr plugin link "${herdrWebPlugin}"
+  '';
+
+  systemd.user.services.herdr-web = {
+    Unit = {
+      Description = "Herdr Web browser UI";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+    };
+    Service = {
+      Type = "simple";
+      WorkingDirectory = "${herdrWebPlugin}";
+      ExecStart = "${pkgs.nodejs}/bin/node ${herdrWebPlugin}/server.js";
+      Restart = "on-failure";
+      RestartSec = "5s";
+      Environment = [
+        "PATH=${herdrWebPath}"
+        "HERDR_PLUGIN_CONFIG_DIR=${herdrWebConfigDir}"
+        "HERDR_PLUGIN_STATE_DIR=${herdrWebStateDir}"
+        "HERDR_BIN_PATH=${herdrPackage}/bin/herdr"
+      ];
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 
   # The runtime and private configuration are provisioned separately under
   # persistent user directories. Skip startup on hosts not yet provisioned.

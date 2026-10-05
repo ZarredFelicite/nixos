@@ -12,7 +12,6 @@ in {
     ./notifications.nix
     ./waybar
     ./cad.nix
-    ./herdr.nix
     ./lan-mouse.nix
     # ./vscode.nix
     #../../modules/quickshell.nix

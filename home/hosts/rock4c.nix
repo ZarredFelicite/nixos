@@ -4,6 +4,7 @@
     ../shared/core.nix
     ../shared/starship.nix
     ../shared/tmux.nix
+    ../shared/herdr.nix
     ../shared/nixvim
   ];
 

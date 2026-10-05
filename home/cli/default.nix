@@ -24,6 +24,7 @@ in {
     ../shared/nixvim
     ./nixvim-stylix.nix
     ../shared/tmux.nix
+    ../shared/herdr.nix
     ../shared/starship.nix
     ./nb.nix
     ./sys_monitors.nix

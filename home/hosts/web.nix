@@ -1,11 +1,8 @@
-{ inputs, self, pkgs, pkgs-unstable, pkgs-ollama, lib, config, osConfig, ... }: # Added osConfig
+{ inputs, self, pkgs, pkgs-unstable, pkgs-ollama, lib, config, osConfig, herdrPackage, ... }: # Added osConfig
 
 let
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
   codexDesktopPackage = pkgs.callPackage ../../pkgs/codex-desktop.nix { inherit inputs; };
-  herdrPackage = inputs.herdr.packages.${pkgs.system}.herdr.overrideAttrs (old: {
-    patches = (old.patches or []) ++ [ ../../pkgs/herdr-status-dot-spacing.patch ];
-  });
   ollamaCudaPackage = pkgs-ollama.ollama-cuda;
   ollamaCudaLib = "${ollamaCudaPackage}/lib/ollama";
   piSdkPath = "${piPackage}/lib/node_modules/pi-monorepo/dist/index.js";
@@ -219,7 +216,6 @@ in
     # 0.11+ provides encrypted, fingerprint-authorized input sharing.
     pkgs-unstable.lan-mouse
     codexDesktopPackage
-    herdrPackage
     (pkgs.callPackage ../../pkgs/handsfree.nix { })
     printVaultPackage
   ];

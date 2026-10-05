@@ -1,8 +1,5 @@
-{ inputs, pkgs, lib, config, ... }:
+{ pkgs, lib, config, herdrPackage, ... }:
 let
-  herdrPackage = inputs.herdr.packages.${pkgs.system}.herdr.overrideAttrs (old: {
-    patches = (old.patches or []) ++ [ ../../pkgs/herdr-status-dot-spacing.patch ];
-  });
   herdrWebPlugin = "${pkgs.callPackage ../../pkgs/herdr-web.nix { }}/lib/node_modules/herdr-web";
   piPackage = pkgs.callPackage ../../pkgs/pi.nix { };
   herdrWebConfigDir = "${config.xdg.configHome}/herdr/plugins/config/barnuri.herdr-web";
@@ -17,8 +14,6 @@ let
   ] + ":/run/current-system/sw/bin:/home/zarred/.nix-profile/bin";
 in
 {
-  home.packages = [ herdrPackage ];
-
   # Herdr's registry is mutable user state. Register the immutable packaged
   # plugin through Herdr's supported command; this preserves other entries and
   # leaves existing config, state, and manual checkout files untouched.
